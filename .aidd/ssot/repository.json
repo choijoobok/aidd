@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "RGP-001",
+  "platform": "GitHub",
+  "default_branch": "main",
+  "status": "blocked",
+  "workflow": ".github/workflows/aidd.yml",
+  "ruleset": ".github/rulesets/main.json",
+  "required_checks": ["정본·문서·스킬·테스트 검증"],
+  "protections": ["직접 삭제와 강제 푸시 금지", "Pull Request를 통한 변경", "활성 협업 프로필에 따른 사람 승인 수 적용", "팀 프로필에서는 작업 브랜치에서만 커밋", "검토 대화 해결", "최신 main 기준의 필수 AIDD 검사 통과"],
+  "options": [
+    {"name": "GitHub Pro 업그레이드", "advantages": ["비공개 상태를 유지하면서 ruleset을 적용한다", "현재 원격과 CI를 그대로 사용한다"], "disadvantages": ["지속 비용이 발생한다"]},
+    {"name": "공개 저장소 전환", "advantages": ["추가 요금 없이 ruleset을 사용할 수 있다"], "disadvantages": ["소스와 프로젝트 기록이 공개되며 민감정보 검토가 선행되어야 한다"]},
+    {"name": "다른 보호 기능 또는 호스팅 사용", "advantages": ["조직 정책과 비용에 맞는 강제 통제를 선택할 수 있다"], "disadvantages": ["마이그레이션과 새 CI 어댑터 검증이 필요하다"]},
+    {"name": "현재 비공개 저장소 유지", "advantages": ["즉시 비용과 이전 작업이 없다"], "disadvantages": ["원격 병합 강제가 없어 로컬 훅과 자발적 CI 준수에 의존한다"]}
+  ],
+  "remote_verification": {
+    "checked_at": "2026-09-18T01:25:44+09:00",
+    "status": "failed",
+    "result": "GitHub API가 비공개 저장소의 ruleset 기능에 GitHub Pro 업그레이드 또는 공개 저장소 전환이 필요하다는 HTTP 403을 반환했다.",
+    "evidence": "EVD-018"
+  }
+}

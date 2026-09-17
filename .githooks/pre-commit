@@ -1,0 +1,3 @@
+#!/bin/sh
+# 팀 프로필에서 기본 브랜치 직접 커밋을 막는다. 원격 PR·승인 검증은 CI와 호스팅 규칙이 담당한다.
+python tools/aidd.py branch-check

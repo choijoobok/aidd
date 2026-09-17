@@ -56,6 +56,12 @@ flowchart LR
 | CMP-TECH | 기술 스택·기반 게이트 | 거버넌스 | 품질 속성 기반 기술 선택과 기능 개발 전 공통 기반 준비도를 통제한다. | MOD-ARCH, MOD-DELIVERY, MOD-QA |
 | CMP-METHOD | 방법론 테일러링 | 거버넌스 | 프로젝트 특성에 따라 방법론 통제를 선택하고 AIDD 단계·증거에 연결한다. | MOD-GOV, MOD-DISC, MOD-ARCH |
 | CMP-DEPLOY | 배포·운영 맥락과 설계 위험 | 거버넌스 | 배포 프로필, 워크로드·SLO·복구 조건과 트랜잭션·동시성·성능 위험 패턴을 기술 선택과 검증에 연결한다. | MOD-DISC, MOD-ARCH, MOD-QA, MOD-DELIVERY |
+| CMP-EVIDENCE | 게이트 실행과 증거 원장 | 거버넌스 | 변경별 게이트 기준, 검증 증거, 승인과 예외를 구조화하고 완료·릴리스 차단에 사용한다. | MOD-GOV, MOD-QA, MOD-STATUS, MOD-CHG |
+| CMP-PLAN | 모듈 전달 계획 | 거버넌스 | 마일스톤·작업·인터페이스·의존성을 요구사항·변경·증거에 연결한다. | MOD-GOV, MOD-STATUS |
+| CMP-EVAL | AI 행동 평가 하네스 | 품질 | 공통 픽스처와 루브릭으로 Codex·Claude 실행 결과를 분리해 비교한다. | MOD-AI, MOD-QA |
+| CMP-REPO | 저장소 보호 정책 | 거버넌스 | CI 필수 검사와 기본 브랜치 보호의 로컬 구성 및 원격 활성화 증거를 관리한다. | MOD-CHG, MOD-QA |
+| CMP-COLLAB | 가변 협업 프로필 | 거버넌스 | 활성 사람 참여자 수에 따라 1인·팀 검토 통제를 전환하고 이력과 저장소 규칙을 동기화한다. | MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS |
+| CMP-IDENTITY | 협업 신원 대조 | 거버넌스 | Git·호스팅 신원을 사람 참여자 또는 봇과 연결하고 설명되지 않은 신원을 고위험 변경과 릴리스 통제에 반영한다. | MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS |
 
 ## 생애주기 흐름
 

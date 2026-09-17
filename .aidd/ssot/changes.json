@@ -4,29 +4,83 @@
     {
       "id": "CHG-001", "title": "AIDD 기반 구조 수립", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
       "modules": ["MOD-GOV", "MOD-DOC", "MOD-AI", "MOD-STATUS", "MOD-CHG", "MOD-QA"],
-      "requirements": ["REQ-001", "REQ-002", "REQ-003", "REQ-004", "REQ-005", "REQ-006", "REQ-007", "REQ-008", "REQ-009", "REQ-010", "REQ-011", "REQ-012", "REQ-013", "REQ-014", "REQ-015", "REQ-016", "REQ-017", "REQ-018"],
+      "requirements": ["REQ-001", "REQ-002", "REQ-003", "REQ-004", "REQ-005", "REQ-006", "REQ-007", "REQ-008", "REQ-009", "REQ-010", "REQ-011", "REQ-012", "REQ-013", "REQ-014", "REQ-015", "REQ-016", "REQ-017", "REQ-018"], "required_gates": ["DG-001", "TG-001", "TG-002"],
       "impact": "프로젝트 정본 구조, 이식 가능한 스킬, 검증, 생성 뷰와 생애주기 훅을 도입한다.",
       "migration": "파일럿에 저장소 구조를 적용하고 기존 시스템에서는 현재 사실을 안정적인 레코드로 가져온다.",
       "rollback": "도입 커밋을 되돌린다. 정본 JSON은 애플리케이션 실행 환경을 변경하지 않으며 계속 내보낼 수 있다.",
       "regression_scope": ["레지스트리 검증", "문서 생성", "AI 어댑터 동등성", "상태 렌더링", "병합 기록"]
     },
     {
-      "id": "CHG-002", "title": "기술 스택 게이트와 방법론 분석 보강", "type": "feature", "class": "C2", "status": "done", "requested_by": "고객",
+      "id": "CHG-002", "title": "기술 스택 게이트와 방법론 분석 보강", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
       "modules": ["MOD-GOV", "MOD-DISC", "MOD-ARCH", "MOD-DOC", "MOD-DELIVERY", "MOD-QA"],
-      "requirements": ["REQ-011", "REQ-016", "REQ-017", "REQ-019"],
+      "requirements": ["REQ-011", "REQ-016", "REQ-017", "REQ-019"], "required_gates": ["TG-001", "TG-002"],
       "impact": "기술 선택과 개발 기반 준비를 명시적인 연속 게이트로 만들고 전통적·적응형·운영·AI 주도 방법론을 구조화해 AIDD 단계와 증거에 연결한다.",
       "migration": "기존 프로젝트는 현재 기술을 TSB 기준선으로 등록하고 다음 기능 규모 변경에서 TG-001·TG-002를 평가한다.",
       "rollback": "technology.json과 methodologies.json, 연결된 생성기·검증·문서를 제거하고 ADR-006·ADR-007을 대체 결정으로 폐기한다.",
       "regression_scope": ["정본 참조 검증", "기술 게이트 생성 문서", "방법론 비교 생성 문서", "스킬 동기화", "상태와 릴리스 준비도"]
     },
     {
-      "id": "CHG-003", "title": "배포 환경과 설계 위험 예방 게이트 보강", "type": "feature", "class": "C2", "status": "done", "requested_by": "고객",
+      "id": "CHG-003", "title": "배포 환경과 설계 위험 예방 게이트 보강", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
       "modules": ["MOD-DISC", "MOD-ARCH", "MOD-DOC", "MOD-STATUS", "MOD-QA", "MOD-DELIVERY"],
-      "requirements": ["REQ-016", "REQ-018", "REQ-020", "REQ-021"],
+      "requirements": ["REQ-016", "REQ-018", "REQ-020", "REQ-021"], "required_gates": ["DG-001", "TG-002"],
       "impact": "기획·요구분석에서 배포·DBMS·인스턴스·확장·SLO·복구 조건을 확인하고 설계에서 트랜잭션·AOP·스레드·분산 경쟁·성능·장애 위험을 통제·검증한다.",
       "migration": "기존 프로젝트는 현재 환경을 DEP 프로필로 기준선화하고 다음 중대한 변경 전에 DG-001과 적용되는 DPR 위험 패턴을 평가한다.",
       "rollback": "deployment.json과 연결된 생성기·검증·스킬 보강을 제거하고 ADR-008을 대체 결정으로 폐기한다.",
       "regression_scope": ["정본 참조 검증", "배포·운영 생성 문서", "DG-001·TG-001·TG-002 순서", "위험 패턴 범위", "스킬 동기화", "상태와 릴리스 준비도"]
+    },
+    {
+      "id": "CHG-004", "title": "실행 가능한 게이트와 증거 무결성", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
+      "modules": ["MOD-GOV", "MOD-QA", "MOD-STATUS"],
+      "requirements": ["REQ-003", "REQ-007", "REQ-017", "REQ-018", "REQ-022"], "required_gates": ["TG-002"],
+      "impact": "게이트 정의와 변경별 실행을 분리하고 증거·승인·예외를 구조화하여 상태값만으로 완료를 우회할 수 없게 한다.",
+      "migration": "기존 통과 테스트의 자유문자 증거를 EVD 레코드로 이관하고 기존 C2 변경에 미결 게이트 실행을 생성한다.",
+      "rollback": "gate-runs.json·evidence.json·approvals.json과 연결 검증을 제거하고 tests.json 증거를 이전 문자열 형식으로 되돌린다.",
+      "regression_scope": ["정본 로딩", "테스트 증거", "게이트 승인", "릴리스 차단", "상태·생성 문서", "AI 스킬"]
+    },
+    {
+      "id": "CHG-005", "title": "Git 병합 훅과 GitHub CI 강제", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
+      "modules": ["MOD-AI", "MOD-CHG", "MOD-QA"],
+      "requirements": ["REQ-012", "REQ-013", "REQ-018", "REQ-023"], "required_gates": ["TG-002"],
+      "impact": "Git post-merge 인자 처리와 GitHub Actions의 생성·검증·테스트·어댑터 동등성 검사를 추가한다.",
+      "migration": "저장소에서 install-hooks를 실행하고 GitHub의 필수 상태 검사를 원격 설정한다.",
+      "rollback": "워크플로와 훅 인자 처리를 제거하고 기존 수동 검증 절차로 복귀한다.",
+      "regression_scope": ["병합 기록", "CLI 인자", "문서 생성", "정본 검증", "단위 테스트", "스킬 동기화"]
+    },
+    {
+      "id": "CHG-006", "title": "프로젝트 착수 전 실행 기반 완성", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
+      "modules": ["MOD-GOV", "MOD-DOC", "MOD-AI", "MOD-QA", "MOD-STATUS", "MOD-CHG", "MOD-DELIVERY"],
+      "requirements": ["REQ-004", "REQ-005", "REQ-006", "REQ-010", "REQ-011", "REQ-024", "REQ-025", "REQ-026", "REQ-027"], "required_gates": ["TG-002"],
+      "impact": "모듈별 상세 계획, 결정 대체와 개발 시작 차단, 운영·사용자·보안 가이드, AI 교차 평가 하네스와 GitHub 보호 규칙 기준을 추가한다.",
+      "migration": "기존 모듈과 변경을 작업·마일스톤에 연결하고 실제 프로젝트 착수 시 도메인 작업과 인터페이스를 같은 모델로 추가한다.",
+      "rollback": "delivery-plan.json·guides.json·evaluations.json·repository.json과 연결 생성기·검증을 제거하되 기존 증거와 변경 이력은 보존한다.",
+      "regression_scope": ["정본 참조", "모듈 상태 뷰", "가이드 생성", "개발 시작 게이트", "AI 평가 현황", "GitHub 보호 규칙", "릴리스 준비도"]
+    },
+    {
+      "id": "CHG-007", "title": "1인·팀 협업 프로필의 가역적 전환", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
+      "modules": ["MOD-GOV", "MOD-CHG", "MOD-QA", "MOD-STATUS"],
+      "requirements": ["REQ-028"], "required_gates": ["TG-002"],
+      "impact": "활성 사람 참여자 수에 따라 1인·팀 협업 프로필, 사람 승인 수와 AI 독립 검토를 전환하고 전환 이력과 GitHub ruleset을 재생성한다.",
+      "migration": "현재 프로젝트 책임자 1명을 활성 참여자로 기준선화하고 이후 참여·이탈은 collaboration-member 명령으로 기록한다.",
+      "rollback": "협업 정본과 생성 규칙을 제거하고 repository.json의 고정 승인 정책으로 복귀하되 참여자·전환 이력은 내보내 보존한다.",
+      "regression_scope": ["협업 프로필 선택", "참여자 이력", "1인·팀 양방향 전환", "ruleset 승인 수", "상태·협업 문서", "정본 참조"]
+    },
+    {
+      "id": "CHG-008", "title": "Git 신원과 협업 참여자 대조 통제", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
+      "modules": ["MOD-GOV", "MOD-CHG", "MOD-QA", "MOD-STATUS"],
+      "requirements": ["REQ-029"], "required_gates": ["TG-002"],
+      "impact": "Git 작성자·커미터를 사람 참여자 또는 봇 매핑과 대조하고 미등록 신원을 상태·개발 진입·릴리스 통제에 반영한다.",
+      "migration": "현재 joobok Git 신원을 HUM-001의 기준선 별칭으로 등록하고 이후 별칭·봇·호스팅 계정은 collaboration-identity 명령으로 추가한다.",
+      "rollback": "신원 정책·매핑·이벤트와 대조 명령을 제거하되 확인했던 신원 목록과 감사 이력을 내보내 보존한다.",
+      "regression_scope": ["Git 작성자·커미터 스캔", "사람·봇·별칭 분류", "미등록 신원 경고", "C2·C3 개발 차단", "릴리스 차단", "협업 상태·생성 문서"]
+    },
+    {
+      "id": "CHG-009", "title": "안전한 템플릿 초기화와 협업 브랜치 흐름", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
+      "modules": ["MOD-GOV", "MOD-AI", "MOD-CHG", "MOD-DOC", "MOD-QA"],
+      "requirements": ["REQ-030"], "required_gates": ["TG-002"],
+      "impact": "복사본의 안전한 Git 초기화, Codex·Claude 세션 진입 규칙, 팀 전환 뒤 작업 브랜치 강제, 사람이 읽는 템플릿 사용 가이드를 추가한다.",
+      "migration": "기존 저장소는 project-init으로 훅을 다시 활성화하고 팀 프로필이면 다음 변경부터 작업 브랜치를 사용한다.",
+      "rollback": "project-init·pre-commit과 협업 브랜치 정책을 제거하되 이미 만든 Git 이력·참여 전환·기준선 커밋은 보존한다.",
+      "regression_scope": ["Git 미초기화 복사본", "자동 스테이징·커밋 방지", "로컬 훅 경로", "1인·팀 브랜치 판정", "AI 어댑터 동기화", "사용 가이드 링크"]
     }
   ]
 }

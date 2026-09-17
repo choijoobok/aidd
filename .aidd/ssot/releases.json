@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
   "releases": [
-    {"id": "REL-001", "name": "기반 구조 0.1", "status": "planned", "target_date": null, "changes": ["CHG-001", "CHG-002", "CHG-003"], "required_tests": ["TC-001", "TC-002", "TC-003", "TC-004", "TC-005", "TC-006", "TC-007", "TC-008", "TC-009", "TC-010", "TC-011"], "rollback": "도입 커밋을 되돌리고 내보낸 정본 레코드를 보존한다.", "decision": null}
+    {"id": "REL-001", "name": "기반 구조 0.1", "status": "planned", "target_date": null, "changes": ["CHG-001", "CHG-002", "CHG-003", "CHG-004", "CHG-005", "CHG-006", "CHG-007", "CHG-008"], "required_tests": ["TC-001", "TC-002", "TC-003", "TC-004", "TC-005", "TC-006", "TC-007", "TC-008", "TC-009", "TC-010", "TC-011", "TC-012", "TC-013", "TC-014", "TC-015", "TC-016", "TC-017", "TC-018", "TC-019", "TC-020", "TC-021", "TC-022"], "required_deliverables": ["DLV-BRIEF", "DLV-REQ", "DLV-ARCH", "DLV-TECH", "DLV-DEPLOY", "DLV-GOV-EVIDENCE", "DLV-TRACE", "DLV-TEST", "DLV-DEV", "DLV-OPS", "DLV-USER", "DLV-SEC", "DLV-PLAN", "DLV-AI-EVAL", "DLV-REPO", "DLV-COLLAB", "DLV-RELEASE"], "risk_blocking_levels": ["critical", "high"], "rollback": "도입 커밋을 되돌리고 내보낸 정본 레코드를 보존한다.", "decision": null}
   ]
 }

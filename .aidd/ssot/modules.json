@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "modules": [
-    {"id": "MOD-GOV", "name": "거버넌스와 정본", "purpose": "산출물 식별자, 추적성, 의사결정, 미결사항, 위험과 게이트를 관리한다.", "status": "in_progress", "dependencies": [], "requirements": ["REQ-001", "REQ-003", "REQ-005", "REQ-006", "REQ-007", "REQ-014", "REQ-017", "REQ-019"]},
-    {"id": "MOD-DISC", "name": "요구 발굴과 제품 범위화", "purpose": "의도, 성과, 경계, 배포·운영 제약, 대안, 가정과 반대 검토를 도출한다.", "status": "planned", "dependencies": ["MOD-GOV"], "requirements": ["REQ-004", "REQ-005", "REQ-019", "REQ-020"]},
+    {"id": "MOD-GOV", "name": "거버넌스와 정본", "purpose": "산출물 식별자, 추적성, 의사결정, 미결사항, 위험과 게이트를 관리한다.", "status": "in_progress", "dependencies": [], "requirements": ["REQ-001", "REQ-003", "REQ-005", "REQ-006", "REQ-007", "REQ-014", "REQ-017", "REQ-019", "REQ-022", "REQ-024", "REQ-028", "REQ-029", "REQ-030"]},
+    {"id": "MOD-DISC", "name": "요구 발굴과 제품 범위화", "purpose": "의도, 성과, 경계, 배포·운영 제약, 대안, 가정과 반대 검토를 도출한다.", "status": "planned", "dependencies": ["MOD-GOV"], "requirements": ["REQ-004", "REQ-005", "REQ-019", "REQ-020", "REQ-026"]},
     {"id": "MOD-ARCH", "name": "아키텍처와 사용자 경험", "purpose": "배포·운영 조건과 품질 속성에 맞는 기술 스택을 선정하고 모듈, 애플리케이션, 데이터, 데이터베이스, 보안, 인프라와 UI 기반을 정의한다.", "status": "planned", "dependencies": ["MOD-GOV", "MOD-DISC"], "requirements": ["REQ-009", "REQ-010", "REQ-011", "REQ-014", "REQ-016", "REQ-019", "REQ-020", "REQ-021"]},
-    {"id": "MOD-DOC", "name": "산출물 생성", "purpose": "정본 데이터를 현재 상태의 이해관계자용 문서와 다이어그램으로 투영한다.", "status": "in_progress", "dependencies": ["MOD-GOV"], "requirements": ["REQ-002", "REQ-015"]},
-    {"id": "MOD-AI", "name": "AI 플랫폼 어댑터", "purpose": "이식 가능한 스킬과 공통 정책을 Codex·Claude Code 검색 경로와 생애주기 훅에 동기화한다.", "status": "in_progress", "dependencies": ["MOD-GOV"], "requirements": ["REQ-013"]},
-    {"id": "MOD-DELIVERY", "name": "개발·출시·운영", "purpose": "표준, 구현, 배포, 동시성·성능 검증, 문서, 관측성과 운영 전환을 수행한다.", "status": "planned", "dependencies": ["MOD-ARCH", "MOD-QA"], "requirements": ["REQ-011", "REQ-014", "REQ-015", "REQ-016", "REQ-018", "REQ-021"]},
-    {"id": "MOD-QA", "name": "검증과 품질 보증", "purpose": "테스트, 보안, 감리, 추적성, 동시성·성능·장애와 위험 기반 품질 증거를 제공한다.", "status": "planned", "dependencies": ["MOD-GOV"], "requirements": ["REQ-003", "REQ-010", "REQ-012", "REQ-014", "REQ-016", "REQ-017", "REQ-018", "REQ-021"]},
-    {"id": "MOD-STATUS", "name": "상태와 포트폴리오 뷰", "purpose": "경영진, 모듈과 항목 수준의 진척·의사결정 브리핑을 생성한다.", "status": "in_progress", "dependencies": ["MOD-GOV"], "requirements": ["REQ-007", "REQ-008", "REQ-009", "REQ-020"]},
-    {"id": "MOD-CHG", "name": "변경과 유지보수", "purpose": "기존 시스템 동작을 기준선화하고 기능, 결함, 장애, 마이그레이션과 병합 영향을 관리한다.", "status": "planned", "dependencies": ["MOD-GOV", "MOD-QA"], "requirements": ["REQ-006", "REQ-010", "REQ-012", "REQ-018"]}
+    {"id": "MOD-DOC", "name": "산출물 생성", "purpose": "정본 데이터를 현재 상태의 이해관계자용 문서와 다이어그램으로 투영한다.", "status": "in_progress", "dependencies": ["MOD-GOV"], "requirements": ["REQ-002", "REQ-015", "REQ-025", "REQ-030"]},
+    {"id": "MOD-AI", "name": "AI 플랫폼 어댑터", "purpose": "이식 가능한 스킬과 공통 정책을 Codex·Claude Code 검색 경로와 생애주기 훅에 동기화한다.", "status": "in_progress", "dependencies": ["MOD-GOV"], "requirements": ["REQ-013", "REQ-023", "REQ-026", "REQ-030"]},
+    {"id": "MOD-DELIVERY", "name": "개발·출시·운영", "purpose": "표준, 구현, 배포, 동시성·성능 검증, 문서, 관측성과 운영 전환을 수행한다.", "status": "planned", "dependencies": ["MOD-ARCH", "MOD-QA"], "requirements": ["REQ-011", "REQ-014", "REQ-015", "REQ-016", "REQ-018", "REQ-021", "REQ-025"]},
+    {"id": "MOD-QA", "name": "검증과 품질 보증", "purpose": "테스트, 보안, 감리, 추적성, 동시성·성능·장애와 위험 기반 품질 증거를 제공한다.", "status": "in_progress", "dependencies": ["MOD-GOV"], "requirements": ["REQ-003", "REQ-010", "REQ-012", "REQ-014", "REQ-016", "REQ-017", "REQ-018", "REQ-021", "REQ-022", "REQ-023", "REQ-025", "REQ-026", "REQ-027", "REQ-028", "REQ-029", "REQ-030"]},
+    {"id": "MOD-STATUS", "name": "상태와 포트폴리오 뷰", "purpose": "경영진, 모듈과 항목 수준의 진척·의사결정 브리핑을 생성한다.", "status": "in_progress", "dependencies": ["MOD-GOV"], "requirements": ["REQ-007", "REQ-008", "REQ-009", "REQ-020", "REQ-022", "REQ-024", "REQ-028", "REQ-029"]},
+    {"id": "MOD-CHG", "name": "변경과 유지보수", "purpose": "기존 시스템 동작을 기준선화하고 기능, 결함, 장애, 마이그레이션과 병합 영향을 관리한다.", "status": "in_progress", "dependencies": ["MOD-GOV", "MOD-QA"], "requirements": ["REQ-006", "REQ-010", "REQ-012", "REQ-018", "REQ-023", "REQ-027", "REQ-028", "REQ-029", "REQ-030"]}
   ]
 }

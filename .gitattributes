@@ -1,0 +1,9 @@
+# 플랫폼과 관계없이 정본·문서·스크립트의 줄바꿈을 LF로 유지한다.
+*.md text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.ps1 text eol=lf
+*.txt text eol=lf

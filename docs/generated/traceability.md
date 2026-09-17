@@ -25,3 +25,12 @@
 | REQ-019 | 상황 적응형 방법론 근거 | 구현됨 | MOD-GOV, MOD-DISC, MOD-ARCH | TC-009 | USER-2026-09-17 |
 | REQ-020 | 배포·운영 환경의 조기 확인 | 구현됨 | MOD-DISC, MOD-ARCH, MOD-STATUS | TC-010 | USER-2026-09-18 |
 | REQ-021 | 동시성·트랜잭션·성능 위험의 설계 예방 | 구현됨 | MOD-ARCH, MOD-QA, MOD-DELIVERY | TC-011 | USER-2026-09-18 |
+| REQ-022 | 실행 가능한 게이트와 증거 무결성 | 구현됨 | MOD-GOV, MOD-QA, MOD-STATUS | TC-012, TC-013 | AUDIT-2026-09-18 |
+| REQ-023 | Git과 CI 품질 게이트 강제 | 구현됨 | MOD-AI, MOD-CHG, MOD-QA | TC-006, TC-014 | AUDIT-2026-09-18 |
+| REQ-024 | 모듈 단위 상세 실행 계획과 진척 추적 | 구현됨 | MOD-GOV, MOD-STATUS | TC-015 | AUDIT-2026-09-18 |
+| REQ-025 | 운영자·사용자·보안 가이드의 정본 기반 생성 | 구현됨 | MOD-DOC, MOD-DELIVERY, MOD-QA | TC-016 | AUDIT-2026-09-18 |
+| REQ-026 | Codex·Claude 행동 품질 동등성 평가 | 정의됨 | MOD-AI, MOD-DISC, MOD-QA | TC-004, TC-017, TC-018 | AUDIT-2026-09-18 |
+| REQ-027 | 기본 브랜치 보호와 필수 CI 검사 | 정의됨 | MOD-CHG, MOD-QA | TC-019, TC-020 | AUDIT-2026-09-18 |
+| REQ-028 | 1인·팀 프로젝트의 가역적 협업 전환 | 구현됨 | MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS | TC-021 | USER-2026-09-18 |
+| REQ-029 | Git·호스팅 신원과 협업 참여자 대조 | 구현됨 | MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS | TC-022 | USER-2026-09-18 |
+| REQ-030 | 안전한 템플릿 초기화와 협업 브랜치 흐름 | 구현됨 | MOD-GOV, MOD-AI, MOD-CHG, MOD-DOC, MOD-QA | TC-023 | USER-2026-09-18 |

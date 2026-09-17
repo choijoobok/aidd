@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "milestones": [
+    {
+      "id": "MLS-001",
+      "title": "실행 가능한 AIDD 사전 기반 완성",
+      "status": "in_progress",
+      "modules": ["MOD-GOV", "MOD-DOC", "MOD-AI", "MOD-QA", "MOD-STATUS", "MOD-CHG"],
+      "target_date": null,
+      "exit_criteria": ["모든 로컬 합성 검증이 통과한다", "Codex와 Claude 실제 행동 평가가 완료된다", "GitHub 기본 브랜치 보호가 원격에서 확인된다"],
+      "work_items": ["WRK-001", "WRK-002", "WRK-003", "WRK-004", "WRK-005", "WRK-006", "WRK-007", "WRK-008", "WRK-009", "WRK-010", "WRK-011"]
+    }
+  ],
+  "work_items": [
+    {"id": "WRK-001", "title": "게이트 실행과 증거 무결성 강제", "type": "governance", "status": "completed", "module": "MOD-GOV", "change": "CHG-004", "requirements": ["REQ-022"], "depends_on": [], "owner": "거버넌스·품질 보증", "acceptance_criteria": ["증거 없는 통과와 승인 우회를 검증기가 거부한다"], "evidence": ["EVD-008", "EVD-009"]},
+    {"id": "WRK-002", "title": "병합 훅과 CI 검사 구현", "type": "workflow", "status": "completed", "module": "MOD-CHG", "change": "CHG-005", "requirements": ["REQ-023"], "depends_on": ["WRK-001"], "owner": "DevOps·품질 보증", "acceptance_criteria": ["실제 병합 커밋을 기록하고 CI가 결정적 검사를 실행한다"], "evidence": ["EVD-010", "EVD-011"]},
+    {"id": "WRK-003", "title": "모듈·마일스톤·작업·인터페이스·의존성 상세 추적", "type": "governance", "status": "completed", "module": "MOD-STATUS", "change": "CHG-006", "requirements": ["REQ-024"], "depends_on": ["WRK-001"], "owner": "PM·아키텍처", "acceptance_criteria": ["모듈 뷰에서 요구사항과 작업 및 의존성을 함께 추적한다"], "evidence": ["EVD-012"]},
+    {"id": "WRK-004", "title": "결정 대체와 개발 시작 차단 합성 시나리오", "type": "contract", "status": "completed", "module": "MOD-QA", "change": "CHG-006", "requirements": ["REQ-006", "REQ-010", "REQ-011"], "depends_on": ["WRK-001"], "owner": "품질 보증", "acceptance_criteria": ["결정 대체 순환을 거부한다", "미승인 필수 게이트가 구현 시작을 차단한다"], "evidence": ["EVD-013", "EVD-014"]},
+    {"id": "WRK-005", "title": "운영자·사용자·보안 가이드 자동 생성", "type": "contract", "status": "completed", "module": "MOD-DOC", "change": "CHG-006", "requirements": ["REQ-025"], "depends_on": ["WRK-003"], "owner": "운영·보안·제품", "acceptance_criteria": ["세 가이드가 구조화된 정본에서 결정적으로 생성된다"], "evidence": ["EVD-015"]},
+    {"id": "WRK-006", "title": "Codex·Claude 공통 행동 평가 하네스", "type": "contract", "status": "completed", "module": "MOD-AI", "change": "CHG-006", "requirements": ["REQ-026"], "depends_on": ["WRK-003"], "owner": "AI 플랫폼·품질 보증", "acceptance_criteria": ["두 플랫폼이 같은 픽스처와 루브릭으로 평가된다"], "evidence": ["EVD-016"]},
+    {"id": "WRK-007", "title": "Codex·Claude 실제 교차 행동 평가", "type": "contract", "status": "todo", "module": "MOD-AI", "change": "CHG-006", "requirements": ["REQ-026"], "depends_on": ["WRK-006"], "owner": "AI 플랫폼·독립 검토자", "acceptance_criteria": ["모든 필수 시나리오에서 두 플랫폼이 기준 점수 이상을 얻는다", "중대 금지 행동이 없다"], "evidence": []},
+    {"id": "WRK-008", "title": "GitHub 브랜치 보호 기준 구성", "type": "governance", "status": "completed", "module": "MOD-CHG", "change": "CHG-006", "requirements": ["REQ-027"], "depends_on": ["WRK-002"], "owner": "DevOps", "acceptance_criteria": ["기본 브랜치의 PR·승인·필수 CI 규칙이 버전 관리된다"], "evidence": ["EVD-017"]},
+    {"id": "WRK-009", "title": "GitHub 브랜치 보호 원격 활성화 검증", "type": "workflow", "status": "blocked", "module": "MOD-CHG", "change": "CHG-006", "requirements": ["REQ-027"], "depends_on": ["WRK-008"], "owner": "저장소 관리자", "acceptance_criteria": ["원격 main 규칙이 필수 CI와 승인을 강제한다"], "evidence": ["EVD-018"]},
+    {"id": "WRK-010", "title": "1인·팀 협업 프로필 양방향 전환", "type": "governance", "status": "completed", "module": "MOD-GOV", "change": "CHG-007", "requirements": ["REQ-028"], "depends_on": ["WRK-001", "WRK-008"], "owner": "PM·DevOps·품질 보증", "acceptance_criteria": ["활성 참여자 수로 협업 프로필을 결정한다", "팀원 참여와 이탈 모두 이력을 남긴다", "현재 프로필에서 ruleset을 재생성한다"], "evidence": ["EVD-019"]},
+    {"id": "WRK-011", "title": "Git 신원과 협업 참여자 대조", "type": "governance", "status": "completed", "module": "MOD-CHG", "change": "CHG-008", "requirements": ["REQ-029"], "depends_on": ["WRK-002", "WRK-010"], "owner": "PM·DevOps·품질 보증", "acceptance_criteria": ["도달 가능한 Git 신원을 명시적 사람·봇 매핑과 대조한다", "미등록 신원은 자동 참여자로 만들지 않고 통제에 반영한다", "원격 push 행위자 대조 한계를 명시한다"], "evidence": ["EVD-020"]}
+  ],
+  "interfaces": [
+    {"id": "IFC-001", "name": "정본-생성 문서 계약", "status": "current", "provider": "MOD-GOV", "consumers": ["MOD-DOC", "MOD-STATUS", "MOD-QA"], "contract": "FILES 레지스트리와 render_documents가 모든 정본 및 파생 문서를 결정적으로 연결한다.", "compatibility": "필드 변경 시 생성기·검증·테스트·산출물 목록을 같은 변경에서 갱신한다.", "requirements": ["REQ-001", "REQ-002", "REQ-003"]},
+    {"id": "IFC-002", "name": "공통 AI 스킬-플랫폼 어댑터 계약", "status": "current", "provider": "MOD-AI", "consumers": ["MOD-DISC", "MOD-ARCH", "MOD-DELIVERY", "MOD-QA", "MOD-STATUS"], "contract": ".ai 정본을 Codex와 Claude 검색 경로에 동기화하고 동일성을 검사한다.", "compatibility": "플랫폼 전용 훅은 얇게 유지하고 의미 규칙은 공통 스킬에 둔다.", "requirements": ["REQ-013", "REQ-026"]},
+    {"id": "IFC-003", "name": "CI-브랜치 보호 계약", "status": "current", "provider": "MOD-QA", "consumers": ["MOD-CHG"], "contract": "브랜치 보호의 필수 검사 이름은 GitHub Actions 작업 이름과 정확히 일치한다.", "compatibility": "작업 이름 변경 시 repository.json과 ruleset을 함께 변경한다.", "requirements": ["REQ-023", "REQ-027"]}
+  ],
+  "dependencies": [
+    {"id": "DPN-001", "from": "MOD-GOV", "to": "MOD-DOC", "type": "contract", "status": "current", "description": "정본 구조가 생성 문서의 입력 계약을 제공한다.", "verification": "TC-002와 TC-016"},
+    {"id": "DPN-002", "from": "MOD-GOV", "to": "MOD-STATUS", "type": "contract", "status": "current", "description": "상태 뷰는 정본 ID와 증거 상태만 집계한다.", "verification": "TC-001과 TC-015"},
+    {"id": "DPN-003", "from": "WRK-006", "to": "WRK-007", "type": "workflow", "status": "blocked", "description": "실제 교차 평가에는 검증된 공통 하네스가 선행한다.", "verification": "TC-017과 TC-018"},
+    {"id": "DPN-004", "from": "WRK-008", "to": "WRK-009", "type": "workflow", "status": "blocked", "description": "원격 보호 활성화에는 로컬 규칙 구성과 GitHub Pro·공개 저장소·대체 호스팅 중 하나의 정책 결정이 필요하다.", "verification": "TC-019와 TC-020"}
+  ]
+}

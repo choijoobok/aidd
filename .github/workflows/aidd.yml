@@ -1,0 +1,48 @@
+name: AIDD 정합성 검사
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aidd-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: 정본·문서·스킬·테스트 검증
+    runs-on: ubuntu-latest
+    steps:
+      - name: 소스 체크아웃
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Python 설정
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Python 구문 검사
+        run: python -m py_compile tools/aidd.py
+
+      - name: 파생 문서와 AI 어댑터 재생성
+        run: |
+          python tools/aidd.py generate
+          python tools/aidd.py sync-ai
+
+      - name: 생성 결과 드리프트 검사
+        run: git diff --exit-code
+
+      - name: 정본 정합성 검사
+        run: python tools/aidd.py validate
+
+      - name: Git 신원 대조
+        run: python tools/aidd.py identity-check --warning-only
+
+      - name: 프레임워크 테스트
+        run: python -m unittest discover -s tests -v

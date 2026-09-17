@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "test_cases": [
+    {"id": "TC-001", "title": "정본 그래프와 상태 뷰 검증", "type": "automated", "status": "passed", "required": true, "requirements": ["REQ-001", "REQ-003", "REQ-007", "REQ-008", "REQ-009", "REQ-014", "REQ-016", "REQ-017", "REQ-018"], "evidence": "2026-09-17: python tools/aidd.py validate; python -m unittest discover -s tests -v"},
+    {"id": "TC-002", "title": "결정적 최신 산출물 생성", "type": "automated", "status": "passed", "required": true, "requirements": ["REQ-002", "REQ-015"], "evidence": "2026-09-17: 결정적 렌더링 테스트 통과"},
+    {"id": "TC-003", "title": "Codex·Claude 스킬 동등성 검증", "type": "automated", "status": "passed", "required": true, "requirements": ["REQ-013"], "evidence": "2026-09-17: 어댑터 트리 동일성과 스킬 6개 검증 통과"},
+    {"id": "TC-004", "title": "요구 발굴 인터뷰와 트레이드오프 동작 평가", "type": "agent-eval", "status": "not_run", "required": true, "requirements": ["REQ-004", "REQ-005"], "evidence": null},
+    {"id": "TC-005", "title": "결정 대체와 기존 시스템 변경 시나리오 수행", "type": "scenario", "status": "not_run", "required": true, "requirements": ["REQ-006", "REQ-010"], "evidence": null},
+    {"id": "TC-006", "title": "병합 커밋 기록과 영향 평가", "type": "integration", "status": "not_run", "required": true, "requirements": ["REQ-012"], "evidence": null},
+    {"id": "TC-007", "title": "기능 구현 전 기반 준비도 강제", "type": "scenario", "status": "not_run", "required": true, "requirements": ["REQ-011"], "evidence": null},
+    {"id": "TC-008", "title": "기술 스택·개발 기반 게이트 구조 검증", "type": "automated", "status": "passed", "required": true, "requirements": ["REQ-011"], "evidence": "2026-09-18: 기술 정책·게이트·기준선 필수 증거와 요구사항 링크 자동 검증 통과"},
+    {"id": "TC-009", "title": "방법론 비교와 AIDD 통제 연결 검증", "type": "automated", "status": "passed", "required": true, "requirements": ["REQ-019"], "evidence": "2026-09-18: 전통적·적응형·운영·AI 주도 방법론 비교 항목과 AIDD 매핑 자동 검증 통과"},
+    {"id": "TC-010", "title": "배포·운영 맥락 게이트와 프로필 구조 검증", "type": "automated", "status": "passed", "required": true, "requirements": ["REQ-020"], "evidence": "2026-09-18: DG-001 순서, 조기 필수 결정, 인터뷰 차원, DEP 프로필과 요구사항 링크 자동 검증 통과"},
+    {"id": "TC-011", "title": "동시성·트랜잭션·성능 위험 카탈로그 검증", "type": "automated", "status": "passed", "required": true, "requirements": ["REQ-021"], "evidence": "2026-09-18: AOP·스레드·다중 인스턴스·재시도·스케줄·성능·장애 패턴의 질문·통제·검증 항목 자동 검사 통과"}
+  ]
+}

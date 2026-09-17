@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/tools/aidd.py\" hook --platform claude --event Stop",
+            "timeout": 30,
+            "statusMessage": "AIDD 정합성을 검사하는 중"
+          }
+        ]
+      }
+    ]
+  }
+}

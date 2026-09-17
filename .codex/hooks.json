@@ -1,0 +1,18 @@
+{
+  "description": "AIDD 정합성 게이트입니다. /hooks에서 이 저장소 훅을 검토하고 신뢰 대상으로 승인하세요.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/tools/aidd.py\" hook --platform codex --event Stop",
+            "commandWindows": "powershell.exe -NoProfile -Command \"$aiddRoot = git rev-parse --show-toplevel; py -3 \\\"$aiddRoot\\tools\\aidd.py\\\" hook --platform codex --event Stop\"",
+            "timeout": 30,
+            "statusMessage": "AIDD 정합성을 검사하는 중"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -973,7 +973,7 @@ class AiddTests(unittest.TestCase):
         release = changed["releases"]["releases"][0]
         self.assertTrue(any("미등록 Git 신원" in item for item in AIDD.release_blockers(changed, release)))
         errors, warnings = AIDD.validate(changed, check_generated=False, check_adapters=False)
-        self.assertFalse(any("C2 or C3 change is complete" in item for item in errors))
+        self.assertTrue(any("C2 or C3 change is complete" in item for item in errors))
         self.assertTrue(any("미등록 Git 신원" in item for item in warnings))
 
     def test_bot_identity_mapping_does_not_change_human_profile(self):

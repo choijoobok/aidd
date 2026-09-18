@@ -118,7 +118,7 @@
       "scope_delta": {"requirements": 3, "standards": 2, "ui_baselines": 1, "runbooks": 1, "delivery_profiles": 2}
     },
     {
-      "id": "CHG-012", "title": "감사 가능한 팀 작업 배정과 개발 범위 포괄성", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
+      "id": "CHG-012", "title": "감사 가능한 팀 작업 배정과 개발 범위 포괄성", "type": "feature", "class": "C2", "status": "done", "requested_by": "고객",
       "modules": ["MOD-GOV", "MOD-DOC", "MOD-DELIVERY", "MOD-QA", "MOD-STATUS", "MOD-CHG"],
       "requirements": ["REQ-034"], "required_gates": ["TG-002"],
       "required_work_coverage": ["design", "implementation", "test", "documentation", "migration", "operations"],

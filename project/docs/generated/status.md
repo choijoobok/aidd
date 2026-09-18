@@ -12,7 +12,7 @@
 - 개발 기반: 표준 2개; 골든 패스 1개; 예외 0개
 - UI 정본: 기준선 1개; 패턴 0개; 컴포넌트 0개; 화면 0개
 - 운영·제출: 런북 1개; 제출 프로필 2개
-- 게이트 실행: 16개; 승인됨: 0개; 검토 중: 16개
+- 게이트 실행: 16개; 승인됨: 1개; 검토 중: 15개
 - 구조화된 증거: 26개; 통과: 25개
 - 협업 프로필: CBP-SOLO 1인 프로젝트; 활성 사람 참여자: 1명; 미등록 Git 신원: 실시간 검사 필요
 - 마일스톤: 1개; 작업 항목: 13개; 완료: 10개
@@ -41,7 +41,7 @@
 | CHG-009 | 기능 | C2 | 진행 중 | MOD-GOV, MOD-AI, MOD-CHG, MOD-DOC, MOD-QA | 안전한 템플릿 초기화와 협업 브랜치 흐름 |
 | CHG-010 | 리팩터링 | C2 | 진행 중 | MOD-GOV, MOD-ARCH, MOD-DOC, MOD-STATUS, MOD-QA | 모듈별 정본 분할과 확장 가능한 명세 |
 | CHG-011 | 기능 | C2 | 진행 중 | MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS | 프로젝트 개발 기반·UI·운영·제출 정본 체계 |
-| CHG-012 | 기능 | C2 | 진행 중 | MOD-GOV, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG | 감사 가능한 팀 작업 배정과 개발 범위 포괄성 |
+| CHG-012 | 기능 | C2 | 완료 | MOD-GOV, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG | 감사 가능한 팀 작업 배정과 개발 범위 포괄성 |
 
 ## 병합 후 재검토
 

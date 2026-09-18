@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "module": "MOD-DOC",
+  "requirements": [
+    {
+      "id": "REQ-002",
+      "title": "파생 산출물",
+      "statement": "프레임워크는 정본 레코드에서 사람이 읽는 프로젝트 산출물을 생성하고 오래된 생성 결과를 탐지해야 한다.",
+      "rationale": "생성된 뷰는 별도의 정본이 되지 않으면서 최신 상태를 유지한다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "거버넌스",
+      "modules": [
+        "MOD-DOC"
+      ],
+      "verification": [
+        "TC-002"
+      ],
+      "acceptance_criteria": [
+        "생성 결과가 결정적이다",
+        "생성 파일의 수동 변경을 탐지한다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-015",
+      "title": "생애주기 산출물",
+      "statement": "프레임워크는 적용 가능한 경우 최신 요구사항, 유즈케이스, 다이어그램, 목업, 테스트 케이스·결과서, 개발자·운영자 가이드와 사용자 매뉴얼을 만들어야 한다.",
+      "rationale": "이해관계자는 동일한 시스템을 자신에게 맞는 뷰로 볼 수 있어야 한다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "문서화",
+      "modules": [
+        "MOD-DOC",
+        "MOD-DELIVERY"
+      ],
+      "verification": [
+        "TC-002"
+      ],
+      "acceptance_criteria": [
+        "산출물 적용 여부가 선언된다",
+        "생성 산출물이 정본 ID와 연결된다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-025",
+      "title": "운영자·사용자·보안 가이드의 정본 기반 생성",
+      "statement": "프레임워크는 운영자 가이드와 런북, 사용자 매뉴얼, 보안 모델과 검증 가이드를 구조화된 정본에서 생성하고 변경과 함께 현행화해야 한다.",
+      "rationale": "직접 작성된 가이드만 두면 기능·운영·보안 변경에서 쉽게 누락되고 정본과 모순된다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "운영·보안·제품",
+      "modules": [
+        "MOD-DOC",
+        "MOD-DELIVERY",
+        "MOD-QA"
+      ],
+      "verification": [
+        "TC-016"
+      ],
+      "acceptance_criteria": [
+        "세 대상별 가이드가 정본 출처를 가진다",
+        "가이드 생성이 결정적이며 드리프트를 검출한다",
+        "운영 절차에 검증·복구·병합 영향 대응이 포함된다"
+      ],
+      "source": "AUDIT-2026-09-18"
+    },
+    {
+      "id": "REQ-033",
+      "title": "운영 런북과 제출 패키지 정책",
+      "statement": "프레임워크는 운영 절차와 설계·사용자·운영 제출 패키지 정책을 구조화하고, 정본에서 결정적 런북과 검증 가능한 제출 manifest를 생성해야 한다.",
+      "rationale": "검토용 목업과 출시용 실제 증거가 혼동되지 않고 대상별 산출물이 일관되게 조립돼야 한다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "문서화·운영·전달",
+      "modules": ["MOD-DOC", "MOD-DELIVERY", "MOD-QA"],
+      "verification": ["TC-024", "TC-025"],
+      "acceptance_criteria": [
+        "RUN 레코드에 트리거, 절차, 검증, 롤백과 에스컬레이션이 있다",
+        "DLP 레코드는 포함·제외 범위와 목업·실제 캡처 정책을 구분한다",
+        "실제 패키지 빌드 전에도 결정적 manifest로 정책을 검토할 수 있다"
+      ],
+      "source": "USER-2026-09-18"
+    }
+  ]
+}

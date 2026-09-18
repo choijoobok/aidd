@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>운영·개발 가이드</title>
+  <link rel="stylesheet" href="../assets/guide.css">
+  <link rel="stylesheet" href="../assets/delivery.css">
+  <script src="../assets/icons.js" defer></script>
+  <script src="../assets/delivery.js" defer></script>
+</head>
+<body class="review">
+  <header class="topbar">
+    <button class="icon-btn menu-toggle" data-menu-toggle type="button" aria-label="목차 열기" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button>
+    <a class="brand" href="../index.html" aria-label="AI 주도 개발·운영 프레임워크 홈"><span class="logo"><svg class="icon sm"><use href="#i-book-open"/></svg></span><span>운영·개발 가이드</span></a>
+    <div class="current-path" data-current-path aria-live="polite"></div><div class="spacer"></div>
+    <div class="site-actions">
+      <button data-print-page type="button">현재 문서 인쇄·PDF</button>
+      <div class="ui-settings"><button class="icon-btn" data-ui-settings-toggle type="button" aria-label="보기 설정" aria-expanded="false"><svg class="icon"><use href="#i-settings"/></svg></button>
+        <div class="ui-settings-panel" data-ui-settings-panel hidden>
+          <label>본문 너비<select data-ui-width><option value="standard">읽기 편한 너비</option><option value="full">화면 100%</option></select></label>
+          <label>글꼴<select data-ui-font><option value="system">시스템 기본</option><option value="gothic">고딕</option><option value="serif">명조</option><option value="mono">고정폭</option></select></label>
+          <label>글자 크기<select data-ui-size><option value="90">90%</option><option value="100">100%</option><option value="110">110%</option><option value="120">120%</option><option value="130">130%</option><option value="140">140%</option><option value="150">150%</option></select></label>
+          <button data-ui-reset type="button">기본값 복원</button>
+        </div>
+      </div>
+      <button class="icon-btn" data-theme-toggle type="button" aria-label="테마 전환"><svg class="icon theme-icon-dark"><use href="#i-sun"/></svg><svg class="icon theme-icon-light" hidden><use href="#i-moon"/></svg></button>
+    </div>
+  </header>
+  <div class="sidebar-backdrop"></div>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-head">문서 목차</div>
+      <div class="sb-filter"><input data-tree-filter type="search" placeholder="제목·본문 검색"></div>
+      <nav class="tree"><ul><li class="tree-branch" data-tree-depth="0"><button class="tnode group" data-tree-group type="button" aria-expanded="true"><svg class="icon chev"><use href="#i-chevron-down"/></svg><span class="label">운영·보안·출시</span></button><ul><li><button class="tnode empty-chev" data-page-link="doc-deployment-and-runtime-md" data-page-path="운영·개발 가이드 › 운영·보안·출시 › 배포·운영 맥락과 설계 위험 예방" type="button"><span class="label">배포·운영 맥락과 설계 위험 예방</span></button></li><li><button class="tnode empty-chev" data-page-link="doc-operations-runbooks-md" data-page-path="운영·개발 가이드 › 운영·보안·출시 › 운영 런북" type="button"><span class="label">운영 런북</span></button></li><li><button class="tnode empty-chev" data-page-link="doc-operator-guide-md" data-page-path="운영·개발 가이드 › 운영·보안·출시 › AIDD 운영자 가이드와 런북" type="button"><span class="label">AIDD 운영자 가이드와 런북</span></button></li><li><button class="tnode empty-chev" data-page-link="doc-release-readiness-md" data-page-path="운영·개발 가이드 › 운영·보안·출시 › 출시 준비도" type="button"><span class="label">출시 준비도</span></button></li><li><button class="tnode empty-chev" data-page-link="doc-security-guide-md" data-page-path="운영·개발 가이드 › 운영·보안·출시 › AIDD 보안 모델과 검증 가이드" type="button"><span class="label">AIDD 보안 모델과 검증 가이드</span></button></li></ul></li></ul></nav>
+    </aside>
+    <div class="main-wrap"><main class="content"><section class="delivery-page" data-page id="doc-deployment-and-runtime-md" hidden><article><div class="source-meta review-only"><span>원본 project/docs/generated/deployment-and-runtime.md</span></div><h1 id="배포-운영-맥락과-설계-위험-예방">배포·운영 맥락과 설계 위험 예방</h1>
+<h2 id="dpp-001-배포-운영-맥락-우선-정책">DPP-001 — 배포·운영 맥락 우선 정책</h2>
+<ul><li>상태: `최신`</li><li>요구사항: REQ-016, REQ-018, REQ-020, REQ-021</li></ul>
+<p>세부 값을 미룰 수는 있지만 설계를 바꾸는 환경 범주는 미룰 수 없다. 미정 항목은 가정으로 숨기지 않고 담당자·결정 기한·영향과 함께 미결사항으로 기록한다.</p>
+<h3 id="필수-순서">필수 순서</h3>
+<ol><li>제품 의도·성과·범위 확인</li><li>DG-001 배포·운영 맥락 확인 게이트</li><li>품질 속성·워크로드·동시성 불변 조건 정의</li><li>TG-001 기술 스택 선정 게이트</li><li>아키텍처·데이터·트랜잭션·실행 토폴로지 설계</li><li>TG-002 개발 기반 준비도와 위험 시나리오 검증</li><li>기능 증분 개발</li></ol>
+<h3 id="조기에-확인할-환경-범주">조기에 확인할 환경 범주</h3>
+<ul><li>온프레미스·클라우드·하이브리드와 사용 가능한 실행 플랫폼</li><li>단일·다중 인스턴스와 자동 스케일 인·아웃 필요 여부</li><li>조직이 지정한 DBMS·버전·운영 방식과 변경 가능성</li><li>평균·최대 부하, 데이터 크기·증가율과 배치 시간창</li><li>응답시간·처리량·가용성 SLO와 RTO·RPO</li><li>강한 일관성이 필요한 업무 불변 조건과 최종 일관성 허용 범위</li><li>세션·캐시·스케줄 작업·파일 등 인스턴스 로컬 상태 허용 여부</li><li>보안·개인정보·규제·네트워크·운영 조직과 예산 제약</li></ul>
+<h3 id="상세-설계까지-미룰-수-있는-값">상세 설계까지 미룰 수 있는 값</h3>
+<ul><li>최종 인스턴스 수와 세부 사양</li><li>자동 확장 임계값</li><li>클라우드 서비스 세부 등급과 구매 옵션</li><li>커넥션·스레드 풀의 최종 수치</li><li>DBMS 마이너 버전과 캐시 TTL</li></ul>
+<h2 id="dg-001-배포-운영-맥락-확인-게이트">DG-001 — 배포·운영 맥락 확인 게이트</h2>
+<ul><li>상태: `최신`</li><li>담당: 제품·아키텍처·인프라·DBA·운영</li><li>요구사항: REQ-020, REQ-021</li></ul>
+<h3 id="적용-조건">적용 조건</h3>
+<ul><li>신규 시스템</li><li>신규 실행 모듈</li><li>배포 토폴로지·DBMS·확장 방식 변경</li><li>기존 시스템의 성능·가용성·동시성 문제 개선</li></ul>
+<h3 id="진입-기준">진입 기준</h3>
+<ul><li>제품 성과와 사용자 범위가 정의됨</li><li>운영 주체와 주요 이해관계자를 식별함</li></ul>
+<h3 id="필수-증거">필수 증거</h3>
+<ul><li>현재 또는 목표 배포 프로필</li><li>워크로드·성능·가용성 시나리오</li><li>업무 동시성 불변 조건</li><li>장애·재시도·중복·부분 성공 시나리오</li><li>미결 환경 결정과 결정 기한</li></ul>
+<h3 id="종료-기준">종료 기준</h3>
+<ul><li>단일·다중 인스턴스와 스케일링 가정이 명시됨</li><li>DBMS 제약과 트랜잭션·일관성 요구가 명시됨</li><li>SLO·RTO·RPO와 용량 범위가 측정 가능함</li><li>설계를 무효화할 미결사항이 없거나 차단 항목으로 승격됨</li><li>TG-001 입력으로 연결됨</li></ul>
+<h3 id="재평가-조건">재평가 조건</h3>
+<ul><li>배포 대상·DBMS·인스턴스 구조 변경</li><li>예상 부하 또는 데이터 증가율의 중대한 변화</li><li>새 가용성·복구·규제 요구</li><li>운영 장애나 부하 시험에서 환경 가정 반증</li></ul>
+<h2 id="dep-001-aidd-기반-구조-배포-프로필">DEP-001 — AIDD 기반 구조 배포 프로필</h2>
+<ul><li>범위: 이 저장소의 방법론 프레임워크와 CLI</li><li>상태: `승인됨`</li><li>요구사항: REQ-001, REQ-013, REQ-020</li></ul>
+<div class="table-wrap"><table><thead><tr><th>항목</th><th>기준</th></tr></thead><tbody><tr><td>환경</td><td>개발자 로컬 또는 CI 실행 환경의 저장소 기반 CLI</td></tr><tr><td>호스팅</td><td>온프레미스·클라우드에 종속되지 않음</td></tr><tr><td>런타임</td><td>Python 3.11 이상 단기 실행 프로세스</td></tr><tr><td>토폴로지</td><td>호출 단위 단일 프로세스이며 장기 실행 서비스 인스턴스가 없음</td></tr><tr><td>확장</td><td>서비스 자동 확장 적용 대상 아님. 병렬 CI 작업은 격리된 체크아웃을 사용해야 함</td></tr><tr><td>DBMS</td><td>실행 DBMS 없음. UTF-8 무 BOM JSON과 Git이 정본 저장소 역할을 함</td></tr><tr><td>상태</td><td>공유 쓰기 저장소에서 동시 생성·동기화 명령을 실행하지 않는 것을 현재 운영 가정으로 함</td></tr><tr><td>워크로드</td><td>프로젝트 크기의 JSON·Markdown 파일을 결정적으로 생성·검증하는 배치형 작업</td></tr><tr><td>가용성·복구</td><td>Git 이력과 저장소 복구 가능성이 기준이며 온라인 서비스 SLO·RTO·RPO는 적용 대상 아님</td></tr><tr><td>보안·운영</td><td>저장소 권한, 훅 신뢰 검토, CI 비밀정보 분리와 변경 검토를 사용함</td></tr></tbody></table></div>
+<h3 id="남은-가정">남은 가정</h3>
+<ul><li>실제 제품 파일럿에서는 별도 DEP 프로필을 만들고 DG-001을 다시 통과해야 함</li></ul>
+<h2 id="환경-인터뷰-차원">환경 인터뷰 차원</h2>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>주제</th><th>확인 질문</th></tr></thead><tbody><tr><td>DIN-001</td><td>배포 위치와 실행 플랫폼</td><td>온프레미스·클라우드·하이브리드 중 무엇이 필수 또는 금지되는가?&lt;br&gt;VM·컨테이너·Kubernetes·서버리스·기존 WAS 중 조직 표준이 있는가?&lt;br&gt;리전·가용영역·망 분리·인터넷 연결 제약은 무엇인가?</td></tr><tr><td>DIN-002</td><td>인스턴스와 확장</td><td>단일·대기·다중 활성 인스턴스 중 어떤 구성이 필요한가?&lt;br&gt;실시간 자동 확장이 필요한가, 수동 증설이면 충분한가?&lt;br&gt;인스턴스가 교체되어도 유지해야 하는 상태가 있는가?</td></tr><tr><td>DIN-003</td><td>DBMS와 데이터 토폴로지</td><td>지정된 DBMS와 버전, 관리형·직접 운영 제약이 있는가?&lt;br&gt;단일·복제·클러스터·샤딩 중 예상 구조는 무엇인가?&lt;br&gt;읽기 복제 지연과 장애 전환 중 허용 가능한 일관성은 무엇인가?</td></tr><tr><td>DIN-004</td><td>워크로드와 성능</td><td>평균·최대 TPS, 동시 사용자, 응답시간과 처리량 목표는 무엇인가?&lt;br&gt;데이터 초기 크기·증가율·보존 기간과 배치 시간창은 무엇인가?&lt;br&gt;핫키·대량 조회·대량 쓰기·버스트 트래픽이 존재하는가?</td></tr><tr><td>DIN-005</td><td>가용성·복구·배포</td><td>가용성 SLO와 RTO·RPO는 무엇인가?&lt;br&gt;무중단 배포·롤백·재해복구와 데이터 복원 연습이 필요한가?&lt;br&gt;부분 장애에서 어떤 기능을 유지하거나 차단해야 하는가?</td></tr><tr><td>DIN-006</td><td>상태·세션·캐시·작업</td><td>세션·캐시·파일·락을 인스턴스 로컬에 둘 수 있는가?&lt;br&gt;스케줄·배치 작업은 여러 인스턴스 중 하나만 실행해야 하는가?&lt;br&gt;캐시 일관성과 무효화 지연을 어디까지 허용하는가?</td></tr><tr><td>DIN-007</td><td>트랜잭션과 동시성</td><td>반드시 함께 성공·실패해야 하는 데이터 변경은 무엇인가?&lt;br&gt;중복 요청·재시도·순서 역전·동시 변경에도 지켜야 할 업무 불변 조건은 무엇인가?&lt;br&gt;서로 다른 시스템 사이에서 원자성이 필요한가, 보상 또는 최종 일관성을 허용하는가?</td></tr><tr><td>DIN-008</td><td>보안·운영·비용</td><td>개인정보·규제·암호화·감사·비밀정보 요구는 무엇인가?&lt;br&gt;누가 24시간 운영·장애 대응·DBA·보안 패치를 담당하는가?&lt;br&gt;예산·라이선스·공급자 종속과 운영 역량 한계는 무엇인가?</td></tr></tbody></table></div>
+<h2 id="dpr-001-트랜잭션-경계와-외부-부작용">DPR-001 — 트랜잭션 경계와 외부 부작용</h2>
+<h3 id="설계-질문">설계 질문</h3>
+<ul><li>하나의 업무 명령에서 원자적으로 바뀌어야 하는 것은 무엇인가?</li><li>DB 트랜잭션 안에 장시간 네트워크 호출이나 메시지 발행이 있는가?</li></ul>
+<h3 id="실패-형태">실패 형태</h3>
+<ul><li>부분 커밋</li><li>장시간 잠금</li><li>재시도 중 중복 부작용</li></ul>
+<h3 id="후보-통제">후보 통제</h3>
+<ul><li>업무 서비스 경계의 짧은 트랜잭션</li><li>Outbox</li><li>Saga·보상</li><li>멱등 소비자</li></ul>
+<h3 id="검증-증거">검증 증거</h3>
+<ul><li>부분 실패 테스트</li><li>재시도·중복 테스트</li><li>잠금·타임아웃 관찰</li></ul>
+<h2 id="dpr-002-프록시-기반-aop-우회">DPR-002 — 프록시 기반 AOP 우회</h2>
+<h3 id="설계-질문">설계 질문</h3>
+<ul><li>트랜잭션·비동기·보안 advice 대상 메서드가 실제 프록시를 통해 호출되는가?</li><li>자기 호출·직접 생성 객체·비프록시 경로가 있는가?</li></ul>
+<h3 id="실패-형태">실패 형태</h3>
+<ul><li>자기 호출로 advice 미적용</li><li>예상과 다른 프록시 유형·메서드 경계</li><li>테스트와 운영 동작 불일치</li></ul>
+<h3 id="후보-통제">후보 통제</h3>
+<ul><li>프록시 경계가 드러나는 책임 분리</li><li>컨테이너가 관리하는 객체 사용</li><li>AOP 적용 여부 통합 테스트</li></ul>
+<h3 id="검증-증거">검증 증거</h3>
+<ul><li>자기 호출 부정 테스트</li><li>프록시 경계 통합 테스트</li><li>트랜잭션 커밋·롤백 증거</li></ul>
+<h2 id="dpr-003-스레드-비동기-컨텍스트-분리">DPR-003 — 스레드·비동기 컨텍스트 분리</h2>
+<h3 id="설계-질문">설계 질문</h3>
+<ul><li>트랜잭션·보안·추적 컨텍스트가 새 스레드나 비동기 작업으로 넘어간다고 가정하는가?</li><li>스레드 풀 크기·큐·거부·종료 정책이 정의됐는가?</li></ul>
+<h3 id="실패-형태">실패 형태</h3>
+<ul><li>새 스레드에서 트랜잭션 미전파</li><li>ThreadLocal 컨텍스트 손실·누수</li><li>풀·큐 고갈과 작업 유실</li></ul>
+<h3 id="후보-통제">후보 통제</h3>
+<ul><li>비동기 경계에서 새 트랜잭션 명시</li><li>메시지 기반 전달</li><li>필요 컨텍스트의 명시적 전파</li><li>제한된 풀·큐와 백프레셔</li></ul>
+<h3 id="검증-증거">검증 증거</h3>
+<ul><li>스레드 전환 트랜잭션 테스트</li><li>컨텍스트 전파 테스트</li><li>풀 포화·정상 종료 테스트</li></ul>
+<h2 id="dpr-004-다중-인스턴스-레이스-컨디션">DPR-004 — 다중 인스턴스 레이스 컨디션</h2>
+<h3 id="설계-질문">설계 질문</h3>
+<ul><li>서로 다른 서버가 같은 업무 자원을 동시에 변경할 수 있는가?</li><li>로컬 락·메모리·캐시가 전역 동기화를 보장한다고 가정하는가?</li></ul>
+<h3 id="실패-형태">실패 형태</h3>
+<ul><li>재고·한도 음수</li><li>중복 결제·발급</li><li>분실 갱신</li><li>동일 작업 중복 실행</li></ul>
+<h3 id="후보-통제">후보 통제</h3>
+<ul><li>DB 고유·검사 제약</li><li>조건부 원자 갱신</li><li>낙관·비관 잠금</li><li>멱등 키</li><li>메시지 직렬화</li><li>필요 시 만료·펜싱이 있는 분산 락</li></ul>
+<h3 id="검증-증거">검증 증거</h3>
+<ul><li>다중 프로세스 경쟁 테스트</li><li>잠금 만료·리더 장애 테스트</li><li>불변 조건 사후 검증</li></ul>
+<h2 id="dpr-005-재시도-중복-순서-역전">DPR-005 — 재시도·중복·순서 역전</h2>
+<h3 id="설계-질문">설계 질문</h3>
+<ul><li>타임아웃 뒤 성공 여부를 모른 채 재시도해도 안전한가?</li><li>메시지 중복과 순서 역전을 허용하는가?</li></ul>
+<h3 id="실패-형태">실패 형태</h3>
+<ul><li>중복 처리</li><li>오래된 이벤트가 최신 상태 덮어씀</li><li>재시도 폭주</li></ul>
+<h3 id="후보-통제">후보 통제</h3>
+<ul><li>멱등 키와 결과 저장</li><li>버전·시퀀스 검사</li><li>지수 백오프·지터·재시도 예산</li><li>DLQ와 수동 복구</li></ul>
+<h3 id="검증-증거">검증 증거</h3>
+<ul><li>중복·순서 역전 테스트</li><li>타임아웃 후 재시도 테스트</li><li>재처리 복구 연습</li></ul>
+<h2 id="dpr-006-다중-인스턴스-스케줄-배치-중복">DPR-006 — 다중 인스턴스 스케줄·배치 중복</h2>
+<h3 id="설계-질문">설계 질문</h3>
+<ul><li>모든 인스턴스가 같은 스케줄을 실행하는가?</li><li>한 번만 실행과 최소 한 번 실행 중 어느 의미가 필요한가?</li></ul>
+<h3 id="실패-형태">실패 형태</h3>
+<ul><li>중복 정산·알림</li><li>작업 누락</li><li>리더 장애 중 정지</li></ul>
+<h3 id="후보-통제">후보 통제</h3>
+<ul><li>작업 큐</li><li>DB 원자 클레임</li><li>리더 선출</li><li>멱등 작업</li><li>재개 가능한 체크포인트</li></ul>
+<h3 id="검증-증거">검증 증거</h3>
+<ul><li>다중 인스턴스 실행 테스트</li><li>리더 전환 테스트</li><li>중단 후 재개 테스트</li></ul>
+<h2 id="dpr-007-데이터-자원-병목과-성능-붕괴">DPR-007 — 데이터·자원 병목과 성능 붕괴</h2>
+<h3 id="설계-질문">설계 질문</h3>
+<ul><li>최대 부하에서 DB·커넥션·스레드·큐·캐시의 예산은 무엇인가?</li><li>N+1·핫키·대량 스캔·긴 트랜잭션 가능성이 있는가?</li></ul>
+<h3 id="실패-형태">실패 형태</h3>
+<ul><li>커넥션·스레드 풀 고갈</li><li>락 경합·교착</li><li>응답시간 급증</li><li>메모리·큐 무한 증가</li></ul>
+<h3 id="후보-통제">후보 통제</h3>
+<ul><li>용량 예산</li><li>인덱스·쿼리 계획 검토</li><li>짧은 트랜잭션</li><li>제한된 큐·백프레셔</li><li>캐시·파티셔닝</li><li>성능 예산</li></ul>
+<h3 id="검증-증거">검증 증거</h3>
+<ul><li>대표 데이터 부하 시험</li><li>포화점·복구 시간 측정</li><li>쿼리·락·풀 텔레메트리 검증</li></ul>
+<h2 id="dpr-008-의존-시스템-장애-전파">DPR-008 — 의존 시스템 장애 전파</h2>
+<h3 id="설계-질문">설계 질문</h3>
+<ul><li>외부 지연·부분 실패가 스레드와 커넥션을 고갈시키는가?</li><li>재시도가 장애를 증폭시키는가?</li></ul>
+<h3 id="실패-형태">실패 형태</h3>
+<ul><li>연쇄 타임아웃</li><li>재시도 폭주</li><li>부분 성공 상태 유실</li><li>전체 서비스 불가</li></ul>
+<h3 id="후보-통제">후보 통제</h3>
+<ul><li>단계별 타임아웃</li><li>벌크헤드</li><li>서킷 브레이커</li><li>제한된 재시도</li><li>대체·저하 동작</li><li>복구 대기열</li></ul>
+<h3 id="검증-증거">검증 증거</h3>
+<ul><li>지연·오류 주입</li><li>부분 장애 테스트</li><li>저하·복구와 알림 검증</li></ul></article></section><section class="delivery-page" data-page id="doc-operations-runbooks-md" hidden><article><div class="source-meta review-only"><span>원본 project/docs/generated/operations/runbooks.md</span></div><h1 id="운영-런북">운영 런북</h1>
+<h2 id="run-001-정본-생성-검증-복구">RUN-001 — 정본 생성·검증 복구</h2>
+<ul><li>상태: `최신`</li><li>범위: AIDD 정본과 생성 문서</li><li>모듈: MOD-DOC, MOD-QA, MOD-DELIVERY</li><li>요구사항: REQ-025, REQ-033</li><li>트리거: 생성 문서가 오래됨; 정본 참조 검증 실패; 생성 중단</li></ul>
+<h3 id="절차">절차</h3>
+<ol><li>python .ai/tools/aidd.py generate를 실행한다.</li><li>python .ai/tools/aidd.py validate를 실행한다.</li><li>검증 실패의 정본 ID와 원인을 수정하고 다시 생성한다.</li><li>전체 unittest를 실행하고 결과를 EVD에 연결한다.</li></ol>
+<h3 id="검증">검증</h3>
+<ul><li>생성 명령과 검증 명령이 모두 종료 코드 0이다.</li></ul>
+<h3 id="롤백">롤백</h3>
+<p>정본과 생성기 변경을 함께 되돌린 뒤 다시 생성·검증한다.</p>
+<h3 id="에스컬레이션">에스컬레이션</h3>
+<p>반복 실패 또는 데이터 손실 위험은 프로젝트 책임자와 거버넌스 담당에게 알린다.</p></article></section><section class="delivery-page" data-page id="doc-operator-guide-md" hidden><article><div class="source-meta review-only"><span>원본 project/docs/generated/operator-guide.md</span></div><h1 id="aidd-운영자-가이드와-런북">AIDD 운영자 가이드와 런북</h1>
+<ul><li>대상: 저장소 관리자, DevOps, 운영자</li><li>상태: `최신`</li><li>적용 범위: AIDD 정본·생성기·훅·CI 운영</li><li>관련 요구사항: REQ-015, REQ-018, REQ-023, REQ-025, REQ-027</li></ul>
+<h2 id="정상-운영-점검">정상 운영 점검</h2>
+<p>정본 변경 후 생성, 동기화, 검증, 테스트 순서로 실행한다. 생성 문서를 직접 수정하지 않는다.</p>
+<p>```powershell python .ai/tools/aidd.py generate python .ai/tools/aidd.py sync-ai python .ai/tools/aidd.py validate python -m unittest discover -s .ai/tests -v ```</p>
+<h2 id="릴리스와-개발-시작-점검">릴리스와 개발 시작 점검</h2>
+<p>개발 시작과 릴리스는 서로 다른 게이트다. 차단 메시지를 해소하거나 승인된 예외를 기록하기 전에는 상태를 올리지 않는다.</p>
+<p>```powershell python .ai/tools/aidd.py development-check --change CHG-001 python .ai/tools/aidd.py release-check --release REL-001 ```</p>
+<h2 id="병합-영향-대응">병합 영향 대응</h2>
+<p>병합 후 생성된 MRG 레코드의 영향 모듈, 충돌 해결 근거와 추가 테스트 결정을 기록한다. 필요한 재검토·재테스트는 담당자 없이 MRC로 남기고, PM·관리자의 오프라인 지시 뒤 실제 수행자·시각·결과·증거만 완료 기록에 남긴다.</p>
+<ol><li>post-merge 훅이 만든 MRG ID를 확인한다.</li><li>양쪽 부모와 결과를 비교한다.</li><li>assess-merge로 모듈·메모·추가 테스트 결정을 기록한다.</li><li>add-merge-recheck으로 릴리스 차단 여부와 대상 모듈·TC를 기록하되 담당자는 배정하지 않는다.</li><li>필요한 재검토·회귀 테스트를 실행하고 EVD를 연결한 뒤 complete-merge-recheck으로 실제 수행 결과를 남긴다.</li></ol>
+<h2 id="장애-복구">장애 복구</h2>
+<p>검증 실패 시 오류가 가리키는 정본을 수정하고 재생성한다. 정본 JSON이 손상되면 Git의 마지막 정상 커밋과 변경 기록을 비교해 복구하며 생성 문서에서 역으로 덮어쓰지 않는다.</p>
+<ol><li>현재 변경과 오류를 보존한다.</li><li>UTF-8 BOM·JSON 구문·끊어진 ID·오래된 생성 문서 순으로 확인한다.</li><li>가장 작은 정본 수정을 적용한다.</li><li>전체 검증과 관련 회귀 테스트를 다시 실행한다.</li></ol>
+<h2 id="운영자-가이드-런북-공통-항목">운영자 가이드·런북 공통 항목</h2>
+<h3 id="시작-전-확인-중단-조건">시작 전 확인·중단 조건</h3>
+<p>미작성 — 이 항목은 프로젝트 문서 포맷에 합의되었으나 확인된 정본 근거가 없습니다. OI로 확인하고 현행화하세요.</p>
+<h3 id="절차-확인점-재실행-안전성">절차·확인점·재실행 안전성</h3>
+<p>미작성 — 이 항목은 프로젝트 문서 포맷에 합의되었으나 확인된 정본 근거가 없습니다. OI로 확인하고 현행화하세요.</p>
+<h3 id="복구-롤백-에스컬레이션">복구·롤백·에스컬레이션</h3>
+<p>미작성 — 이 항목은 프로젝트 문서 포맷에 합의되었으나 확인된 정본 근거가 없습니다. OI로 확인하고 현행화하세요.</p></article></section><section class="delivery-page" data-page id="doc-release-readiness-md" hidden><article><div class="source-meta review-only"><span>원본 project/docs/generated/release-readiness.md</span></div><h1 id="출시-준비도">출시 준비도</h1>
+<h2 id="rel-001-기반-구조-0-1">REL-001 — 기반 구조 0.1</h2>
+<ul><li>기록된 상태: `계획됨`</li><li>계산된 출시 준비도: `차단됨`</li><li>목표일: -</li><li>전달 프로필: DLP-001</li><li>출시 화면: -</li><li>출시 매뉴얼: -</li><li>변경 사항: CHG-001, CHG-002, CHG-003, CHG-004, CHG-005, CHG-006, CHG-007, CHG-008</li><li>필수 테스트: TC-001, TC-002, TC-003, TC-004, TC-005, TC-006, TC-007, TC-008, TC-009, TC-010, TC-011, TC-012, TC-013, TC-014, TC-015, TC-016, TC-017, TC-018, TC-019, TC-020, TC-021, TC-022</li><li>출시 여부 결정: -</li><li>롤백: 도입 커밋을 되돌리고 내보낸 정본 레코드를 보존한다.</li></ul>
+<h3 id="차단-요소">차단 요소</h3>
+<ul><li>TC-004 상태가 미실행입니다</li><li>TC-017 상태가 미실행입니다</li><li>TC-020 상태가 실패입니다</li><li>CHG-001 상태가 진행 중입니다</li><li>CHG-002 상태가 진행 중입니다</li><li>CHG-003 상태가 진행 중입니다</li><li>CHG-004 상태가 진행 중입니다</li><li>CHG-005 상태가 진행 중입니다</li><li>CHG-006 상태가 진행 중입니다</li><li>CHG-007 상태가 진행 중입니다</li><li>CHG-008 상태가 진행 중입니다</li><li>RSK-001는 수용되지 않은 릴리스 차단 수준 위험입니다</li><li>RSK-003는 수용되지 않은 릴리스 차단 수준 위험입니다</li><li>RSK-004는 수용되지 않은 릴리스 차단 수준 위험입니다</li></ul></article></section><section class="delivery-page" data-page id="doc-security-guide-md" hidden><article><div class="source-meta review-only"><span>원본 project/docs/generated/security-guide.md</span></div><h1 id="aidd-보안-모델과-검증-가이드">AIDD 보안 모델과 검증 가이드</h1>
+<ul><li>대상: 보안 담당자, 개발자, 감리자</li><li>상태: `최신`</li><li>적용 범위: 저장소 기반 AIDD 프레임워크와 AI 실행 경계</li><li>관련 요구사항: REQ-014, REQ-016, REQ-017, REQ-018, REQ-025</li></ul>
+<h2 id="보호-자산과-신뢰-경계">보호 자산과 신뢰 경계</h2>
+<p>보호 자산은 고객 의도와 승인 기록, 정본 JSON, 소스·테스트, CI 설정, 비밀정보와 출시 증거다. 사용자 입력, 저장소 콘텐츠, AI 출력, 로컬 훅, CI 실행기와 외부 연동 사이를 신뢰 경계로 취급한다.</p>
+<h2 id="주요-위협">주요 위협</h2>
+<p>프롬프트 주입으로 정본 규칙을 우회하는 행위, 승인·증거 위조, 악성 훅 또는 CI 변경, 비밀정보 커밋, 생성 문서 드리프트, 권한 없는 원격 설정 변경과 공급망 변조를 검토한다.</p>
+<h2 id="필수-통제">필수 통제</h2>
+<p>최소 권한, 보호 브랜치와 승인, 불변 커밋 기반 증거, 비밀정보 외부 보관, 의존성 고정·검토, 입력을 지시가 아닌 데이터로 취급하는 규칙, 로그의 민감정보 제거와 롤백을 적용한다.</p>
+<h2 id="검증-절차">검증 절차</h2>
+<p>정본 참조 부정 테스트, 게이트 우회 테스트, AI 행동 평가, CI 필수 검사, 병합 영향 검토와 배포 프로필에 맞는 위협·장애 테스트를 수행한다. 발견사항에는 영향 ID, 증거, 결과와 개선안을 기록한다.</p></article></section></main></div>
+  </div>
+</body>
+</html>

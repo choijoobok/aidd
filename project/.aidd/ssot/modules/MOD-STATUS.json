@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "module": "MOD-STATUS",
+  "requirements": [
+    {
+      "id": "REQ-008",
+      "title": "거시·미시 상태 브리핑",
+      "statement": "프레임워크는 현재 레코드에서 전체, 모듈과 항목 수준의 진척, 위험, 차단사항, 결정과 다음 작업을 브리핑해야 한다.",
+      "rationale": "의사결정 종류에 따라 필요한 상세 수준이 다르다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "PM",
+      "modules": [
+        "MOD-STATUS"
+      ],
+      "verification": [
+        "TC-001"
+      ],
+      "acceptance_criteria": [
+        "경영진과 상세 상태 뷰를 제공한다",
+        "모듈별 필터링을 지원한다"
+      ],
+      "source": "USER-2026-09-17"
+    }
+  ]
+}

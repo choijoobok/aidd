@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "module": "MOD-DISC",
+  "requirements": [
+    {
+      "id": "REQ-004",
+      "title": "의도 발굴과 레드팀 검토",
+      "statement": "AI는 인터뷰와 반대 검토 기법을 사용해 고객이 목적, 성과, 경계, 가정, 예외, 오용 사례와 실패 방식을 명확히 하도록 도와야 한다.",
+      "rationale": "명확한 의도와 검증된 가정은 이후의 비싼 재작업을 줄인다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "제품",
+      "modules": [
+        "MOD-DISC"
+      ],
+      "verification": [
+        "TC-004"
+      ],
+      "acceptance_criteria": [
+        "모르는 내용은 추측하지 않고 기록한다",
+        "중대한 가정에 반대 검토를 수행한다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-005",
+      "title": "트레이드오프 의사결정",
+      "statement": "AI는 중요한 선택을 추천하기 전에 실행 가능한 대안의 장점, 비용, 위험, 불확실성과 가역성을 제시해야 한다.",
+      "rationale": "고객에게는 숨겨진 AI 선호가 아니라 높은 의사결정 품질이 필요하다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "제품",
+      "modules": [
+        "MOD-DISC",
+        "MOD-GOV"
+      ],
+      "verification": [
+        "TC-004"
+      ],
+      "acceptance_criteria": [
+        "추천과 고객 결정을 분리한다",
+        "결정 기록에 채택하지 않은 대안을 포함한다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-020",
+      "title": "배포·운영 환경의 조기 확인",
+      "statement": "AI는 기술 스택과 상세 설계를 확정하기 전에 고객에게 배포 위치, 실행 플랫폼, DBMS 제약, 단일·다중 인스턴스, 자동 확장, 워크로드, 가용성·복구, 상태 관리, 보안과 운영 책임을 확인해야 한다.",
+      "rationale": "배포 토폴로지와 운영 제약을 늦게 발견하면 상태·동시성·데이터·복구 설계를 광범위하게 다시 해야 한다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "제품·아키텍처·인프라",
+      "modules": [
+        "MOD-DISC",
+        "MOD-ARCH",
+        "MOD-STATUS"
+      ],
+      "verification": [
+        "TC-010"
+      ],
+      "acceptance_criteria": [
+        "DG-001이 TG-001보다 먼저 수행된다",
+        "설계를 바꾸는 환경 범주와 미결 결정이 배포 프로필에 기록된다",
+        "미정 사항에는 담당자·기한·영향이 있으며 중대한 항목은 차단된다"
+      ],
+      "source": "USER-2026-09-18"
+    }
+  ]
+}

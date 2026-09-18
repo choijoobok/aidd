@@ -17,4 +17,4 @@ description: AIDD 요구사항, 아키텍처, 코드 변경, 보안, 테스트, 
 10. 1인 프로필의 C2·C3 검토는 구현 흐름과 분리된 AI 세션 또는 Codex·Claude 교차 검토로 수행하고, 동일 맥락의 자기 검토를 독립 검토라고 주장하지 않는다. 팀 프로필은 작성자 외 활성 사람의 승인을 확인한다. 프로필 전환은 검토 이력을 삭제하거나 소급해 가장하지 않는다.
 11. Git 작성자·커미터와 `IDM` 매핑을 대조하고 미등록·중복·가상 신원과 참여자 이탈 후 활동을 찾는다. 봇과 동일인의 별칭이 사람 수나 독립 승인으로 계산되지 않는지 확인한다. Git 신원을 실제 push·PR 행위자 증거로 오인하지 않는다.
 
-검토 깊이를 선택할 때는 [references/review-matrix.md](references/review-matrix.md)를 읽는다.
+검토 깊이를 선택할 때는 [references/review-matrix.md](references/review-matrix.md)를 읽는다. 문서 정합성, 추적성, 레드팀과 병합 후 재검증은 [references/consistency-and-merge.md](references/consistency-and-merge.md)를 함께 적용한다.

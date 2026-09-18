@@ -5,13 +5,13 @@ description: 정본 레코드에서 정확한 경영진·모듈·항목 수준 A
 
 # AIDD 상태 브리핑
 
-1. 의사결정과 전체 상태는 `python tools/aidd.py status --level executive`, 협업 상태는 `python tools/aidd.py collaboration-status`, 신원 대조는 `python tools/aidd.py identity-check`, 항목 수준 추적은 `--level detail`, 모듈 상세는 `--level module --module MOD-ID`, AI 교차 평가 슬롯은 `python tools/aidd.py evaluation-status`를 실행한다. 실제 평가가 필요하면 `evaluation-prompt`와 `record-evaluation`을 사용한다.
+1. 세션 시작에는 `python .ai/tools/aidd.py status --level executive`를 실행해 짧은 현황 브리핑부터 제공한다. `MRG` 영향 평가 대기 또는 `MRC` 재검토 대기가 있으면 병합 알림을 진척과 분리해 먼저 알린다. 협업 상태는 `python .ai/tools/aidd.py collaboration-status`, 신원 대조는 `python .ai/tools/aidd.py identity-check`, 항목 수준 추적은 `--level detail`, 모듈 상세는 `--level module --module MOD-ID`, AI 교차 평가 슬롯은 `python .ai/tools/aidd.py evaluation-status`를 실행한다. 실제 평가가 필요하면 `evaluation-prompt`와 `record-evaluation`을 사용한다.
 2. 브리핑 전에 검증한다. 검증 불일치를 숨은 도구 세부사항이 아니라 프로젝트 상태 문제로 보고한다.
 3. 현재 단계, 협업 프로필·활성 사람 참여자 수·미등록 Git 신원·필요 승인 또는 AI 보증, 배포 프로필, 게이트 정책과 변경별 `GTR` 승인 현황, 구조화된 증거, 차단사항, 주요 위험과 다음 고객 결정을 먼저 제시한다. 배포 위치·DBMS·인스턴스·확장·SLO·RTO·RPO가 미정이면 설계에 미치는 영향과 결정 기한을 함께 표시한다.
 4. 증거로 완료된 작업, 진행 중인 작업, 계획된 작업과 알 수 없거나 논쟁 중인 상태를 구분한다.
 5. 진척률을 제시한다면 산정 규칙을 밝힌다. 오해를 부르는 단일 백분율보다 상태·위험별 개수를 선호한다.
 6. 기록된 배포·기술 기준선이 있으면 이후 변경을 포함하고, 적용 설계 위험과 검증 증거, `MLS`·`WRK`·`IFC`·`DPN` 기준의 다음 작업과 담당자·의존성을 제시한다.
-7. 파일 동등성 검증을 AI 행동 동등성으로, 로컬 ruleset을 원격 보호 활성화로 표현하지 않는다. 각 실행 슬롯과 원격 검증의 실제 상태를 별도로 표시한다.
+7. 병합 후 재검토는 PM·관리자의 오프라인 지시 대상이므로 대기 `MRC`에 사전 담당자를 요구하지 않는다. 완료된 `MRC`만 실제 수행자·시각·결과·증거를 표시한다. 파일 동등성 검증을 AI 행동 동등성으로, 로컬 ruleset을 원격 보호 활성화로 표현하지 않는다. 각 실행 슬롯과 원격 검증의 실제 상태를 별도로 표시한다.
 8. 포트폴리오에서 모듈, 요구사항·테스트 증거까지 추적할 수 있도록 안정적인 ID를 사용한다.
 
-대상별 내용은 [references/briefing-views.md](references/briefing-views.md)를 읽는다.
+대상별 내용은 [references/briefing-views.md](references/briefing-views.md)를 읽는다. 보류·예외·병합 후 재검증은 [references/pending-work.md](references/pending-work.md)의 별도 상태로 보고하며 완료 상태에 숨기지 않는다.

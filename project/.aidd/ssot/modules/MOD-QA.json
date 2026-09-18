@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "module": "MOD-QA",
+  "requirements": [
+    {
+      "id": "REQ-018",
+      "title": "증거 기반 출시와 운영",
+      "statement": "프레임워크는 연결된 테스트, 보안, 마이그레이션, 롤백, 문서와 운영 증거로 릴리스 준비도를 판단하고 장애·사용 학습을 변경 레코드로 환류해야 한다.",
+      "rationale": "완료 주장은 증거가 있어야 하며 출시 후에도 생애주기가 학습해야 한다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "릴리스 관리",
+      "modules": [
+        "MOD-QA",
+        "MOD-DELIVERY",
+        "MOD-CHG"
+      ],
+      "verification": [
+        "TC-001"
+      ],
+      "acceptance_criteria": [
+        "릴리스 준비도가 차단사항을 식별한다",
+        "운영 학습으로 추적 가능한 변경을 만들 수 있다"
+      ],
+      "source": "USER-2026-09-17"
+    }
+  ]
+}

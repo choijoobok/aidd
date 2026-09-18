@@ -3,3 +3,7 @@ __pycache__/
 .pytest_cache/
 .codex-log/
 CLAUDE.local.md
+project/.aidd/ssot/.write.lock
+# 개인 대화 원문은 이 컴퓨터에만 보관한다. 정본·증거나 Git 이력에 포함하지 않는다.
+project/.aidd/local/
+project/chat-history/

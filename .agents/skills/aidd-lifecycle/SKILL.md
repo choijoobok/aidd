@@ -5,10 +5,10 @@ description: 정본 AIDD 레코드, 위험 비례 게이트, 변경 등급과 �
 
 # AIDD 생애주기
 
-1. 세션·프로젝트 시작에는 `python tools/aidd.py project-init`을 실행한다. 이 명령은 Git이 없을 때 `main`과 로컬 훅만 만들며, 스테이징·커밋·신원 등록은 고객 확인 없이는 하지 않는다. 이어서 AIDD 레코드가 있으면 `status --level executive`, `collaboration-status`, `identity-check`와 `validate`를 실행한다.
+1. 세션·프로젝트 시작에는 `python .ai/tools/aidd.py project-init`을 실행한다. 이 명령은 Git이 없을 때 `main`과 로컬 훅만 만들며, 스테이징·커밋·신원 등록은 고객 확인 없이는 하지 않는다. 이어서 AIDD 레코드가 있으면 `status --level executive`, `collaboration-status`, `identity-check`와 `validate`를 실행한다.
 2. 요청을 신규 구축, 기존 시스템 모듈 추가, 기능, 결함, 장애, 리팩터링, 마이그레이션 또는 폐기로 분류한다. `CHG` ID와 C0~C3 엄격성 등급을 지정하거나 제안한다.
 3. 영향받는 성과, 요구사항, 모듈, 마일스톤·작업·인터페이스·의존성, 결정, 협업 프로필·활성 참여자, 배포 프로필, 기술 기준선, 설계 위험, 게이트 실행, 검증 증거, 승인·예외, 미결사항, 테스트, 릴리스와 가이드를 찾는다. 대화 기록만을 유일한 근거로 사용하지 않는다.
-4. 요구 안정성, 불확실성, 규제·안전, 변경 비용, 배포 빈도와 운영 책임을 근거로 예측형·적응형·혼합형 수행 경로를 선택하고 `.aidd/ssot/methodologies.json`의 채택 통제에 연결한다.
+4. 요구 안정성, 불확실성, 규제·안전, 변경 비용, 배포 빈도와 운영 책임을 근거로 예측형·적응형·혼합형 수행 경로를 선택하고 `project/.aidd/ssot/methodologies.json`의 채택 통제에 연결한다.
 5. 적용할 게이트를 유지하는 가장 작은 생애주기 경로를 선택한다. 중대한 변경은 `DG-001`로 배포·운영 맥락을 먼저 확인하고, 불명확한 의도는 `aidd-discovery`, 중요한 설계와 기술 스택·기반 게이트는 `aidd-architecture`, 구현·릴리스는 `aidd-delivery`, 독립 검증은 `aidd-assurance`, 브리핑은 `aidd-status`로 연결한다.
 6. 서로 경쟁하는 역할별 정본을 만들지 말고 관련 역할 관점을 적용한다. 각 관점이 만드는 증거를 명시한다.
 7. 범위, 우선순위, 중요한 트레이드오프, 잔여 위험과 출시 여부는 고객의 결정을 받는다. 추측하지 말고 가정과 미결사항을 기록한다.
@@ -18,4 +18,4 @@ description: 정본 AIDD 레코드, 위험 비례 게이트, 변경 등급과 �
 11. 미등록 Git 신원은 기존 참여자의 별칭, 새 사람 또는 봇인지 확인한 뒤 `collaboration-identity`로 연결한다. 이탈한 참여자의 이탈 후 새 커밋도 설명되지 않은 활동으로 처리한다. 확인 전에는 참여자를 자동 생성하지 않고 C2·C3 개발 진입과 릴리스를 차단한다. Git 신원과 실제 원격 push·PR 행위자 증거를 구분한다.
 12. 1인 프로필의 `main` C0 직접 커밋은 허용하되 C1~C3은 작업 브랜치를 권장한다. 팀 프로필에서는 새 변경마다 기본 브랜치가 아닌 작업 브랜치를 만들고 `branch-check --change CHG-ID`를 통과시킨다. 팀원 합류를 기록하기 전에도 다음 변경용 브랜치를 먼저 준비한다.
 
-생애주기 진입·종료 기준이나 변경 등급을 선택할 때는 [references/gates.md](references/gates.md)를 읽는다.
+생애주기 진입·종료 기준이나 변경 등급을 선택할 때는 [references/gates.md](references/gates.md)를 읽는다. 프로젝트 착수, 단계 전환과 변경 통제는 [references/kickoff-and-change.md](references/kickoff-and-change.md)를 함께 적용한다.

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "approvals": [
+    {
+      "id": "APR-001",
+      "subject_type": "gate-run",
+      "subject": "GTR-016",
+      "decision": "approved",
+      "approver": "HUM-001",
+      "role": "고객·프로젝트 소유자",
+      "decided_at": "2026-09-18T18:13:18+09:00",
+      "comment": "사용자가 대화에서 GTR-016 승인을 명시했다."
+    }
+  ]
+}

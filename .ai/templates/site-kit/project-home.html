@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{PROJECT_NAME}} · 프로젝트 안내</title>
+  <style>
+    :root { color-scheme: light; --ink:#172033; --muted:#59667d; --line:#d8dfeb; --brand:#3156d3; --surface:#f6f8fc; }
+    * { box-sizing:border-box; } body { margin:0; color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--surface); line-height:1.6; }
+    .top { position:sticky; top:0; z-index:1; background:#fff; border-bottom:1px solid var(--line); }
+    .bar { max-width:1120px; margin:auto; padding:.85rem 1.25rem; display:flex; align-items:center; gap:.7rem; }
+    .brand { display:inline-flex; align-items:center; gap:.6rem; color:var(--ink); font-weight:750; text-decoration:none; }
+    .logo { display:grid; place-items:center; width:2rem; height:2rem; border-radius:.55rem; background:var(--brand); color:#fff; font-weight:800; }
+    main { max-width:1120px; margin:auto; padding:3.5rem 1.25rem 4rem; } .eyebrow { color:var(--brand); font-weight:700; letter-spacing:.06em; }
+    h1 { max-width:16ch; margin:.5rem 0 1rem; font-size:clamp(2rem,5vw,4rem); line-height:1.12; } h2 { margin-top:0; font-size:1.2rem; }
+    .lead { max-width:68ch; color:var(--muted); font-size:1.1rem; } .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(235px,1fr)); gap:1rem; margin-top:2rem; }
+    section, .card { background:#fff; border:1px solid var(--line); border-radius:1rem; padding:1.35rem; box-shadow:0 8px 24px rgba(28,45,80,.05); }
+    .content { white-space:pre-line; } ul { margin:.45rem 0 0; padding-left:1.25rem; } a { color:var(--brand); } .documents a { text-decoration:none; }
+    footer { max-width:1120px; margin:auto; padding:0 1.25rem 2rem; color:var(--muted); font-size:.9rem; }
+  </style>
+</head>
+<body>
+  <header class="top"><div class="bar"><a class="brand" href="index.html" aria-label="{{PROJECT_NAME}} 홈"><span class="logo" aria-hidden="true">A</span><span>{{PROJECT_NAME}}</span></a></div></header>
+  <main>
+    <p class="eyebrow">PROJECT HOME</p>
+    <h1>{{PROJECT_NAME}}</h1>
+    <p class="lead">{{INTRODUCTION}}</p>
+    <div class="grid">
+      <section><h2>프로젝트 개요</h2><div class="content">{{OVERVIEW}}</div></section>
+      <section><h2>목적과 의도</h2><div class="content">{{INTENT}}</div></section>
+      <section><h2>주요 기능</h2><ul>{{KEY_FEATURES}}</ul></section>
+      <section class="documents"><h2>생성 문서 사이트</h2><p>아래 사이트는 인터넷 연결 없이 문서 트리와 본문 검색으로 열람할 수 있습니다.</p><ul>{{DOCUMENTS}}</ul></section>
+    </div>
+  </main>
+  <footer>이 사이트는 프로젝트 정본에서 생성되었습니다. 좌측 상단 로고 또는 프로젝트명을 누르면 홈으로 돌아옵니다.</footer>
+</body>
+</html>

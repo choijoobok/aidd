@@ -1,0 +1,7 @@
+{
+  "hookEventName": "PreToolUse",
+  "toolName": "PowerShell",
+  "toolInput": {
+    "command": "git reset --hard HEAD~1"
+  }
+}

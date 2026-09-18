@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>{{SITE_TITLE}}</title>
+  <link rel="stylesheet" href="../assets/guide.css">
+  <link rel="stylesheet" href="../assets/delivery.css">
+  <script src="../assets/icons.js" defer></script>
+  <script src="../assets/delivery.js" defer></script>
+</head>
+<body class="review">
+  <header class="topbar">
+    <button class="icon-btn menu-toggle" data-menu-toggle type="button" aria-label="목차 열기" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button>
+    <a class="brand" href="../index.html" aria-label="{{PROJECT_NAME}} 홈"><span class="logo"><svg class="icon sm"><use href="#i-book-open"/></svg></span><span>{{SITE_TITLE}}</span></a>
+    <div class="current-path" data-current-path aria-live="polite"></div><div class="spacer"></div>
+    <div class="site-actions">
+      <button data-print-page type="button">현재 문서 인쇄·PDF</button>
+      <div class="ui-settings"><button class="icon-btn" data-ui-settings-toggle type="button" aria-label="보기 설정" aria-expanded="false"><svg class="icon"><use href="#i-settings"/></svg></button>
+        <div class="ui-settings-panel" data-ui-settings-panel hidden>
+          <label>본문 너비<select data-ui-width><option value="standard">읽기 편한 너비</option><option value="full">화면 100%</option></select></label>
+          <label>글꼴<select data-ui-font><option value="system">시스템 기본</option><option value="gothic">고딕</option><option value="serif">명조</option><option value="mono">고정폭</option></select></label>
+          <label>글자 크기<select data-ui-size><option value="90">90%</option><option value="100">100%</option><option value="110">110%</option><option value="120">120%</option><option value="130">130%</option><option value="140">140%</option><option value="150">150%</option></select></label>
+          <button data-ui-reset type="button">기본값 복원</button>
+        </div>
+      </div>
+      <button class="icon-btn" data-theme-toggle type="button" aria-label="테마 전환"><svg class="icon theme-icon-dark"><use href="#i-sun"/></svg><svg class="icon theme-icon-light" hidden><use href="#i-moon"/></svg></button>
+    </div>
+  </header>
+  <div class="sidebar-backdrop"></div>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-head">문서 목차</div>
+      <div class="sb-filter"><input data-tree-filter type="search" placeholder="제목·본문 검색"></div>
+      <nav class="tree"><ul>{{TREE}}</ul></nav>
+    </aside>
+    <div class="main-wrap"><main class="content">{{PAGES}}</main></div>
+  </div>
+</body>
+</html>

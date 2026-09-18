@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "module": "MOD-ARCH",
+  "requirements": [
+    {
+      "id": "REQ-009",
+      "title": "모듈 단위 수행",
+      "statement": "프레임워크는 공통 인터페이스와 릴리스 의존성을 보존하면서 모듈을 독립적으로 계획·개발·추적하고, 모듈별 정본 조각과 생성 명세로 분석할 수 있어야 한다.",
+      "rationale": "대규모 시스템은 전체 일관성을 잃지 않으면서 병렬 진행할 수 있어야 한다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "아키텍처",
+      "modules": [
+        "MOD-ARCH",
+        "MOD-STATUS"
+      ],
+      "verification": [
+        "TC-001"
+      ],
+      "acceptance_criteria": [
+        "각 모듈에 범위, 상태, 의존성과 요구사항 링크가 있다",
+        "상태를 단일 모듈로 좁힐 수 있다",
+        "요구사항은 하나의 모듈 정본 조각에만 저장되고 다중 모듈 영향은 ID 링크로 유지된다",
+        "신규 모듈은 기존 모듈의 요구사항을 다시 쓰지 않고 카탈로그·빈 정본 조각·생성 명세를 추가할 수 있다"
+      ],
+      "source": "USER-2026-09-17; USER-2026-09-18"
+    },
+    {
+      "id": "REQ-011",
+      "title": "UI와 개발 표준 우선",
+      "statement": "제품 개발에서는 성과·요구사항·품질 속성과 제약을 근거로 기술 스택을 먼저 선정하고, 기능 규모 구현 전에 AI가 UI 레이아웃·상호작용 패턴, 공통 컴포넌트, 아키텍처 규칙, 코딩 표준과 개발 지침을 확정해야 한다.",
+      "rationale": "공통 기반은 분산된 AI·사람 작업의 일관성을 보장한다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "아키텍처",
+      "modules": [
+        "MOD-ARCH",
+        "MOD-DELIVERY"
+      ],
+      "verification": [
+        "TC-007",
+        "TC-008"
+      ],
+      "acceptance_criteria": [
+        "기술 선택 전에 품질 속성과 제약이 정의된다",
+        "현행 유지안을 포함한 대안 비교와 ADR을 거쳐 기술 기준선을 승인한다",
+        "기능 개발 게이트에 UI·개발 기반 준비도가 포함된다",
+        "예외에는 기록된 결정이 필요하다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-016",
+      "title": "설계 단계의 보안·데이터·인프라·운영",
+      "statement": "프레임워크는 설계와 검증에서 위협, 개인정보, 데이터 소유권, 마이그레이션, 복구, 인프라, 관측성, 배포와 운영 준비도를 다뤄야 한다.",
+      "rationale": "비기능 위험을 출시 직전까지 미루면 비용이 크게 증가한다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "품질 보증",
+      "modules": [
+        "MOD-ARCH",
+        "MOD-QA",
+        "MOD-DELIVERY"
+      ],
+      "verification": [
+        "TC-001"
+      ],
+      "acceptance_criteria": [
+        "관련 관점을 명시적으로 승인하거나 적용 대상 아님으로 기록한다",
+        "치명적 잔여 위험에는 고객 수용이 필요하다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-021",
+      "title": "동시성·트랜잭션·성능 위험의 설계 예방",
+      "statement": "AI는 설계 단계부터 트랜잭션 경계, 프록시 AOP, 스레드 전환, 다중 인스턴스 경쟁, 재시도·중복, 스케줄 작업, 자원 병목과 장애 전파 위험을 식별하고 통제와 검증 시나리오를 정의해야 한다.",
+      "rationale": "단일 스레드 기능 테스트만으로는 운영 환경의 데이터 손상, 중복 처리, 교착, 풀 고갈과 연쇄 장애를 예방할 수 없다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "아키텍처·품질 보증",
+      "modules": [
+        "MOD-ARCH",
+        "MOD-QA",
+        "MOD-DELIVERY"
+      ],
+      "verification": [
+        "TC-011"
+      ],
+      "acceptance_criteria": [
+        "핵심 업무에 측정 가능한 동시성 불변 조건이 있다",
+        "적용되는 위험 패턴마다 설계 통제와 부정·경쟁·부하·장애 검증이 연결된다",
+        "로컬 락이나 스레드 컨텍스트를 다중 인스턴스 보장으로 오인하지 않는다"
+      ],
+      "source": "USER-2026-09-18"
+    },
+    {
+      "id": "REQ-031",
+      "title": "프로젝트별 개발 기반 정본",
+      "statement": "프레임워크는 기술 스택과 분리된 메타 구조로 개발 표준, 골든 패스와 기한 있는 예외를 관리하고 프로젝트가 선택한 기술 기준선에 맞는 규칙과 실행 검증을 연결해야 한다.",
+      "rationale": "기술 규칙을 템플릿에 고정하지 않으면서도 어느 AI와 개발자가 참여해도 동일한 품질 기준을 적용해야 한다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "아키텍처·개발·품질 보증",
+      "modules": ["MOD-ARCH", "MOD-DOC", "MOD-DELIVERY", "MOD-QA"],
+      "verification": ["TC-024"],
+      "acceptance_criteria": [
+        "STD, GPH, EXC 레코드가 안정 ID와 기술 기준선, 모듈, 요구사항, 검증을 연결한다",
+        "계약형과 정책형 표준을 구분하고 기술 스택 구체 규칙은 프로젝트 기준선에서 작성한다",
+        "예외는 승인, 담당자, 만료일과 보완 통제 없이는 유효하지 않다"
+      ],
+      "source": "USER-2026-09-18"
+    },
+    {
+      "id": "REQ-032",
+      "title": "모듈별 UI·공통 컴포넌트 정본",
+      "statement": "프레임워크는 UI 기준선, 패턴, 공통 컴포넌트와 모듈별 화면·매뉴얼을 구조화된 정본으로 관리하고 화면 정의서와 검토용 목업을 결정적으로 생성해야 한다.",
+      "rationale": "사용자와 합의한 UI 품질을 모듈과 AI 도구에 걸쳐 재사용하고 운영 중 새 모듈에도 적용해야 한다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "제품·UX·아키텍처",
+      "modules": ["MOD-ARCH", "MOD-DOC", "MOD-DELIVERY", "MOD-QA"],
+      "verification": ["TC-025"],
+      "acceptance_criteria": [
+        "UXB, UIP, CMP, SCR, MAN 참조와 상태 전이가 검증된다",
+        "UI가 없는 모듈은 UI 조각 없이 정상이고 필요할 때 빈 조각을 초기화할 수 있다",
+        "목업은 실제 화면 증거와 구분되고 출시용 매뉴얼은 검증 증거를 요구한다"
+      ],
+      "source": "USER-2026-09-18"
+    }
+  ]
+}

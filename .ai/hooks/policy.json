@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "generated_roots": [
+    "project/docs/generated",
+    "build/deliverables",
+    ".agents/skills",
+    ".claude/skills"
+  ],
+  "canonical_roots": [
+    "project/.aidd/ssot",
+    ".ai"
+  ],
+  "destructive_command_patterns": [
+    "\\bgit\\s+reset\\s+--hard\\b",
+    "\\bgit\\s+clean\\s+-[^\\s]*[fdx]",
+    "\\bgit\\s+push\\b[^\\r\\n]*(--force|-f\\b)",
+    "\\brm\\s+-[^\\s]*r[^\\s]*f\\b",
+    "\\bRemove-Item\\b[^\\r\\n]*-(?:Recurse|Force)\\b",
+    "\\b(?:DROP|TRUNCATE)\\s+(?:DATABASE|SCHEMA|TABLE)\\b",
+    "\\bterraform\\s+(?:apply|destroy)\\b",
+    "\\b(?:npm|pnpm|yarn)\\s+publish\\b"
+  ],
+  "shell_write_patterns": [
+    "(?:>|>>|Out-File|Set-Content|Add-Content|Copy-Item|Move-Item|tee|New-Item|\\bsed\\s+-[^\\r\\n]*i|\\b(?:cp|mv|touch)\\b)"
+  ]
+}

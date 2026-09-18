@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "module": "MOD-CHG",
+  "requirements": [
+    {
+      "id": "REQ-010",
+      "title": "기존 시스템과 유지보수 변경",
+      "statement": "프레임워크는 현재 기준선, 영향, 마이그레이션, 롤백과 회귀 추적을 포함해 기존 시스템의 모듈 추가·기능 변경·결함 수정을 지원해야 한다.",
+      "rationale": "초기 출시 후에도 생애주기가 계속되어야 한다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "변경 관리",
+      "modules": [
+        "MOD-CHG",
+        "MOD-ARCH",
+        "MOD-QA"
+      ],
+      "verification": [
+        "TC-005"
+      ],
+      "acceptance_criteria": [
+        "모든 변경이 유형과 영향 산출물을 선언한다",
+        "기존 시스템 충돌을 불일치로 기록한다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-012",
+      "title": "병합 영향 이력",
+      "statement": "프레임워크는 Git 병합 맥락, 변경 파일, 영향 모듈, 충돌 해결 기록과 추가 회귀 테스트 결정을 기록하고, 필요한 병합 후 재검토·재테스트의 완료 이력을 추적해야 한다.",
+      "rationale": "기계적으로 성공한 팀 병합도 기존 가정을 무효화할 수 있다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "DevOps",
+      "modules": [
+        "MOD-CHG",
+        "MOD-QA"
+      ],
+      "verification": [
+        "TC-006"
+      ],
+      "acceptance_criteria": [
+        "병합 커밋에서 영향 레코드를 생성할 수 있다",
+        "평가하지 않은 병합과 대기 중인 병합 후 재검토가 세션 브리핑에 표시된다",
+        "재검토 완료 시 실제 수행자·시각·결과·증거를 기록하고 필수 미완료 항목은 릴리스를 차단한다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-027",
+      "title": "기본 브랜치 보호와 필수 CI 검사",
+      "statement": "프레임워크는 main 브랜치의 Pull Request, 승인, 필수 AIDD 검사와 강제 푸시 방지 규칙을 버전 관리하고 원격 활성화 상태를 검증해야 한다.",
+      "rationale": "워크플로 파일만 존재하고 필수 검사로 연결되지 않으면 팀원이 검증을 우회할 수 있다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "DevOps·저장소 관리자",
+      "modules": [
+        "MOD-CHG",
+        "MOD-QA"
+      ],
+      "verification": [
+        "TC-019",
+        "TC-020"
+      ],
+      "acceptance_criteria": [
+        "보호 규칙의 필수 검사 이름이 CI 작업 이름과 일치한다",
+        "main 직접 삭제·강제 푸시와 미승인 병합을 차단한다",
+        "원격 조회 증거 없이 활성화 완료를 선언하지 않는다"
+      ],
+      "source": "AUDIT-2026-09-18"
+    }
+  ]
+}

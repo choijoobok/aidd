@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>사용자 가이드</title>
+  <link rel="stylesheet" href="../assets/guide.css">
+  <link rel="stylesheet" href="../assets/delivery.css">
+  <script src="../assets/icons.js" defer></script>
+  <script src="../assets/delivery.js" defer></script>
+</head>
+<body class="review">
+  <header class="topbar">
+    <button class="icon-btn menu-toggle" data-menu-toggle type="button" aria-label="목차 열기" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button>
+    <a class="brand" href="../index.html" aria-label="AI 주도 개발·운영 프레임워크 홈"><span class="logo"><svg class="icon sm"><use href="#i-book-open"/></svg></span><span>사용자 가이드</span></a>
+    <div class="current-path" data-current-path aria-live="polite"></div><div class="spacer"></div>
+    <div class="site-actions">
+      <button data-print-page type="button">현재 문서 인쇄·PDF</button>
+      <div class="ui-settings"><button class="icon-btn" data-ui-settings-toggle type="button" aria-label="보기 설정" aria-expanded="false"><svg class="icon"><use href="#i-settings"/></svg></button>
+        <div class="ui-settings-panel" data-ui-settings-panel hidden>
+          <label>본문 너비<select data-ui-width><option value="standard">읽기 편한 너비</option><option value="full">화면 100%</option></select></label>
+          <label>글꼴<select data-ui-font><option value="system">시스템 기본</option><option value="gothic">고딕</option><option value="serif">명조</option><option value="mono">고정폭</option></select></label>
+          <label>글자 크기<select data-ui-size><option value="90">90%</option><option value="100">100%</option><option value="110">110%</option><option value="120">120%</option><option value="130">130%</option><option value="140">140%</option><option value="150">150%</option></select></label>
+          <button data-ui-reset type="button">기본값 복원</button>
+        </div>
+      </div>
+      <button class="icon-btn" data-theme-toggle type="button" aria-label="테마 전환"><svg class="icon theme-icon-dark"><use href="#i-sun"/></svg><svg class="icon theme-icon-light" hidden><use href="#i-moon"/></svg></button>
+    </div>
+  </header>
+  <div class="sidebar-backdrop"></div>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-head">문서 목차</div>
+      <div class="sb-filter"><input data-tree-filter type="search" placeholder="제목·본문 검색"></div>
+      <nav class="tree"><ul><li class="tree-branch" data-tree-depth="0"><button class="tnode group" data-tree-group type="button" aria-expanded="true"><svg class="icon chev"><use href="#i-chevron-down"/></svg><span class="label">업무·화면 안내</span></button><ul><li><button class="tnode empty-chev" data-page-link="doc-manuals-index-md" data-page-path="사용자 가이드 › 업무·화면 안내 › 모듈별 사용자 매뉴얼 카탈로그" type="button"><span class="label">모듈별 사용자 매뉴얼 카탈로그</span></button></li><li><button class="tnode empty-chev" data-page-link="doc-user-manual-md" data-page-path="사용자 가이드 › 업무·화면 안내 › AIDD 사용자 매뉴얼" type="button"><span class="label">AIDD 사용자 매뉴얼</span></button></li></ul></li></ul></nav>
+    </aside>
+    <div class="main-wrap"><main class="content"><section class="delivery-page" data-page id="doc-manuals-index-md" hidden><article><div class="source-meta review-only"><span>원본 project/docs/generated/manuals/index.md</span></div><h1 id="모듈별-사용자-매뉴얼-카탈로그">모듈별 사용자 매뉴얼 카탈로그</h1>
+<p>등록된 모듈별 사용자 매뉴얼이 없습니다.</p></article></section><section class="delivery-page" data-page id="doc-user-manual-md" hidden><article><div class="source-meta review-only"><span>원본 project/docs/generated/user-manual.md</span></div><h1 id="aidd-사용자-매뉴얼">AIDD 사용자 매뉴얼</h1>
+<ul><li>대상: 제품 책임자와 프로젝트 참여자</li><li>상태: `최신`</li><li>적용 범위: 요청 등록, 결정, 상태 확인, 출시 승인</li><li>관련 요구사항: REQ-004, REQ-005, REQ-007, REQ-008, REQ-015, REQ-025</li></ul>
+<h2 id="새-프로젝트-또는-변경-시작">새 프로젝트 또는 변경 시작</h2>
+<p>원하는 기능보다 해결할 문제, 대상 사용자, 기대 성과와 하지 않을 범위를 먼저 설명한다.</p>
+<ol><li>문제와 기대 성과를 제시한다.</li><li>AI가 제시한 가정과 미결사항을 확인한다.</li><li>중요한 트레이드오프의 장단점과 가역성을 비교한다.</li><li>선택 결과가 ADR·REQ·CHG ID로 기록되었는지 확인한다.</li></ol>
+<h2 id="설계와-개발-승인">설계와 개발 승인</h2>
+<p>배포 환경과 품질 제약을 먼저 정하고 기술 스택과 개발 기반을 순서대로 승인한다. 모르는 값은 추측하지 않고 담당자·기한·영향이 있는 미결사항으로 남긴다.</p>
+<h2 id="진척-확인">진척 확인</h2>
+<p>세션 시작에는 경영진 뷰로 짧게 브리핑하고, 평가 대기 병합과 대기 MRC를 일반 진척과 분리해 먼저 확인한다. MRC는 사전 담당자 없이 PM·관리자가 오프라인으로 조율하며 완료 뒤 실제 수행 결과를 기록한다.</p>
+<p>```powershell python .ai/tools/aidd.py status --level executive python .ai/tools/aidd.py status --level detail python .ai/tools/aidd.py status --level module --module MOD-AI ```</p>
+<h2 id="결정-취소와-변경">결정 취소와 변경</h2>
+<p>기존 결정을 삭제하지 않는다. 새 ADR이 이전 ADR을 대체하도록 연결하고 영향받는 요구사항·작업·테스트·롤백을 갱신한다.</p>
+<h2 id="사용자-매뉴얼-공통-항목">사용자 매뉴얼 공통 항목</h2>
+<h3 id="시작-전-준비와-권한">시작 전 준비와 권한</h3>
+<p>미작성 — 이 항목은 프로젝트 문서 포맷에 합의되었으나 확인된 정본 근거가 없습니다. OI로 확인하고 현행화하세요.</p>
+<h3 id="업무-절차와-예상-결과">업무 절차와 예상 결과</h3>
+<p>미작성 — 이 항목은 프로젝트 문서 포맷에 합의되었으나 확인된 정본 근거가 없습니다. OI로 확인하고 현행화하세요.</p>
+<h3 id="안-될-때와-지원-경로">안 될 때와 지원 경로</h3>
+<p>미작성 — 이 항목은 프로젝트 문서 포맷에 합의되었으나 확인된 정본 근거가 없습니다. OI로 확인하고 현행화하세요.</p></article></section></main></div>
+  </div>
+</body>
+</html>

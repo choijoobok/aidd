@@ -1,0 +1,3 @@
+interface:
+  display_name: "AIDD UI Prototype"
+  short_description: "Generate reviewable prototypes from approved UI SSOT"

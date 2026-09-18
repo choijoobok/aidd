@@ -16,4 +16,4 @@ description: 명시적인 트레이드오프와 ADR을 사용해 모듈형 애�
 9. 관련된 보안, 개인정보, 데이터, DBA, 인프라, SRE, 운영과 감리 관점을 적용한다. 관점을 조용히 생략하지 말고 적용 대상이 아니면 이유를 기록한다.
 10. 적용되는 `DG`·`TG`마다 변경별 `GTR` 실행을 만들고 기준별 `EVD`, 승인 또는 기한 있는 예외를 연결한다. 정본 아키텍처·기술 기준선과 추적 링크를 갱신하고 인계 전에 생성·검증한다.
 
-설계 증거 체크리스트는 [references/design-checks.md](references/design-checks.md)를 읽는다.
+설계 증거 체크리스트는 [references/design-checks.md](references/design-checks.md)를 읽는다. `STD`·`UXB`·`UIP`·`CMP`·`GPH`·`EXC` 기반을 설계하거나 변경할 때는 [references/development-foundation.md](references/development-foundation.md)를 함께 적용한다.

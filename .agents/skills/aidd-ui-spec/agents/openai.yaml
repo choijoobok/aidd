@@ -1,0 +1,3 @@
+interface:
+  display_name: "AIDD UI Spec"
+  short_description: "Define module screens and manual records from SSOT"

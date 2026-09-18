@@ -1,0 +1,313 @@
+{
+  "schema_version": 1,
+  "module": "MOD-GOV",
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "title": "프로젝트 정본 레코드",
+      "statement": "프레임워크는 의도, 요구사항, 설계, 결정, 위험, 작업, 테스트, 릴리스와 유지보수 이력을 기계가 읽을 수 있는 정본 레코드로 관리해야 한다.",
+      "rationale": "정규화된 하나의 정본은 서술형 산출물 사이의 불일치를 방지한다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "거버넌스",
+      "modules": [
+        "MOD-GOV"
+      ],
+      "verification": [
+        "TC-001"
+      ],
+      "acceptance_criteria": [
+        "모든 정본 레코드는 파싱 가능하고 안정적인 ID가 있다",
+        "레코드 간 참조가 검증된다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-003",
+      "title": "생애주기 전체 추적성",
+      "statement": "프레임워크는 변경되지 않는 식별자로 성과, 요구사항, 모듈, 결정, 변경, 테스트, 릴리스와 병합 영향을 추적해야 한다.",
+      "rationale": "생애주기 전체 연결이 없으면 영향과 완전성을 판단할 수 없다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "감리",
+      "modules": [
+        "MOD-GOV",
+        "MOD-QA"
+      ],
+      "verification": [
+        "TC-001"
+      ],
+      "acceptance_criteria": [
+        "알 수 없는 참조는 검증에 실패한다",
+        "추적성 매트릭스가 생성된다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-006",
+      "title": "가역적인 결정과 학습",
+      "statement": "프레임워크는 실수를 맥락 손실 없이 되돌릴 수 있도록 의사결정 이력, 롤백 경로, 대체 관계와 교훈을 보존해야 한다.",
+      "rationale": "안전한 실험에는 되돌리기와 조직 기억이 필요하다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "거버넌스",
+      "modules": [
+        "MOD-GOV",
+        "MOD-CHG"
+      ],
+      "verification": [
+        "TC-005"
+      ],
+      "acceptance_criteria": [
+        "승인된 결정에 결과와 롤백 지침이 있다",
+        "대체된 레코드를 보존한다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-007",
+      "title": "미결사항 추적",
+      "statement": "프레임워크는 해결되지 않은 질문, 담당자, 기한, 차단 영향과 해결 링크를 기록해야 한다.",
+      "rationale": "답하지 않은 질문은 의도적으로 해결할 때까지 보여야 한다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "PM",
+      "modules": [
+        "MOD-GOV",
+        "MOD-STATUS"
+      ],
+      "verification": [
+        "TC-001"
+      ],
+      "acceptance_criteria": [
+        "차단 미결사항이 릴리스 준비도에 표시된다",
+        "종료한 항목에는 해결 내용이 있다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-014",
+      "title": "다분야 역할 관점",
+      "statement": "프레임워크는 관련될 때 제품, 분석, 아키텍처, 개발, QA, 감리, 보안, 인프라, 데이터, 데이터베이스, DevOps, 운영과 접근성 관점을 적용해야 한다.",
+      "rationale": "생애주기 전체 품질에는 소스 코드 밖의 관점이 필요하다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "거버넌스",
+      "modules": [
+        "MOD-GOV",
+        "MOD-ARCH",
+        "MOD-QA",
+        "MOD-DELIVERY"
+      ],
+      "verification": [
+        "TC-001"
+      ],
+      "acceptance_criteria": [
+        "아키텍처가 모든 필수 관점을 정의한다",
+        "게이트가 증거 담당을 명시한다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-017",
+      "title": "위험 비례 품질 게이트",
+      "statement": "프레임워크는 필수 안전·추적 통제를 유지하면서 변경 위험에 맞춰 분석, 검토와 증거 수준을 조정해야 한다.",
+      "rationale": "일률적인 중량 프로세스는 작은 작업을 늦추고, 게이트가 없으면 큰 작업을 위험하게 만든다.",
+      "priority": "must",
+      "status": "specified",
+      "owner": "감리",
+      "modules": [
+        "MOD-GOV",
+        "MOD-QA"
+      ],
+      "verification": [
+        "TC-001"
+      ],
+      "acceptance_criteria": [
+        "모든 변경에 엄격성 등급이 있다",
+        "높은 위험 등급일수록 강한 증거가 필요하다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-019",
+      "title": "상황 적응형 방법론 근거",
+      "statement": "프레임워크는 전통적·적응형·운영·AI 주도 개발 방법론의 장점과 한계를 비교하고 프로젝트의 불확실성, 규제, 위험, 변경 비용과 운영 특성에 맞춰 적용할 통제를 선택해야 한다.",
+      "rationale": "하나의 방법론을 일률적으로 적용하면 작은 변경에는 과도하고 고위험 변경에는 부족할 수 있다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "거버넌스",
+      "modules": [
+        "MOD-GOV",
+        "MOD-DISC",
+        "MOD-ARCH"
+      ],
+      "verification": [
+        "TC-009"
+      ],
+      "acceptance_criteria": [
+        "전통적 방법론과 AI 주도 방법론을 동일한 기준으로 비교한다",
+        "채택한 통제가 AIDD 단계·게이트·정본 증거에 연결된다",
+        "프로젝트 특성에 따른 예측형·적응형·혼합형 수행 경로 선택 규칙이 있다"
+      ],
+      "source": "USER-2026-09-17"
+    },
+    {
+      "id": "REQ-022",
+      "title": "실행 가능한 게이트와 증거 무결성",
+      "statement": "프레임워크는 변경별 게이트 실행, 판정 기준, 증거, 승인과 예외를 구조화하고 승인되지 않았거나 증거가 없는 상태가 릴리스 준비 완료로 계산되지 않게 해야 한다.",
+      "rationale": "정책 문서와 상태 문자열만으로는 게이트 우회와 근거 없는 완료 선언을 막을 수 없다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "거버넌스·품질 보증",
+      "modules": [
+        "MOD-GOV",
+        "MOD-QA",
+        "MOD-STATUS"
+      ],
+      "verification": [
+        "TC-012",
+        "TC-013"
+      ],
+      "acceptance_criteria": [
+        "승인된 게이트의 모든 통과 기준에 유효한 증거가 연결된다",
+        "증거에는 수행자·명령 또는 방법·시각·커밋·결과가 있다",
+        "미승인·거절·만료 게이트와 유효하지 않은 예외는 릴리스를 차단한다",
+        "알 수 없는 정본 참조와 증거 없는 통과 상태는 검증에 실패한다"
+      ],
+      "source": "AUDIT-2026-09-18"
+    },
+    {
+      "id": "REQ-024",
+      "title": "모듈 단위 상세 실행 계획과 진척 추적",
+      "statement": "프레임워크는 모듈별 마일스톤, 작업, 인터페이스와 전달 의존성을 요구사항·변경·증거에 연결해 독립적으로 계획하고 브리핑해야 한다.",
+      "rationale": "모듈의 단일 상태만으로는 실제 남은 작업, 차단 관계와 통합 영향을 판단할 수 없다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "PM·아키텍처",
+      "modules": [
+        "MOD-GOV",
+        "MOD-STATUS"
+      ],
+      "verification": [
+        "TC-015"
+      ],
+      "acceptance_criteria": [
+        "작업은 단일 담당 모듈과 변경·요구사항·인수 기준을 가진다",
+        "완료 작업은 구조화된 증거를 가진다",
+        "모듈 뷰에서 요구사항·작업·의존성을 함께 확인한다"
+      ],
+      "source": "AUDIT-2026-09-18"
+    },
+    {
+      "id": "REQ-028",
+      "title": "1인·팀 프로젝트의 가역적 협업 전환",
+      "statement": "프레임워크는 활성 사람 참여자가 1명이면 1인 프로젝트 통제를, 2명 이상이면 팀 프로젝트 통제를 적용하고 참여자 증감에 따라 양방향으로 전환하며 이력과 저장소 규칙을 함께 갱신해야 한다.",
+      "rationale": "고정된 사람 승인 규칙은 1인 프로젝트를 막거나 팀 프로젝트의 상호 검토를 약화시킨다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "PM·DevOps·품질 보증",
+      "modules": [
+        "MOD-GOV",
+        "MOD-CHG",
+        "MOD-QA",
+        "MOD-STATUS"
+      ],
+      "verification": [
+        "TC-021"
+      ],
+      "acceptance_criteria": [
+        "활성 참여자 1명은 사람 승인 0명의 1인 프로필을 적용한다",
+        "두 번째 활성 참여자가 생기면 최소 1명 승인의 팀 프로필로 전환한다",
+        "다시 1명이 되면 1인 프로필로 복귀한다",
+        "모든 참여자 변경과 프로필 전환 이력이 보존된다",
+        "현재 프로필에서 ruleset이 결정적으로 생성된다"
+      ],
+      "source": "USER-2026-09-18"
+    },
+    {
+      "id": "REQ-029",
+      "title": "Git·호스팅 신원과 협업 참여자 대조",
+      "statement": "프레임워크는 Git 작성자·커미터와 호스팅 계정을 사람 참여자 또는 봇에 명시적으로 연결하고, 설명되지 않은 신원을 자동으로 팀원으로 단정하지 않으면서 경고·고위험 변경·릴리스 통제에 반영해야 한다.",
+      "rationale": "여러 Git 아이디가 한 사람의 별칭인지 실제 미등록 팀원인지 봇인지 확인하지 않으면 1인·팀 통제와 승인 독립성을 잘못 판단할 수 있다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "PM·DevOps·품질 보증",
+      "modules": [
+        "MOD-GOV",
+        "MOD-CHG",
+        "MOD-QA",
+        "MOD-STATUS"
+      ],
+      "verification": [
+        "TC-022"
+      ],
+      "acceptance_criteria": [
+        "Git 이름과 이메일 쌍을 기존 HUM 참여자 또는 봇에 연결한다",
+        "미등록 신원만으로 참여자나 팀 프로필을 자동 생성하지 않는다",
+        "미등록 신원과 참여자 이탈 뒤의 새 커밋은 경고되고 C2·C3 개발 진입과 릴리스를 차단한다",
+        "봇 신원은 활성 사람 수에서 제외한다",
+        "Git에서 알 수 없는 실제 push·PR 행위자는 호스팅 제공자 증거와 별도로 대조한다"
+      ],
+      "source": "USER-2026-09-18"
+    },
+    {
+      "id": "REQ-030",
+      "title": "안전한 템플릿 초기화와 협업 브랜치 흐름",
+      "statement": "프레임워크는 복사한 템플릿에서 로컬 Git과 훅을 안전하게 초기화하고, 1인·팀 프로필에 맞는 기본 브랜치·작업 브랜치 흐름을 안내·검증하며 사람이 학습할 수 있는 사용 가이드를 제공해야 한다.",
+      "rationale": "자동 스테이징·커밋·신원 등록은 비밀정보와 책임자를 잘못 확정할 수 있고, 팀 전환 뒤 기본 브랜치 직접 작업은 검토 통제를 우회할 수 있다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "DevOps·PM·AI 플랫폼",
+      "modules": [
+        "MOD-GOV",
+        "MOD-AI",
+        "MOD-CHG",
+        "MOD-DOC",
+        "MOD-QA"
+      ],
+      "verification": [
+        "TC-023"
+      ],
+      "acceptance_criteria": [
+        "초기화는 local main과 훅만 만들고 자동 스테이징·커밋·신원 등록을 하지 않는다",
+        "팀 프로필에서는 기본 브랜치 직접 커밋을 로컬에서 차단한다",
+        "1인 프로필과 팀 프로필의 브랜치 규칙이 명시된다",
+        "사람용 한글 템플릿 사용 가이드가 존재한다",
+        "Codex·Claude의 AI 정본 규칙이 동기화된다"
+      ],
+      "source": "USER-2026-09-18"
+    },
+    {
+      "id": "REQ-034",
+      "title": "감사 가능한 작업 패키지 배정과 개발 범위 포괄성",
+      "statement": "프레임워크는 팀 전환 전에 활성 PM을 보장하고 PM 배정·위임 배정·오프라인 협의 기반 자율 배정을 지원하며, 정책과 책임자 변경 이력을 보존하고 변경별 필수 작업 영역과 요구사항이 모든 미완료 작업 패키지에 빠짐없이 배정되었는지 개발 진입 전에 검증해야 한다.",
+      "rationale": "배정되지 않은 요구사항이나 누락된 보안·데이터·배포·운영 작업은 아무도 수행하지 않으며, 현재 값만 보존하면 누가 언제 왜 책임을 바꿨는지 재구성할 수 없다.",
+      "priority": "must",
+      "status": "implemented",
+      "owner": "PM·개발·품질 보증",
+      "modules": [
+        "MOD-GOV",
+        "MOD-DOC",
+        "MOD-DELIVERY",
+        "MOD-QA",
+        "MOD-STATUS",
+        "MOD-CHG"
+      ],
+      "verification": [
+        "TC-026"
+      ],
+      "acceptance_criteria": [
+        "팀 프로필에는 활성 PM이 최소 1명 존재한다",
+        "PM은 활성 팀원에게 배정 권한을 위임하거나 자율 배정으로 전환할 수 있다",
+        "오프라인 협의 필수 표시는 자율 배정에만 적용된다",
+        "배정 정책과 WRK 책임자 변경의 이전 값·변경자·시각·사유가 보존된다",
+        "각 CHG는 프로젝트 맥락에 맞는 필수 작업 영역을 선언한다",
+        "개발 진입 전에 모든 CHG 요구사항·필수 작업 영역·팀 책임자 누락을 차단한다",
+        "배정 범위 안의 파생 요구는 현재 담당 WRK에 추가하고 범위를 넘으면 새 WRK 또는 범위 변경으로 처리한다",
+        "생성 전달 계획에서 WRK의 요구사항·책임자·포괄 범위를 확인할 수 있다"
+      ],
+      "source": "USER-2026-09-18"
+    }
+  ]
+}

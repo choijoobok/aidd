@@ -28,21 +28,21 @@ jobs:
           python-version: "3.11"
 
       - name: Python 구문 검사
-        run: python -m py_compile tools/aidd.py
+        run: python -m py_compile .ai/tools/aidd.py
 
       - name: 파생 문서와 AI 어댑터 재생성
         run: |
-          python tools/aidd.py generate
-          python tools/aidd.py sync-ai
+          python .ai/tools/aidd.py generate
+          python .ai/tools/aidd.py sync-ai
 
       - name: 생성 결과 드리프트 검사
         run: git diff --exit-code
 
       - name: 정본 정합성 검사
-        run: python tools/aidd.py validate
+        run: python .ai/tools/aidd.py validate
 
       - name: Git 신원 대조
-        run: python tools/aidd.py identity-check --warning-only
+        run: python .ai/tools/aidd.py identity-check --warning-only
 
       - name: 프레임워크 테스트
-        run: python -m unittest discover -s tests -v
+        run: python -m unittest discover -s .ai/tests -v

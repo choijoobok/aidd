@@ -1,5 +1,13 @@
 # 미출시 변경
 
+## KIT-CHG-003 · Codex 대화 기록 훅 신뢰 사전 점검
+
+상태: 검증 완료, 미출시(`verified`)
+
+- Codex 세션 시작 계약이 `hook-trust-status`를 실행해 `UserPromptSubmit`·`Stop`의 영구 신뢰 기록 부재를 알린다.
+- 미승인 상태에서는 훅 또는 Codex 전역 설정을 자동으로 바꾸지 않고, interactive Codex CLI의 `/hooks` 검토·신뢰 절차만 안내한다.
+- 검증 근거: `KIT-EVD-006`.
+
 ## KIT-CHG-002 · 의도 합의 뒤 벤치마킹 필요성 판단과 근거 기반 제안
 
 상태: 검증 완료, 미출시(`verified`)

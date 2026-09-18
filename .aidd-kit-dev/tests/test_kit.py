@@ -114,9 +114,6 @@ class KitLifecycleTests(unittest.TestCase):
         guide = (ROOT / ".ai" / "docs" / "guides" / "aidd-kit-guide.md").read_text(encoding="utf-8")
         project_team = (ROOT / ".ai" / "docs" / "guides" / "project-team-guide.md").read_text(encoding="utf-8")
         export_agents = (ROOT / ".aidd-kit-dev" / "export" / "AGENTS.md").read_text(encoding="utf-8")
-        repository = json.loads((ROOT / ".aidd-kit-dev" / "repository.json").read_text(encoding="utf-8"))
-
-        self.assertEqual("KIT-CHG-002", repository["active_change"])
         self.assertTrue((ROOT / ".aidd-kit-dev" / "changes" / "KIT-CHG-002.json").is_file())
         self.assertIn("BEN-TRIAGE", skill)
         self.assertIn("외부 벤치마킹 조사가 항상 필수인 것은 아니다", skill)

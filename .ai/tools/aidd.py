@@ -4759,6 +4759,48 @@ def project_init_status() -> str:
     )
 
 
+def codex_hook_trust_status(config_path: Path | None = None) -> tuple[str, bool]:
+    """Report whether Codex has persisted approval records for this project's log hooks.
+
+    Codex owns the final hash comparison and does not expose a non-interactive
+    hook-status command.  This check deliberately never grants trust or runs an
+    untrusted hook; it only detects the common no-record state in Desktop-only
+    use and gives the user a safe CLI review path.
+    """
+    config = config_path or Path(os.environ.get("CODEX_HOME", Path.home() / ".codex")) / "config.toml"
+    hook_file = (ROOT / ".codex" / "hooks.json").resolve()
+    source = str(hook_file).replace("/", "\\").casefold()
+    if not hook_file.is_file():
+        return ("# Codex 대화 기록 훅 신뢰 상태\n\n- 상태: 확인 불가 — `.codex/hooks.json`이 없습니다.\n", True)
+    try:
+        content = config.read_text(encoding="utf-8")
+    except OSError:
+        content = ""
+    records = re.findall(r"^\[hooks\.state\.'([^']+)'\]", content, flags=re.MULTILINE)
+    normalized = [item.replace("/", "\\").casefold() for item in records]
+    approved = {
+        "user": any(item.startswith(f"{source}:user_prompt_submit:") for item in normalized),
+        "assistant": any(item.startswith(f"{source}:stop:") for item in normalized),
+    }
+    review_required = not all(approved.values())
+    lines = [
+        "# Codex 대화 기록 훅 신뢰 상태",
+        "",
+        f"- 프로젝트 훅: `{hook_file}`",
+        f"- 사용자 기록 훅(`UserPromptSubmit`): {'신뢰 기록 있음' if approved['user'] else '신뢰 기록 없음'}",
+        f"- AI 기록 훅(`Stop`): {'신뢰 기록 있음' if approved['assistant'] else '신뢰 기록 없음'}",
+    ]
+    if review_required:
+        lines.extend([
+            "- 상태: `REVIEW_REQUIRED` — 훅을 실행하거나 신뢰 상태를 파일로 직접 바꾸지 않았습니다.",
+            "- 조치: 터미널에서 `codex -C \"" + str(ROOT) + "\"`를 실행한 뒤 `/hooks`를 입력하고, AIDD의 `UserPromptSubmit`과 `Stop` 훅을 검토·신뢰하세요.",
+            "- 신뢰 후 다음 사용자 메시지와 그 AI 응답부터 `chat-history/`에 기록됩니다.",
+        ])
+    else:
+        lines.append("- 상태: `RECORD_FOUND` — Codex가 현재 훅 정의의 해시를 다시 검토하라고 표시하면 `/hooks`에서 재신뢰하세요.")
+    return ("\n".join(lines) + "\n", review_required)
+
+
 def run_hook(platform: str, event: str) -> int:
     role_path = ROOT / ".aidd-role.json"
     if event.lower() == "stop" and role_path.is_file():
@@ -4893,6 +4935,7 @@ def main() -> int:
     sub.add_parser("install-hooks", help="configure this Git repository to use .githooks")
     sub.add_parser("project-init", help="initialize a safe local Git foundation without staging or committing files")
     sub.add_parser("project-init-status", help="show local Git initialization and hook status")
+    sub.add_parser("hook-trust-status", help="report whether Codex has recorded approval for this project's transcript hooks")
     bootstrap_parser = sub.add_parser("project-bootstrap", help="create an empty product workspace from the AIDD Kit skeleton")
     bootstrap_parser.add_argument("--project-id", required=True, help="stable project identifier, such as CRM-PORTAL")
     bootstrap_parser.add_argument("--name", required=True, help="product name")
@@ -5079,6 +5122,10 @@ def main() -> int:
     if args.command == "project-init-status":
         print(project_init_status())
         return 0
+    if args.command == "hook-trust-status":
+        report, review_required = codex_hook_trust_status()
+        print(report, end="")
+        return 1 if review_required else 0
     if args.command == "integration-status":
         print(integration_status())
         return 0

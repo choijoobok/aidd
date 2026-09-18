@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-003",
+  "title": "Codex 대화 기록 훅 신뢰 사전 점검",
+  "class": "C1",
+  "status": "verified",
+  "problem": "Codex Desktop만 사용하는 사용자는 프로젝트 훅의 검토·신뢰 요청을 놓칠 수 있어, 대화 기록 훅이 조용히 실행되지 않는 문제가 반복된다.",
+  "intent": "세션 시작 AI가 Codex 신뢰 기록의 부재를 감지해 안전한 CLI `/hooks` 검토 절차를 안내하고, 신뢰되지 않은 훅을 자동 실행하거나 신뢰 상태를 변경하지 않는다.",
+  "scope": [
+    "portable aidd.py hook-trust-status 읽기 전용 점검",
+    "Kit·프로젝트 수행 계약과 훅 가이드의 세션 시작 안내",
+    "점검 명령 회귀 테스트"
+  ],
+  "validation": [
+    "hook-trust-status no-record and record-present tests",
+    "harness self-test",
+    "Kit source and export validation",
+    "portable and Kit regression tests"
+  ],
+  "completion_blocker": "none"
+}

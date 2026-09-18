@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "KIT-ADR-004",
+  "title": "신뢰되지 않은 Codex 훅의 안전한 사전 안내",
+  "status": "accepted",
+  "decision": "AIDD는 Codex 훅 신뢰 상태를 자동으로 부여하거나 `--dangerously-bypass-hook-trust`로 우회하지 않는다. 대신 읽기 전용 hook-trust-status가 신뢰 기록 부재를 감지하면 사용자가 interactive Codex CLI의 `/hooks`에서 훅을 검토·신뢰하도록 안내한다.",
+  "rationale": "대화 기록 누락은 빨리 알려야 하지만, 훅 신뢰는 로컬 명령 실행 권한과 연결된 사용자 보안 결정이다.",
+  "alternatives": [
+    {
+      "option": "전역 config.toml에 신뢰 해시를 자동 기록",
+      "decision": "rejected",
+      "reason": "사용자가 검토하지 않은 실행 명령을 신뢰하게 만들어 Codex의 신뢰 모델을 우회한다."
+    },
+    {
+      "option": "Codex CLI의 dangerous bypass 옵션으로 로그 훅을 실행",
+      "decision": "rejected",
+      "reason": "한 CLI 세션에만 적용되고 Desktop의 영구 신뢰 상태를 해결하지 않으며, 신뢰 모델을 약화한다."
+    }
+  ],
+  "consequences": [
+    "hook-trust-status는 config의 신뢰 기록 존재만 읽고 파일을 변경하지 않는다.",
+    "Codex가 변경된 훅 해시의 재검토를 요구하면 사용자는 `/hooks`에서 다시 검토·신뢰한다.",
+    "프로젝트 계약은 Codex 세션 시작 시 이 점검과 사용자 안내를 요구한다."
+  ],
+  "rollback": "세션 시작 사전 점검을 제거할 수 있으나, 훅 신뢰 상태를 자동 변경하는 대체 동작은 도입하지 않는다."
+}

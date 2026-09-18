@@ -51,6 +51,25 @@ class AiddTests(unittest.TestCase):
         self.assertTrue((ACTIVE_PROJECT / "README.md").is_file())
         self.assertTrue((ACTIVE_PROJECT / "src" / "README.md").is_file())
 
+    def test_codex_hook_trust_status_only_reports_persisted_approval_records(self):
+        with tempfile.TemporaryDirectory() as directory:
+            config = Path(directory) / "config.toml"
+            report, review_required = AIDD.codex_hook_trust_status(config)
+            self.assertTrue(review_required)
+            self.assertIn("REVIEW_REQUIRED", report)
+            self.assertIn("/hooks", report)
+
+            source = str((ROOT / ".codex" / "hooks.json").resolve()).replace("/", "\\")
+            config.write_text(
+                "[hooks.state.'" + source + ":user_prompt_submit:0:0']\ntrusted_hash = \"sha256:test\"\n\n"
+                "[hooks.state.'" + source + ":stop:0:0']\ntrusted_hash = \"sha256:test\"\n",
+                encoding="utf-8",
+            )
+            report, review_required = AIDD.codex_hook_trust_status(config)
+            self.assertFalse(review_required)
+            self.assertIn("RECORD_FOUND", report)
+            self.assertNotIn("신뢰 상태를 파일로 직접 바꾸지", report)
+
     def test_project_home_site_is_generated_from_the_project_introduction(self):
         home = AIDD.render_documents(self.data)["site/index.html"]
         self.assertIn(self.data["project"]["introduction"], home)

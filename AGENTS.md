@@ -18,7 +18,7 @@
 ## 작업 방식
 
 - 한글을 포함한 모든 문서와 소스는 UTF-8(BOM 없음), 줄바꿈 LF로 관리한다.
-- 세션 시작 시 `python .aidd-kit-dev/tools/kit.py status`와 `git status --short`로 역할, 현재 변경, 작업 트리를 확인한다.
+- Codex 세션 시작 시 먼저 `python .ai/tools/aidd.py hook-trust-status`를 실행한다. `REVIEW_REQUIRED`이면 신뢰되지 않은 훅을 우회 실행하거나 전역 설정을 직접 고치지 말고, 사용자에게 터미널에서 `codex -C "<현재 루트>"`를 연 뒤 `/hooks`에서 AIDD의 `UserPromptSubmit`·`Stop` 훅을 검토·신뢰하도록 알린다. 그 뒤 `python .aidd-kit-dev/tools/kit.py status`와 `git status --short`로 역할, 현재 변경, 작업 트리를 확인한다.
 - 변경 전 해결할 실패, 영향 명세, 이식 가능 여부, 호환성·보안·롤백과 검증 방법을 먼저 정한다.
 - 새 훅·스킬·도구·플러그인은 기존 수단 부족, 트리거·입출력 계약, 중복, 안전한 비활성화와 롤백을 확인한 뒤 추가한다.
 - portable 동작은 `.ai/`에서, Kit 관리 전용 동작은 `.aidd-kit-dev/`에서 구현한다. 경계가 모호하면 기본적으로 배포하지 않고 명시적인 결정으로 남긴다.

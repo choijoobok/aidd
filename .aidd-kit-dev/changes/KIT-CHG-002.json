@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-002",
+  "title": "의도 합의 뒤 벤치마킹 필요성 판단과 근거 기반 제안",
+  "class": "C1",
+  "status": "verified",
+  "problem": "제품 의도와 목적을 합의한 뒤 외부 사례·제품·기술을 비교해 제안하는 흐름이 자연스럽지만, Kit에는 벤치마킹 필요성 판단·조사 설계·추천·결정 반영의 표준 절차가 명시돼 있지 않았다.",
+  "intent": "의도·성과 기준 합의 직후 BEN-TRIAGE를 수행하고, 필요성이 합의된 경우에만 범위와 기준을 정해 조사·비교·추천한 뒤 고객 결정을 정본에 반영한다.",
+  "scope": [
+    "portable aidd-discovery 스킬과 벤치마킹 참고 절차",
+    "research-note의 비교 기준·출처·수용 기록 양식",
+    "프로젝트 수행팀 가이드와 export AGENTS.md의 자연어 요청·수행 규칙",
+    "Kit 관리 상태의 활성 변경 식별"
+  ],
+  "validation": [
+    "kit validate",
+    "source unit tests",
+    "portable tests",
+    "folder and ZIP export boundary"
+  ],
+  "completion_blocker": "none"
+}

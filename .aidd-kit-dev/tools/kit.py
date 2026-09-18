@@ -221,6 +221,12 @@ def validate_export_tree(root: Path, expect_project: bool) -> list[str]:
 def validate_source() -> list[str]:
     errors: list[str] = []
     try:
+        active_change = load_json(DEV / "repository.json").get("active_change")
+        if not isinstance(active_change, str) or not (DEV / "changes" / f"{active_change}.json").is_file():
+            errors.append("repository active_change must identify an existing .aidd-kit-dev/changes/KIT-CHG-*.json file")
+    except Exception as exc:
+        errors.append(f"repository metadata invalid: {exc}")
+    try:
         if load_json(ROLE_PATH).get("role") != "kit-source":
             errors.append("root .aidd-role.json must declare kit-source")
     except Exception as exc:
@@ -306,7 +312,8 @@ def main() -> int:
     args = parse_args()
     if args.command == "status":
         repository = load_json(DEV / "repository.json")
-        change = load_json(DEV / "changes" / "KIT-CHG-001.json")
+        change_id = repository.get("active_change", "KIT-CHG-001")
+        change = load_json(DEV / "changes" / f"{change_id}.json")
         print("# AIDD Kit 관리 상태")
         print(f"- 역할: `{load_json(ROLE_PATH)['role']}`")
         print(f"- 버전: `{repository['current_version']}`")

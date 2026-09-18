@@ -107,6 +107,25 @@ class KitLifecycleTests(unittest.TestCase):
         self.assertIn("export한 폴더 또는 ZIP", guide)
         self.assertNotIn("이 Kit의 `.git`과 `project/`를 제외한 내용을 새 프로젝트 폴더로 복사", guide)
 
+    def test_benchmarking_triage_is_portable_and_traceable(self):
+        skill = (ROOT / ".ai" / "skills" / "aidd-discovery" / "SKILL.md").read_text(encoding="utf-8")
+        reference = (ROOT / ".ai" / "skills" / "aidd-discovery" / "references" / "benchmarking.md").read_text(encoding="utf-8")
+        research_note = (ROOT / ".ai" / "templates" / "artifact" / "research-note.md").read_text(encoding="utf-8")
+        guide = (ROOT / ".ai" / "docs" / "guides" / "aidd-kit-guide.md").read_text(encoding="utf-8")
+        project_team = (ROOT / ".ai" / "docs" / "guides" / "project-team-guide.md").read_text(encoding="utf-8")
+        export_agents = (ROOT / ".aidd-kit-dev" / "export" / "AGENTS.md").read_text(encoding="utf-8")
+        repository = json.loads((ROOT / ".aidd-kit-dev" / "repository.json").read_text(encoding="utf-8"))
+
+        self.assertEqual("KIT-CHG-002", repository["active_change"])
+        self.assertTrue((ROOT / ".aidd-kit-dev" / "changes" / "KIT-CHG-002.json").is_file())
+        self.assertIn("BEN-TRIAGE", skill)
+        self.assertIn("외부 벤치마킹 조사가 항상 필수인 것은 아니다", skill)
+        self.assertIn("고객이 수용·보류·제외", reference)
+        self.assertIn("BEN-TRIAGE 판정과 이유", research_note)
+        self.assertIn("1.5. 의도 합의 뒤 벤치마킹 필요성 판단", guide)
+        self.assertIn("BEN-TRIAGE", project_team)
+        self.assertIn("BEN-TRIAGE", export_agents)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -4,6 +4,7 @@ import io
 import os
 import subprocess
 import sys
+import tempfile
 import unittest
 from unittest import mock
 from pathlib import Path
@@ -16,6 +17,8 @@ SPEC = importlib.util.spec_from_file_location("aidd_for_harness", ROOT / ".ai" /
 AIDD = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
 SPEC.loader.exec_module(AIDD)
+IS_KIT_SOURCE = (ROOT / ".aidd-kit-dev").is_dir()
+PROJECT_TEMPLATE_ROOT = ROOT / ".aidd-kit-dev" / "export" if IS_KIT_SOURCE else ROOT
 
 
 def load_json_without_duplicate_keys(path: Path):
@@ -218,11 +221,18 @@ class HarnessWiringTests(unittest.TestCase):
                 observed.append(args)
                 return 0, "ok"
 
-            with mock.patch.object(aidd_hook, "run_aidd", side_effect=fake_run_aidd), mock.patch(
-                "sys.stdout", new_callable=io.StringIO,
-            ):
-                self.assertEqual(0, aidd_hook.session_brief())
-            self.assertIn(("current-actor",), observed)
+            if IS_KIT_SOURCE:
+                with mock.patch.object(aidd_hook, "run_kit", return_value=(0, "ok")) as run_kit, mock.patch(
+                    "sys.stdout", new_callable=io.StringIO,
+                ):
+                    self.assertEqual(0, aidd_hook.session_brief())
+                run_kit.assert_called_once_with("status")
+            else:
+                with mock.patch.object(aidd_hook, "run_aidd", side_effect=fake_run_aidd), mock.patch(
+                    "sys.stdout", new_callable=io.StringIO,
+                ):
+                    self.assertEqual(0, aidd_hook.session_brief())
+                self.assertIn(("current-actor",), observed)
         finally:
             sys.path.remove(str(ROOT / ".ai" / "tools"))
 
@@ -239,21 +249,38 @@ class HarnessWiringTests(unittest.TestCase):
         finally:
             sys.path.remove(str(ROOT / ".ai" / "tools"))
 
-    def test_local_log_uses_month_and_daily_files_below_project_chat_history(self):
+    def test_local_log_uses_role_independent_root_chat_history_without_creating_project(self):
         sys.path.insert(0, str(ROOT / ".ai" / "tools"))
         try:
             import aidd_hook
 
-            now = aidd_hook.datetime.now().astimezone()
-            expected = ROOT / "project" / "chat-history" / now.strftime("%Y-%m") / (now.strftime("%Y-%m-%d") + ".md")
-            marker = "AIDD local-log test marker"
-            with mock.patch.object(aidd_hook, "read_input", return_value={"prompt": f"{marker}: Bearer secret-token-value"}):
-                self.assertEqual(0, aidd_hook.local_log("codex", "user"))
-            self.assertTrue(expected.exists())
-            content = expected.read_text(encoding="utf-8")
-            self.assertIn("· codex · 사용자", content)
-            self.assertIn(marker, content)
-            self.assertIn("[REDACTED]", content)
+            with tempfile.TemporaryDirectory(prefix="aidd-hook-log-") as temporary:
+                temporary_root = Path(temporary)
+                temporary_contract = temporary_root / ".ai" / "hooks" / "contract.json"
+                temporary_contract.parent.mkdir(parents=True)
+                temporary_contract.write_text(
+                    (ROOT / ".ai" / "hooks" / "contract.json").read_text(encoding="utf-8"),
+                    encoding="utf-8",
+                )
+                now = aidd_hook.datetime.now().astimezone()
+                expected = temporary_root / "chat-history" / now.strftime("%Y-%m") / (now.strftime("%Y-%m-%d") + ".md")
+                marker = "AIDD local-log test marker"
+                for repository_role in ("kit-source", "kit-template", "product-workspace"):
+                    (temporary_root / ".aidd-role.json").write_text(
+                        json.dumps({"role": repository_role}), encoding="utf-8"
+                    )
+                    with (
+                        mock.patch.object(aidd_hook, "ROOT", temporary_root),
+                        mock.patch.object(aidd_hook, "CONTRACT_PATH", temporary_contract),
+                        mock.patch.object(aidd_hook, "read_input", return_value={"prompt": f"{marker} {repository_role}: Bearer secret-token-value"}),
+                    ):
+                        self.assertEqual(0, aidd_hook.local_log("codex", "user"))
+                self.assertTrue(expected.exists())
+                content = expected.read_text(encoding="utf-8")
+                self.assertIn("· codex · 사용자", content)
+                self.assertIn(marker, content)
+                self.assertIn("[REDACTED]", content)
+                self.assertFalse((temporary_root / "project").exists())
         finally:
             sys.path.remove(str(ROOT / ".ai" / "tools"))
 
@@ -312,10 +339,10 @@ class HarnessWiringTests(unittest.TestCase):
         self.assertEqual(1, contract["version"])
         self.assertIn("UserPromptSubmit", contract["events"])
         self.assertIn(".ai/tools/aidd_hook.py", contract["recovery_paths"])
-        self.assertEqual("project/chat-history", contract["local_conversation_log"]["root"])
+        self.assertEqual("chat-history", contract["local_conversation_log"]["root"])
         self.assertEqual("%Y-%m/%Y-%m-%d.md", contract["local_conversation_log"]["date_format"])
         self.assertIn("documentation-check --staged", contract["git_pre_commit"]["command"])
-        pre_commit = (ROOT / ".githooks" / "pre-commit").read_text(encoding="utf-8")
+        pre_commit = (PROJECT_TEMPLATE_ROOT / ".githooks" / "pre-commit").read_text(encoding="utf-8")
         self.assertIn("branch-check || exit $?", pre_commit)
         self.assertIn("documentation-check --staged", pre_commit)
 
@@ -373,8 +400,8 @@ class HarnessWiringTests(unittest.TestCase):
         self.assertIn("aidd_hook.py", command[-2])
 
     def test_common_agent_contract_has_one_canonical_source(self):
-        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-        claude = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+        agents = (PROJECT_TEMPLATE_ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        claude = (PROJECT_TEMPLATE_ROOT / "CLAUDE.md").read_text(encoding="utf-8")
         self.assertTrue(agents.startswith("# AIDD AI 수행 계약"))
         self.assertEqual("@AGENTS.md", next(line.strip() for line in claude.splitlines() if line.strip()))
         self.assertNotIn("# AIDD AI 수행 계약", claude)

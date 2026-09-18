@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "id": "KIT-EVD-002",
+  "change": "KIT-CHG-001",
+  "kind": "working-tree-validation",
+  "performed_by": "Codex",
+  "performed_at": "2026-09-19",
+  "base_commit": "1dc12e6b3ac6bf76fd19cb0d35366a6680b34388",
+  "working_tree_dirty": true,
+  "commands": [
+    "python .aidd-kit-dev/tools/kit.py sync-providers",
+    "python .aidd-kit-dev/tools/kit.py validate",
+    "python .ai/tools/aidd_hook.py self-test",
+    "python -m unittest discover -s .aidd-kit-dev/tests -v",
+    "python -m unittest discover -s .ai/tests -v",
+    "kit.py export --directory <temporary>",
+    "kit.py export --zip <temporary>",
+    "python <template>/.ai/tools/aidd_hook.py local-log --platform codex --role user",
+    "python <template>/.ai/tools/aidd.py project-bootstrap --project-id CHAT-TEST --name 'Chat History Test' --mode greenfield",
+    "python <template>/.ai/tools/aidd.py validate"
+  ],
+  "result": {
+    "kit_validation": "passed",
+    "harness_self_test": "passed",
+    "kit_source_tests": "84 passed",
+    "portable_tests": "26 passed",
+    "template_local_log": "passed: root chat-history/ created",
+    "template_project_before_bootstrap": "absent",
+    "template_bootstrap": "passed",
+    "template_validation": "passed with expected bootstrap warning",
+    "zip_boundary": "passed: no project/ or .aidd-kit-dev/ entries"
+  },
+  "limitations": [
+    "작업 트리 검증이므로 불변 커밋 증거가 아니다.",
+    "KIT-CHG-001의 독립 검토는 아직 수행하지 않았다."
+  ]
+}

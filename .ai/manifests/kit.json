@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "name": "AIDD Kit",
+  "portable_spec_root": ".ai/spec",
+  "project_team_guide": ".ai/docs/guides/project-team-guide.md",
+  "product_workspace_root": "project",
+  "roles": [
+    "kit-source",
+    "kit-template",
+    "product-workspace"
+  ],
+  "distribution_policy": {
+    "strategy": "allowlist",
+    "automatic_upgrade": false,
+    "reverse_sync": false,
+    "project_customization_allowed": true,
+    "origin_is_provenance_only": true
+  }
+}

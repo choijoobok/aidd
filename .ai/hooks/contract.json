@@ -36,7 +36,7 @@
     ".ai/tests/test_harness.py"
   ],
   "local_conversation_log": {
-    "root": "project/chat-history",
+    "root": "chat-history",
     "date_format": "%Y-%m/%Y-%m-%d.md",
     "enabled_by_default": true,
     "max_entry_chars": 16000,

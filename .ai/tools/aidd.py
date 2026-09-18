@@ -304,6 +304,53 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def repository_path(value: str) -> Path:
+    """Resolve logical project/... paths against the active product workspace.
+
+    In normal distributions PROJECT is ROOT/project. Kit-source regression tests may
+    explicitly point PROJECT at an isolated fixture without changing canonical IDs.
+    """
+    normalized = str(value).replace("\\", "/")
+    # The reference project predates the Kit/product lifecycle split. Preserve
+    # its immutable evidence paths while resolving the one relocated source-only
+    # regression suite in kit-source repositories.
+    if normalized == ".ai/tests/test_aidd.py":
+        relocated = ROOT / ".aidd-kit-dev" / "tests" / "test_aidd.py"
+        if relocated.is_file():
+            return relocated
+    if normalized == "project":
+        return PROJECT
+    if normalized.startswith("project/"):
+        return PROJECT / normalized.removeprefix("project/")
+    return ROOT / normalized
+
+
+def is_kit_source() -> bool:
+    try:
+        return json.loads((ROOT / ".aidd-role.json").read_text(encoding="utf-8")).get("role") == "kit-source"
+    except (OSError, json.JSONDecodeError):
+        return False
+
+
+def product_workspace_role_record() -> dict[str, Any]:
+    """Return the managed role marker written after a successful bootstrap."""
+    return {
+        "schema_version": 1,
+        "role": "product-workspace",
+        "managed_by": "AIDD Kit export/bootstrap",
+        "mutable_by_user": False,
+    }
+
+
+def project_distribution_path(value: str) -> Path:
+    """Resolve repository-level product adapters in a kit-source regression run."""
+    normalized = str(value).replace("\\", "/")
+    exported = ROOT / ".aidd-kit-dev" / "export" / normalized
+    if is_kit_source() and exported.exists():
+        return exported
+    return ROOT / normalized
+
+
 def is_verified_actual_capture(item: dict[str, Any], screen_id: str | None = None) -> bool:
     artifacts = item.get("artifacts", [])
     hashes = item.get("artifact_hashes", {})
@@ -319,9 +366,9 @@ def is_verified_actual_capture(item: dict[str, Any], screen_id: str | None = Non
         and all(
             Path(artifact).suffix.lower() in CAPTURE_EXTENSIONS
             and not str(artifact).replace("\\", "/").casefold().startswith("project/docs/generated/")
-            and (ROOT / artifact).is_file()
+            and repository_path(artifact).is_file()
             and re.fullmatch(r"[0-9a-fA-F]{64}", str(hashes.get(artifact, "")))
-            and sha256_file(ROOT / artifact).casefold() == str(hashes[artifact]).casefold()
+            and sha256_file(repository_path(artifact)).casefold() == str(hashes[artifact]).casefold()
             for artifact in artifacts
         )
     )
@@ -2420,7 +2467,7 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
             if test_id not in tests:
                 errors.append(f"{path['id']} references unknown test {test_id}")
         for implementation_path in path.get("implementation_paths", []):
-            if not (ROOT / implementation_path).exists():
+            if not repository_path(implementation_path).exists():
                 errors.append(f"{path['id']} references missing implementation path {implementation_path}")
     for exception in standard_exceptions.values():
         if exception.get("status") not in {"draft", "approved", "waived", "expired", "deprecated"}:
@@ -2772,7 +2819,7 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
             if gate_id not in known_gates:
                 errors.append(f"{item['id']} references unknown gate {gate_id}")
         for artifact in item.get("artifacts", []):
-            if not (ROOT / artifact).exists():
+            if not repository_path(artifact).exists():
                 errors.append(f"{item['id']} references missing artifact {artifact}")
     approval_subjects = {
         **requirements, **decisions, **changes, **gate_runs, **standards, **golden_paths, **standard_exceptions,
@@ -3009,7 +3056,7 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
             errors.append(f"{run['id']} has incomplete execution details")
     repository = data["repository"]
     workflow_path = ROOT / repository.get("workflow", "")
-    ruleset_path = ROOT / repository.get("ruleset", "")
+    ruleset_path = project_distribution_path(repository.get("ruleset", ""))
     if not workflow_path.is_file():
         errors.append("repository workflow file is missing")
     if not ruleset_path.is_file():
@@ -3259,7 +3306,7 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
             errors.append(f"{deliverable['id']} is superseded without a replacement")
         path_value = deliverable.get("path")
         if deliverable.get("applicability") == "required" and deliverable.get("status") == "current":
-            if not path_value or not (ROOT / path_value).exists():
+            if not path_value or not repository_path(path_value).exists():
                 errors.append(f"{deliverable['id']} is current but its path is missing")
     agents_path = ROOT / "AGENTS.md"
     claude_path = ROOT / "CLAUDE.md"
@@ -3273,7 +3320,7 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
             errors.append("CLAUDE.md must import the canonical AGENTS.md on its first non-empty line")
     if (ROOT / ".ai" / "core" / "agent-contract.md").exists():
         errors.append("legacy .ai/core/agent-contract.md must not duplicate the canonical AGENTS.md")
-    if check_adapters:
+    if check_adapters and not is_kit_source():
         for target in SKILL_TARGETS:
             errors.extend(compare_trees(CANONICAL_SKILLS, target))
     if check_generated:
@@ -3511,8 +3558,22 @@ def safe_replace_tree(source: Path, destination: Path) -> None:
 
 
 def sync_ai() -> None:
-    for target in SKILL_TARGETS:
-        safe_replace_tree(CANONICAL_SKILLS, target)
+    if is_kit_source():
+        kit_sync = subprocess.run(
+            [sys.executable, str(ROOT / ".aidd-kit-dev" / "tools" / "kit.py"), "sync-providers"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            check=False,
+        )
+        if kit_sync.returncode:
+            detail = (kit_sync.stderr or kit_sync.stdout).strip() or f"exit {kit_sync.returncode}"
+            raise RuntimeError(f"Kit provider sync failed: {detail}")
+    else:
+        for target in SKILL_TARGETS:
+            safe_replace_tree(CANONICAL_SKILLS, target)
     result = subprocess.run(
         [sys.executable, str(ROOT / ".ai" / "tools" / "aidd_hook.py"), "self-test"],
         cwd=ROOT,
@@ -4619,6 +4680,8 @@ def bootstrap_records(project_id: str, name: str, mode: str, source_location: st
 
 def project_bootstrap(project_id: str, name: str, mode: str, source_location: str | None = None) -> str:
     """Create a product workspace from the Kit skeleton without overwriting data."""
+    if is_kit_source():
+        raise RuntimeError("kit-source에서는 project-bootstrap을 실행할 수 없습니다. 별도 폴더에 export 또는 new-project로 제품 작업공간을 만드세요.")
     if PROJECT.exists():
         raise RuntimeError("project/ 폴더가 이미 있습니다. 기존 제품 산출물을 보호하기 위해 덮어쓰지 않습니다.")
     if not PROJECT_SKELETON.is_dir():
@@ -4633,14 +4696,39 @@ def project_bootstrap(project_id: str, name: str, mode: str, source_location: st
         GENERATED.mkdir(parents=True, exist_ok=True)
         for record_name, filename in FILES.items():
             write_json_atomic(SSOT / filename, bootstrap_records(safe_project_id, safe_name, mode, source_location)[record_name])
+        write_json_atomic(ROOT / ".aidd-role.json", product_workspace_role_record())
     except OSError as exc:
         raise RuntimeError(f"프로젝트 골격을 만들지 못했습니다: {exc}") from exc
     source_note = f" 기존 소스 위치: `{source_location}`." if source_location else ""
     return (
-        f"`project/`에 {safe_name} 정본 골격을 만들었습니다.{source_note}\n"
+        f"`project/`에 {safe_name} 정본 골격을 만들고 역할을 `product-workspace`로 전환했습니다.{source_note}\n"
         "기존 소스와 문서를 자동으로 이동하거나 덮어쓰지 않았습니다. 첫 AI 대화에서 목적·범위·모듈·배포 맥락을 정의하고 "
         "`project/.aidd/ssot/project.json`의 phase를 `bootstrap`에서 다음 단계로 변경하세요."
     )
+
+
+def project_reconcile_role() -> str:
+    """Repair a legacy template marker only after validating an existing product workspace."""
+    if is_kit_source():
+        raise RuntimeError("kit-source에서는 project-reconcile-role을 실행할 수 없습니다.")
+    if not PROJECT.is_dir():
+        raise RuntimeError("project/ 폴더가 없어 역할을 정합화할 수 없습니다. 새 템플릿이면 project-bootstrap을 사용하세요.")
+    role_path = ROOT / ".aidd-role.json"
+    try:
+        marker = read_json(role_path)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"역할 표식을 읽을 수 없습니다: {exc}") from exc
+    if marker.get("role") != "kit-template":
+        raise RuntimeError("project-reconcile-role은 역할이 kit-template인 기존 작업공간에서만 실행할 수 있습니다.")
+    try:
+        data = load_records()
+        errors, _warnings = validate(data, check_generated=False, check_adapters=False)
+    except (OSError, json.JSONDecodeError, ValueError) as exc:
+        raise RuntimeError(f"기존 제품 정본을 검증할 수 없습니다: {exc}") from exc
+    if errors:
+        raise RuntimeError("기존 제품 정본 검증에 실패해 역할을 바꾸지 않습니다: " + "; ".join(errors[:5]))
+    write_json_atomic(role_path, product_workspace_role_record())
+    return "유효한 기존 제품 정본을 확인하고 역할을 `kit-template`에서 `product-workspace`로 정합화했습니다."
 
 
 def project_init_status() -> str:
@@ -4672,6 +4760,28 @@ def project_init_status() -> str:
 
 
 def run_hook(platform: str, event: str) -> int:
+    role_path = ROOT / ".aidd-role.json"
+    if event.lower() == "stop" and role_path.is_file():
+        try:
+            role = json.loads(role_path.read_text(encoding="utf-8")).get("role")
+        except (OSError, json.JSONDecodeError):
+            role = None
+        if role == "kit-source":
+            completed = subprocess.run(
+                [sys.executable, str(ROOT / ".aidd-kit-dev" / "tools" / "kit.py"), "validate"],
+                cwd=ROOT,
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            if completed.returncode:
+                reason = (completed.stdout + completed.stderr).strip()
+                print(json.dumps({"decision": "block", "reason": reason}, ensure_ascii=False))
+            else:
+                print("{}")
+            return 0
     if event.lower() == "stop":
         try:
             project_init(quiet=True)
@@ -4788,6 +4898,7 @@ def main() -> int:
     bootstrap_parser.add_argument("--name", required=True, help="product name")
     bootstrap_parser.add_argument("--mode", choices=("greenfield", "existing-system"), default="greenfield")
     bootstrap_parser.add_argument("--source-location", help="current location of existing source; records only, does not move files")
+    sub.add_parser("project-reconcile-role", help="reconcile a legacy kit-template marker after validating an existing product workspace")
     branch_parser = sub.add_parser("branch-check", help="check the active collaboration profile's local branch rule")
     branch_parser.add_argument("--change", help="optional change ID for a risk-class-specific decision")
     release_parser = sub.add_parser("release-check", help="fail when a release has unresolved blockers")
@@ -4954,6 +5065,13 @@ def main() -> int:
     if args.command == "project-bootstrap":
         try:
             print(project_bootstrap(args.project_id, args.name, args.mode, args.source_location))
+        except RuntimeError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 2
+        return 0
+    if args.command == "project-reconcile-role":
+        try:
+            print(project_reconcile_role())
         except RuntimeError as exc:
             print(f"ERROR: {exc}", file=sys.stderr)
             return 2

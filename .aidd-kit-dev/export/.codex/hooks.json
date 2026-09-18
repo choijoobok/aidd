@@ -1,0 +1,114 @@
+{
+  "description": "AIDD 정합성 게이트입니다. /hooks에서 이 저장소 훅을 검토하고 신뢰 대상으로 승인하세요.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd.py\" project-init",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd.py') project-init; exit $LASTEXITCODE\"",
+            "timeout": 30,
+            "statusMessage": "AIDD 프로젝트를 안전하게 초기화하는 중"
+          }
+        ]
+      },
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" session-brief",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') session-brief; exit $LASTEXITCODE\"",
+            "timeout": 30,
+            "statusMessage": "AIDD 현재 상태를 불러오는 중",
+            "additionalContextLimit": 9000
+          },
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" self-test --hook",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') self-test --hook; exit $LASTEXITCODE\"",
+            "timeout": 20,
+            "statusMessage": "AIDD 하네스 배선을 검사하는 중",
+            "additionalContextLimit": 4000
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "apply_patch|Edit|Write|NotebookEdit|^mcp__.*__(?:write|edit|move|create)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" protect --platform codex --kind file",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') protect --platform codex --kind file; exit $LASTEXITCODE\"",
+            "timeout": 20,
+            "statusMessage": "AIDD 파생물 쓰기 정책을 확인하는 중"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell|^mcp__.*__(?:start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" protect --platform codex --kind shell",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') protect --platform codex --kind shell; exit $LASTEXITCODE\"",
+            "timeout": 20,
+            "statusMessage": "AIDD 파괴 명령과 셸 쓰기를 확인하는 중"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "apply_patch|Edit|Write|NotebookEdit|Bash|PowerShell|^mcp__.*__(?:write|edit|move|create|start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" post-check --platform codex",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') post-check --platform codex; exit $LASTEXITCODE\"",
+            "timeout": 30,
+            "statusMessage": "AIDD 파생물과 정본 정합성을 확인하는 중",
+            "additionalContextLimit": 5000
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" local-log --platform codex --role user",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') local-log --platform codex --role user; exit $LASTEXITCODE\"",
+            "timeout": 10,
+            "statusMessage": "로컬 대화 기록을 저장하는 중"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd.py\" hook --platform codex --event Stop",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd.py') hook --platform codex --event Stop; exit $LASTEXITCODE\"",
+            "timeout": 30,
+            "statusMessage": "AIDD 정합성을 검사하는 중"
+          },
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" local-log --platform codex --role assistant",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') local-log --platform codex --role assistant; exit $LASTEXITCODE\"",
+            "timeout": 10,
+            "statusMessage": "로컬 대화 기록을 저장하는 중"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-001",
+  "title": "Kit 생명주기와 제품 프로젝트 생명주기 분리",
+  "class": "C2",
+  "status": "in_review",
+  "problem": "AIDD Kit 원본이 제품용 project 폴더를 자기 정본처럼 사용해 관리·배포 경계가 혼재했고, 역할별 대화 로그 경로가 빈 템플릿에 project/를 선행 생성할 수 있었으며 project-bootstrap은 역할 표식을 product-workspace로 전환하지 않았다. 이미 bootstrap된 이전 템플릿에는 역할 정합화의 공식 경로도 없었다.",
+  "intent": "Kit 전용 명세·이력·릴리스 생명주기를 만들고 허용 목록 기반으로 독립 프로젝트를 export한다.",
+  "scope": [
+    "별도 Kit 관리팀 및 프로젝트 수행팀 가이드",
+    "kit-source, kit-template, product-workspace 역할",
+    "폴더와 ZIP의 공통 export 파이프라인",
+    "관리 전용 스킬과 export 구현의 배포 제외",
+    "자동 업그레이드와 역동기화 금지",
+    "모든 역할의 루트 chat-history 로컬 대화 이력 경로 통일",
+    "project-bootstrap 성공 시 kit-template에서 product-workspace로 역할 표식 전환",
+    "유효한 기존 정본에서만 역할 표식을 정합화하는 project-reconcile-role 경로"
+  ],
+  "validation": [
+    "kit validate",
+    "source unit tests",
+    "exported project unit tests",
+    "exported kit-template 대화 로그가 project/를 만들지 않는지 확인",
+    "exported kit-template의 project-bootstrap 역할 전환 확인",
+    "기존 정본의 project-reconcile-role 성공·거부 경로 확인",
+    "independent review"
+  ],
+  "completion_blocker": "구현 흐름과 분리된 독립 검토 및 증거 기록"
+}

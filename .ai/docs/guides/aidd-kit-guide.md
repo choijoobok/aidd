@@ -19,7 +19,7 @@ AIDD는 제품을 대신 호스팅하거나 특정 개발 언어·클라우드·
 | 필수 | Git과 `python` 명령을 실행할 수 있는 로컬 환경 | AIDD CLI는 Python 표준 라이브러리만 사용한다. Git과 Python은 PATH에서 실행 가능해야 한다. |
 | 필수 | Codex 또는 Claude Code 중 하나 | 둘 다 설치할 필요는 없다. 선택한 AI가 프로젝트 폴더를 읽고 사용자 승인 아래 파일·터미널 작업을 수행할 수 있어야 한다. |
 | 필수 | 프로젝트 폴더 읽기·쓰기 권한 | 정본·코드·생성 문서를 갱신할 수 있어야 한다. 커밋·푸시·배포 같은 외부 변경 권한은 별도로 통제한다. |
-| 처음 한 번 | 별도 프로젝트 루트와 빈 제품 정본 | Kit은 다른 Git 저장소 안에 중첩하지 않는다. `project/`를 제외하고 복사한 뒤 `project-init`, `project-bootstrap`을 실행한다. |
+| 처음 한 번 | export된 별도 프로젝트 템플릿과 빈 제품 정본 | Kit 원본을 직접 복사하지 않는다. Kit 관리자가 export한 폴더 또는 ZIP을 별도 프로젝트 루트로 받은 뒤 `project-init`, `project-bootstrap`을 실행한다. |
 | 선택 | GitHub 같은 원격 저장소·CI·브랜치 보호 | 로컬 기록·생성·검증에는 인터넷이 필수가 아니다. 팀 협업과 원격 통제에는 서비스 계정·권한·실제 적용 확인이 필요하다. |
 | 프로젝트별 | 클라우드, DBMS, Node·Docker, 외부 API와 비밀정보 | AIDD 자체의 선행 조건이 아니다. 제품 기술 기준선에서 결정하며 AI가 없는 권한·계정·승인을 우회해서는 안 된다. |
 
@@ -29,44 +29,49 @@ PowerShell 예시는 Windows 기준이다. 다른 운영체제에서도 같은 `
 
 ## 프로젝트 시작과 제품 정본 만들기
 
-`project/`는 AIDD Kit 자체가 아니라 **현재 수행 중인 한 제품의 산출물**이다. 따라서 다른 프로젝트를 시작할 때는 이 Kit의 `.git`과 `project/`를 제외한 내용을 새 프로젝트 폴더로 복사한다. `.ai/templates/project-skeleton/`은 반드시 함께 복사한다.
+`project/`는 AIDD Kit 자체가 아니라 **현재 수행 중인 한 제품의 산출물**이다. 새 프로젝트는 Kit 원본 저장소를 직접 복사해서 만들지 않는다. Kit 관리자가 허용 목록으로 export한 폴더 또는 ZIP을 별도 프로젝트 루트로 받고, ZIP이면 먼저 압축을 푼다. 이 배포물은 `.aidd-role.json`에서 `kit-template`으로 표시되며 `.ai/templates/project-skeleton/`을 이미 포함한다.
+
+Kit 관리팀은 `kit-source`에서 export를 수행하고, 프로젝트 수행팀은 전달받은 `kit-template`에서 제품 정본을 시작한다. 두 저장소는 export 이후 자동 업그레이드나 역동기화되지 않는다.
 
 ### 명령어 대신 AI에게 초기화를 요청하기
 
-`project-init`과 `project-bootstrap` 명령을 외울 필요는 없다. 새 프로젝트 폴더를 Codex 또는 Claude Code로 연 뒤 자연어로 요청하면, AI가 현재 폴더를 확인하고 필요한 CLI 명령을 대신 실행한다. 자연어가 AIDD CLI에 직접 입력되는 것은 아니며, Codex 또는 Claude가 사용자의 의도를 안전한 명령으로 변환하는 방식이다.
+`project-init`과 `project-bootstrap` 명령을 외울 필요는 없다. export된 배포 템플릿을 Codex 또는 Claude Code로 연 뒤 자연어로 요청하면, AI가 `kit-template` 역할과 현재 폴더를 확인하고 필요한 CLI 명령을 대신 실행한다. 자연어가 AIDD CLI에 직접 입력되는 것은 아니며, Codex 또는 Claude가 사용자의 의도를 안전한 명령으로 변환하는 방식이다.
 
 신규 구축이라면 다음처럼 말한다.
 
-> AIDD Kit으로 새 프로젝트를 초기화해줘. 프로젝트 ID는 `CRM-PORTAL`, 이름은 `고객 관리 포털`이고 신규 구축이야. Git과 로컬 훅을 준비한 다음 project-bootstrap으로 빈 제품 정본을 만들어줘. 파일을 커밋하거나 원격에 푸시하지 말고, 초기화 결과를 설명한 뒤 프로젝트 목적과 범위를 정하기 위한 질문을 시작해줘.
+> 이 저장소는 AIDD 배포용 템플릿이야. 새 프로젝트를 초기화해줘. 프로젝트 ID는 `CRM-PORTAL`, 이름은 `고객 관리 포털`이고 신규 구축이야. Git과 로컬 훅을 준비한 다음 project-bootstrap으로 빈 제품 정본을 만들어줘. 파일을 커밋하거나 원격에 푸시하지 말고, 초기화 결과를 설명한 뒤 프로젝트 목적과 범위를 정하기 위한 질문을 시작해줘.
 
 기존 시스템을 수용한다면 다음처럼 말한다.
 
-> AIDD Kit으로 기존 시스템 프로젝트를 초기화해줘. 프로젝트 ID는 `ERP-CORE`, 이름은 `기존 ERP`이고 현재 소스는 `D:\workspace\legacy-erp`에 있어. 소스 위치는 정본에 기록만 하고 파일을 이동하거나 덮어쓰지 마. project-init과 project-bootstrap을 실행한 뒤 분석·이동 계획부터 제안해줘.
+> 이 AIDD 배포용 템플릿으로 기존 시스템 프로젝트를 초기화해줘. 프로젝트 ID는 `ERP-CORE`, 이름은 `기존 ERP`이고 현재 소스는 `D:\workspace\legacy-erp`에 있어. 소스 위치는 정본에 기록만 하고 파일을 이동하거나 덮어쓰지 마. project-init과 project-bootstrap을 실행한 뒤 분석·이동 계획부터 제안해줘.
 
 프로젝트 ID나 이름을 정하지 못했다면 평소 말하듯 설명해도 된다.
 
-> 고객 문의를 접수하고 담당자에게 배정하는 시스템을 새로 만들고 싶어. AIDD 프로젝트를 시작하려면 먼저 정해야 할 이름과 식별자를 제안하고, 내 확인을 받은 뒤 초기화해줘.
+> 고객 문의를 접수하고 담당자에게 배정하는 시스템을 새로 만들고 싶어. 이 AIDD 배포용 템플릿에서 프로젝트를 시작하려면 먼저 정해야 할 이름과 식별자를 제안하고, 내 확인을 받은 뒤 초기화해줘.
 
 AI는 `project/` 존재 여부와 Git 상태를 먼저 확인해야 한다. 기존 `project/`가 있으면 덮어쓰지 않고 중단 사유를 알려야 하며, 식별자·이름·신규 구축인지 기존 시스템인지가 불명확하면 실행 전에 질문해야 한다. 초기화 후에는 실제 실행 명령, 생성 위치, `bootstrap` 상태, 자동 커밋·푸시·소스 이동 여부를 짧게 보고해야 한다.
 
-명령을 직접 실행하려면 다음 절차를 사용한다.
+명령을 직접 실행해야 하는 자동화·재현 상황에서는, export된 템플릿 루트에서 다음 절차를 사용한다.
 
-1. `.gitignore`를 먼저 검토해 비밀키, 환경 변수 파일, 운영 데이터, 개인 설정이 포함되지 않았는지 확인한다.
-2. Codex 또는 Claude Code로 새 폴더를 열고 `python .ai/tools/aidd.py project-init`을 실행한다. 이 명령은 Git이 없는 경우 로컬 `main` 브랜치와 `.githooks`만 만들며, 파일을 자동으로 `git add`·커밋하거나 Git 신원을 등록하지 않는다.
-3. 제품 작업공간과 빈 정본을 명시적으로 만든다.
+1. Kit 관리팀이 제공한 폴더를 사용하거나, 배포 ZIP을 별도 빈 폴더에 압축 해제한다. Kit 원본 저장소를 복사하거나 그 안에서 제품을 시작하지 않는다.
+2. `.gitignore`를 먼저 검토해 비밀키, 환경 변수 파일, 운영 데이터, 개인 설정이 포함되지 않았는지 확인한다.
+3. Codex 또는 Claude Code로 템플릿 루트를 열고 `python .ai/tools/aidd.py project-init`을 실행한다. 이 명령은 Git이 없는 경우 로컬 `main` 브랜치와 `.githooks`만 만들며, 파일을 자동으로 `git add`·커밋하거나 Git 신원을 등록하지 않는다.
+4. 제품 작업공간과 빈 정본을 명시적으로 만든다.
 
 ```powershell
 python .ai/tools/aidd.py project-bootstrap --project-id CRM-PORTAL --name "고객 관리 포털" --mode greenfield
 ```
 
-4. 기존에 개발된 제품을 수용한다면, 현재 소스 위치를 기록만 하고 자동 이동은 하지 않는다.
+5. 기존에 개발된 제품을 수용한다면, 현재 소스 위치를 기록만 하고 자동 이동은 하지 않는다.
 
 ```powershell
 python .ai/tools/aidd.py project-bootstrap --project-id ERP-CORE --name "기존 ERP" --mode existing-system --source-location "D:\workspace\legacy-erp"
 ```
 
-5. `project-bootstrap`은 `project/`가 이미 있으면 중단하며 기존 정본·소스·문서를 덮어쓰지 않는다. 생성 직후에는 정본이 `bootstrap` 상태이므로, 제품 목적·범위·모듈·배포 맥락을 합의하기 전에는 문서 생성이나 구현 게이트를 통과한 것으로 보지 않는다.
-6. `python .ai/tools/aidd.py project-init-status`와 `python .ai/tools/aidd.py status --level executive`로 Git 및 제품 착수 상태를 확인한다.
+6. `project-bootstrap`은 `project/`가 이미 있으면 중단하며 기존 정본·소스·문서를 덮어쓰지 않는다. 성공하면 `.aidd-role.json`을 `kit-template`에서 `product-workspace`로 전환한다. 생성 직후에는 정본이 `bootstrap` 상태이므로, 제품 목적·범위·모듈·배포 맥락을 합의하기 전에는 문서 생성이나 구현 게이트를 통과한 것으로 보지 않는다.
+7. `python .ai/tools/aidd.py project-init-status`와 `python .ai/tools/aidd.py status --level executive`로 Git 및 제품 착수 상태를 확인한다.
+
+과거 버전의 템플릿에서 제품 정본은 이미 만들었는데 역할이 `kit-template`으로 남은 경우에는 bootstrap을 다시 실행하거나 `.aidd-role.json`을 직접 고치지 않는다. `python .ai/tools/aidd.py project-reconcile-role`은 기존 `project/.aidd/ssot/`를 검증한 뒤에만 역할을 `product-workspace`로 정합화한다.
 
 기존 소스가 새 저장소 루트나 다른 폴더에 있다면 AI에게 먼저 “`project/src/`로 옮길 대상, 제외할 빌드 산출물·비밀정보·운영 데이터를 분석하고 이동 계획만 제안해줘”라고 요청한다. 사람의 승인 전에는 자동 이동하지 않는다.
 
@@ -288,7 +293,7 @@ python .ai/tools/aidd.py work-check --work WRK-ID
 
 개발 중 파생 요구가 현재 작업 패키지의 승인된 범위 안이면 담당 팀원이 CHG·REQ를 기록하고 같은 WRK의 `requirements`와 `coverage`에 추가해 끝까지 처리한다. 다른 모듈·다른 WRK·승인 범위를 넘으면 PM 또는 위임자가 새 WRK 또는 범위 변경을 결정한 뒤 다시 `workload-coverage`를 실행한다. 팀원은 구현 전 `work-check`를 실행하며, 배정자가 다르거나 배정이 없으면 작업을 시작하지 않는다. 1인 프로필은 같은 명령으로 브랜치·작업 상태만 확인하며 배정 제한은 없다.
 
-대화 원문은 상태·증거와 분리한다. 훅이 제공한 원문만 Git 무시 경로 `project/chat-history/YYYY-MM/YYYY-MM-DD.md`에 날짜별 Markdown으로 남긴다.
+대화 원문은 상태·증거와 분리한다. 훅이 제공한 원문만 역할과 제품 활성화 여부에 관계없이 Git 무시 경로 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 날짜별 Markdown으로 남긴다. 따라서 빈 `kit-template`도 대화 기록 때문에 `project/`를 만들지 않는다.
 
 ## 최초 기준선 커밋
 

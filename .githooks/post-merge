@@ -1,2 +1,2 @@
 #!/bin/sh
-python .ai/tools/aidd.py record-merge "$1"
+python .aidd-kit-dev/tools/kit.py status

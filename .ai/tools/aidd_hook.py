@@ -33,6 +33,13 @@ FALLBACK_RECOVERY_PATHS = {
     ".ai/tests/test_harness.py",
 }
 
+
+def repository_role() -> str:
+    try:
+        return load_json_without_duplicate_keys(ROOT / ".aidd-role.json").get("role", "product-workspace")
+    except Exception:
+        return "product-workspace"
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 if hasattr(sys.stderr, "reconfigure"):
@@ -321,7 +328,7 @@ def local_log(platform: str, role: str) -> int:
         contract = load_contract()
         settings = contract["local_conversation_log"]
         relative = normalized_repo_path(settings["root"])
-        if not relative or relative != "project/chat-history":
+        if not relative or relative != "chat-history":
             return 0
         # The folder and the visible timestamp must use the same local calendar
         # day.  A UTC date near midnight would otherwise create a misleading file.
@@ -361,10 +368,21 @@ def post_check() -> int:
         if any(under(path, ".ai") for path in paths):
             errors = harness_errors()
             if errors:
+                sync_command = (
+                    "python .aidd-kit-dev/tools/kit.py sync-providers"
+                    if repository_role() == "kit-source"
+                    else "python .ai/tools/aidd.py sync-ai"
+                )
                 warnings.append(
                     "공통 AI 정본 변경 뒤 provider 파생물이 어긋났습니다. "
-                    "python .ai/tools/aidd.py sync-ai를 실행하세요. " + "; ".join(errors[:5])
+                    f"{sync_command}를 실행하세요. " + "; ".join(errors[:5])
                 )
+        if repository_role() == "kit-source" and any(
+            under(path, ".ai") or under(path, ".aidd-kit-dev") for path in paths
+        ):
+            code, output = run_kit("validate")
+            if code:
+                warnings.append("Kit 명세·export 경계 검증 경고:\n" + output[:4000])
         source_paths = sorted(path for path in paths if under(path, "project/src"))
         if source_paths:
             code, output = run_aidd(*sum((["document-impact", "--path", path] for path in source_paths), []))
@@ -396,7 +414,34 @@ def run_aidd(*args: str) -> tuple[int, str]:
     return completed.returncode, output
 
 
+def run_kit(*args: str) -> tuple[int, str]:
+    completed = subprocess.run(
+        [sys.executable, str(ROOT / ".aidd-kit-dev" / "tools" / "kit.py"), *args],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        timeout=30,
+    )
+    output = (completed.stdout + completed.stderr).strip()
+    return completed.returncode, output
+
+
 def session_brief() -> int:
+    if repository_role() == "kit-source":
+        sections = ["# AIDD Kit 관리 세션 브리핑"]
+        try:
+            code, output = run_kit("status")
+            if output:
+                sections.append(output[:5000])
+            if code:
+                sections.append(f"Kit 상태 조회 실패(exit {code}); 관리 가이드를 확인하세요.")
+        except Exception as exc:
+            sections.append(f"Kit 상태 조회 중 경고: {type(exc).__name__}: {exc}")
+        sys.stdout.write("\n\n".join(sections)[:9000])
+        return 0
     sections: list[str] = ["# AIDD 세션 브리핑"]
     for title, args in (
         ("현재 작업자", ("current-actor",)),
@@ -497,8 +542,29 @@ def harness_errors() -> list[str]:
             errors.append(f"{rel.as_posix()}: {type(exc).__name__}: {exc}")
 
     common_root = ROOT / ".ai" / "skills"
-    for provider in (ROOT / ".agents" / "skills", ROOT / ".claude" / "skills"):
-        errors.extend(skill_tree_errors(common_root, provider))
+    if repository_role() == "kit-source":
+        common_files = {
+            path.relative_to(common_root).as_posix(): file_digest(path)
+            for path in common_root.rglob("*")
+            if path.is_file()
+        }
+        maintainer_root = ROOT / ".aidd-kit-dev" / "skills"
+        for path in maintainer_root.rglob("*"):
+            if path.is_file():
+                relative = path.relative_to(maintainer_root).as_posix()
+                if relative in common_files:
+                    errors.append(f"maintainer skill collides with portable skill: {relative}")
+                common_files[relative] = file_digest(path)
+        for provider in (ROOT / ".agents" / "skills", ROOT / ".claude" / "skills"):
+            provider_files = {
+                path.relative_to(provider).as_posix(): file_digest(path)
+                for path in provider.rglob("*")
+                if path.is_file()
+            } if provider.is_dir() else {}
+            errors.extend(skill_manifest_errors(common_files, provider_files, provider.relative_to(ROOT).as_posix()))
+    else:
+        for provider in (ROOT / ".agents" / "skills", ROOT / ".claude" / "skills"):
+            errors.extend(skill_tree_errors(common_root, provider))
     return errors
 
 

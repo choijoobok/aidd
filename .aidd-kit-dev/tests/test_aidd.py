@@ -16,6 +16,20 @@ AIDD = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
 SPEC.loader.exec_module(AIDD)
 
+REFERENCE_PROJECT = ROOT / ".aidd-kit-dev" / "fixtures" / "reference-project"
+ACTIVE_PROJECT = REFERENCE_PROJECT if REFERENCE_PROJECT.is_dir() else ROOT / "project"
+IS_KIT_SOURCE = (ROOT / ".aidd-kit-dev").is_dir()
+PROJECT_TEMPLATE_ROOT = ROOT / ".aidd-kit-dev" / "export" if IS_KIT_SOURCE else ROOT
+AIDD.PROJECT = ACTIVE_PROJECT
+AIDD.SSOT = ACTIVE_PROJECT / ".aidd" / "ssot"
+AIDD.GENERATED = ACTIVE_PROJECT / "docs" / "generated"
+AIDD.MODULE_SPEC_DIR = AIDD.SSOT / "modules"
+AIDD.MODULE_DOCUMENT_DIR = AIDD.GENERATED / "modules"
+AIDD.UI_MODULE_SPEC_DIR = AIDD.SSOT / "ui-modules"
+AIDD.UI_MODULE_DOCUMENT_DIR = AIDD.GENERATED / "ui" / "modules"
+AIDD.MANUAL_MODULE_DOCUMENT_DIR = AIDD.GENERATED / "manuals" / "modules"
+AIDD.SYSTEM_SURFACE_SPEC_DIR = AIDD.SSOT / "system-surfaces"
+
 
 class AiddTests(unittest.TestCase):
     @classmethod
@@ -30,12 +44,12 @@ class AiddTests(unittest.TestCase):
         self.assertEqual(AIDD.render_documents(self.data), AIDD.render_documents(self.data))
 
     def test_project_workspace_separates_product_records_documents_and_source(self):
-        self.assertEqual(ROOT / "project", AIDD.PROJECT)
-        self.assertEqual(ROOT / "project" / ".aidd" / "ssot", AIDD.SSOT)
-        self.assertEqual(ROOT / "project" / "docs" / "generated", AIDD.GENERATED)
+        self.assertEqual(ACTIVE_PROJECT, AIDD.PROJECT)
+        self.assertEqual(ACTIVE_PROJECT / ".aidd" / "ssot", AIDD.SSOT)
+        self.assertEqual(ACTIVE_PROJECT / "docs" / "generated", AIDD.GENERATED)
         self.assertEqual(ROOT / ".ai" / "templates" / "project-skeleton", AIDD.PROJECT_SKELETON)
-        self.assertTrue((ROOT / "project" / "README.md").is_file())
-        self.assertTrue((ROOT / "project" / "src" / "README.md").is_file())
+        self.assertTrue((ACTIVE_PROJECT / "README.md").is_file())
+        self.assertTrue((ACTIVE_PROJECT / "src" / "README.md").is_file())
 
     def test_project_home_site_is_generated_from_the_project_introduction(self):
         home = AIDD.render_documents(self.data)["site/index.html"]
@@ -258,6 +272,8 @@ class AiddTests(unittest.TestCase):
             self.assertEqual("ERP-CORE", project_record["project_id"])
             self.assertEqual("bootstrap", project_record["phase"])
             self.assertEqual("D:/workspace/legacy-erp", project_record["existing_source"])
+            role_record = json.loads((temp_root / ".aidd-role.json").read_text(encoding="utf-8"))
+            self.assertEqual("product-workspace", role_record["role"])
             self.assertTrue((temp_root / "project" / "src" / "README.md").is_file())
             self.assertTrue((temp_root / "project" / "docs" / "generated").is_dir())
             self.assertTrue((temp_root / "project" / ".aidd" / "schemas" / "artifact.schema.json").is_file())
@@ -289,6 +305,53 @@ class AiddTests(unittest.TestCase):
             )
             self.assertEqual(2, duplicate.returncode)
             self.assertIn("덮어쓰지 않습니다", duplicate.stderr)
+
+            (temp_root / ".aidd-role.json").write_text(
+                json.dumps({"schema_version": 1, "role": "kit-template"}), encoding="utf-8"
+            )
+            reconciled = subprocess.run(
+                [sys.executable, str(temp_root / ".ai" / "tools" / "aidd.py"), "project-reconcile-role"],
+                cwd=temp_root, capture_output=True, text=True, encoding="utf-8", check=False,
+            )
+            self.assertEqual(0, reconciled.returncode, reconciled.stderr)
+            self.assertIn("정합화했습니다", reconciled.stdout)
+            self.assertEqual(
+                "product-workspace",
+                json.loads((temp_root / ".aidd-role.json").read_text(encoding="utf-8"))["role"],
+            )
+
+    def test_project_bootstrap_refuses_to_create_product_inside_kit_source(self):
+        with tempfile.TemporaryDirectory() as directory:
+            temp_root = Path(directory)
+            shutil.copytree(ROOT / ".ai" / "tools", temp_root / ".ai" / "tools")
+            shutil.copytree(ROOT / ".ai" / "templates", temp_root / ".ai" / "templates")
+            (temp_root / ".aidd-role.json").write_text(
+                json.dumps({"schema_version": 1, "role": "kit-source"}), encoding="utf-8"
+            )
+            result = subprocess.run(
+                [
+                    sys.executable, str(temp_root / ".ai" / "tools" / "aidd.py"), "project-bootstrap",
+                    "--project-id", "BLOCKED", "--name", "차단 확인",
+                ],
+                cwd=temp_root, capture_output=True, text=True, encoding="utf-8", check=False,
+            )
+            self.assertEqual(2, result.returncode)
+            self.assertIn("kit-source에서는 project-bootstrap을 실행할 수 없습니다", result.stderr)
+            self.assertFalse((temp_root / "project").exists())
+
+    def test_project_reconcile_role_refuses_missing_or_invalid_product_workspace(self):
+        with tempfile.TemporaryDirectory() as directory:
+            temp_root = Path(directory)
+            shutil.copytree(ROOT / ".ai" / "tools", temp_root / ".ai" / "tools")
+            (temp_root / ".aidd-role.json").write_text(
+                json.dumps({"schema_version": 1, "role": "kit-template"}), encoding="utf-8"
+            )
+            result = subprocess.run(
+                [sys.executable, str(temp_root / ".ai" / "tools" / "aidd.py"), "project-reconcile-role"],
+                cwd=temp_root, capture_output=True, text=True, encoding="utf-8", check=False,
+            )
+            self.assertEqual(2, result.returncode)
+            self.assertIn("project/ 폴더가 없어", result.stderr)
 
     def test_every_requirement_has_module_and_verification(self):
         for requirement in self.data["requirements"]["requirements"]:
@@ -336,7 +399,7 @@ class AiddTests(unittest.TestCase):
     def test_new_module_creates_an_empty_fragment_without_changing_existing_modules(self):
         with tempfile.TemporaryDirectory() as directory:
             temp_ssot = Path(directory) / "ssot"
-            shutil.copytree(ROOT / "project" / ".aidd" / "ssot", temp_ssot)
+            shutil.copytree(ACTIVE_PROJECT / ".aidd" / "ssot", temp_ssot)
             original_ssot = AIDD.SSOT
             original_spec_dir = AIDD.MODULE_SPEC_DIR
             original_ui_spec_dir = AIDD.UI_MODULE_SPEC_DIR
@@ -853,7 +916,8 @@ class AiddTests(unittest.TestCase):
             self.assertEqual(["EVD-001"], recorded["evidence"])
 
     def test_github_workflow_runs_deterministic_checks(self):
-        workflow = (ROOT / ".github" / "workflows" / "aidd.yml").read_text(encoding="utf-8")
+        workflow_root = ROOT / ".aidd-kit-dev" / "export" if IS_KIT_SOURCE else ROOT
+        workflow = (workflow_root / ".github" / "workflows" / "aidd.yml").read_text(encoding="utf-8")
         for command in (
             "python .ai/tools/aidd.py generate", "python .ai/tools/aidd.py sync-ai",
             "git diff --exit-code", "python .ai/tools/aidd.py validate",
@@ -921,7 +985,8 @@ class AiddTests(unittest.TestCase):
         self.assertIn("명령어 대신 AI에게 초기화를 요청하기", text)
         self.assertIn("project-init과 project-bootstrap", text)
         self.assertFalse((ROOT / ".ai" / "docs" / "guides" / "ai-conversation-project-guide.md").exists())
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        readme_path = ROOT / ".aidd-kit-dev" / "export" / "README.md" if IS_KIT_SOURCE else ROOT / "README.md"
+        readme = readme_path.read_text(encoding="utf-8")
         self.assertIn(".ai/docs/guides/aidd-kit-guide.md", readme)
         self.assertNotIn("ai-conversation-project-guide.md", readme)
         deliverables = {item["id"]: item for item in self.data["deliverables"]["deliverables"]}
@@ -967,7 +1032,7 @@ class AiddTests(unittest.TestCase):
 
     def test_repository_ruleset_matches_required_ci_check(self):
         repository = self.data["repository"]
-        ruleset = json.loads((ROOT / repository["ruleset"]).read_text(encoding="utf-8"))
+        ruleset = json.loads((PROJECT_TEMPLATE_ROOT / repository["ruleset"]).read_text(encoding="utf-8"))
         contexts = {
             check["context"]
             for rule in ruleset["rules"] if rule["type"] == "required_status_checks"

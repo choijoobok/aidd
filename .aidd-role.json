@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "role": "kit-source",
+  "managed_by": ".aidd-kit-dev/tools/kit.py",
+  "mutable_by_user": false
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "id": "AIDD-KIT",
+  "name": "AIDD Kit",
+  "role": "kit-source",
+  "lifecycle": "kit-development",
+  "current_version": "0.2.0",
+  "distribution": {
+    "formats": ["directory", "zip"],
+    "assembly": "allowlist",
+    "automatic_upgrade": false,
+    "reverse_sync": false
+  }
+}

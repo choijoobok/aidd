@@ -39,7 +39,7 @@
         "do_not_enforce_on_create": false,
         "required_status_checks": [
           {
-            "context": "정본·문서·스킬·테스트 검증"
+            "context": "Kit 명세·배포 경계·회귀 검사"
           }
         ]
       }

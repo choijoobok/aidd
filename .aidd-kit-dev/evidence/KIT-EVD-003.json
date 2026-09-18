@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "id": "KIT-EVD-003",
+  "change": "KIT-CHG-001",
+  "kind": "working-tree-validation",
+  "performed_by": "Codex",
+  "performed_at": "2026-09-19",
+  "base_commit": "1dc12e6b3ac6bf76fd19cb0d35366a6680b34388",
+  "working_tree_dirty": true,
+  "commands": [
+    "python .aidd-kit-dev/tools/kit.py sync-providers",
+    "python .aidd-kit-dev/tools/kit.py validate",
+    "python .ai/tools/aidd_hook.py self-test",
+    "python -m unittest discover -s .aidd-kit-dev/tests -v",
+    "python -m unittest discover -s .ai/tests -v",
+    "python D:/source/aidd-template/.ai/tools/aidd.py validate"
+  ],
+  "result": {
+    "kit_validation": "passed",
+    "harness_self_test": "passed",
+    "kit_source_tests": "86 passed",
+    "portable_tests": "26 passed",
+    "template_bootstrap_role_transition": "passed: kit-template to product-workspace",
+    "kit_source_bootstrap_protection": "passed: project/ creation refused",
+    "existing_personal_blog_role_reconciliation": "passed: product-workspace marker and bootstrap validation warning only"
+  },
+  "limitations": [
+    "작업 트리 검증이므로 불변 커밋 증거가 아니다.",
+    "KIT-CHG-001의 독립 검토는 아직 수행하지 않았다."
+  ]
+}

@@ -1,4 +1,4 @@
-name: AIDD 정합성 검사
+name: AIDD Kit 정합성 검사
 
 on:
   pull_request:
@@ -9,12 +9,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: aidd-${{ github.workflow }}-${{ github.ref }}
+  group: aidd-kit-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate:
-    name: 정본·문서·스킬·테스트 검증
+    name: Kit 명세·배포 경계·회귀 검사
     runs-on: ubuntu-latest
     steps:
       - name: 소스 체크아웃
@@ -28,21 +28,19 @@ jobs:
           python-version: "3.11"
 
       - name: Python 구문 검사
-        run: python -m py_compile .ai/tools/aidd.py
+        run: python -m py_compile .ai/tools/aidd.py .ai/tools/aidd_hook.py .aidd-kit-dev/tools/kit.py
 
-      - name: 파생 문서와 AI 어댑터 재생성
-        run: |
-          python .ai/tools/aidd.py generate
-          python .ai/tools/aidd.py sync-ai
+      - name: 원본 provider 스킬 동기화
+        run: python .aidd-kit-dev/tools/kit.py sync-providers
 
       - name: 생성 결과 드리프트 검사
         run: git diff --exit-code
 
-      - name: 정본 정합성 검사
-        run: python .ai/tools/aidd.py validate
+      - name: Kit와 export 경계 검증
+        run: python .aidd-kit-dev/tools/kit.py validate
 
-      - name: Git 신원 대조
-        run: python .ai/tools/aidd.py identity-check --warning-only
+      - name: Kit 생명주기 테스트
+        run: python -m unittest discover -s .aidd-kit-dev/tests -v
 
-      - name: 프레임워크 테스트
+      - name: AIDD 프레임워크 회귀 테스트
         run: python -m unittest discover -s .ai/tests -v

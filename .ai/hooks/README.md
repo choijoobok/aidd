@@ -5,7 +5,7 @@
 - 사전 보호: 생성물 직접 쓰기, 생성물로 향하는 셸 쓰기, 명백한 파괴 명령을 차단한다. 리디렉션·`tee`·`sed -i`·복사/이동·PowerShell 쓰기 계열도 검사한다. 입력을 해석할 수 없으면 거부한다.
 - 복구 차선: **정책 또는 계약 자체를 읽지 못한 내부 고장일 때만** `contract.json`에 열거된 작은 훅 런타임 파일을 고칠 수 있다. 일반적인 정책 거부를 우회하거나 제품·정본 파일을 쓰는 데 사용할 수 없다.
 - 세션 검사: 현재 프로젝트·협업·AI 평가와 Git 통합 상태를 브리핑한다. 자동 `fetch`·`pull`·`merge`·`push`는 하지 않는다.
-- 대화 원문: `UserPromptSubmit`과 `Stop` 어댑터가 제공하는 내용만 `project/chat-history/YYYY-MM/YYYY-MM-DD.md`에 날짜별 Markdown으로 남긴다. 이 경로는 Git 무시 대상이며, 상태·정본·생성 문서에는 포함하지 않는다. 흔한 토큰·비밀번호 표기를 마스킹하고 항목/일별 파일 크기를 제한한다. `AIDD_LOCAL_CONVERSATION_LOG=0`이면 현재 프로세스에서는 기록하지 않는다.
+- 대화 원문: `UserPromptSubmit`과 `Stop` 어댑터가 제공하는 내용만 역할과 제품 활성화 여부에 관계없이 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 날짜별 Markdown으로 남긴다. 이 경로는 Git 무시 대상이며, 상태·정본·생성 문서에는 포함하지 않는다. 따라서 `kit-template` 상태에서도 `project/`를 만들지 않는다. 흔한 토큰·비밀번호 표기를 마스킹하고 항목/일별 파일 크기를 제한한다. `AIDD_LOCAL_CONVERSATION_LOG=0`이면 현재 프로세스에서는 기록하지 않는다.
 - Git pre-commit: `.githooks/pre-commit`이 브랜치 정책 다음에 `documentation-check --staged`를 실행한다. staged `project/src/` 변경은 모듈별 `SURF` 소스 패턴에 매핑되어야 하며 기존 문서 정본이 함께 staged되거나, 문서가 없는 기존 기능에 한해 고객이 선택한 기한 있는 현행화 WRK가 있어야 한다.
 - 이 훅은 편의와 실수 방지 통제다. 셸 파서, OS 권한, 원격 브랜치 보호 또는 보안 경계를 대체하지 않는다.
 

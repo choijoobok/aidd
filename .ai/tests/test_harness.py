@@ -314,6 +314,10 @@ class HarnessWiringTests(unittest.TestCase):
         self.assertIn(".ai/tools/aidd_hook.py", contract["recovery_paths"])
         self.assertEqual("project/chat-history", contract["local_conversation_log"]["root"])
         self.assertEqual("%Y-%m/%Y-%m-%d.md", contract["local_conversation_log"]["date_format"])
+        self.assertIn("documentation-check --staged", contract["git_pre_commit"]["command"])
+        pre_commit = (ROOT / ".githooks" / "pre-commit").read_text(encoding="utf-8")
+        self.assertIn("branch-check || exit $?", pre_commit)
+        self.assertIn("documentation-check --staged", pre_commit)
 
     def test_codex_hook_commands_resolve_repository_root(self):
         value = load_json_without_duplicate_keys(ROOT / ".codex/hooks.json")
@@ -358,14 +362,29 @@ class HarnessWiringTests(unittest.TestCase):
     def test_sync_ai_runs_harness_self_test(self):
         completed = subprocess.CompletedProcess([], 0, "AIDD harness self-test passed\n", "")
         with (
-            mock.patch.object(AIDD.Path, "write_text"),
+            mock.patch.object(AIDD.Path, "write_text") as write_text,
             mock.patch.object(AIDD, "safe_replace_tree"),
             mock.patch.object(AIDD.subprocess, "run", return_value=completed) as run,
         ):
             AIDD.sync_ai()
+        write_text.assert_not_called()
         command = run.call_args.args[0]
         self.assertEqual("self-test", command[-1])
         self.assertIn("aidd_hook.py", command[-2])
+
+    def test_common_agent_contract_has_one_canonical_source(self):
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        claude = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+        self.assertTrue(agents.startswith("# AIDD AI 수행 계약"))
+        self.assertEqual("@AGENTS.md", next(line.strip() for line in claude.splitlines() if line.strip()))
+        self.assertNotIn("# AIDD AI 수행 계약", claude)
+        self.assertFalse((ROOT / ".ai" / "core" / "agent-contract.md").exists())
+
+    def test_commit_template_records_material_ai_assistance(self):
+        template = (ROOT / ".ai" / "templates" / "git" / "commit-message.md").read_text(encoding="utf-8")
+        self.assertIn("AI-Assisted-By: <Codex | Claude>", template)
+        self.assertNotIn("\nAgent:", template)
+        self.assertIn("반복", template)
 
 
 if __name__ == "__main__":

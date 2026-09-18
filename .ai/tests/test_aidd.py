@@ -68,6 +68,83 @@ class AiddTests(unittest.TestCase):
         self.assertIn("문서 현행화 영향 후보", report)
         self.assertIn("기능 요건 → 화면 요건 → 사용자 매뉴얼", report)
 
+    def _documentation_gate_fixture(self, documentation_status="current", action="update_now"):
+        changed = copy.deepcopy(self.data)
+        surface = {
+            "id": "SURF-TEST-001", "module": "MOD-DOC", "type": "api", "key": "GET /example",
+            "title": "예시 API", "source_patterns": ["project/src/api/**"],
+            "documentation_status": documentation_status,
+            "documentation_sources": ["project/.aidd/ssot/modules/MOD-DOC.json"],
+        }
+        changed["system_surfaces"]["surfaces"].append(surface)
+        change = next(item for item in changed["changes"]["changes"] if item["id"] == "CHG-013")
+        change["delivery_path"] = {
+            "kind": "existing_change", "analysis": "complete", "design": "complete",
+            "documentation": action, "surfaces": [surface["id"]], "documentation_work": [],
+            "decided_by": "고객", "reason": "기존 API 변경",
+        }
+        return changed, change
+
+    def test_new_capability_requires_analysis_design_and_documented_surfaces(self):
+        changed, change = self._documentation_gate_fixture(documentation_status="undocumented", action="deferred")
+        change["delivery_path"]["kind"] = "new_capability"
+        change["delivery_path"]["analysis"] = "not_applicable"
+        change["delivery_path"]["design"] = "not_applicable"
+        blockers = AIDD.delivery_path_blockers(changed, change)
+        self.assertTrue(any("신규 기능은 요구분석" in item for item in blockers))
+        self.assertTrue(any("신규 기능은 설계" in item for item in blockers))
+        self.assertTrue(any("나중으로 미룰 수 없습니다" in item for item in blockers))
+        self.assertTrue(any("최신 상태가 아닙니다" in item for item in blockers))
+
+    def test_existing_documented_surface_requires_staged_document_update(self):
+        changed, _change = self._documentation_gate_fixture()
+        _report, blockers = AIDD.documentation_commit_check(changed, ["project/src/api/orders.py"])
+        self.assertTrue(any("staged 변경에 포함되지 않았습니다" in item for item in blockers))
+        _report, blockers = AIDD.documentation_commit_check(changed, [
+            "project/src/api/orders.py", "project/.aidd/ssot/modules/MOD-DOC.json",
+        ])
+        self.assertEqual([], blockers)
+
+    def test_undocumented_existing_surface_can_defer_only_with_dated_work(self):
+        changed, change = self._documentation_gate_fixture(documentation_status="undocumented", action="deferred")
+        blockers = AIDD.delivery_path_blockers(changed, change)
+        self.assertTrue(any("연결된 WRK가 없습니다" in item for item in blockers))
+        work = {
+            "id": "WRK-999", "title": "예시 API 문서화", "type": "documentation-reconciliation",
+            "status": "todo", "module": "MOD-DOC", "change": "CHG-013", "requirements": ["REQ-035"],
+            "depends_on": [], "owner": "문서화", "surfaces": ["SURF-TEST-001"],
+            "target_docs": ["DOC-REQ"], "due_milestone": "MLS-001",
+            "acceptance_criteria": ["API 계약을 정본화한다"], "evidence": [],
+        }
+        changed["delivery_plan"]["work_items"].append(work)
+        change["delivery_path"]["documentation_work"] = ["WRK-999"]
+        self.assertEqual([], AIDD.delivery_path_blockers(changed, change))
+        _report, blockers = AIDD.documentation_commit_check(changed, ["project/src/api/orders.py"])
+        self.assertEqual([], blockers)
+
+    def test_legacy_source_needs_surface_or_active_inventory_plan(self):
+        changed = copy.deepcopy(self.data)
+        _report, blockers = AIDD.documentation_commit_check(changed, ["project/src/legacy/order.py"])
+        self.assertTrue(any("레거시 문서화 계획" in item for item in blockers))
+        changed["delivery_plan"]["work_items"].append({
+            "id": "WRK-998", "type": "documentation-reconciliation", "status": "todo",
+            "target_docs": ["DOC-LEG"], "due_milestone": "MLS-001",
+        })
+        changed["system_surfaces"]["legacy_plans"].append({
+            "id": "LDP-999", "status": "in_progress", "source_roots": ["project/src/legacy"],
+            "work_items": ["WRK-998"],
+        })
+        _report, blockers = AIDD.documentation_commit_check(changed, ["project/src/legacy/order.py"])
+        self.assertEqual([], blockers)
+
+    def test_system_surfaces_are_module_sharded_and_rendered(self):
+        fragments = self.data["system_surfaces"].get("_module_fragments", [])
+        self.assertEqual(
+            {item["id"] for item in self.data["modules"]["modules"]},
+            {fragment["module"] for _path, fragment in fragments},
+        )
+        self.assertIn("시스템 표면과 문서 현행화", AIDD.render_documents(self.data)["system-surface-coverage.md"])
+
     def test_workboard_is_the_small_active_view_not_a_daily_history(self):
         documents = AIDD.render_documents(self.data)
         board = self.data["workboard"]
@@ -263,10 +340,12 @@ class AiddTests(unittest.TestCase):
             original_ssot = AIDD.SSOT
             original_spec_dir = AIDD.MODULE_SPEC_DIR
             original_ui_spec_dir = AIDD.UI_MODULE_SPEC_DIR
+            original_surface_spec_dir = AIDD.SYSTEM_SURFACE_SPEC_DIR
             try:
                 AIDD.SSOT = temp_ssot
                 AIDD.MODULE_SPEC_DIR = temp_ssot / "modules"
                 AIDD.UI_MODULE_SPEC_DIR = temp_ssot / "ui-modules"
+                AIDD.SYSTEM_SURFACE_SPEC_DIR = temp_ssot / "system-surfaces"
                 message = AIDD.add_module(
                     "MOD-ORDERS", "주문", "주문 수명주기를 관리한다.", ["MOD-GOV"], "planned", True,
                 )
@@ -280,10 +359,13 @@ class AiddTests(unittest.TestCase):
                 self.assertEqual({"screens": [], "manuals": []}, {
                     "screens": ui_fragment["screens"], "manuals": ui_fragment["manuals"],
                 })
+                surface_fragment = json.loads((temp_ssot / "system-surfaces" / "MOD-ORDERS.json").read_text(encoding="utf-8"))
+                self.assertEqual([], surface_fragment["surfaces"])
             finally:
                 AIDD.SSOT = original_ssot
                 AIDD.MODULE_SPEC_DIR = original_spec_dir
                 AIDD.UI_MODULE_SPEC_DIR = original_ui_spec_dir
+                AIDD.SYSTEM_SURFACE_SPEC_DIR = original_surface_spec_dir
 
     def test_development_foundation_records_and_views_are_structured(self):
         self.assertIn("STD-001", {item["id"] for item in self.data["foundation"]["standards"]})
@@ -827,17 +909,31 @@ class AiddTests(unittest.TestCase):
             self.assertIn(filename, documents)
             self.assertIn(heading, documents[filename])
 
-    def test_conversation_guide_is_linked_and_covers_project_flow(self):
-        guide = ROOT / ".ai" / "docs" / "guides" / "ai-conversation-project-guide.md"
+    def test_unified_user_guide_is_linked_and_covers_project_flow(self):
+        guide = ROOT / ".ai" / "docs" / "guides" / "aidd-kit-guide.md"
         text = guide.read_text(encoding="utf-8")
         for phrase in (
             "의도 찾기", "운영 맥락", "기술 선택", "작은 단위 구현", "검토와 출시", "가정", "미결사항",
             "시작 전 준비와 제약", "Git", "Python", "모듈형 모놀리스", "마이크로서비스", "이벤트 기반", "서버리스", "ADR",
+            "project-init", "project-bootstrap", "커밋하거나 원격에 푸시하지 말고",
         ):
             self.assertIn(phrase, text)
-        self.assertIn("ai-conversation-project-guide.md", (ROOT / "README.md").read_text(encoding="utf-8"))
+        self.assertIn("명령어 대신 AI에게 초기화를 요청하기", text)
+        self.assertIn("project-init과 project-bootstrap", text)
+        self.assertFalse((ROOT / ".ai" / "docs" / "guides" / "ai-conversation-project-guide.md").exists())
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn(".ai/docs/guides/aidd-kit-guide.md", readme)
+        self.assertNotIn("ai-conversation-project-guide.md", readme)
         deliverables = {item["id"]: item for item in self.data["deliverables"]["deliverables"]}
-        self.assertEqual(".ai/docs/guides/ai-conversation-project-guide.md", deliverables["DLV-CONVERSATION"]["path"])
+        self.assertEqual(".ai/docs/guides/aidd-kit-guide.md", deliverables["DLV-TEMPLATE"]["path"])
+        self.assertEqual("superseded", deliverables["DLV-CONVERSATION"]["status"])
+        self.assertEqual("DLV-TEMPLATE", deliverables["DLV-CONVERSATION"]["replaced_by"])
+
+        changed = copy.deepcopy(self.data)
+        retired = next(item for item in changed["deliverables"]["deliverables"] if item["id"] == "DLV-CONVERSATION")
+        retired["replaced_by"] = "DLV-UNKNOWN"
+        errors, _warnings = AIDD.validate(changed, check_generated=False, check_adapters=False)
+        self.assertIn("DLV-CONVERSATION references unknown replacement DLV-UNKNOWN", errors)
 
     def test_cross_agent_evaluation_harness_keeps_live_runs_pending(self):
         evaluation = self.data["evaluations"]

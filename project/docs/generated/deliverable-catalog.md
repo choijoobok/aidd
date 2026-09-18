@@ -7,6 +7,7 @@
 | DLV-BRIEF | 프로젝트 개요 | 자동 생성 | 필수 | 최신 | project/docs/generated/project-brief.md | project.json | - |
 | DLV-SITE | 프로젝트 HTML 홈 사이트 | 자동 생성 | 필수 | 최신 | project/docs/generated/site/index.html | project.json, deliverables.json | 좌측 상단 로고와 프로젝트명은 이 홈으로 돌아오며, 제품 소개·개요·목적·주요 기능과 생성 문서 진입점을 표시한다. |
 | DLV-CAT | 산출물 목록 | 자동 생성 | 필수 | 최신 | project/docs/generated/deliverable-catalog.md | deliverables.json | - |
+| DLV-SURFACE | 시스템 표면과 문서 현행화 범위 | 자동 생성 | 필수 | 최신 | project/docs/generated/system-surface-coverage.md | system-surfaces.json, system-surfaces/*.json, changes.json, delivery-plan.json | - |
 | DLV-WORKBOARD | 현재 작업 보드 | 자동 생성 | 필수 | 최신 | project/docs/generated/workboard.md | workboard.json | 현재 초점·다음 작업·관찰 항목만 유지하는 작고 갱신 가능한 운영 뷰다. 날짜별 수행 이력은 project/work-log/에 별도로 기록한다. |
 | DLV-REQ | 요구사항 정의서 | 자동 생성 | 필수 | 최신 | project/docs/generated/requirements.md | requirements.json, modules/*.json | - |
 | DLV-ASM | 가정 원장 | 자동 생성 | 필수 | 최신 | project/docs/generated/assumptions.md | assumptions.json | - |
@@ -35,5 +36,5 @@
 | DLV-AI-EVAL | AI 교차 플랫폼 행동 평가 | 자동 생성 | 필수 | 최신 | project/docs/generated/ai-evaluation.md | evaluations.json, evidence.json | - |
 | DLV-REPO | 저장소 보호와 CI 정책 | 자동 생성 | 필수 | 최신 | project/docs/generated/repository-governance.md | repository.json, collaboration.json | - |
 | DLV-COLLAB | 협업 운영 프로필 | 자동 생성 | 필수 | 최신 | project/docs/generated/collaboration-governance.md | collaboration.json, repository.json | - |
-| DLV-TEMPLATE | AIDD Kit 사용 가이드 | 직접 작성·연결 | 필수 | 최신 | .ai/docs/guides/aidd-kit-guide.md | README.md, collaboration.json | - |
-| DLV-CONVERSATION | AI 대화형 프로젝트 진행 가이드 | 직접 작성·연결 | 필수 | 최신 | .ai/docs/guides/ai-conversation-project-guide.md | README.md | - |
+| DLV-TEMPLATE | AIDD Kit 사용자 가이드 | 직접 작성·연결 | 필수 | 최신 | .ai/docs/guides/aidd-kit-guide.md | README.md, collaboration.json | 자연어 초기화부터 프로젝트 생애주기, 문서·협업·Git 운영까지 제공하는 단일 사용자 진입점이다. |
+| DLV-CONVERSATION | AI 대화형 프로젝트 진행 가이드(통합됨) | 직접 작성·연결 | 조건부 | 통합됨 | - | README.md | 중복을 제거하기 위해 전체 내용을 DLV-TEMPLATE에 통합했다. |

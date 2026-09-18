@@ -55,7 +55,7 @@ KO_CODES = {
     "in_progress": "진행 중", "planned": "계획됨", "passed": "통과", "failed": "실패", "not_run": "미실행",
     "automated": "자동", "agent-eval": "AI 평가", "scenario": "시나리오", "integration": "통합",
     "open": "미결", "mitigated": "완화됨", "current": "최신", "required": "필수", "conditional": "조건부",
-    "not_applicable": "해당 없음", "generated": "자동 생성", "generated-diagram": "자동 생성 다이어그램",
+    "not_applicable": "해당 없음", "superseded": "통합됨", "generated": "자동 생성", "generated-diagram": "자동 생성 다이어그램",
     "authored-and-linked": "직접 작성·연결", "feature": "기능", "refactoring": "리팩터링", "medium": "중간", "high": "높음",
     "critical": "치명적", "low": "낮음", "in_review": "검토 중", "approved": "승인됨",
     "rejected": "거절됨", "expired": "만료됨", "waived": "예외 승인", "pending": "대기 중",
@@ -99,6 +99,7 @@ FILES = {
     "operations": "operations.json",
     "delivery_profiles": "delivery-profiles.json",
     "documentation": "documentation.json",
+    "system_surfaces": "system-surfaces.json",
     "workboard": "workboard.json",
 }
 MODULE_SPEC_DIR = SSOT / "modules"
@@ -106,6 +107,7 @@ MODULE_DOCUMENT_DIR = GENERATED / "modules"
 UI_MODULE_SPEC_DIR = SSOT / "ui-modules"
 UI_MODULE_DOCUMENT_DIR = GENERATED / "ui" / "modules"
 MANUAL_MODULE_DOCUMENT_DIR = GENERATED / "manuals" / "modules"
+SYSTEM_SURFACE_SPEC_DIR = SSOT / "system-surfaces"
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -170,6 +172,13 @@ def ui_module_spec_paths() -> list[Path]:
     return sorted(path for path in UI_MODULE_SPEC_DIR.glob("*.json") if path.is_file())
 
 
+def system_surface_spec_paths() -> list[Path]:
+    """Return module-owned executable surface inventory fragments."""
+    if not SYSTEM_SURFACE_SPEC_DIR.exists():
+        return []
+    return sorted(path for path in SYSTEM_SURFACE_SPEC_DIR.glob("*.json") if path.is_file())
+
+
 def load_records() -> dict[str, dict[str, Any]]:
     """Load the legacy registry plus optional module-owned requirement fragments.
 
@@ -204,6 +213,16 @@ def load_records() -> dict[str, dict[str, Any]]:
         "screens": sorted(screens, key=lambda item: item.get("id", "")),
         "manuals": sorted(manuals, key=lambda item: item.get("id", "")),
     }
+    surface_fragments: list[tuple[Path, dict[str, Any]]] = []
+    surfaces = list(data["system_surfaces"].get("surfaces", []))
+    data["system_surfaces"]["_root_surfaces"] = list(surfaces)
+    for path in system_surface_spec_paths():
+        fragment = read_json(path)
+        surface_fragments.append((path, fragment))
+        if isinstance(fragment.get("surfaces"), list):
+            surfaces.extend(fragment["surfaces"])
+    data["system_surfaces"]["_module_fragments"] = surface_fragments
+    data["system_surfaces"]["surfaces"] = sorted(surfaces, key=lambda item: item.get("id", ""))
     return data
 
 
@@ -352,6 +371,16 @@ def release_blockers(
         deliverable = deliverables.get(deliverable_id)
         if not deliverable or deliverable.get("status") != "current":
             blockers.append(f"{deliverable_id} 산출물이 최신 상태가 아닙니다")
+    for work in data["delivery_plan"].get("work_items", []):
+        if (
+            work.get("type") == "documentation-reconciliation"
+            and work.get("due_release") == release.get("id")
+            and work.get("status") != "completed"
+        ):
+            blockers.append(f"{work['id']} 문서 현행화 작업이 완료되지 않았습니다")
+    for plan in data["system_surfaces"].get("legacy_plans", []):
+        if plan.get("due_release") == release.get("id") and plan.get("status") != "completed":
+            blockers.append(f"{plan['id']} 레거시 인벤토리·문서 전환 계획이 완료되지 않았습니다")
     profile = delivery_profiles.get(release.get("delivery_profile"))
     if not profile:
         blockers.append(f"{release.get('delivery_profile', 'DLP 누락')} 전달 프로필이 없습니다")
@@ -432,12 +461,120 @@ def branch_policy_blockers(
     return []
 
 
+def documentation_work_blockers(
+    data: dict[str, dict[str, Any]], change: dict[str, Any], path: dict[str, Any],
+) -> list[str]:
+    """Validate a customer's explicit decision to defer missing legacy documentation."""
+    if path.get("documentation") != "deferred":
+        return []
+    blockers: list[str] = []
+    work_index = index(data["delivery_plan"].get("work_items", []))
+    work_ids = path.get("documentation_work", [])
+    if not work_ids:
+        return [f"{change['id']}의 문서 후속 작성 결정에 연결된 WRK가 없습니다"]
+    surfaces = set(path.get("surfaces", []))
+    for work_id in work_ids:
+        work = work_index.get(work_id)
+        if not work:
+            blockers.append(f"{change['id']}의 문서 후속 작업 {work_id}가 없습니다")
+            continue
+        if work.get("type") != "documentation-reconciliation":
+            blockers.append(f"{work_id}는 문서 현행화 작업 유형이 아닙니다")
+        if work.get("status") == "completed":
+            blockers.append(f"{work_id}가 완료되어 미해결 문서 부채를 추적할 수 없습니다")
+        if work.get("change") != change.get("id"):
+            blockers.append(f"{work_id}가 {change['id']}에 연결되지 않았습니다")
+        if not surfaces.issubset(set(work.get("surfaces", []))):
+            blockers.append(f"{work_id}가 {change['id']}의 영향 표면을 모두 포함하지 않습니다")
+        if not work.get("target_docs"):
+            blockers.append(f"{work_id}에 작성할 문서 종류가 없습니다")
+        if not work.get("due_milestone") and not work.get("due_release"):
+            blockers.append(f"{work_id}에 완료할 마일스톤 또는 릴리스가 없습니다")
+    return blockers
+
+
+def delivery_path_blockers(data: dict[str, dict[str, Any]], change: dict[str, Any]) -> list[str]:
+    """Check analysis, design, and documentation readiness for implementation."""
+    path = change.get("delivery_path")
+    if not isinstance(path, dict):
+        return [f"{change['id']}에 분석·설계·문서화 delivery_path가 없습니다"]
+    kind = path.get("kind")
+    blockers: list[str] = []
+    if kind not in DELIVERY_PATH_KINDS:
+        return [f"{change['id']}의 변경 경로 유형이 올바르지 않습니다"]
+    if path.get("analysis") not in READINESS_STATES:
+        blockers.append(f"{change['id']}의 요구분석 준비 상태가 확정되지 않았습니다")
+    if path.get("design") not in READINESS_STATES:
+        blockers.append(f"{change['id']}의 설계 준비 상태가 확정되지 않았습니다")
+    action = path.get("documentation")
+    if action not in DOCUMENTATION_ACTIONS:
+        blockers.append(f"{change['id']}의 문서 현행화 방식이 확정되지 않았습니다")
+    surfaces = index(data["system_surfaces"].get("surfaces", []))
+    surface_ids = path.get("surfaces", [])
+    for surface_id in surface_ids:
+        if surface_id not in surfaces:
+            blockers.append(f"{change['id']}가 알 수 없는 시스템 표면 {surface_id}를 참조합니다")
+    if kind == "new_capability":
+        if path.get("analysis") not in {"complete", "reused"}:
+            blockers.append(f"{change['id']} 신규 기능은 요구분석 완료 또는 승인된 기준선 재사용이 필요합니다")
+        if path.get("design") not in {"complete", "reused"}:
+            blockers.append(f"{change['id']} 신규 기능은 설계 완료 또는 승인된 기준선 재사용이 필요합니다")
+        if action not in {"create_now", "update_now"}:
+            blockers.append(f"{change['id']} 신규 기능은 문서 작성을 나중으로 미룰 수 없습니다")
+        if not change.get("requirements"):
+            blockers.append(f"{change['id']} 신규 기능에 연결된 요구사항이 없습니다")
+        if not surface_ids:
+            blockers.append(f"{change['id']} 신규 기능에 화면·API·작업 등 구현 표면이 정의되지 않았습니다")
+        for requirement_id in change.get("requirements", []):
+            requirement = next((item for item in data["requirements"].get("requirements", []) if item.get("id") == requirement_id), None)
+            if not requirement or not requirement.get("acceptance_criteria"):
+                blockers.append(f"{change['id']}의 {requirement_id}에 인수 기준이 없습니다")
+        for surface_id in surface_ids:
+            surface = surfaces.get(surface_id, {})
+            if surface.get("documentation_status") != "current" or not surface.get("documentation_sources"):
+                blockers.append(f"{change['id']} 신규 기능의 {surface_id} 분석·설계 문서가 최신 상태가 아닙니다")
+    elif kind in {"existing_change", "defect", "legacy_modernization"}:
+        if path.get("analysis") not in {"complete", "reused"}:
+            blockers.append(f"{change['id']}의 변경 영향 분석이 완료되지 않았습니다")
+        if path.get("design") not in {"complete", "reused"}:
+            blockers.append(f"{change['id']}의 설계 영향 검토가 완료되지 않았습니다")
+        documented = [
+            surface_id for surface_id in surface_ids
+            if surfaces.get(surface_id, {}).get("documentation_status") in {"current", "stale"}
+        ]
+        if documented and action != "update_now":
+            blockers.append(
+                f"{change['id']}의 기존 문서가 있는 표면은 같은 변경에서 현행화해야 합니다: "
+                + ", ".join(documented)
+            )
+        if action == "deferred":
+            blockers.extend(documentation_work_blockers(data, change, path))
+        if kind == "legacy_modernization":
+            active_plans = [
+                item for item in data["system_surfaces"].get("legacy_plans", [])
+                if item.get("status") in {"planned", "in_progress"}
+            ]
+            if not active_plans:
+                blockers.append(f"{change['id']} 레거시 고도화에 승인된 인벤토리·문서 전환 계획이 없습니다")
+    elif kind == "internal_refactor":
+        if action != "not_applicable" or not path.get("reason"):
+            blockers.append(f"{change['id']} 내부 변경은 문서 영향 없음의 근거가 필요합니다")
+    elif kind == "governance" and action == "not_applicable" and not path.get("reason"):
+        blockers.append(f"{change['id']} 거버넌스 변경의 문서 영향 없음 근거가 없습니다")
+    if action in {"deferred", "not_applicable"} and not path.get("decided_by"):
+        blockers.append(f"{change['id']}의 문서화 결정자가 기록되지 않았습니다")
+    return blockers
+
+
 def development_blockers(data: dict[str, dict[str, Any]], change: dict[str, Any]) -> list[str]:
     """Return reasons why product implementation may not start for a change."""
     if change.get("development_scope") == "governance-bootstrap":
         return []
     gate_runs = data["gate_runs"].get("gate_runs", [])
     blockers: list[str] = []
+    if is_bootstrap_project(data):
+        blockers.append("프로젝트가 bootstrap 상태이므로 제품 구현을 시작할 수 없습니다")
+    blockers.extend(delivery_path_blockers(data, change))
     for gate_id in change.get("required_gates", []):
         candidates = [
             item for item in gate_runs
@@ -465,6 +602,14 @@ WORK_COVERAGE_AREAS = {
     "design", "implementation", "test", "documentation", "security",
     "data", "migration", "deployment", "operations", "training",
 }
+DELIVERY_PATH_KINDS = {
+    "new_capability", "existing_change", "defect", "legacy_modernization",
+    "internal_refactor", "governance",
+}
+READINESS_STATES = {"complete", "reused", "not_applicable"}
+DOCUMENTATION_ACTIONS = {"update_now", "create_now", "deferred", "not_applicable"}
+SURFACE_TYPES = {"ui_route", "api", "job", "event", "external_integration", "migration"}
+SURFACE_DOCUMENTATION_STATES = {"current", "stale", "undocumented", "not_applicable"}
 
 
 def work_assignment_policy(data: dict[str, dict[str, Any]]) -> dict[str, Any]:
@@ -893,6 +1038,30 @@ def render_documentation_standard(data: dict[str, dict[str, Any]]) -> str:
     return NOTICE + f"# 프로젝트 문서 포맷 기준\n\n- 상태: {policy['status']}\n- 책임자: {policy['owner']}\n- 합의 시점: {policy['agreement_gate']}\n\n## 운영 원칙\n\n{principles}\n\n## 문서 유형별 합의 현황\n\n" + table(
         ["ID", "문서 유형", "독자", "상태", "적용 생성물", "필수 항목", "Kit 예시 서식"], rows,
     ) + "\n\n새 항목은 documentation.json의 해당 문서 유형에 추가한다. 생성기는 같은 유형의 기존 문서 전체에 항목을 소급 표시하고, 확인된 자동 근거가 없으면 미작성으로 표시한다.\n"
+
+
+def render_system_surface_coverage(data: dict[str, dict[str, Any]]) -> str:
+    registry = data["system_surfaces"]
+    policy = registry["policy"]
+    surfaces = table(
+        ["ID", "모듈", "유형", "식별 키", "문서 상태", "소스 패턴", "문서 정본"],
+        [[
+            item["id"], item["module"], item["type"], item["key"], item["documentation_status"],
+            ", ".join(item.get("source_patterns", [])), ", ".join(item.get("documentation_sources", [])) or "-",
+        ] for item in registry.get("surfaces", [])],
+    )
+    plans = table(
+        ["ID", "상태", "소스 루트", "기존 문서", "인벤토리", "후속 작업", "목표"],
+        [[
+            item["id"], item["status"], ", ".join(item.get("source_roots", [])),
+            ", ".join(item.get("source_documents", [])) or "-", item["inventory_status"],
+            ", ".join(item.get("work_items", [])), item.get("due_milestone") or item.get("due_release") or "-",
+        ] for item in registry.get("legacy_plans", [])],
+    )
+    return NOTICE + (
+        f"# 시스템 표면과 문서 현행화\n\n## {policy['id']} — {policy['title']}\n\n{policy['rule']}\n\n"
+        f"## 화면·API·배치·이벤트 표면\n\n{surfaces}\n\n## 레거시 인벤토리·문서 전환 계획\n\n{plans}\n"
+    )
 
 
 def render_requirements(data: dict[str, dict[str, Any]]) -> str:
@@ -1822,6 +1991,7 @@ def render_documents(data: dict[str, dict[str, Any]]) -> dict[str, str]:
         module_id = screen.get("module", "unknown")
         documents[f"manuals/modules/{module_id}/{manual['id']}.md"] = render_manual(data, manual)
     documents["foundation/documentation-standard.md"] = render_documentation_standard(data)
+    documents["system-surface-coverage.md"] = render_system_surface_coverage(data)
     for path, content in list(documents.items()):
         if path.endswith(".md"):
             documents[path] = content.rstrip() + document_template_appendix(data, path) + "\n"
@@ -1973,6 +2143,34 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
                 errors.append(
                     f"{manual.get('id', label)} is stored in {module_id} but references a screen outside its UI fragment"
                 )
+    surface_registry = data["system_surfaces"]
+    surface_policy = surface_registry.get("policy", {})
+    for field in ("id", "title", "rule", "source_exclusions"):
+        if not surface_policy.get(field):
+            errors.append(f"system-surface policy has no {field}")
+    surface_fragment_modules: set[str] = set()
+    for path, fragment in surface_registry.get("_module_fragments", []):
+        module_id = fragment.get("module")
+        label = path.relative_to(SSOT).as_posix() if path.is_relative_to(SSOT) else str(path)
+        if module_id not in modules:
+            errors.append(f"{label} has an unknown module")
+            continue
+        if path.stem != module_id:
+            errors.append(f"{label} filename does not match module {module_id}")
+        if module_id in surface_fragment_modules:
+            errors.append(f"duplicate system-surface fragment for {module_id}")
+        surface_fragment_modules.add(module_id)
+        if not isinstance(fragment.get("surfaces"), list):
+            errors.append(f"{label} surfaces must be a list")
+        for surface in fragment.get("surfaces", []):
+            if surface.get("module") != module_id:
+                errors.append(f"{surface.get('id', label)} is stored in {module_id} but links to {surface.get('module')}")
+    if surface_registry.get("storage") == "module-sharded":
+        if surface_registry.get("_root_surfaces"):
+            errors.append("system-surfaces.json has records while module-sharded storage is enabled")
+        missing_surface_fragments = set(modules) - surface_fragment_modules
+        if missing_surface_fragments:
+            errors.append("missing system-surface fragments: " + ", ".join(sorted(missing_surface_fragments)))
     tests = index(data["tests"].get("test_cases", []))
     decisions = index(data["decisions"].get("decisions", []))
     changes = index(data["changes"].get("changes", []))
@@ -1992,6 +2190,43 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
     manuals = index(data["ui_modules"].get("manuals", []))
     runbooks = index(data["operations"].get("runbooks", []))
     delivery_profiles = index(data["delivery_profiles"].get("delivery_profiles", []))
+    surfaces = index(surface_registry.get("surfaces", []))
+    for surface in surfaces.values():
+        for field in ("module", "type", "key", "title", "source_patterns", "documentation_status"):
+            if not surface.get(field):
+                errors.append(f"{surface['id']} has no {field}")
+        if surface.get("module") not in modules:
+            errors.append(f"{surface['id']} references unknown module {surface.get('module')}")
+        if surface.get("type") not in SURFACE_TYPES:
+            errors.append(f"{surface['id']} has an invalid surface type")
+        if surface.get("documentation_status") not in SURFACE_DOCUMENTATION_STATES:
+            errors.append(f"{surface['id']} has an invalid documentation status")
+        patterns = surface.get("source_patterns", [])
+        if not isinstance(patterns, list) or not patterns or any(
+            not isinstance(pattern, str) or not pattern.startswith("project/src/") for pattern in patterns
+        ):
+            errors.append(f"{surface['id']} source patterns must be non-empty project/src/ patterns")
+        document_sources = surface.get("documentation_sources", [])
+        if surface.get("documentation_status") in {"current", "stale"} and not document_sources:
+            errors.append(f"{surface['id']} is documented but has no documentation sources")
+        for source in document_sources:
+            if not isinstance(source, str) or not source.startswith("project/.aidd/ssot/"):
+                errors.append(f"{surface['id']} documentation source is not canonical: {source}")
+    legacy_plan_ids: set[str] = set()
+    for plan in surface_registry.get("legacy_plans", []):
+        plan_id = plan.get("id", "legacy plan")
+        legacy_plan_ids.add(plan_id)
+        if plan.get("status") not in {"planned", "in_progress", "completed"}:
+            errors.append(f"{plan_id} has an invalid status")
+        if plan.get("inventory_status") not in {"planned", "in_progress", "completed"}:
+            errors.append(f"{plan_id} has an invalid inventory status")
+        source_roots = plan.get("source_roots", [])
+        if not source_roots or any(not str(path).startswith("project/src/") for path in source_roots):
+            errors.append(f"{plan_id} must identify project/src/ source roots")
+        if not plan.get("work_items"):
+            errors.append(f"{plan_id} has no documentation work items")
+        if not plan.get("due_milestone") and not plan.get("due_release"):
+            errors.append(f"{plan_id} has no due milestone or release")
     all_items: list[dict[str, Any]] = []
     for key in ("requirements", "modules", "decisions", "open_items", "assumptions", "risks", "changes", "tests", "releases", "merges", "deliverables", "evidence", "approvals", "gate_runs"):
         collection_name = {"requirements": "requirements", "modules": "modules", "decisions": "decisions", "open_items": "open_items", "assumptions": "assumptions", "risks": "risks", "changes": "changes", "tests": "test_cases", "releases": "releases", "merges": "merges", "deliverables": "deliverables", "evidence": "evidence", "approvals": "approvals", "gate_runs": "gate_runs"}[key]
@@ -2080,11 +2315,13 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
     ui_items = list(ui_baselines.values()) + list(ui_patterns.values()) + list(ui_components.values()) + list(screens.values()) + list(manuals.values())
     operations_items = list(runbooks.values())
     delivery_profile_items = list(delivery_profiles.values())
+    surface_items = list(surfaces.values()) + surface_registry.get("legacy_plans", []) + [surface_policy]
     for label, items in (
         ("foundation.json", foundation_items),
         ("ui-system.json and ui-modules/*.json", ui_items),
         ("operations.json", operations_items),
         ("delivery-profiles.json", delivery_profile_items),
+        ("system-surfaces.json and system-surfaces/*.json", surface_items),
     ):
         ids = [item.get("id") for item in items]
         if len(ids) != len(set(ids)):
@@ -2486,6 +2723,8 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
             errors.append(f"{baseline['id']} has no technology choices")
     known_gates = {deployment_gate.get("id")} | {item.get("id") for item in technology.get("gates", [])}
     for change in changes.values():
+        for blocker in delivery_path_blockers(data, change):
+            errors.append(blocker)
         for gate_id in change.get("required_gates", []):
             if gate_id not in known_gates:
                 errors.append(f"{change['id']} references unknown required gate {gate_id}")
@@ -2689,6 +2928,23 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
                 value = work["verification_load"].get(key)
                 if not isinstance(value, int) or value < 0:
                     errors.append(f"{work['id']} verification load {key} must be a non-negative integer")
+        if work.get("type") == "documentation-reconciliation":
+            if not work.get("surfaces"):
+                errors.append(f"{work['id']} documentation reconciliation has no surfaces")
+            for surface_id in work.get("surfaces", []):
+                if surface_id not in surfaces:
+                    errors.append(f"{work['id']} references unknown surface {surface_id}")
+            if not work.get("target_docs"):
+                errors.append(f"{work['id']} documentation reconciliation has no target docs")
+            if not work.get("due_milestone") and not work.get("due_release"):
+                errors.append(f"{work['id']} documentation reconciliation has no due milestone or release")
+    for plan in surface_registry.get("legacy_plans", []):
+        for work_id in plan.get("work_items", []):
+            if work_id not in work_items:
+                errors.append(f"{plan.get('id')} references unknown work item {work_id}")
+        due_milestone = plan.get("due_milestone")
+        if due_milestone and due_milestone not in milestones:
+            errors.append(f"{plan.get('id')} references unknown milestone {due_milestone}")
     for interface in interfaces.values():
         for module_id in [interface.get("provider")] + interface.get("consumers", []):
             if module_id not in modules:
@@ -2990,21 +3246,33 @@ def validate(data: dict[str, dict[str, Any]], check_generated: bool = True, chec
             if linked_id not in known_link_ids:
                 errors.append(f"{item['id']} references unknown linked item {linked_id}")
     canonical_sources = set(FILES.values()) | {
-        "modules/*.json", "ui-modules/*.json", "AGENTS.md", "CLAUDE.md", "README.md",
+        "modules/*.json", "ui-modules/*.json", "system-surfaces/*.json", "AGENTS.md", "CLAUDE.md", "README.md",
     }
     for deliverable in data["deliverables"]["deliverables"]:
         for source in deliverable.get("source", []):
             if source not in canonical_sources:
                 errors.append(f"{deliverable['id']} references unknown canonical source {source}")
+        replacement = deliverable.get("replaced_by")
+        if replacement and replacement not in deliverables:
+            errors.append(f"{deliverable['id']} references unknown replacement {replacement}")
+        if deliverable.get("status") == "superseded" and not replacement:
+            errors.append(f"{deliverable['id']} is superseded without a replacement")
         path_value = deliverable.get("path")
         if deliverable.get("applicability") == "required" and deliverable.get("status") == "current":
             if not path_value or not (ROOT / path_value).exists():
                 errors.append(f"{deliverable['id']} is current but its path is missing")
-    contract = (ROOT / ".ai" / "core" / "agent-contract.md").read_text(encoding="utf-8")
-    for filename in ("AGENTS.md", "CLAUDE.md"):
-        path = ROOT / filename
-        if not path.exists() or path.read_text(encoding="utf-8") != contract:
-            errors.append(f"{filename} has drifted from .ai/core/agent-contract.md")
+    agents_path = ROOT / "AGENTS.md"
+    claude_path = ROOT / "CLAUDE.md"
+    if not agents_path.exists() or not agents_path.read_text(encoding="utf-8").strip():
+        errors.append("AGENTS.md canonical agent contract is missing or empty")
+    if not claude_path.exists():
+        errors.append("CLAUDE.md Claude adapter is missing")
+    else:
+        claude_lines = [line.strip() for line in claude_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        if not claude_lines or claude_lines[0] != "@AGENTS.md":
+            errors.append("CLAUDE.md must import the canonical AGENTS.md on its first non-empty line")
+    if (ROOT / ".ai" / "core" / "agent-contract.md").exists():
+        errors.append("legacy .ai/core/agent-contract.md must not duplicate the canonical AGENTS.md")
     if check_adapters:
         for target in SKILL_TARGETS:
             errors.extend(compare_trees(CANONICAL_SKILLS, target))
@@ -3112,6 +3380,24 @@ def init_module_ui(module_id: str) -> str:
     return f"Initialized optional UI specification for {module_id} at project/.aidd/ssot/{path.relative_to(SSOT).as_posix()}."
 
 
+def write_empty_module_surfaces(module_id: str) -> Path:
+    path = SYSTEM_SURFACE_SPEC_DIR / f"{module_id}.json"
+    with repository_write_lock():
+        known_modules = index(read_json(SSOT / FILES["modules"]).get("modules", []))
+        if module_id not in known_modules:
+            raise ValueError(f"unknown module: {module_id}")
+        if path.exists():
+            raise ValueError(f"module system-surface fragment already exists: {path.relative_to(SSOT)}")
+        SYSTEM_SURFACE_SPEC_DIR.mkdir(parents=True, exist_ok=True)
+        write_json_atomic(path, {"schema_version": 1, "module": module_id, "surfaces": []})
+    return path
+
+
+def init_module_surfaces(module_id: str) -> str:
+    path = write_empty_module_surfaces(module_id)
+    return f"Initialized system-surface inventory for {module_id} at project/.aidd/ssot/{path.relative_to(SSOT).as_posix()}."
+
+
 def add_module(module_id: str, name: str, purpose: str, dependencies: list[str], status: str, with_ui: bool = False) -> str:
     if not ID_PATTERN.match(module_id) or not module_id.startswith("MOD-"):
         raise ValueError("module ID must use the MOD-XXX form")
@@ -3121,6 +3407,7 @@ def add_module(module_id: str, name: str, purpose: str, dependencies: list[str],
         raise ValueError("module status must be planned, in_progress, blocked, or done")
     path = MODULE_SPEC_DIR / f"{module_id}.json"
     ui_path = UI_MODULE_SPEC_DIR / f"{module_id}.json"
+    surface_path = SYSTEM_SURFACE_SPEC_DIR / f"{module_id}.json"
     ui_message = ""
     with repository_write_lock():
         # Reload inside the lock so concurrent processes cannot overwrite one
@@ -3132,15 +3419,18 @@ def add_module(module_id: str, name: str, purpose: str, dependencies: list[str],
         unknown_dependencies = sorted(set(dependencies) - set(modules))
         if unknown_dependencies:
             raise ValueError("unknown module dependencies: " + ", ".join(unknown_dependencies))
-        if path.exists() or (with_ui and ui_path.exists()):
+        if path.exists() or surface_path.exists() or (with_ui and ui_path.exists()):
             raise ValueError(f"module specification fragment already exists: {path.relative_to(ROOT)}")
         MODULE_SPEC_DIR.mkdir(parents=True, exist_ok=True)
+        SYSTEM_SURFACE_SPEC_DIR.mkdir(parents=True, exist_ok=True)
         if with_ui:
             UI_MODULE_SPEC_DIR.mkdir(parents=True, exist_ok=True)
         created: list[Path] = []
         try:
             write_json_atomic(path, {"schema_version": 1, "module": module_id, "requirements": []})
             created.append(path)
+            write_json_atomic(surface_path, {"schema_version": 1, "module": module_id, "surfaces": []})
+            created.append(surface_path)
             if with_ui:
                 write_json_atomic(ui_path, {"schema_version": 1, "module": module_id, "screens": [], "manuals": []})
                 created.append(ui_path)
@@ -3156,7 +3446,7 @@ def add_module(module_id: str, name: str, purpose: str, dependencies: list[str],
                 if created_path.exists():
                     created_path.unlink()
             raise
-    return f"Added {module_id}. Add its requirements to project/.aidd/ssot/modules/{path.name}.{ui_message} Run generate, then validate."
+    return f"Added {module_id}. Add requirements and executable surfaces to its module fragments.{ui_message} Run generate, then validate."
 
 
 def update_module_status(module_id: str, status: str) -> str:
@@ -3221,9 +3511,6 @@ def safe_replace_tree(source: Path, destination: Path) -> None:
 
 
 def sync_ai() -> None:
-    contract = (ROOT / ".ai" / "core" / "agent-contract.md").read_text(encoding="utf-8")
-    (ROOT / "AGENTS.md").write_text(contract, encoding="utf-8", newline="\n")
-    (ROOT / "CLAUDE.md").write_text(contract, encoding="utf-8", newline="\n")
     for target in SKILL_TARGETS:
         safe_replace_tree(CANONICAL_SKILLS, target)
     result = subprocess.run(
@@ -3383,6 +3670,132 @@ def document_impact_text(data: dict[str, dict[str, Any]], paths: list[str]) -> s
             ["ID", "문서 유형", "상태", "소급 적용 생성물"], template_rows,
         ) + "\n\n정합성 의미 검토는 aidd-document-consistency 스킬로 수행하고, 확정 뒤 generate·validate·관련 테스트를 실행한다.\n"
     )
+
+
+def documentation_commit_check(
+    data: dict[str, dict[str, Any]], staged_paths: list[str],
+) -> tuple[str, list[str]]:
+    """Check staged product source against the staged documentation control records."""
+    normalized = sorted({path.replace("\\", "/") for path in staged_paths})
+    policy = data["system_surfaces"].get("policy", {})
+    exclusions = policy.get("source_exclusions", ["project/src/README.md"])
+    source_paths = [
+        path for path in normalized
+        if path.startswith("project/src/") and not any(fnmatch.fnmatch(path, pattern) for pattern in exclusions)
+    ]
+    if not source_paths:
+        return "문서 현행화 검사: staged 제품 소스 변경 없음", []
+    surfaces = data["system_surfaces"].get("surfaces", [])
+    changes = [
+        item for item in data["changes"].get("changes", [])
+        if item.get("status") not in {"done", "verified", "released"}
+    ]
+    work_index = index(data["delivery_plan"].get("work_items", []))
+    blockers: list[str] = []
+    rows: list[list[str]] = []
+
+    def work_is_actionable(work_id: str) -> bool:
+        work = work_index.get(work_id, {})
+        return bool(
+            work.get("type") == "documentation-reconciliation"
+            and work.get("status") != "completed"
+            and work.get("target_docs")
+            and (work.get("due_milestone") or work.get("due_release"))
+        )
+
+    legacy_plans = [
+        item for item in data["system_surfaces"].get("legacy_plans", [])
+        if item.get("status") in {"planned", "in_progress"}
+        and all(work_is_actionable(work_id) for work_id in item.get("work_items", []))
+        and item.get("work_items")
+    ]
+    for source_path in source_paths:
+        matched = [
+            item for item in surfaces
+            if any(fnmatch.fnmatch(source_path, pattern) for pattern in item.get("source_patterns", []))
+        ]
+        if not matched:
+            legacy_plan = next((
+                item for item in legacy_plans
+                if any(source_path == root.rstrip("/") or source_path.startswith(root.rstrip("/") + "/") for root in item.get("source_roots", []))
+            ), None)
+            if legacy_plan:
+                rows.append([source_path, legacy_plan["id"], "레거시 인벤토리 계획으로 추적"])
+                continue
+            blockers.append(f"{source_path}에 대응하는 화면·API·배치·이벤트 표면 또는 레거시 문서화 계획이 없습니다")
+            rows.append([source_path, "-", "차단"])
+            continue
+        for surface in matched:
+            surface_id = surface["id"]
+            candidates = [item for item in changes if surface_id in item.get("delivery_path", {}).get("surfaces", [])]
+            if len(candidates) != 1:
+                blockers.append(
+                    f"{surface_id}를 담당하는 진행 중 CHG가 "
+                    + ("없습니다" if not candidates else "여러 개입니다: " + ", ".join(item["id"] for item in candidates))
+                )
+                rows.append([source_path, surface_id, "CHG 연결 차단"])
+                continue
+            change = candidates[0]
+            delivery_path = change.get("delivery_path", {})
+            action = delivery_path.get("documentation")
+            doc_state = surface.get("documentation_status")
+            doc_sources = surface.get("documentation_sources", [])
+            staged_doc = any(
+                staged == document or fnmatch.fnmatch(staged, document)
+                for staged in normalized for document in doc_sources
+            )
+            if doc_state in {"current", "stale"}:
+                if action != "update_now":
+                    blockers.append(f"{surface_id}는 기존 문서가 있어 {change['id']}에서 지금 현행화해야 합니다")
+                elif not doc_sources or not staged_doc:
+                    blockers.append(f"{surface_id}의 기존 문서 정본이 staged 변경에 포함되지 않았습니다")
+            elif doc_state == "undocumented":
+                if action == "deferred":
+                    deferred = documentation_work_blockers(data, change, delivery_path)
+                    blockers.extend(deferred)
+                elif action in {"create_now", "update_now"}:
+                    if not doc_sources or not staged_doc:
+                        blockers.append(f"{surface_id}의 새 문서 정본이 staged 변경에 포함되지 않았습니다")
+                else:
+                    blockers.append(f"{surface_id}의 문서를 지금 작성할지 후속 WRK로 미룰지 결정되지 않았습니다")
+            elif doc_state == "not_applicable":
+                if action != "not_applicable" or delivery_path.get("kind") not in {"internal_refactor", "governance"}:
+                    blockers.append(f"{surface_id}의 문서 영향 없음 판정과 변경 경로가 일치하지 않습니다")
+            rows.append([source_path, surface_id, f"{change['id']} / {action or '미정'}"])
+    report = "# staged 소스 문서 현행화 검사\n\n" + table(["소스", "표면·계획", "판정"], rows)
+    return report, sorted(set(blockers))
+
+
+def read_index_json(relative: str) -> dict[str, Any]:
+    """Read one JSON file exactly as staged in the Git index."""
+    return json.loads(git("show", f":{relative}"))
+
+
+def load_staged_documentation_controls() -> dict[str, dict[str, Any]]:
+    """Load only the records needed by the pre-commit documentation gate from the index."""
+    data = {
+        "changes": read_index_json("project/.aidd/ssot/changes.json"),
+        "delivery_plan": read_index_json("project/.aidd/ssot/delivery-plan.json"),
+        "system_surfaces": read_index_json("project/.aidd/ssot/system-surfaces.json"),
+    }
+    surface_paths = git("ls-files", "--cached", "--", "project/.aidd/ssot/system-surfaces/*.json").splitlines()
+    surfaces = list(data["system_surfaces"].get("surfaces", []))
+    for relative in surface_paths:
+        fragment = read_index_json(relative.replace("\\", "/"))
+        surfaces.extend(fragment.get("surfaces", []))
+    data["system_surfaces"]["surfaces"] = surfaces
+    return data
+
+
+def staged_documentation_check_text() -> tuple[str, list[str]]:
+    staged_paths = git("diff", "--cached", "--name-only", "--diff-filter=ACMR").splitlines()
+    if not any(path.replace("\\", "/").startswith("project/src/") for path in staged_paths):
+        return "문서 현행화 검사: staged 제품 소스 변경 없음", []
+    try:
+        data = load_staged_documentation_controls()
+    except (subprocess.CalledProcessError, json.JSONDecodeError) as exc:
+        return "staged 정본에서 문서 현행화 통제를 읽지 못했습니다", [str(exc)]
+    return documentation_commit_check(data, staged_paths)
 
 
 def configured_work_log_actor(data: dict[str, dict[str, Any]]) -> dict[str, str]:
@@ -4081,6 +4494,7 @@ def bootstrap_records(project_id: str, name: str, mode: str, source_location: st
         "ui_system": (None, {"baselines": [], "patterns": [], "components": []}),
         "operations": ("runbooks", {}),
         "delivery_profiles": ("delivery_profiles", {}),
+        "system_surfaces": (None, {"storage": "module-sharded", "surfaces": [], "legacy_plans": []}),
     }
     records: dict[str, dict[str, Any]] = {"project": project}
     for name, (collection, extras) in empty_collections.items():
@@ -4166,6 +4580,16 @@ def bootstrap_records(project_id: str, name: str, mode: str, source_location: st
                 "required_sections": [{"id": "procedure", "title": "절차·확인점·복구", "fill_from": None}],
             },
             {
+                "id": "DOC-LEG", "name": "레거시 시스템 문서 현행화 계획",
+                "seed": ".ai/templates/artifact/legacy-reconciliation-workbook.md",
+                "target_patterns": ["legacy/**/*.md", "migration/**/*.md"],
+                "audience": "사용자, 분석·설계·개발·검증 AI와 PM", "status": "draft",
+                "required_sections": [
+                    {"id": "inventory", "title": "모듈별 구현 표면과 기존 문서 인벤토리", "fill_from": "system-surfaces"},
+                    {"id": "plan", "title": "변환·현행화 작업과 마감", "fill_from": "delivery-plan"},
+                ],
+            },
+            {
                 "id": "DOC-WRK", "name": "협업 작업 기록",
                 "seed": ".ai/templates/artifact/daily-work-log.md",
                 "target_patterns": ["work-log/**/*.md"],
@@ -4173,6 +4597,18 @@ def bootstrap_records(project_id: str, name: str, mode: str, source_location: st
                 "required_sections": [{"id": "context", "title": "수행 맥락·결과·다음 행동", "fill_from": None}],
             },
         ],
+    }
+    records["system_surfaces"] = {
+        "schema_version": 1,
+        "storage": "module-sharded",
+        "policy": {
+            "id": "SFP-001",
+            "title": "실행 표면과 문서 현행화 통제",
+            "source_exclusions": ["project/src/README.md"],
+            "rule": "화면·API·배치·이벤트·외부 연동 변경은 현재 문서 또는 고객이 선택한 후속 문서 작업과 연결한다.",
+        },
+        "surfaces": [],
+        "legacy_plans": [],
     }
     records["workboard"] = {
         "schema_version": 1, "id": "WB-001", "title": "현재 작업 보드",
@@ -4268,7 +4704,7 @@ def main() -> int:
     sub.add_parser("generate", help="regenerate human-readable artifacts")
     sub.add_parser("validate", help="validate canonical links and generated/adapted drift")
     sub.add_parser("migrate-module-specs", help="move existing requirements into module-owned specification fragments")
-    sub.add_parser("sync-ai", help="synchronize canonical instructions and skills to both agents")
+    sub.add_parser("sync-ai", help="synchronize canonical skills to both agents and verify the harness")
     sub.add_parser("integration-status", help="report local Git integration state without network or merge actions")
     sub.add_parser("current-actor", help="resolve the current local Git identity to a verified AIDD participant or bot")
     assign_work_parser = sub.add_parser("assign-work", help="assign one work item to an active HUM participant")
@@ -4287,6 +4723,8 @@ def main() -> int:
     impact_parser.add_argument("--id", required=True, help="stable AIDD ID to analyze")
     document_impact_parser = sub.add_parser("document-impact", help="report documentation reconciliation candidates after source or SSOT edits")
     document_impact_parser.add_argument("--path", action="append", default=[], help="changed relative path; repeat when needed")
+    documentation_check_parser = sub.add_parser("documentation-check", help="block staged product source without documentation or an approved follow-up WRK")
+    documentation_check_parser.add_argument("--staged", action="store_true", help="inspect the Git index exactly as it will be committed")
     work_log_parser = sub.add_parser("record-work", help="append a concise daily work record in the verified Git actor's own file")
     work_log_parser.add_argument("--summary", required=True, help="what was done")
     work_log_parser.add_argument("--why", required=True, help="why it was needed")
@@ -4306,6 +4744,8 @@ def main() -> int:
     add_module_parser.add_argument("--with-ui", action="store_true", help="also create an optional empty UI specification fragment")
     init_ui_parser = sub.add_parser("init-module-ui", help="create an optional empty UI specification fragment for an existing module")
     init_ui_parser.add_argument("--module", required=True, help="existing module ID")
+    init_surfaces_parser = sub.add_parser("init-module-surfaces", help="create an empty executable-surface inventory for an existing module")
+    init_surfaces_parser.add_argument("--module", required=True, help="existing module ID")
     module_status_parser = sub.add_parser("module-status", help="update one module's independent progress status")
     module_status_parser.add_argument("--module", required=True, help="existing module ID")
     module_status_parser.add_argument("--status", choices=("planned", "in_progress", "blocked", "done"), required=True)
@@ -4395,7 +4835,7 @@ def main() -> int:
         except (OSError, RuntimeError) as exc:
             print(f"ERROR: {exc}", file=sys.stderr)
             return 2
-        print("Synchronized agent instructions and skills.")
+        print("Synchronized canonical skills and verified the agent harness.")
         return 0
     if args.command == "migrate-module-specs":
         try:
@@ -4414,6 +4854,13 @@ def main() -> int:
     if args.command == "init-module-ui":
         try:
             print(init_module_ui(args.module))
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 2
+        return 0
+    if args.command == "init-module-surfaces":
+        try:
+            print(init_module_surfaces(args.module))
         except (OSError, json.JSONDecodeError, ValueError) as exc:
             print(f"ERROR: {exc}", file=sys.stderr)
             return 2
@@ -4519,6 +4966,15 @@ def main() -> int:
         return 0
     if args.command == "hook":
         return run_hook(args.platform, args.event)
+    if args.command == "documentation-check":
+        if not args.staged:
+            print("ERROR: documentation-check currently requires --staged", file=sys.stderr)
+            return 2
+        report, blockers = staged_documentation_check_text()
+        print(report)
+        for blocker in blockers:
+            print(f"BLOCKER: {blocker}")
+        return 1 if blockers else 0
     try:
         data = load_records()
     except (OSError, json.JSONDecodeError) as exc:

@@ -22,6 +22,10 @@
       "required_tokens": ["hook", "local-log", "--role", "assistant"]
     }
   },
+  "git_pre_commit": {
+    "purpose": "staged 제품 소스가 시스템 표면과 연결되고 문서가 함께 갱신되었거나 기한 있는 후속 작업이 승인되었는지 검사한다.",
+    "command": "python .ai/tools/aidd.py documentation-check --staged"
+  },
   "recovery_paths": [
     ".ai/hooks/policy.json",
     ".ai/hooks/contract.json",

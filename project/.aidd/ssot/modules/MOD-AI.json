@@ -5,7 +5,7 @@
     {
       "id": "REQ-013",
       "title": "Codex·Claude 동등성",
-      "statement": "프레임워크는 Codex와 Claude Code 어댑터에서 정본 스킬, 규칙과 검증 동작을 동기화해야 한다.",
+      "statement": "프레임워크는 AGENTS.md를 공통 AI 수행 계약의 단일 정본으로 사용하고 Claude Code가 이를 import하게 하며, 공통 스킬과 검증 동작을 두 플랫폼에 동기화해야 한다.",
       "rationale": "도구 선택이 수행 품질이나 거버넌스 기대 수준을 바꾸면 안 된다.",
       "priority": "must",
       "status": "specified",
@@ -17,6 +17,7 @@
         "TC-003"
       ],
       "acceptance_criteria": [
+        "AGENTS.md가 공통 규칙의 단일 정본이고 CLAUDE.md가 이를 import한다",
         "두 에이전트가 동일한 스킬 내용을 읽는다",
         "어댑터 불일치가 검증에 실패한다"
       ],

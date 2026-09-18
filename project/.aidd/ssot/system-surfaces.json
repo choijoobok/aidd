@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "storage": "module-sharded",
+  "policy": {
+    "id": "SFP-001",
+    "title": "구현 표면과 문서 현행화 정책",
+    "rule": "제품 소스 변경은 화면 경로·API·배치·이벤트·외부 연동·마이그레이션 표면과 연결하고, 기존 문서가 있으면 같은 변경에서 갱신한다. 문서가 없으면 고객이 즉시 작성 또는 기한 있는 후속 작업을 선택한다.",
+    "source_exclusions": ["project/src/README.md"]
+  },
+  "surfaces": [],
+  "legacy_plans": []
+}

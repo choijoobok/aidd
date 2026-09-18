@@ -100,6 +100,26 @@
       "consequences": ["새 기술 스택은 같은 메타 구조에 프로젝트 고유 규칙과 검증기를 연결할 수 있다", "UI가 없는 모듈은 별도 UI 조각이 필요 없다", "생성기와 검증기의 관리 범위가 넓어진다", "실제 사용자 사이트·ZIP 패키지·화면 캡처 자동화는 후속 실행 자산으로 남는다"],
       "rollback": "안정 ID와 정본을 내보내 보존하고 기존 guides·deliverables 뷰로 축소한다. 모듈 요구사항 구조와 기존 산출물은 유지한다.",
       "supersedes": null, "requirements": ["REQ-011", "REQ-015", "REQ-025", "REQ-031", "REQ-032", "REQ-033"]
+    },
+    {
+      "id": "ADR-012", "title": "구현 표면 기반 문서 동기화와 레거시 단계 전환",
+      "status": "accepted", "date": "2026-09-18",
+      "context": "신규 기능의 분석·설계를 건너뛰거나 기존 소스만 변경하면 문서가 빠르게 낡지만, 문서가 전혀 없는 레거시 전체를 한 번에 문서화하도록 강제하는 것도 현실적이지 않다.",
+      "options": ["모든 변경에 전체 문서 선행 강제", "문서 현행화를 권고만 함", "변경 유형과 구현 표면별로 즉시 현행화 또는 기한 있는 후속 작업을 통제"],
+      "decision": "신규 기능은 요구분석·설계·최신 문서를 선행한다. 기존 기능은 문서가 있으면 같은 변경에서 갱신하고, 문서가 없을 때 고객이 후속 작성을 선택하면 표면·문서·기한이 있는 WRK로 추적한다. 레거시는 전체 표면 인벤토리와 기존 문서 출처를 먼저 기록해 단계적으로 전환한다.",
+      "consequences": ["화면 경로·API 등 실제 변경 단위와 문서 부채를 연결할 수 있다", "커밋 전 소스만 변경된 상태를 탐지한다", "레거시 고도화에는 초기 인벤토리 비용이 든다", "훅은 의미 정합성까지 자동 판단하지 않으므로 독립 문서 검토가 여전히 필요하다"],
+      "rollback": "SURF와 LDP를 내보내 보존하고 pre-commit 차단을 경고로 낮추되 CHG별 문서 결정과 후속 WRK 추적은 유지한다.",
+      "supersedes": null, "requirements": ["REQ-035"]
+    },
+    {
+      "id": "ADR-011", "title": "AGENTS.md를 공통 AI 수행 계약의 단일 정본으로 사용",
+      "status": "accepted", "date": "2026-09-18",
+      "context": "공통 계약을 .ai/core, AGENTS.md와 CLAUDE.md에 같은 내용으로 복제하고 sync-ai가 덮어쓰는 방식은 사람이 수정 위치와 플랫폼별 차이를 직관적으로 이해하기 어렵다.",
+      "options": [".ai/core에서 두 provider 파일을 계속 생성", "AGENTS.md와 CLAUDE.md를 독립 관리", "AGENTS.md를 정본으로 두고 CLAUDE.md가 import"],
+      "decision": "AGENTS.md를 공통 AI 수행 계약의 단일 정본으로 삼고 CLAUDE.md는 @AGENTS.md import와 Claude Code 전용 연결만 유지한다. sync-ai는 공통 스킬 복사본만 갱신한다.",
+      "consequences": ["공통 규칙의 수정 위치가 저장소 루트에서 바로 보인다", "CLAUDE.md의 중복이 사라진다", "Claude Code의 import 구문에 의존하므로 검증기가 첫 import 줄을 검사한다", "provider별 스킬과 훅은 기존처럼 별도 어댑터가 필요하다"],
+      "rollback": "AGENTS.md 내용을 별도 공통 계약 파일로 옮기고 생성기를 복원하되 플랫폼별 전용 내용은 분리 유지한다.",
+      "supersedes": null, "requirements": ["REQ-013"]
     }
   ]
 }

@@ -6,7 +6,7 @@
 
 | ID | 마일스톤 | 상태 | 모듈 | 목표일 | 작업 |
 |---|---|---|---|---|---|
-| MLS-001 | 실행 가능한 AIDD 사전 기반 완성 | 진행 중 | MOD-GOV, MOD-ARCH, MOD-DOC, MOD-AI, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG | - | WRK-001, WRK-002, WRK-003, WRK-004, WRK-005, WRK-006, WRK-007, WRK-008, WRK-009, WRK-010, WRK-011, WRK-012, WRK-013 |
+| MLS-001 | 실행 가능한 AIDD 사전 기반 완성 | 진행 중 | MOD-GOV, MOD-ARCH, MOD-DOC, MOD-AI, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG | - | WRK-001, WRK-002, WRK-003, WRK-004, WRK-005, WRK-006, WRK-007, WRK-008, WRK-009, WRK-010, WRK-011, WRK-012, WRK-013, WRK-014 |
 
 ## 작업 항목
 
@@ -25,13 +25,14 @@
 | WRK-011 | Git 신원과 협업 참여자 대조 | 완료 | - | MOD-CHG | CHG-008 | REQ-029 | - | WRK-002, WRK-010 | EVD-020 | - |
 | WRK-012 | 개발 기반·UI·운영·제출 정본과 생성 계약 | 진행 중 | HUM-001 | MOD-ARCH | CHG-011 | REQ-011, REQ-015, REQ-025, REQ-031, REQ-032, REQ-033 | design, implementation, test, documentation, migration, operations, training | WRK-003, WRK-005 | EVD-023, EVD-024 | - |
 | WRK-013 | 팀 작업 배정·감사 이력·포괄성 게이트 | 완료 | HUM-001 | MOD-GOV | CHG-012 | REQ-034 | design, implementation, test, documentation, migration, operations | WRK-003, WRK-010, WRK-011 | EVD-026 | - |
+| WRK-014 | 변경 유형별 문서 동기화와 레거시 전환 통제 | 완료 | HUM-001 | MOD-DOC | CHG-013 | REQ-035 | design, implementation, test, documentation, migration, operations, training | WRK-003, WRK-005, WRK-013 | EVD-028 | - |
 
 ## 모듈 인터페이스
 
 | ID | 인터페이스 | 상태 | 제공 모듈 | 소비 모듈 | 계약 | 호환성 |
 |---|---|---|---|---|---|---|
 | IFC-001 | 정본-생성 문서 계약 | 최신 | MOD-GOV | MOD-DOC, MOD-STATUS, MOD-QA | FILES 레지스트리와 render_documents가 모든 정본 및 파생 문서를 결정적으로 연결한다. | 필드 변경 시 생성기·검증·테스트·산출물 목록을 같은 변경에서 갱신한다. |
-| IFC-002 | 공통 AI 스킬-플랫폼 어댑터 계약 | 최신 | MOD-AI | MOD-DISC, MOD-ARCH, MOD-DELIVERY, MOD-QA, MOD-STATUS | .ai 정본을 Codex와 Claude 검색 경로에 동기화하고 동일성을 검사한다. | 플랫폼 전용 훅은 얇게 유지하고 의미 규칙은 공통 스킬에 둔다. |
+| IFC-002 | 공통 AI 스킬-플랫폼 어댑터 계약 | 최신 | MOD-AI | MOD-DISC, MOD-ARCH, MOD-DELIVERY, MOD-QA, MOD-STATUS | AGENTS.md 공통 계약은 Codex가 직접 읽고 Claude Code가 CLAUDE.md에서 import한다. .ai/skills 정본은 두 검색 경로에 동기화하고 동일성을 검사한다. | 플랫폼 전용 지침과 훅은 얇게 유지하고 공통 수행 규칙은 AGENTS.md, 공통 스킬 의미는 .ai/skills에 둔다. |
 | IFC-003 | CI-브랜치 보호 계약 | 최신 | MOD-QA | MOD-CHG | 브랜치 보호의 필수 검사 이름은 GitHub Actions 작업 이름과 정확히 일치한다. | 작업 이름 변경 시 repository.json과 ruleset을 함께 변경한다. |
 | IFC-004 | 개발 기반 정본-파생 산출물 계약 | 최신 | MOD-ARCH | MOD-DOC, MOD-DELIVERY, MOD-QA | STD·GPH·EXC·UXB·UIP·CMP와 모듈별 SCR·MAN, RUN·DLP 정본을 안정 ID로 연결하고 문서·목업·manifest를 결정적으로 생성한다. | 필드나 상태 전이를 바꾸면 로더·검증기·생성기·산출물 카탈로그와 TC-024·TC-025를 같은 변경에서 갱신한다. |
 

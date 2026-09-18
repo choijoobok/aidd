@@ -32,7 +32,7 @@
 
 | ID | 이름 | 상태 | 제공 | 소비 | 호환성 |
 |---|---|---|---|---|---|
-| IFC-002 | 공통 AI 스킬-플랫폼 어댑터 계약 | 최신 | MOD-AI | MOD-DISC, MOD-ARCH, MOD-DELIVERY, MOD-QA, MOD-STATUS | 플랫폼 전용 훅은 얇게 유지하고 의미 규칙은 공통 스킬에 둔다. |
+| IFC-002 | 공통 AI 스킬-플랫폼 어댑터 계약 | 최신 | MOD-AI | MOD-DISC, MOD-ARCH, MOD-DELIVERY, MOD-QA, MOD-STATUS | 플랫폼 전용 지침과 훅은 얇게 유지하고 공통 수행 규칙은 AGENTS.md, 공통 스킬 의미는 .ai/skills에 둔다. |
 | IFC-004 | 개발 기반 정본-파생 산출물 계약 | 최신 | MOD-ARCH | MOD-DOC, MOD-DELIVERY, MOD-QA | 필드나 상태 전이를 바꾸면 로더·검증기·생성기·산출물 카탈로그와 TC-024·TC-025를 같은 변경에서 갱신한다. |
 
 ## 모듈 의존성

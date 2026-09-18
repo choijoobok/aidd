@@ -6,8 +6,9 @@
 - 복구 차선: **정책 또는 계약 자체를 읽지 못한 내부 고장일 때만** `contract.json`에 열거된 작은 훅 런타임 파일을 고칠 수 있다. 일반적인 정책 거부를 우회하거나 제품·정본 파일을 쓰는 데 사용할 수 없다.
 - 세션 검사: 현재 프로젝트·협업·AI 평가와 Git 통합 상태를 브리핑한다. 자동 `fetch`·`pull`·`merge`·`push`는 하지 않는다.
 - 대화 원문: `UserPromptSubmit`과 `Stop` 어댑터가 제공하는 내용만 `project/chat-history/YYYY-MM/YYYY-MM-DD.md`에 날짜별 Markdown으로 남긴다. 이 경로는 Git 무시 대상이며, 상태·정본·생성 문서에는 포함하지 않는다. 흔한 토큰·비밀번호 표기를 마스킹하고 항목/일별 파일 크기를 제한한다. `AIDD_LOCAL_CONVERSATION_LOG=0`이면 현재 프로세스에서는 기록하지 않는다.
+- Git pre-commit: `.githooks/pre-commit`이 브랜치 정책 다음에 `documentation-check --staged`를 실행한다. staged `project/src/` 변경은 모듈별 `SURF` 소스 패턴에 매핑되어야 하며 기존 문서 정본이 함께 staged되거나, 문서가 없는 기존 기능에 한해 고객이 선택한 기한 있는 현행화 WRK가 있어야 한다.
 - 이 훅은 편의와 실수 방지 통제다. 셸 파서, OS 권한, 원격 브랜치 보호 또는 보안 경계를 대체하지 않는다.
 
 새 훅·스킬·플러그인·도구는 다음을 모두 설명한 뒤에만 수용한다: (1) 해결할 구체적 실패, (2) 기존 조합으로 해결되지 않는 이유, (3) 계약·트리거·출력, (4) 기존 항목과의 중복 여부, (5) 로컬에서 안전하게 비활성화·되돌리는 방법. 외부 서비스는 추가로 권한, 프롬프트 주입, 개인정보·비밀정보, 장애 시 안전한 동작을 검토한다.
 
-정본과 정책은 `.ai/**`에서 수정한 뒤 `sync-ai`로 `.agents/**`와 `.claude/skills/**`를 재생성한다. 파생 provider 스킬을 직접 수정하지 않는다.
+공통 AI 수행 계약은 `AGENTS.md`에서, 훅·스킬 정본과 정책은 `.ai/**`에서 수정한다. `sync-ai`로 `.agents/skills/**`와 `.claude/skills/**`를 재생성하며 파생 provider 스킬을 직접 수정하지 않는다. `CLAUDE.md`는 `@AGENTS.md`를 import하는 Claude 전용 어댑터다.

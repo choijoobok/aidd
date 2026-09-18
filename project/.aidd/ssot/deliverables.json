@@ -4,6 +4,7 @@
     {"id": "DLV-BRIEF", "name": "프로젝트 개요", "mode": "generated", "applicability": "required", "status": "current", "path": "project/docs/generated/project-brief.md", "source": ["project.json"]},
     {"id": "DLV-SITE", "name": "프로젝트 HTML 홈 사이트", "mode": "generated", "applicability": "required", "status": "current", "path": "project/docs/generated/site/index.html", "source": ["project.json", "deliverables.json"], "note": "좌측 상단 로고와 프로젝트명은 이 홈으로 돌아오며, 제품 소개·개요·목적·주요 기능과 생성 문서 진입점을 표시한다."},
     {"id": "DLV-CAT", "name": "산출물 목록", "mode": "generated", "applicability": "required", "status": "current", "path": "project/docs/generated/deliverable-catalog.md", "source": ["deliverables.json"]},
+    {"id": "DLV-SURFACE", "name": "시스템 표면과 문서 현행화 범위", "mode": "generated", "applicability": "required", "status": "current", "path": "project/docs/generated/system-surface-coverage.md", "source": ["system-surfaces.json", "system-surfaces/*.json", "changes.json", "delivery-plan.json"]},
     {"id": "DLV-WORKBOARD", "name": "현재 작업 보드", "mode": "generated", "applicability": "required", "status": "current", "path": "project/docs/generated/workboard.md", "source": ["workboard.json"], "note": "현재 초점·다음 작업·관찰 항목만 유지하는 작고 갱신 가능한 운영 뷰다. 날짜별 수행 이력은 project/work-log/에 별도로 기록한다."},
     {"id": "DLV-REQ", "name": "요구사항 정의서", "mode": "generated", "applicability": "required", "status": "current", "path": "project/docs/generated/requirements.md", "source": ["requirements.json", "modules/*.json"]},
     {"id": "DLV-ASM", "name": "가정 원장", "mode": "generated", "applicability": "required", "status": "current", "path": "project/docs/generated/assumptions.md", "source": ["assumptions.json"]},
@@ -32,7 +33,7 @@
     {"id": "DLV-AI-EVAL", "name": "AI 교차 플랫폼 행동 평가", "mode": "generated", "applicability": "required", "status": "current", "path": "project/docs/generated/ai-evaluation.md", "source": ["evaluations.json", "evidence.json"]},
     {"id": "DLV-REPO", "name": "저장소 보호와 CI 정책", "mode": "generated", "applicability": "required", "status": "current", "path": "project/docs/generated/repository-governance.md", "source": ["repository.json", "collaboration.json"]},
     {"id": "DLV-COLLAB", "name": "협업 운영 프로필", "mode": "generated", "applicability": "required", "status": "current", "path": "project/docs/generated/collaboration-governance.md", "source": ["collaboration.json", "repository.json"]},
-    {"id": "DLV-TEMPLATE", "name": "AIDD Kit 사용 가이드", "mode": "authored-and-linked", "applicability": "required", "status": "current", "path": ".ai/docs/guides/aidd-kit-guide.md", "source": ["README.md", "collaboration.json"]},
-    {"id": "DLV-CONVERSATION", "name": "AI 대화형 프로젝트 진행 가이드", "mode": "authored-and-linked", "applicability": "required", "status": "current", "path": ".ai/docs/guides/ai-conversation-project-guide.md", "source": ["README.md"]}
+    {"id": "DLV-TEMPLATE", "name": "AIDD Kit 사용자 가이드", "mode": "authored-and-linked", "applicability": "required", "status": "current", "path": ".ai/docs/guides/aidd-kit-guide.md", "source": ["README.md", "collaboration.json"], "note": "자연어 초기화부터 프로젝트 생애주기, 문서·협업·Git 운영까지 제공하는 단일 사용자 진입점이다."},
+    {"id": "DLV-CONVERSATION", "name": "AI 대화형 프로젝트 진행 가이드(통합됨)", "mode": "authored-and-linked", "applicability": "conditional", "status": "superseded", "path": null, "source": ["README.md"], "replaced_by": "DLV-TEMPLATE", "note": "중복을 제거하기 위해 전체 내용을 DLV-TEMPLATE에 통합했다."}
   ]
 }

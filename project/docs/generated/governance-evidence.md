@@ -22,6 +22,7 @@
 | GTR-014 | TG-002 | CHG-010 | 검토 중 | MOD-GOV, MOD-ARCH, MOD-DOC, MOD-STATUS, MOD-QA | 1/1 | - | 2026-09-18T11:23:13+09:00 |
 | GTR-015 | TG-002 | CHG-011 | 검토 중 | MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA | 1/2 | - | - |
 | GTR-016 | TG-002 | CHG-012 | 승인됨 | MOD-GOV, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG | 1/1 | APR-001 | 2026-09-18T18:04:43+09:00 |
+| GTR-017 | TG-002 | CHG-013 | 검토 중 | MOD-GOV, MOD-DOC, MOD-AI, MOD-CHG, MOD-QA, MOD-DELIVERY | 1/1 | - | 2026-09-18T20:30:00+09:00 |
 
 ## 검증 증거
 
@@ -53,6 +54,8 @@
 | EVD-024 | 모듈별 UI 정본과 화면·목업·매뉴얼 생성 검증 | 자동 테스트 | 통과 | TC-025 | CHG-011 | Python unittest와 AIDD CLI | 2026-09-18T15:00:00+09:00 | working-tree | 선택적 모듈 UI 조각, UI 기준선·패턴·컴포넌트·화면·매뉴얼 참조와 결정적 화면 정의서·HTML 목업 생성의 합성·부정 테스트 통과 |
 | EVD-025 | 개발 기반·하네스 독립 AI 검토 | 수동 검토 | 통과 | - | CHG-011 | 구현 세션과 분리된 AI reviewer 두 세션 | 2026-09-18T17:30:00+09:00 | working-tree | 실제 훅 payload·하위 경로 실행·승인 및 예외 우회·DLP 출시 캡처·stale 파생물·동시 모듈 갱신·실제 SHA-256 대조 결함을 발견해 보완했고 최종 독립 재검토에서 차단급 잔여 없음 |
 | EVD-026 | 팀 작업 배정 권한·감사 이력·개발 범위 포괄성 검증 | 자동 테스트 | 통과 | TC-026 | CHG-012 | Python unittest와 AIDD CLI·하네스 자체검사 | 2026-09-18T18:04:43+09:00 | working-tree | 활성 PM 없는 팀 전환 차단, 세 가지 배정 모드 권한, 자율 배정 전용 오프라인 협의, 정책·책임자 감사 이력, CHG별 필수 작업 영역, 개발 진입 포괄성 차단과 생성 문서 노출을 검증함 |
+| EVD-027 | AGENTS.md 단일 정본·Claude import·AI 기여 표기 검증 | 자동 테스트 | 통과 | TC-003 | CHG-001 | Python unittest와 AIDD CLI·하네스 자체검사 | 2026-09-18T19:00:13+09:00 | working-tree | AGENTS.md 단일 공통 계약, CLAUDE.md의 @AGENTS.md import, sync-ai의 지침 파일 비수정, 두 스킬 어댑터 동등성, 반복 가능한 AI-Assisted-By 표기와 전체 98개 테스트 통과 |
+| EVD-028 | 변경 유형별 문서 동기화와 레거시 전환 통제 검증 | 자동 테스트 | 통과 | TC-027 | CHG-013 | Python unittest와 AIDD CLI·하네스 자체검사 | 2026-09-18T20:30:00+09:00 | working-tree | 신규 기능 분석·설계 선행, 기존 문서 즉시 현행화, 문서 없는 기존 기능의 기한 있는 후속 WRK, 레거시 인벤토리 계획, staged 소스 문서 게이트와 모듈별 표면 조각 시나리오를 검증함 |
 
 ## 승인
 

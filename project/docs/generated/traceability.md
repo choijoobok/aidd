@@ -38,3 +38,4 @@
 | REQ-032 | 모듈별 UI·공통 컴포넌트 정본 | 구현됨 | MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA | TC-025 | USER-2026-09-18 |
 | REQ-033 | 운영 런북과 제출 패키지 정책 | 구현됨 | MOD-DOC, MOD-DELIVERY, MOD-QA | TC-024, TC-025 | USER-2026-09-18 |
 | REQ-034 | 감사 가능한 작업 패키지 배정과 개발 범위 포괄성 | 구현됨 | MOD-GOV, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG | TC-026 | USER-2026-09-18 |
+| REQ-035 | 변경 유형별 문서 동기화와 레거시 전환 | 구현됨 | MOD-GOV, MOD-DOC, MOD-AI, MOD-CHG, MOD-QA, MOD-DELIVERY | TC-027 | USER-2026-09-18 |

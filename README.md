@@ -18,9 +18,9 @@ AI는 현재 상태를 확인하고, 필요한 질문·선택지·다음 단계�
 
 AI는 매 세션을 시작할 때 현재 진행 상황을 짧게 브리핑해야 한다. 평가 대기 병합(`MRG`)이나 미완료 병합 후 재검토(`MRC`)가 있으면 진척과 분리해 먼저 알린다. 재검토는 담당자를 미리 배정하지 않으며 PM·관리자가 오프라인으로 조율한다. 실제 수행 뒤에는 누가 언제 무엇을 검토했고 결과를 어떻게 처리했는지를 기록하고, 릴리스를 차단하는 재검토가 끝나기 전에는 출시 준비 완료로 표시하지 않는다.
 
-단계별로 무엇을 AI와 함께 생각하고 어떤 식으로 말하면 좋은지는 **[AI와 대화하며 시작하는 AIDD 프로젝트 가이드](.ai/docs/guides/ai-conversation-project-guide.md)**에서 확인한다. 이 문서는 의도 찾기, 모듈 분리, 운영 맥락, 기술 선택, UI·공통 기반 합의, 작은 단위 구현, 출시·운영까지의 대화 예시를 제공한다.
+단계별로 무엇을 AI와 함께 생각하고 어떤 식으로 말하면 좋은지는 **[AIDD Kit 사용자 가이드](.ai/docs/guides/aidd-kit-guide.md)**에서 확인한다. 이 단일 가이드는 자연어 초기화, 의도 찾기, 모듈 분리, 운영 맥락, 기술 선택, UI·공통 기반 합의, 작은 단위 구현, 협업·문서 관리와 출시·운영까지 설명한다.
 
-시작하려면 Git, `python` 명령, 프로젝트 폴더의 읽기·쓰기 권한, 그리고 Codex 또는 Claude Code 중 하나가 필요하다. 둘 다 설치할 필요는 없으며, GitHub·CI·클라우드·DBMS·Node·Docker·외부 API 계정은 AIDD의 필수 조건이 아니라 프로젝트별 선택 사항이다. 원격 저장소나 인터넷 없이도 로컬 기록·생성·검증은 가능하지만, 원격 협업·배포에는 해당 서비스의 계정·권한·승인이 필요하다. 전체 제약과 환경 점검 대화 예시는 [가이드의 시작 전 준비와 제약](.ai/docs/guides/ai-conversation-project-guide.md#시작-전-준비와-제약)을 참고한다.
+시작하려면 Git, `python` 명령, 프로젝트 폴더의 읽기·쓰기 권한, 그리고 Codex 또는 Claude Code 중 하나가 필요하다. 둘 다 설치할 필요는 없으며, GitHub·CI·클라우드·DBMS·Node·Docker·외부 API 계정은 AIDD의 필수 조건이 아니라 프로젝트별 선택 사항이다. 원격 저장소나 인터넷 없이도 로컬 기록·생성·검증은 가능하지만, 원격 협업·배포에는 해당 서비스의 계정·권한·승인이 필요하다. 전체 제약과 환경 점검 대화 예시는 [가이드의 시작 전 준비와 제약](.ai/docs/guides/aidd-kit-guide.md#시작-전-준비와-제약)을 참고한다.
 
 명령어는 AI에게 맡기거나, 상태를 직접 보고 싶을 때만 사용하면 된다.
 
@@ -30,7 +30,7 @@ python .ai/tools/aidd.py generate
 python .ai/tools/aidd.py validate
 ```
 
-`.ai/core/` 또는 `.ai/skills/`를 변경한 뒤에는 `python .ai/tools/aidd.py sync-ai`를 실행한다. 이 명령은 같은 정본으로부터 Codex용 `.agents/skills/`와 `AGENTS.md`, Claude Code용 `.claude/skills/`와 `CLAUDE.md`를 갱신한다.
+공통 AI 수행 규칙은 루트 `AGENTS.md`가 정본이고, `CLAUDE.md`는 `@AGENTS.md`를 불러온 뒤 Claude Code 전용 연결만 덧붙인다. 공통 스킬은 `.ai/skills/`에서 수정한 뒤 `python .ai/tools/aidd.py sync-ai`를 실행한다. 이 명령은 Codex용 `.agents/skills/`와 Claude Code용 `.claude/skills/`를 갱신하지만 `AGENTS.md`나 `CLAUDE.md`를 덮어쓰지 않는다.
 
 AI 행동 평가에서는 먼저 `evaluation-prompt`의 동일한 출력을 두 플랫폼에 제공한다. 응답·산출물과 판정 근거를 `EVD`로 기록한 뒤 `record-evaluation`으로 각 루브릭 점수와 중대 금지 행동을 플랫폼별 `EVR`에 남긴다. 한 플랫폼의 결과를 다른 플랫폼 결과로 복사하지 않는다.
 
@@ -51,16 +51,17 @@ AI 행동 평가에서는 먼저 `evaluation-prompt`의 동일한 출력을 두 
 7. 신규 시스템·모듈이나 핵심 기술 변경은 `TG-001`에서 기술 스택을, 기능 규모 개발 전에는 `TG-002`에서 UI·개발 공통 기반과 동시성·성능·장애 검증을 확정한다.
 8. `STD` 개발 표준, `GPH` 골든 패스와 `EXC` 예외를 프로젝트 기술 기준선에 맞게 작성한다. UI가 적용되면 `UXB` 기준선, `UIP` 패턴, `CMP` 컴포넌트와 모듈별 `SCR` 화면·`MAN` 매뉴얼을 사용자와 합의한다.
 9. 모듈별 `MLS` 마일스톤, `WRK` 작업, `IFC` 인터페이스와 `DPN` 의존성을 정하고 정본에서 계획과 사람이 읽는 산출물을 생성한다.
-10. `development-check`로 필수 게이트 승인을 확인한 뒤 요구사항 단위의 작은 증분으로 구현하고 수행자·명령·시각·커밋·결과가 있는 `EVD` 검증 증거를 연결한다.
+10. 신규 기능은 요구분석·설계와 화면 경로·API 등 `SURF` 문서를 먼저 확정한다. 기존 기능은 문서가 있으면 즉시 현행화하고, 문서가 없으면 고객이 지금 작성하거나 대상·기한이 있는 후속 WRK로 미룰지 선택한다. `development-check`를 통과한 뒤 작은 증분으로 구현하고 `EVD`를 연결한다.
 11. 변경별 필수 `GTR` 게이트 실행의 모든 기준과 현재 협업 프로필에 맞는 승인·검토·예외를 확인하고 `validate`, 관련 테스트, 보안 검사와 릴리스 게이트를 실행한다.
 12. 결과, 병합 영향, 운영 증거와 후속 작업을 기록한다. 공통 AI 규칙을 바꾸면 같은 평가 픽스처와 루브릭으로 Codex·Claude 결과를 각각 남긴다.
 
-전체 생애주기는 [방법론 청사진](.ai/docs/methodology/blueprint.md), 정본 규칙은 [산출물 모델](.ai/docs/methodology/artifact-model.md), 처음 사용하는 사람을 위한 절차는 [AIDD Kit 사용 가이드](.ai/docs/guides/aidd-kit-guide.md)를 참고한다. 제품별 배포 조건과 설계 위험은 [배포·운영 맥락과 설계 위험](project/docs/generated/deployment-and-runtime.md), 기술 선택 기준은 [기술 스택과 개발 기반 게이트](project/docs/generated/technology-gates.md), 방법론별 채택 근거는 [방법론 비교와 적용 지침](project/docs/generated/methodology-comparison.md)에서 확인한다.
+전체 생애주기는 [방법론 청사진](.ai/docs/methodology/blueprint.md), 정본 규칙은 [산출물 모델](.ai/docs/methodology/artifact-model.md), 처음 사용하는 사람을 위한 절차는 [AIDD Kit 사용자 가이드](.ai/docs/guides/aidd-kit-guide.md)를 참고한다. 제품별 배포 조건과 설계 위험은 [배포·운영 맥락과 설계 위험](project/docs/generated/deployment-and-runtime.md), 기술 선택 기준은 [기술 스택과 개발 기반 게이트](project/docs/generated/technology-gates.md), 방법론별 채택 근거는 [방법론 비교와 적용 지침](project/docs/generated/methodology-comparison.md)에서 확인한다.
 
 ## 저장소 구조
 
 ```text
-.ai/core/             AI 공통 수행 계약 정본
+AGENTS.md             AI 공통 수행 계약 정본
+CLAUDE.md             AGENTS.md를 import하는 Claude 전용 어댑터
 .ai/skills/           이식 가능한 공통 스킬 정본
 .agents/skills/       자동 생성된 Codex 스킬 어댑터
 .claude/skills/       자동 생성된 Claude Code 스킬 어댑터
@@ -70,6 +71,7 @@ AI 행동 평가에서는 먼저 `evaluation-prompt`의 동일한 출력을 두 
 project/.aidd/ssot/   기계 판독 가능한 제품 정본과 전역 카탈로그
 project/.aidd/ssot/modules/ 모듈별 요구사항 정본 조각(MOD-ID.json)
 project/.aidd/ssot/ui-modules/ 선택적 모듈별 화면·매뉴얼 정본 조각(MOD-ID.json)
+project/.aidd/ssot/system-surfaces/ 모듈별 화면 경로·API·배치·이벤트·연동·마이그레이션 표면
 project/docs/generated/ 자동 생성된 제품 문서
 project/src/          아키텍처에 맞춰 구성하는 애플리케이션 소스
 .ai/tools/aidd.py         생성, 검증, 동기화, 브리핑, 병합 기록 CLI
@@ -83,6 +85,8 @@ project/src/          아키텍처에 맞춰 구성하는 애플리케이션 소
 자동 생성 문서에는 생성 안내가 표시된다. 해당 문서를 직접 고치지 말고 대응하는 `project/.aidd/ssot/*.json`을 변경한다.
 
 모듈별 요구사항은 `project/.aidd/ssot/modules/MOD-ID.json`에 한 번만 저장하고, 여러 모듈에 걸치는 경우에도 기존 `modules` ID 링크로 영향 범위를 표시한다. `project/docs/generated/modules/MOD-ID.md`는 해당 모듈의 요구사항·작업·인터페이스·변경·결정·테스트만 모아 생성하므로, 대형 프로젝트에서도 전체 문서를 읽지 않고 분석할 수 있다. 신규 모듈은 `python .ai/tools/aidd.py add-module --id MOD-XXX --name "이름" --purpose "책임"`으로 추가한 뒤 조각 파일에 요구사항을 작성하고 `generate`, `validate`를 실행한다.
+
+기존 시스템을 고도화할 때는 AI에게 “레거시 소스의 모든 화면 경로·API·배치·이벤트·외부 연동·마이그레이션을 모듈별로 조사하고, 기존 분석·설계 문서의 출처를 보존해 AIDD 문서 현행화 계획을 만들어줘”라고 요청한다. `aidd-legacy-reconciliation`이 `LDP` 계획, 모듈별 `SURF` 인벤토리와 기한 있는 문서 WRK를 만든다. pre-commit은 staged 제품 소스만 바뀌고 대응 문서나 승인된 후속 작업이 없으면 커밋을 차단한다.
 
 개발 기반은 `project/.aidd/ssot/foundation.json`, UI 공통 기반은 `ui-system.json`, 운영 런북은 `operations.json`, 제출 정책은 `delivery-profiles.json`에서 관리한다. UI가 없는 모듈은 UI 조각이 없어도 정상이다. UI가 필요하면 `init-module-ui` 또는 `add-module --with-ui`로 `project/.aidd/ssot/ui-modules/MOD-ID.json`을 만들고 `SCR`·`MAN`을 작성한다. 생성기는 `project/docs/generated/foundation/`, `ui/`, `manuals/`, `operations/`, `deliverables/`에 읽기 전용 뷰·목업·manifest를 만든다. 검토용 HTML 목업은 실제 화면 캡처나 출시 증거가 아니다. `REL.delivery_profile`은 제출 정책을 실제 출시 판정에 연결하며, 검증 캡처가 필요한 프로필은 `ui-capture` 증거에 화면 ID·환경·불변 커밋·생성 폴더 밖의 이미지 또는 영상·SHA-256 해시가 모두 있어야 한다.
 

@@ -67,6 +67,18 @@ test("Node CLI preserves required option and choice validation",()=>{
   assert.equal(result.status,0,result.stdout+result.stderr);
   assert.equal(result.stdout.trim(),"{}");
 });
+test("Node CLI rejects missing values for optional scalar and append options",()=>{
+  for(const args of [
+    ["status","--module"],
+    ["document-impact","--path"],
+    ["project-bootstrap","--project-id","TEST","--name","테스트","--source-location"],
+    ["record-work","--summary","요약","--why","이유","--result","결과","--next","다음","--link"],
+  ]){
+    const result=run(args);
+    assert.equal(result.status,2,`${args.join(" ")}\n${result.stdout}${result.stderr}`);
+    assert.match(result.stderr,/requires a value/);
+  }
+});
 test("evaluation commands preserve Python variadic scores and evidence gates",()=>withReferenceProject(({temp,execute})=>{
   const prompt=execute(["evaluation-prompt","--scenario","EVS-001"]);
   assert.equal(prompt.status,0,prompt.stdout+prompt.stderr);
@@ -324,6 +336,30 @@ test("add-module fails closed when stale-lock cleanup is already claimed",()=>wi
   assert.match(result.stderr,/repository write lock/);
   assert.equal(readFileSync(catalogPath,"utf8"),before);
   assert.equal(existsSync(join(ssot,"modules/MOD-CLEANUP-BUSY.json")),false);
+}));
+
+test("add-module reclaims stale main and cleanup locks left by dead owners",()=>withReferenceProject(({temp,execute})=>{
+  const ssot=join(temp,"project/.aidd/ssot"),lockPath=join(ssot,".write.lock"),cleanupPath=`${lockPath}.cleanup`;
+  writeFileSync(lockPath,`${JSON.stringify({pid:2147483647,token:"stale-owner",created_at:"2000-01-01T00:00:00.000Z"})}\n`,"utf8");
+  writeFileSync(cleanupPath,`${JSON.stringify({pid:2147483647,token:"stale-cleaner",created_at:"2000-01-01T00:00:00.000Z"})}\n`,"utf8");
+  const result=execute(["add-module","--id","MOD-CLEANUP-RECOVERED","--name","복구","--purpose","죽은 cleanup 소유자 회수"]);
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  assert.equal(existsSync(join(ssot,"modules/MOD-CLEANUP-RECOVERED.json")),true);
+  assert.equal(existsSync(join(ssot,"system-surfaces/MOD-CLEANUP-RECOVERED.json")),true);
+  assert.equal(existsSync(lockPath),false);
+  assert.equal(existsSync(cleanupPath),false);
+}));
+
+test("add-module fails closed for a malformed cleanup lock owner",()=>withReferenceProject(({temp,execute})=>{
+  const ssot=join(temp,"project/.aidd/ssot"),lockPath=join(ssot,".write.lock"),cleanupPath=`${lockPath}.cleanup`;
+  writeFileSync(lockPath,`${JSON.stringify({pid:2147483647,token:"stale-owner",created_at:"2000-01-01T00:00:00.000Z"})}\n`,"utf8");
+  writeFileSync(cleanupPath,`${JSON.stringify({pid:"invalid",token:"malformed-cleaner",created_at:"2000-01-01T00:00:00.000Z"})}\n`,"utf8");
+  const result=execute(["add-module","--id","MOD-MALFORMED-CLEANUP","--name","형식 오류","--purpose","잘못된 cleanup owner 차단"],{AIDD_WRITE_LOCK_TIMEOUT_MS:"50"});
+  assert.equal(result.status,2,result.stdout+result.stderr);
+  assert.match(result.stderr,/repository write lock/);
+  assert.equal(existsSync(join(ssot,"modules/MOD-MALFORMED-CLEANUP.json")),false);
+  assert.equal(existsSync(lockPath),true);
+  assert.equal(existsSync(cleanupPath),true);
 }));
 
 test("documentation-check requires the explicit staged mode",()=>withReferenceProject(({execute})=>{

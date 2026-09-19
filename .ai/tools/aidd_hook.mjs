@@ -258,7 +258,7 @@ function hasUnsafeShellComposition(command){
     if(quote==="'"){if(char==="'")quote=null;continue;}
     if(quote==='"'){if(char==='"')quote=null;else if(char==='`'||(char==="$"&&next==="("))return true;continue;}
     if(char==="'"||char==='"'){quote=char;continue;}
-    if(";\r\n|&<>`".includes(char)||(char==="$"&&next==="("))return true;
+    if(";\r\n|&<>`()".includes(char)||(char==="$"&&next==="("))return true;
   }
   return quote!==null;
 }
@@ -459,7 +459,7 @@ export function harnessErrors() {
   if(!lockedToolAllowed({tool_name:"Bash",tool_input:{command:"git add -- .ai/tools/aidd_hook.mjs"}},{observed_paths:[]}))errors.push("approval close-out classifier: explicit portable hook-maintenance staging was denied");
   if(repoRole()==="kit-source"&&!lockedToolAllowed({tool_name:"Bash",tool_input:{command:"git add -- .aidd-kit-dev/evidence/KIT-EVD-010.json"}},{observed_paths:[]}))errors.push("approval close-out classifier: explicit Kit hook-maintenance staging was denied");
   if(lockedToolAllowed({tool_name:"Bash",tool_input:{command:"git add -- project/src/unrelated.js"}},{observed_paths:[]}))errors.push("approval close-out classifier: unrelated staging was allowed");
-  for(const command of ["git status --short; Set-Content project/src/x.js payload","git status --short | Set-Content project/src/x.js","git status --short > project/status.txt","git status --short $(Set-Content project/src/x.js payload)","git diff --output=project/diff.txt","git branch unsafe-write","node --test project/src/unsafe.test.mjs","node .ai/tools/aidd.mjs add-module --id MOD-UNSAFE --name unsafe --purpose unsafe"])
+  for(const command of ["git status --short; Set-Content project/src/x.js payload","git status --short | Set-Content project/src/x.js","git status --short > project/status.txt","git status --short $(Set-Content project/src/x.js payload)","git status --short (Set-Content project/src/x.js payload)","git status --short @(Set-Content project/src/x.js payload)","git diff --output=project/diff.txt","git branch unsafe-write","node --test project/src/unsafe.test.mjs","node .ai/tools/aidd.mjs add-module --id MOD-UNSAFE --name unsafe --purpose unsafe"])
     if(lockedToolAllowed({tool_name:"Bash",tool_input:{command}},{observed_paths:[]}))errors.push(`approval read-only classifier allowed unsafe command: ${command}`);
   const revision="self-test-revision", at="2026-09-19T00:00:00.000Z";
   let state={restart_required:null}, session={session_key:"existing",start_revision:revision,state:"unconfirmed"};

@@ -65,17 +65,20 @@ const slash=value=>value.split(sep).join("/");
 const readJson=path=>JSON.parse(readFileSync(path,"utf8"));
 function writeJson(path,value){mkdirSync(dirname(path),{recursive:true});const temporary=`${path}.${process.pid}.${randomBytes(4).toString("hex")}.tmp`;try{writeFileSync(temporary,`${JSON.stringify(value,null,2)}\n`,"utf8");renameSync(temporary,path);}finally{if(existsSync(temporary))rmSync(temporary,{force:true});}}
 function processIsActive(pid){if(!Number.isInteger(pid)||pid<=0)return false;try{process.kill(pid,0);return true;}catch(error){return error?.code==="EPERM";}}
+function lockOwner(path){try{const owner=readJson(path),pid=Number(owner?.pid);return owner&&typeof owner==="object"&&Number.isInteger(pid)&&pid>0&&typeof owner.token==="string"&&owner.token?{...owner,pid}:null;}catch{return null;}}
+function removeOwnedLock(path,token,{deadOwnerOnly=false}={}){const owner=lockOwner(path);if(owner?.token!==token||(deadOwnerOnly&&processIsActive(Number(owner.pid))))return false;const current=lockOwner(path);if(current?.token!==token||(deadOwnerOnly&&processIsActive(Number(current.pid))))return false;try{rmSync(path);return true;}catch(error){if(error?.code==="ENOENT")return false;throw error;}}
 function withRepositoryWriteLock(callback){
   mkdirSync(SSOT,{recursive:true});const lockPath=join(SSOT,".write.lock"),cleanupPath=`${lockPath}.cleanup`,token=randomBytes(12).toString("hex"),timeoutValue=Number(process.env.AIDD_WRITE_LOCK_TIMEOUT_MS??10000),timeoutMs=Number.isFinite(timeoutValue)&&timeoutValue>=0?timeoutValue:10000,deadline=Date.now()+timeoutMs,waiter=new Int32Array(new SharedArrayBuffer(4));
   while(true){
     try{writeFileSync(lockPath,`${JSON.stringify({pid:process.pid,token,created_at:new Date().toISOString()})}\n`,{encoding:"utf8",flag:"wx"});break;}
     catch(error){
       if(error?.code!=="EEXIST")throw error;
-      let owner=null;try{owner=readJson(lockPath);}catch{}
+      const owner=lockOwner(lockPath);
       if(owner?.token&&!processIsActive(Number(owner.pid))){
-        const cleanupToken=randomBytes(12).toString("hex");let cleanupAcquired=false,removed=false;
-        try{writeFileSync(cleanupPath,`${JSON.stringify({pid:process.pid,token:cleanupToken,created_at:new Date().toISOString()})}\n`,{encoding:"utf8",flag:"wx"});cleanupAcquired=true;}catch(cleanupError){if(cleanupError?.code!=="EEXIST")throw cleanupError;}
-        if(cleanupAcquired)try{let current=null;try{current=readJson(lockPath);}catch{}if(current?.token===owner.token&&!processIsActive(Number(current.pid))){rmSync(lockPath,{force:true});removed=true;}}finally{try{const cleanup=readJson(cleanupPath);if(cleanup.token===cleanupToken)rmSync(cleanupPath,{force:true});}catch{}}
+        const cleanupToken=randomBytes(12).toString("hex");let cleanupAcquired=false,removed=false,reclaimedCleanup=false;
+        try{writeFileSync(cleanupPath,`${JSON.stringify({pid:process.pid,token:cleanupToken,created_at:new Date().toISOString()})}\n`,{encoding:"utf8",flag:"wx"});cleanupAcquired=true;}catch(cleanupError){if(cleanupError?.code!=="EEXIST")throw cleanupError;const cleanupOwner=lockOwner(cleanupPath);if(cleanupOwner?.token)reclaimedCleanup=removeOwnedLock(cleanupPath,cleanupOwner.token,{deadOwnerOnly:true});}
+        if(reclaimedCleanup)continue;
+        if(cleanupAcquired)try{const cleanup=lockOwner(cleanupPath),current=lockOwner(lockPath);if(cleanup?.token===cleanupToken&&current?.token===owner.token&&!processIsActive(Number(current.pid)))removed=removeOwnedLock(lockPath,owner.token,{deadOwnerOnly:true});}finally{removeOwnedLock(cleanupPath,cleanupToken);}
         if(removed)continue;
       }
       if(Date.now()>=deadline)throw new Error(`repository write lock is busy: ${slash(relative(ROOT,lockPath))}`);
@@ -96,8 +99,9 @@ function parse(command,args){
     if(!positionalOnly&&arg.startsWith("--")&&arg.length>2){
       const equals=arg.indexOf("="),key=arg.slice(2,equals<0?undefined:equals),inline=equals<0?undefined:arg.slice(equals+1);
       if(BOOLEAN_OPTIONS.has(key)){if(equals>=0)throw new Error(`${command}: --${key} does not take a value`);out[key]=true;continue;}
-      if(key in variadic){const values=[];if(equals>=0)values.push(inline);while(i+1<args.length&&!args[i+1].startsWith("--"))values.push(args[++i]);out[key]=values;continue;}
-      const value=equals>=0?inline:i+1<args.length&&!args[i+1].startsWith("--")?args[++i]:true;if(APPEND_OPTIONS[command]?.has(key))setOption(out,key,value);else out[key]=value;
+      if(key in variadic){const values=[];if(equals>=0)values.push(inline);while(i+1<args.length&&!args[i+1].startsWith("--"))values.push(args[++i]);const minimum=variadic[key]??0;if(values.length<minimum)throw new Error(`${command}: --${key} requires at least ${minimum} value${minimum===1?"":"s"}`);out[key]=values;continue;}
+      if(equals<0&&(i+1>=args.length||args[i+1].startsWith("--")))throw new Error(`${command}: --${key} requires a value`);
+      const value=equals>=0?inline:args[++i];if(APPEND_OPTIONS[command]?.has(key))setOption(out,key,value);else out[key]=value;
     }else out._.push(arg);
   }
   return out;
@@ -272,8 +276,9 @@ function recordEvaluation(data,options){const scores=array(options.scores).map(v
 function evaluationStatus(data){const rows=[];for(const scenario of data.evaluations.scenarios??[])for(const platform of data.evaluations.policy?.platforms??[]){const runs=(data.evaluations.runs??[]).filter(item=>item.scenario===scenario.id&&item.platform===platform);rows.push([scenario.id,scenario.title,platform,runs.at(-1)?.status??"not_run"]);}return table(["시나리오","제목","플랫폼","실행 상태"],rows);}
 function stopHook(){let input={};try{input=JSON.parse(readFileSync(0,"utf8")||"{}");}catch{}if(input.stop_hook_active){console.log("{}");return 0;}if(role()==="kit-source"){const run=spawnSync(process.execPath,[join(ROOT,".aidd-kit-dev/tools/kit.mjs"),"validate"],{cwd:ROOT,encoding:"utf8"}),failure=childProcessFailure(run,"AIDD Kit validation");console.log(failure?JSON.stringify({decision:"block",reason:failure}):"{}");return 0;}try{const result=validate(loadRecords());console.log(result.errors.length?JSON.stringify({decision:"block",reason:`AIDD consistency gate failed:\n- ${result.errors.slice(0,20).join("\n- ")}`}):"{}");}catch(error){console.log(JSON.stringify({decision:"block",reason:`AIDD validation could not run: ${error.message}`}));}return 0;}
 
-const [command,...rest]=process.argv.slice(2),options=parse(command,rest);let exit=0;
+const [command,...rest]=process.argv.slice(2);let exit=0;
 try{
+  const options=parse(command,rest);
   validateCommandOptions(command,options);
   if(command==="project-bootstrap")console.log(projectBootstrap(options));
   else if(command==="project-reconcile-role"){if(role()!=="kit-template"||!existsSync(SSOT))throw new Error("유효한 kit-template 제품 작업공간이 아닙니다.");const result=validate(loadRecords(),{generated:false});if(result.errors.length)throw new Error(result.errors.slice(0,5).join("; "));writeJson(join(ROOT,".aidd-role.json"),{schema_version:1,role:"product-workspace",managed_by:"AIDD Kit export/bootstrap",mutable_by_user:false});console.log("역할을 product-workspace로 정합화했습니다.");}

@@ -1,2 +1,2 @@
 #!/bin/sh
-python .aidd-kit-dev/tools/kit.py status
+node .aidd-kit-dev/tools/kit.mjs status

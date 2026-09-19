@@ -53,7 +53,7 @@
       "status": "accepted",
       "environment": "개발자 로컬 또는 CI 실행 환경의 저장소 기반 CLI",
       "hosting": "온프레미스·클라우드에 종속되지 않음",
-      "runtime": "Python 3.11 이상 단기 실행 프로세스",
+      "runtime": "Node.js 22 이상 단기 실행 프로세스",
       "topology": "호출 단위 단일 프로세스이며 장기 실행 서비스 인스턴스가 없음",
       "scaling": "서비스 자동 확장 적용 대상 아님. 병렬 CI 작업은 격리된 체크아웃을 사용해야 함",
       "dbms": "실행 DBMS 없음. UTF-8 무 BOM JSON과 Git이 정본 저장소 역할을 함",

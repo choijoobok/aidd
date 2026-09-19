@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "id": "KIT-EVD-007",
+  "change": "KIT-CHG-004",
+  "kind": "implementation-validation",
+  "performed_by": "Codex",
+  "performed_at": "2026-09-19",
+  "base_commit": "e327166eaf882861f0fc7e3f03f7d573d2823f88",
+  "implementation_commit": "uncommitted",
+  "working_tree_dirty": true,
+  "methods": [
+    "six-file canonical Python inventory and AST review of text I/O, subprocess encoding, unsafe runtime calls, broad exceptions and destructive operations",
+    "cp949 standard-input simulation with UTF-8 Korean JSON bytes",
+    "actual Codex commandWindows execution from a nested directory in a temporary Git repository through an outer PowerShell process matching the Desktop shell boundary",
+    "zero-byte conversation-log recovery and sanitized failure-observability tests",
+    "allowlist directory/ZIP export and sample product-workspace validation"
+  ],
+  "commands": [
+    "python .ai/tools/aidd.py sync-ai",
+    "python .aidd-kit-dev/tools/kit.py sync-providers",
+    "python -m compileall -q .ai .aidd-kit-dev",
+    "python .aidd-kit-dev/tools/kit.py validate",
+    "python .ai/tools/aidd_hook.py self-test",
+    "python -m unittest discover -s .ai/tests -v",
+    "python -m unittest discover -s .aidd-kit-dev/tests -v",
+    "python .aidd-kit-dev/tools/kit.py export --directory <temporary-directory>",
+    "python .aidd-kit-dev/tools/kit.py export --zip <temporary-zip>",
+    "python .aidd-kit-dev/tools/kit.py new-project --directory <temporary-product> --project-id UTF8-CHECK --name 'UTF-8 경계 검증' --mode greenfield",
+    "python <temporary-product>/.ai/tools/aidd.py validate",
+    "python -m unittest discover -s <temporary-product>/.ai/tests -v",
+    "git diff --check"
+  ],
+  "result": {
+    "decision": "implementation passed; independent C2 review pending",
+    "python_inventory": "6 canonical Python files reviewed",
+    "python_boundary_audit": "passed: explicit UTF-8 file/subprocess boundaries and no prohibited runtime calls",
+    "windows_cp949_utf8_round_trip": "passed through actual Codex commandWindows and outer PowerShell",
+    "windows_nested_shell_boundary": "passed: escaped inner PowerShell variables survive the Desktop-style outer PowerShell without early expansion",
+    "zero_byte_log_recovery": "passed",
+    "sanitized_failure_reporting": "passed without conversation content disclosure",
+    "kit_validation": "passed",
+    "harness_self_test": "passed",
+    "kit_source_tests": "90 passed",
+    "portable_tests": "33 passed",
+    "sample_product_validation": "passed with expected bootstrap warning",
+    "sample_product_tests": "33 passed",
+    "folder_and_zip_export": "passed; maintainer content excluded",
+    "additional_finding": "portable Windows path-resolution test assumed the exported snapshot was already a Git repository",
+    "additional_resolution": "test now creates and uses an isolated temporary Git repository"
+  },
+  "limitations": [
+    "C2 independent review has not been performed, so KIT-CHG-004 is not complete or release-ready.",
+    "The evidence targets the local working tree rather than an immutable implementation commit.",
+    "Remote CI, remote branch protection and another Windows host were not exercised."
+  ]
+}

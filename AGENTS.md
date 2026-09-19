@@ -17,19 +17,19 @@
 
 ## 작업 방식
 
-- 한글을 포함한 모든 문서와 소스는 UTF-8(BOM 없음), 줄바꿈 LF로 관리한다.
-- Codex 세션 시작 시 먼저 `python .ai/tools/aidd.py hook-trust-status`를 실행한다. `REVIEW_REQUIRED`이면 신뢰되지 않은 훅을 우회 실행하거나 전역 설정을 직접 고치지 말고, 사용자에게 터미널에서 `codex -C "<현재 루트>"`를 연 뒤 `/hooks`에서 AIDD의 `UserPromptSubmit`·`Stop` 훅을 검토·신뢰하도록 알린다. 그 뒤 `python .aidd-kit-dev/tools/kit.py status`와 `git status --short`로 역할, 현재 변경, 작업 트리를 확인한다.
+- 한글을 포함한 모든 문서와 소스는 UTF-8(BOM 없음), 줄바꿈 LF로 관리한다. 실행 도구와 provider 훅은 Node.js 22 이상과 표준 라이브러리만 사용하며, 훅 입력은 원본 바이트를 UTF-8로 해석한다.
+- Codex 세션 시작 시 먼저 `node .ai/tools/aidd.mjs hook-trust-status`를 실행한다. `REVIEW_REQUIRED`이면 신뢰되지 않은 훅을 우회 실행하거나 전역 설정을 직접 고치지 말고, 사용자에게 터미널에서 `codex -C "<현재 루트>"`를 연 뒤 `/hooks`에서 AIDD의 `UserPromptSubmit`·`Stop` 훅을 검토·신뢰하도록 알린다. 그 뒤 `node .aidd-kit-dev/tools/kit.mjs status`와 `git status --short`로 역할, 현재 변경, 작업 트리를 확인한다.
 - 변경 전 해결할 실패, 영향 명세, 이식 가능 여부, 호환성·보안·롤백과 검증 방법을 먼저 정한다.
-- 새 훅·스킬·도구·플러그인은 기존 수단 부족, 트리거·입출력 계약, 중복, 안전한 비활성화와 롤백을 확인한 뒤 추가한다.
+- 새 훅·스킬·도구·플러그인은 기존 수단 부족, 트리거·입출력 계약, 중복, 안전한 비활성화와 롤백을 확인한 뒤 추가한다. 새 훅은 `.ai/tools/` 아래의 `.mjs`로 만들고 Node.js 표준 라이브러리만 사용하며 `self-test`의 provider 배선 검사를 통과해야 한다.
 - portable 동작은 `.ai/`에서, Kit 관리 전용 동작은 `.aidd-kit-dev/`에서 구현한다. 경계가 모호하면 기본적으로 배포하지 않고 명시적인 결정으로 남긴다.
 - 사용자·AI 대화 원문은 정본·증거·배포물에 포함하지 않는다. 훅이 제공한 원문만 역할과 제품 활성화 여부에 관계없이 Git 무시 루트 `chat-history/`에 로컬 기록한다.
-- 공통 portable 스킬은 `.ai/skills/`, 관리 전용 스킬은 `.aidd-kit-dev/skills/`가 정본이다. 원본 provider 어댑터는 `python .aidd-kit-dev/tools/kit.py sync-providers`로 두 집합을 합쳐 갱신한다.
+- 공통 portable 스킬은 `.ai/skills/`, 관리 전용 스킬은 `.aidd-kit-dev/skills/`가 정본이다. 원본 provider 어댑터는 `node .aidd-kit-dev/tools/kit.mjs sync-providers`로 두 집합을 합쳐 갱신한다.
 - 생성물이나 fixture를 제품 정본으로 가장하지 않는다. 기존 제품 fixture의 레코드는 회귀 입력일 뿐 현재 Kit 상태가 아니다.
 - 작고 되돌릴 수 있는 증분을 선호하고 과거 결정·검증 이력을 지우지 않는다.
 
 ## 배포와 변경 공유
 
-- 빈 템플릿은 `kit.py export`, 제품 정본까지 포함한 새 프로젝트는 `kit.py new-project`로 만든다.
+- 빈 템플릿은 `kit.mjs export`, 제품 정본까지 포함한 새 프로젝트는 `kit.mjs new-project`로 만든다.
 - 폴더와 ZIP은 동일한 staging·검증 경로를 사용한다. 기존 출력 대상은 덮어쓰지 않는다.
 - `.aidd-kit-origin.json`은 버전·원본 커밋·manifest·payload 해시를 기록하는 provenance일 뿐 업그레이드 잠금이나 호환성 보증이 아니다.
 - 원본과 프로젝트 간 자동 업그레이드, patch 적용, merge, reverse sync를 제공하지 않는다.
@@ -39,8 +39,8 @@
 ## 완료 조건
 
 - 영향받는 `.ai/spec/`, 구현, 테스트, 독자별 가이드, export manifest, 변경·결정·릴리스 기록을 함께 검토한다.
-- `python .aidd-kit-dev/tools/kit.py sync-providers`와 `python .aidd-kit-dev/tools/kit.py validate`를 실행한다.
-- `python -m unittest discover -s .aidd-kit-dev/tests -v`와 `python -m unittest discover -s .ai/tests -v`를 실행한다.
+- `node .aidd-kit-dev/tools/kit.mjs sync-providers`와 `node .aidd-kit-dev/tools/kit.mjs validate`를 실행한다.
+- `node --test .aidd-kit-dev/tests/*.test.mjs`와 `node --test .ai/tests/*.test.mjs`를 실행한다.
 - 샘플 `new-project`에서 AIDD `validate`와 provider 스킬 동일성을 확인한다.
 - C2·C3 변경은 구현 흐름과 분리된 AI 검토 세션 또는 사람 검토 증거가 있기 전에는 완료·검증·출시 준비 완료로 표시하지 않는다.
 - AI가 커밋 메시지를 작성할 때는 `.ai/templates/git/commit-message.md` 형식을 따르고, 실질 기여 AI만 마지막 trailer 묶음에 기록한다.

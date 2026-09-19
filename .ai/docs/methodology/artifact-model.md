@@ -50,4 +50,4 @@
 - 미등록 Git 신원은 C2·C3 개발 진입과 릴리스를 차단한다. Git 이력과 호스팅 제공자의 PR·승인·push 행위자 증거를 서로 대체하지 않는다.
 - `AGENTS.md`는 공통 AI 수행 계약의 단일 정본이다. `CLAUDE.md`는 첫 비어 있지 않은 줄에서 `@AGENTS.md`를 import하고 Claude Code 전용 연결만 추가한다.
 
-`python .ai/tools/aidd.py validate`는 기계적으로 확인 가능한 조건을 검사한다. 의미 품질은 검토 게이트에서 확인한다.
+`node .ai/tools/aidd.mjs validate`는 기계적으로 확인 가능한 조건을 검사한다. 의미 품질은 검토 게이트에서 확인한다.

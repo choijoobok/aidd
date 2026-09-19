@@ -1,2 +1,2 @@
 #!/bin/sh
-python .ai/tools/aidd.py record-merge "$1"
+node .ai/tools/aidd.mjs record-merge "$1"

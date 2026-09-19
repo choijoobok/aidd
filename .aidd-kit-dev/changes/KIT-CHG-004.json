@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-004",
+  "title": "Node.js 단일 런타임 전환",
+  "class": "C3",
+  "status": "in_review",
+  "problem": "Codex Windows 훅이 UTF-8 JSON 바이트를 Python의 cp949 표준 입력으로 해석해 한글을 surrogate 문자로 만들었고, 대화 기록기가 예외를 숨긴 채 0바이트 파일만 남겼다. 이어 commandWindows의 중첩 PowerShell 문자열 안에 있던 변수가 바깥 PowerShell에서 조기 확장되어 Desktop 세션에서는 훅 명령 자체가 무동작하는 문제도 확인됐다. 기존 테스트는 read_input을 모킹하거나 ASCII self-test만 실행하고 Windows 명령을 cmd.exe 경계에서만 호출해 실제 provider의 비 ASCII 입력과 중첩 PowerShell 실행 실패를 발견하지 못했다.",
+  "intent": "portable CLI, Kit 관리 CLI, provider 훅과 테스트를 Node.js 22 이상 표준 라이브러리로 통일해 설치 런타임을 하나로 줄이고, Windows 중첩 PowerShell 변수와 Python 코드페이지 문제를 구조적으로 제거한다.",
+  "scope": [
+    "portable aidd.mjs와 aidd_hook.mjs Node 표준 라이브러리 구현",
+    "Kit 관리 kit.mjs와 Node 내장 test runner 전환",
+    "대화 기록의 UTF-8 바이트 입력·append와 내용 비노출 실패 진단",
+    "provider 설정과 GitHub Actions·Git 훅의 Python 실행 경로 제거",
+    "commandWindows의 중첩 PowerShell 변수 제거와 실제 Windows 한글 왕복 회귀 테스트",
+    "신뢰 기록 존재와 실제 실행·저장 성공의 진단 의미 분리",
+    "portable 명세·훅 계약·두 독자 가이드·export 계약 현행화",
+    "모든 현행 가이드와 reference fixture 런타임 정본·파생 문서의 Node 단일 런타임 정합화",
+    "과거 Python 실행을 증명하는 evidence·release 이력의 사실 보존"
+  ],
+  "validation": [
+    "repository-wide executable .py absence and provider Python-command rejection",
+    "Node.js 22 syntax, standard-library runtime and UTF-8 payload negative-path tests",
+    "actual Codex Windows local-log command round trip through an outer PowerShell process",
+    "sanitized logging failure observability test",
+    "current guide and reference fixture runtime records reject stale Python setup instructions",
+    "reference fixture runtime guides are refreshed from canonical Node runtime records while historical evidence remains unchanged",
+    "harness self-test and portable regression tests",
+    "Kit source, directory/ZIP export and sample new-project validation",
+    "independent C3 compatibility and security review"
+  ],
+  "completion_blocker": "KIT-EVD-009 로컬 Node 검증 통과; 기존 Python CLI의 전체 명령 행동 동등성 검토, macOS 실제 provider 실행, 구현 흐름과 분리된 독립 C3 검토 필요"
+}

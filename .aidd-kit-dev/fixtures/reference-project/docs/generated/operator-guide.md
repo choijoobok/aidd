@@ -1,4 +1,4 @@
-<!-- .ai/tools/aidd.py가 project/.aidd/ssot 정본에서 자동 생성했습니다. 직접 수정하지 마세요. -->
+<!-- .ai/tools/aidd.mjs가 project/.aidd/ssot 정본에서 자동 생성했습니다. 직접 수정하지 마세요. -->
 
 # AIDD 운영자 가이드와 런북
 
@@ -12,10 +12,10 @@
 정본 변경 후 생성, 동기화, 검증, 테스트 순서로 실행한다. 생성 문서를 직접 수정하지 않는다.
 
 ```powershell
-python .ai/tools/aidd.py generate
-python .ai/tools/aidd.py sync-ai
-python .ai/tools/aidd.py validate
-python -m unittest discover -s .ai/tests -v
+node .ai/tools/aidd.mjs generate
+node .ai/tools/aidd.mjs sync-ai
+node .ai/tools/aidd.mjs validate
+node --test .ai/tests/*.test.mjs
 ```
 
 ## 릴리스와 개발 시작 점검
@@ -23,8 +23,8 @@ python -m unittest discover -s .ai/tests -v
 개발 시작과 릴리스는 서로 다른 게이트다. 차단 메시지를 해소하거나 승인된 예외를 기록하기 전에는 상태를 올리지 않는다.
 
 ```powershell
-python .ai/tools/aidd.py development-check --change CHG-001
-python .ai/tools/aidd.py release-check --release REL-001
+node .ai/tools/aidd.mjs development-check --change CHG-001
+node .ai/tools/aidd.mjs release-check --release REL-001
 ```
 
 ## 병합 영향 대응

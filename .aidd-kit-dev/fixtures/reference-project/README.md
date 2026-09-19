@@ -11,7 +11,7 @@ project/
 └── src/              애플리케이션 소스와 제품별 테스트·설정의 최상위 경계
 ```
 
-`docs/generated/`는 파생물이라 직접 수정하지 않는다. 변경은 `.aidd/ssot/`에서 한 뒤 저장소 루트에서 `python .ai/tools/aidd.py generate`와 `validate`를 실행한다.
+`docs/generated/`는 파생물이라 직접 수정하지 않는다. 변경은 `.aidd/ssot/`에서 한 뒤 저장소 루트에서 `node .ai/tools/aidd.mjs generate`와 `validate`를 실행한다.
 
 `src/`의 내부 구조는 기술 스택·아키텍처를 확정한 뒤에만 만든다. 예를 들어 모듈형 단일 애플리케이션은 `src/app/` 또는 `src/modules/`를, 분리 배포하는 구조는 `src/frontend/`, `src/backend/`, `src/services/<service>/`를 사용한다. 인프라·데이터베이스·계약·운영 파일도 제품에 속하면 해당 제품 경계(`src/` 또는 별도 제품 하위 폴더)에 두고 정본의 ADR·모듈·인터페이스 ID와 연결한다.
 

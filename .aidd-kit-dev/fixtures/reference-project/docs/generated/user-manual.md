@@ -1,4 +1,4 @@
-<!-- .ai/tools/aidd.py가 project/.aidd/ssot 정본에서 자동 생성했습니다. 직접 수정하지 마세요. -->
+<!-- .ai/tools/aidd.mjs가 project/.aidd/ssot 정본에서 자동 생성했습니다. 직접 수정하지 마세요. -->
 
 # AIDD 사용자 매뉴얼
 
@@ -25,9 +25,9 @@
 세션 시작에는 경영진 뷰로 짧게 브리핑하고, 평가 대기 병합과 대기 MRC를 일반 진척과 분리해 먼저 확인한다. MRC는 사전 담당자 없이 PM·관리자가 오프라인으로 조율하며 완료 뒤 실제 수행 결과를 기록한다.
 
 ```powershell
-python .ai/tools/aidd.py status --level executive
-python .ai/tools/aidd.py status --level detail
-python .ai/tools/aidd.py status --level module --module MOD-AI
+node .ai/tools/aidd.mjs status --level executive
+node .ai/tools/aidd.mjs status --level detail
+node .ai/tools/aidd.mjs status --level module --module MOD-AI
 ```
 
 ## 결정 취소와 변경

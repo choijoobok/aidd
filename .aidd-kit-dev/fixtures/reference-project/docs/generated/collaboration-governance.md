@@ -1,4 +1,4 @@
-<!-- .ai/tools/aidd.py가 project/.aidd/ssot 정본에서 자동 생성했습니다. 직접 수정하지 마세요. -->
+<!-- .ai/tools/aidd.mjs가 project/.aidd/ssot 정본에서 자동 생성했습니다. 직접 수정하지 마세요. -->
 
 # 협업 운영 프로필
 
@@ -74,7 +74,7 @@
 
 ### 현재 미등록 Git 신원
 
-실시간 결과는 `python .ai/tools/aidd.py identity-check`로 확인한다.
+실시간 결과는 `node .ai/tools/aidd.mjs identity-check`로 확인한다.
 
 ## 전환 이력
 

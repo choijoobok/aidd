@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "KIT-ADR-006",
+  "title": "AIDD 실행 도구의 Node.js 단일 런타임",
+  "status": "accepted",
+  "decision": "portable CLI, Kit 관리 CLI, provider 훅과 자동 테스트는 Node.js 22 이상과 Node 표준 라이브러리만 사용한다. provider 어댑터는 .ai/tools의 .mjs 진입점만 실행하며 Python 실행 파일이나 Python 런타임을 요구하지 않는다. Codex commandWindows는 git rev-parse 결과를 Join-Path에 직접 전달하고 중첩 PowerShell 변수를 선언하지 않는다.",
+  "rationale": "Python과 Node를 함께 요구하면 신규 환경 구축과 장애 진단 비용이 증가한다. 이미 확인된 cp949 stdin 손상과 바깥 PowerShell의 변수 조기 확장은 런타임 설정을 계속 보강하는 것보다 Node의 UTF-8 바이트 입력과 변수 없는 명령 구조로 제거하는 편이 단순하고 재발 표면이 작다.",
+  "alternatives": [
+    {"option": "훅만 Node로 바꾸고 AIDD·Kit CLI는 Python 유지", "decision": "rejected", "reason": "사용자는 여전히 두 런타임을 설치해야 하며 CI와 문서도 이중화된다."},
+    {"option": "Node 실행기가 Python CLI를 자식 프로세스로 호출", "decision": "rejected", "reason": "겉보기 진입점만 바뀌고 Python 설치 및 코드페이지 실패 경로가 그대로 남는다."},
+    {"option": "Python 명령의 escape와 PYTHONUTF8 설정을 계속 강화", "decision": "rejected", "reason": "provider·셸·운영체제 조합마다 실행 경계가 늘어나고 이미 같은 범주의 장애가 반복됐다."}
+  ],
+  "consequences": [
+    "필수 실행 환경은 Git과 Node.js 22 이상 하나로 단순화된다.",
+    "provider 훅 설정에는 python, python3, py -3, .py 실행 대상이 허용되지 않는다.",
+    "Windows commandWindows에는 바깥 PowerShell이 조기 확장할 $repo와 $LASTEXITCODE가 존재하지 않는다.",
+    "런타임 전환은 C3 호환성 변경이며 기존 CLI 명령의 행동 동등성, directory·ZIP export와 샘플 프로젝트를 독립 검토해야 한다.",
+    "macOS는 POSIX node 명령과 Git 루트 해석을 사용하지만 실제 macOS provider 증거 전에는 검증 완료로 선언하지 않는다."
+  ],
+  "rollback": "aidd.mjs, aidd_hook.mjs, kit.mjs, provider 설정, 테스트와 문서를 하나의 변경으로 되돌린다. Python과 Node가 섞인 중간 상태로 롤백하지 않으며, 동등한 비 ASCII·Windows 실제 명령 검증이 없는 Python 훅으로 복귀하지 않는다."
+}

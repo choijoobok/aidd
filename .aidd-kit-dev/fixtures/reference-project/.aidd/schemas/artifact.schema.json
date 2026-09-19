@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.invalid/aidd/artifact.schema.json",
   "title": "AIDD identified artifact",
-  "description": "Common identity contract. Collection-specific semantic constraints are enforced by .ai/tools/aidd.py.",
+  "description": "Common identity contract. Collection-specific semantic constraints are enforced by .ai/tools/aidd.mjs.",
   "type": "object",
   "required": ["id"],
   "properties": {

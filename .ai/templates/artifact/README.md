@@ -13,4 +13,4 @@
 | 테스트 실행 결과 | test-result-workbook.md | EVD / TST |
 | 일별 수행 맥락과 다음 행동 기록 | daily-work-log.md | work-log / CHG / WRK / OI / EVD |
 
-정본을 갱신한 뒤 python .ai/tools/aidd.py generate를 실행한다. project/docs/generated/site/의 HTML은 파생물이며 직접 수정하지 않는다.
+정본을 갱신한 뒤 node .ai/tools/aidd.mjs generate를 실행한다. project/docs/generated/site/의 HTML은 파생물이며 직접 수정하지 않는다.

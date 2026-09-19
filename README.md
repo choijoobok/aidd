@@ -15,18 +15,18 @@ AIDD Kit은 AI와 사람이 제품 의도부터 운영까지 추적 가능하게
 ## 관리 명령
 
 ```powershell
-python .aidd-kit-dev/tools/kit.py status
-python .aidd-kit-dev/tools/kit.py sync-providers
-python .aidd-kit-dev/tools/kit.py validate
-python -m unittest discover -s .aidd-kit-dev/tests -v
-python -m unittest discover -s .ai/tests -v
+node .aidd-kit-dev/tools/kit.mjs status
+node .aidd-kit-dev/tools/kit.mjs sync-providers
+node .aidd-kit-dev/tools/kit.mjs validate
+node --test .aidd-kit-dev/tests/*.test.mjs
+node --test .ai/tests/*.test.mjs
 ```
 
 빈 프로젝트 템플릿과 초기화된 프로젝트는 같은 허용 목록 기반 조립기를 사용한다.
 
 ```powershell
-python .aidd-kit-dev/tools/kit.py export --zip D:\dist\aidd-kit.zip
-python .aidd-kit-dev/tools/kit.py new-project --directory D:\work\crm --project-id CRM --name "CRM" --mode greenfield
+node .aidd-kit-dev/tools/kit.mjs export --zip D:\dist\aidd-kit.zip
+node .aidd-kit-dev/tools/kit.mjs new-project --directory D:\work\crm --project-id CRM --name "CRM" --mode greenfield
 ```
 
 관리 전용 `.aidd-kit-dev/`와 `aidd-kit-release` 스킬은 배포물에 포함되지 않는다. 배포된 프로젝트는 독립적으로 규칙·스킬·훅을 변경할 수 있으며 원본과 자동 업그레이드 또는 역동기화되지 않는다. 개선은 [.ai/spec/change-sharing.md](.ai/spec/change-sharing.md)의 변경 설명 형식으로 공유한 뒤 각 환경에서 별도 구현한다.

@@ -12,7 +12,7 @@
 
 ## 로컬 대화 이력
 
-사용자·AI 대화 원문은 제품 정본·증거·생성물이 아니다. 훅이 제공한 원문만 Git 무시 루트 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 로컬 기록한다. 이 규칙은 아직 `kit-template`인 상태에도 같으므로, 대화 기록 때문에 `project/`가 먼저 생성되지는 않는다. `AIDD_LOCAL_CONVERSATION_LOG=0`이면 현재 프로세스의 기록을 끌 수 있다.
+사용자·AI 대화 원문은 제품 정본·증거·생성물이 아니다. 훅이 제공한 UTF-8 원문만 Git 무시 루트 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 로컬 기록한다. Node 훅은 Windows 기본 코드페이지와 무관하게 원본 바이트와 파일을 UTF-8로 처리한다. 이 규칙은 아직 `kit-template`인 상태에도 같으므로, 대화 기록 때문에 `project/`가 먼저 생성되지는 않는다. 저장 실패 시 대화 내용을 노출하지 않고 오류 유형만 경고한다. `hook-trust-status`의 `TRUST_RECORD_FOUND`는 신뢰 기록 존재만 뜻하므로 다음 대화가 실제 파일에 추가되는지도 확인한다. `AIDD_LOCAL_CONVERSATION_LOG=0`이면 현재 프로세스의 기록을 끌 수 있다.
 
 ## AI에게 요청하는 방법
 
@@ -55,6 +55,8 @@ AI가 명령어 실행을 제안할 수 있지만, 명령어는 재현·자동�
 ## 프로젝트별 확장
 
 프로젝트는 `AGENTS.md`, `.ai/skills/`, 훅·도구·템플릿을 자체 요구에 맞게 추가하거나 수정할 수 있다. 변경은 프로젝트 정본의 요구·변경·결정·위험·증거와 연결한다. 원본 Kit과 계속 동일할 필요는 없다.
+
+새 훅은 `.ai/tools/` 아래의 `.mjs`로 만들고 `contract.json`의 `node_runtime`을 따른다. `node .ai/tools/aidd_hook.mjs self-test`는 Node 22 이상, 표준 라이브러리 전용 계약, provider의 Node 정본 배선과 비-Node 실행 경로 부재를 검사한다. 실제 provider 명령에 비 ASCII JSON을 전달하는 회귀 테스트도 함께 둔다.
 
 다른 Kit 또는 프로젝트의 개선을 도입할 때는 코드를 자동 병합하지 않는다. 문제·의도·환경·가정·구현 접근·검증·위험이 적힌 변경 설명서를 검토하고 이 프로젝트의 별도 변경으로 구현한다. 긴급 보안 권고도 자동 적용하지 않고 영향도와 완화책을 우선 평가한다.
 

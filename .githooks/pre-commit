@@ -1,3 +1,3 @@
 #!/bin/sh
-python .aidd-kit-dev/tools/kit.py validate || exit $?
-python -m unittest discover -s .aidd-kit-dev/tests || exit $?
+node .aidd-kit-dev/tools/kit.mjs validate || exit $?
+node --test .aidd-kit-dev/tests/*.test.mjs || exit $?

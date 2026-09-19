@@ -1,6 +1,3 @@
-__pycache__/
-*.py[cod]
-.pytest_cache/
 .codex-log/
 CLAUDE.local.md
 project/.aidd/ssot/.write.lock

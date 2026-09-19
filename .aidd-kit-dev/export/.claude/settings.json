@@ -5,21 +5,28 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PROJECT_DIR}/.ai/tools/aidd.py\" project-init",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/.ai/tools/aidd.mjs\" project-init",
             "timeout": 30,
             "statusMessage": "AIDD 프로젝트를 안전하게 초기화하는 중"
           },
           {
             "type": "command",
-            "command": "python",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.py", "session-brief"],
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs",
+              "session-brief"
+            ],
             "timeout": 30,
             "statusMessage": "AIDD 현재 상태를 불러오는 중"
           },
           {
             "type": "command",
-            "command": "python",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.py", "self-test", "--hook"],
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs",
+              "self-test",
+              "--hook"
+            ],
             "timeout": 20,
             "statusMessage": "AIDD 하네스 배선을 검사하는 중"
           }
@@ -32,8 +39,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.py", "protect", "--platform", "claude", "--kind", "file"],
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs",
+              "protect",
+              "--platform",
+              "claude",
+              "--kind",
+              "file"
+            ],
             "timeout": 20,
             "statusMessage": "AIDD 파생물 쓰기 정책을 확인하는 중"
           }
@@ -44,8 +58,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.py", "protect", "--platform", "claude", "--kind", "shell"],
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs",
+              "protect",
+              "--platform",
+              "claude",
+              "--kind",
+              "shell"
+            ],
             "timeout": 20,
             "statusMessage": "AIDD 파괴 명령과 셸 쓰기를 확인하는 중"
           }
@@ -58,8 +79,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.py", "post-check", "--platform", "claude"],
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs",
+              "post-check",
+              "--platform",
+              "claude"
+            ],
             "timeout": 30,
             "statusMessage": "AIDD 파생물과 정본 정합성을 확인하는 중"
           }
@@ -71,8 +97,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.py", "local-log", "--platform", "claude", "--role", "user"],
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs",
+              "local-log",
+              "--platform",
+              "claude",
+              "--role",
+              "user"
+            ],
             "timeout": 10,
             "statusMessage": "로컬 대화 기록을 저장하는 중"
           }
@@ -84,14 +117,21 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"${CLAUDE_PROJECT_DIR}/.ai/tools/aidd.py\" hook --platform claude --event Stop",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/.ai/tools/aidd.mjs\" hook --platform claude --event Stop",
             "timeout": 30,
             "statusMessage": "AIDD 정합성을 검사하는 중"
           },
           {
             "type": "command",
-            "command": "python",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.py", "local-log", "--platform", "claude", "--role", "assistant"],
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs",
+              "local-log",
+              "--platform",
+              "claude",
+              "--role",
+              "assistant"
+            ],
             "timeout": 10,
             "statusMessage": "로컬 대화 기록을 저장하는 중"
           }

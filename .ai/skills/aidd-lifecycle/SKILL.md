@@ -5,7 +5,7 @@ description: 정본 AIDD 레코드, 위험 비례 게이트, 변경 등급과 �
 
 # AIDD 생애주기
 
-1. 세션·프로젝트 시작에는 `python .ai/tools/aidd.py project-init`을 실행한다. 이 명령은 Git이 없을 때 `main`과 로컬 훅만 만들며, 스테이징·커밋·신원 등록은 고객 확인 없이는 하지 않는다. 이어서 AIDD 레코드가 있으면 `status --level executive`, `collaboration-status`, `identity-check`와 `validate`를 실행한다.
+1. 세션·프로젝트 시작에는 `node .ai/tools/aidd.mjs project-init`을 실행한다. 이 명령은 Git이 없을 때 `main`과 로컬 훅만 만들며, 스테이징·커밋·신원 등록은 고객 확인 없이는 하지 않는다. 이어서 AIDD 레코드가 있으면 `status --level executive`, `collaboration-status`, `identity-check`와 `validate`를 실행한다.
 2. 요청을 신규 기능(`new_capability`), 기존 기능 변경(`existing_change`), 결함(`defect`), 레거시 고도화(`legacy_modernization`), 내부 리팩터링(`internal_refactor`) 또는 거버넌스로 분류해 CHG `delivery_path`에 기록한다. `CHG` ID와 C0~C3 엄격성 등급을 지정하거나 제안한다.
 3. 영향받는 성과, 요구사항, 모듈, 마일스톤·작업·인터페이스·의존성, 결정, 협업 프로필·활성 참여자, 배포 프로필, 기술 기준선, 설계 위험, 게이트 실행, 검증 증거, 승인·예외, 미결사항, 테스트, 릴리스와 가이드를 찾는다. 대화 기록만을 유일한 근거로 사용하지 않는다.
 4. 요구 안정성, 불확실성, 규제·안전, 변경 비용, 배포 빈도와 운영 책임을 근거로 예측형·적응형·혼합형 수행 경로를 선택하고 `project/.aidd/ssot/methodologies.json`의 채택 통제에 연결한다.

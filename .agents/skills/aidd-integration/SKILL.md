@@ -5,7 +5,7 @@ description: Git 브랜치 통합, 원격과의 차이, 병합 충돌, 병합 �
 
 # AIDD 안전 통합
 
-1. 먼저 `python .ai/tools/aidd.py integration-status`와 `git status --short`로 현재 작업 트리·추적 브랜치 차이를 확인한다. 이 명령은 네트워크나 Git 이력을 바꾸지 않는다.
+1. 먼저 `node .ai/tools/aidd.mjs integration-status`와 `git status --short`로 현재 작업 트리·추적 브랜치 차이를 확인한다. 이 명령은 네트워크나 Git 이력을 바꾸지 않는다.
 2. 변경된 작업 트리에는 자동 `fetch`, `pull`, `merge`, `rebase`, `stash`, `reset`, `checkout`을 하지 않는다. 사용자가 무엇을 보존·통합할지 결정하게 한다.
 3. 깨끗한 트리에서 뒤처진 경우에도 자동으로 가져오지 않는다. 사용자 승인을 받은 뒤에만 `git pull --ff-only`처럼 되돌리기 쉬운 통합을 수행한다.
 4. 양쪽이 갈라진 경우에는 대상 브랜치, 변경 ID, 충돌 해결 책임과 롤백을 사용자와 확인한다. 의미 충돌은 원 작성자·업무 책임자의 확인 없이 추측해 해결하지 않는다.

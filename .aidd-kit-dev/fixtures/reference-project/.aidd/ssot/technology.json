@@ -49,12 +49,12 @@
       "name": "AIDD 기반 구조 기술 기준선",
       "scope": "이 저장소의 방법론 프레임워크와 CLI",
       "status": "accepted",
-      "decision": "외부 런타임 의존성을 최소화한 Python 표준 라이브러리 CLI, 버전 관리되는 JSON 정본, 생성 Markdown, Git 훅, 공통 SKILL.md와 플랫폼별 얇은 어댑터를 사용한다.",
+      "decision": "외부 패키지 의존성이 없는 Node.js 표준 라이브러리 CLI, 버전 관리되는 JSON 정본, 생성 Markdown, Git 훅, 공통 SKILL.md와 플랫폼별 얇은 어댑터를 사용한다.",
       "choices": [
-        {"area": "런타임", "selection": "Python 3.11 이상 표준 라이브러리", "reason": "이식성과 설치 부담 최소화"},
+        {"area": "런타임", "selection": "Node.js 22 이상 표준 라이브러리", "reason": "단일 런타임과 설치 부담 최소화"},
         {"area": "정본", "selection": "UTF-8 무 BOM JSON", "reason": "결정적 파싱과 도구 독립성"},
         {"area": "사람용 문서", "selection": "정본에서 생성한 한글 Markdown", "reason": "검토성과 재현성"},
-        {"area": "변경·자동화", "selection": "Git, 저장소 훅과 Python 검증기", "reason": "로컬·CI에서 같은 게이트 실행"},
+        {"area": "변경·자동화", "selection": "Git, 저장소 훅과 Node 검증기", "reason": "로컬·CI에서 같은 게이트 실행"},
         {"area": "AI 어댑터", "selection": "공통 SKILL.md와 Codex·Claude 네이티브 설정", "reason": "의미 동등성과 플랫폼 호환성"}
       ],
       "not_applicable": ["현재 CLI 기반 구조에는 제품 UI 디자인 시스템과 UI 공통 컴포넌트가 없다. 실제 UI 제품을 시작할 때 TG-002에서 필수로 전환한다."],

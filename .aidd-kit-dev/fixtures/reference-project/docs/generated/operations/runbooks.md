@@ -1,4 +1,4 @@
-<!-- .ai/tools/aidd.py가 project/.aidd/ssot 정본에서 자동 생성했습니다. 직접 수정하지 마세요. -->
+<!-- .ai/tools/aidd.mjs가 project/.aidd/ssot 정본에서 자동 생성했습니다. 직접 수정하지 마세요. -->
 
 # 운영 런북
 
@@ -12,10 +12,10 @@
 
 ### 절차
 
-1. python .ai/tools/aidd.py generate를 실행한다.
-2. python .ai/tools/aidd.py validate를 실행한다.
+1. node .ai/tools/aidd.mjs generate를 실행한다.
+2. node .ai/tools/aidd.mjs validate를 실행한다.
 3. 검증 실패의 정본 ID와 원인을 수정하고 다시 생성한다.
-4. 전체 unittest를 실행하고 결과를 EVD에 연결한다.
+4. 전체 Node 테스트를 실행하고 결과를 EVD에 연결한다.
 
 ### 검증
 

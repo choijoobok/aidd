@@ -12,7 +12,7 @@
 
 루트에는 제품용 `project/`를 두지 않는다. 회귀 검증에 필요한 제품 데이터는 `.aidd-kit-dev/fixtures/`에서 명시적인 fixture로 관리한다.
 
-사용자·AI 대화 원문은 Kit 변경 이력이나 증거가 아니다. 훅이 제공한 원문만 Git 무시 루트 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 로컬 기록한다. 이 위치는 `kit-source`, `kit-template`, `product-workspace`에서 같으며, 빈 템플릿이 대화 기록만으로 `project/`를 생성하지 않게 한다.
+사용자·AI 대화 원문은 Kit 변경 이력이나 증거가 아니다. 훅이 제공한 UTF-8 원문만 Git 무시 루트 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 로컬 기록한다. 이 위치는 `kit-source`, `kit-template`, `product-workspace`에서 같으며, 빈 템플릿이 대화 기록만으로 `project/`를 생성하지 않게 한다. 모든 실행 도구는 Node.js 22 이상과 표준 라이브러리만 사용한다. 실제 Windows provider 명령에 비 ASCII 입력을 전달하는 회귀 검사를 유지하고, `commandWindows`에는 바깥 PowerShell이 조기 확장할 `$repo`·`$LASTEXITCODE` 같은 중첩 변수를 넣지 않는다. provider JSON은 `.ai/tools/`의 Node 진입점만 참조하며 `self-test`가 비-Node 실행 경로 부재를 검사한다. 신뢰 레코드 존재와 실제 훅 실행·저장 성공은 별도 상태로 검증한다.
 
 ## AI에게 요청하는 방법
 
@@ -37,8 +37,8 @@ AI에게 “export해줘”, “검증해줘”, “변경을 구현해줘”처
 1. 해결할 실패와 영향을 받는 portable 명세를 확인하고 `KIT-CHG`를 만든다.
 2. 위험·호환성·롤백과 대안을 검토해 필요한 `KIT-ADR`을 기록한다.
 3. 명세, 구현, 테스트, 두 가이드와 export 영향 중 관련 항목을 같은 변경에서 갱신한다.
-4. `python .aidd-kit-dev/tools/kit.py sync-providers`로 원본 저장소의 provider 스킬을 동기화한다.
-5. `python .aidd-kit-dev/tools/kit.py validate`와 전체 테스트를 실행한다.
+4. `node .aidd-kit-dev/tools/kit.mjs sync-providers`로 원본 저장소의 provider 스킬을 동기화한다.
+5. `node .aidd-kit-dev/tools/kit.mjs validate`와 전체 테스트를 실행한다.
 6. C2·C3는 구현 흐름과 분리된 독립 검토를 받고 결과를 evidence에 기록한다.
 7. 출시 시 버전, 호환성, 보안 영향, 변경 설명서와 검증 결과를 release note에 연결한다.
 
@@ -59,14 +59,14 @@ AI는 허용 목록으로 staging 조립·검증을 수행한 뒤 폴더 또는 
 빈 템플릿은 다음처럼 만든다.
 
 ```powershell
-python .aidd-kit-dev/tools/kit.py export --directory D:\work\aidd-template
-python .aidd-kit-dev/tools/kit.py export --zip D:\dist\aidd-template.zip
+node .aidd-kit-dev/tools/kit.mjs export --directory D:\work\aidd-template
+node .aidd-kit-dev/tools/kit.mjs export --zip D:\dist\aidd-template.zip
 ```
 
 제품 정본까지 초기화한 프로젝트는 다음처럼 만든다.
 
 ```powershell
-python .aidd-kit-dev/tools/kit.py new-project --directory D:\work\crm --project-id CRM --name "CRM" --mode greenfield
+node .aidd-kit-dev/tools/kit.mjs new-project --directory D:\work\crm --project-id CRM --name "CRM" --mode greenfield
 ```
 
 출력 대상은 기존 파일을 보호하기 위해 존재하지 않아야 한다. 폴더와 ZIP은 같은 staging 조립과 검증을 거친다. `.aidd-kit-origin.json`은 출처 표식일 뿐 업그레이드 지시가 아니다.

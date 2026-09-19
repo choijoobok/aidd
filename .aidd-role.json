@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
   "role": "kit-source",
-  "managed_by": ".aidd-kit-dev/tools/kit.py",
+  "managed_by": ".aidd-kit-dev/tools/kit.mjs",
   "mutable_by_user": false
 }

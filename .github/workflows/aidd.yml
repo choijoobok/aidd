@@ -22,25 +22,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Python 설정
-        uses: actions/setup-python@v5
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
         with:
-          python-version: "3.11"
+          node-version: "22"
 
-      - name: Python 구문 검사
-        run: python -m py_compile .ai/tools/aidd.py .ai/tools/aidd_hook.py .aidd-kit-dev/tools/kit.py
+      - name: Node.js 구문 검사
+        run: |
+          node --check .ai/tools/aidd.mjs
+          node --check .ai/tools/aidd_hook.mjs
+          node --check .aidd-kit-dev/tools/kit.mjs
 
       - name: 원본 provider 스킬 동기화
-        run: python .aidd-kit-dev/tools/kit.py sync-providers
+        run: node .aidd-kit-dev/tools/kit.mjs sync-providers
 
       - name: 생성 결과 드리프트 검사
         run: git diff --exit-code
 
       - name: Kit와 export 경계 검증
-        run: python .aidd-kit-dev/tools/kit.py validate
+        run: node .aidd-kit-dev/tools/kit.mjs validate
 
       - name: Kit 생명주기 테스트
-        run: python -m unittest discover -s .aidd-kit-dev/tests -v
+        run: node --test .aidd-kit-dev/tests/*.test.mjs
 
       - name: AIDD 프레임워크 회귀 테스트
-        run: python -m unittest discover -s .ai/tests -v
+        run: node --test .ai/tests/*.test.mjs

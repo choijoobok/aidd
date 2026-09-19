@@ -9,7 +9,7 @@ description: AIDD Kit 원본의 명세, export 허용 목록, 관리 전용 격�
 
 1. `.aidd-kit-dev/guides/kit-maintainer-guide.md`와 연결된 `KIT-CHG`, `KIT-ADR`을 읽는다.
 2. 변경이 해결할 실패, portable 명세, 구현, 테스트, 두 독자별 가이드와 export 경계에 미치는 영향을 확인한다.
-3. `python .aidd-kit-dev/tools/kit.py sync-providers` 후 `validate`를 실행한다.
+3. `node .aidd-kit-dev/tools/kit.mjs sync-providers` 후 `validate`를 실행한다.
 4. 폴더 export와 ZIP export가 같은 허용 목록을 쓰며 관리 전용 파일을 포함하지 않는지 확인한다.
 5. `new-project` 샘플의 role, 제품 정본, provider 스킬과 AIDD 검증을 확인한다.
 6. C2·C3는 별도 세션의 독립 검토 전에는 완료나 출시 준비 완료로 표시하지 않는다.

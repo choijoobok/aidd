@@ -19,21 +19,26 @@
     },
     "Stop": {
       "purpose": "정합성 게이트와 가능한 경우 AI 응답 원문 로컬 기록을 실행한다.",
-      "required_tokens": ["hook", "local-log", "--role", "assistant"]
+      "required_tokens": ["aidd.mjs", "hook", "local-log", "--role", "assistant"]
     }
   },
   "git_pre_commit": {
     "purpose": "staged 제품 소스가 시스템 표면과 연결되고 문서가 함께 갱신되었거나 기한 있는 후속 작업이 승인되었는지 검사한다.",
-    "command": "python .ai/tools/aidd.py documentation-check --staged"
+    "command": "node .ai/tools/aidd.mjs documentation-check --staged"
+  },
+  "node_runtime": {
+    "minimum_major": 22,
+    "hook_input": "utf-8-bytes",
+    "dependencies": "node-standard-library"
   },
   "recovery_paths": [
     ".ai/hooks/policy.json",
     ".ai/hooks/contract.json",
     ".ai/hooks/README.md",
-    ".ai/tools/aidd_hook.py",
+    ".ai/tools/aidd_hook.mjs",
     ".claude/settings.json",
     ".codex/hooks.json",
-    ".ai/tests/test_harness.py"
+    ".ai/tests/harness.test.mjs"
   ],
   "local_conversation_log": {
     "root": "chat-history",
@@ -41,6 +46,8 @@
     "enabled_by_default": true,
     "max_entry_chars": 16000,
     "max_daily_file_bytes": 5242880,
+    "transport_encoding": "utf-8",
+    "failure_reporting": "sanitized-stderr",
     "disable_environment": "AIDD_LOCAL_CONVERSATION_LOG=0"
   }
 }

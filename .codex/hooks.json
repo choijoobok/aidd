@@ -7,16 +7,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" session-brief",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') session-brief; exit $LASTEXITCODE\"",
+            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" session-brief",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') session-brief\"",
             "timeout": 30,
             "statusMessage": "AIDD 현재 상태를 불러오는 중",
             "additionalContextLimit": 9000
           },
           {
             "type": "command",
-            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" self-test --hook",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') self-test --hook; exit $LASTEXITCODE\"",
+            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" self-test --hook",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') self-test --hook\"",
             "timeout": 20,
             "statusMessage": "AIDD 하네스 배선을 검사하는 중",
             "additionalContextLimit": 4000
@@ -30,8 +30,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" protect --platform codex --kind file",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') protect --platform codex --kind file; exit $LASTEXITCODE\"",
+            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" protect --platform codex --kind file",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') protect --platform codex --kind file\"",
             "timeout": 20,
             "statusMessage": "AIDD 파생물 쓰기 정책을 확인하는 중"
           }
@@ -42,8 +42,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" protect --platform codex --kind shell",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') protect --platform codex --kind shell; exit $LASTEXITCODE\"",
+            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" protect --platform codex --kind shell",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') protect --platform codex --kind shell\"",
             "timeout": 20,
             "statusMessage": "AIDD 파괴 명령과 셸 쓰기를 확인하는 중"
           }
@@ -56,8 +56,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" post-check --platform codex",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') post-check --platform codex; exit $LASTEXITCODE\"",
+            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" post-check --platform codex",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') post-check --platform codex\"",
             "timeout": 30,
             "statusMessage": "AIDD 파생물과 정본 정합성을 확인하는 중",
             "additionalContextLimit": 5000
@@ -70,8 +70,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" local-log --platform codex --role user",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') local-log --platform codex --role user; exit $LASTEXITCODE\"",
+            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" local-log --platform codex --role user",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') local-log --platform codex --role user\"",
             "timeout": 10,
             "statusMessage": "로컬 대화 기록을 저장하는 중"
           }
@@ -83,15 +83,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd.py\" hook --platform codex --event Stop",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd.py') hook --platform codex --event Stop; exit $LASTEXITCODE\"",
+            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd.mjs\" hook --platform codex --event Stop",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd.mjs') hook --platform codex --event Stop\"",
             "timeout": 30,
             "statusMessage": "AIDD 정합성을 검사하는 중"
           },
           {
             "type": "command",
-            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.py\" local-log --platform codex --role assistant",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"$repo = (& git rev-parse --show-toplevel); if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & py -3 (Join-Path $repo '.ai\\tools\\aidd_hook.py') local-log --platform codex --role assistant; exit $LASTEXITCODE\"",
+            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" local-log --platform codex --role assistant",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') local-log --platform codex --role assistant\"",
             "timeout": 10,
             "statusMessage": "로컬 대화 기록을 저장하는 중"
           }

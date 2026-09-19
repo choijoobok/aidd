@@ -5,7 +5,7 @@ description: 정본 레코드에서 정확한 경영진·모듈·항목 수준 A
 
 # AIDD 상태 브리핑
 
-1. 세션 시작에는 `python .ai/tools/aidd.py status --level executive`를 실행해 짧은 현황 브리핑부터 제공한다. `MRG` 영향 평가 대기 또는 `MRC` 재검토 대기가 있으면 병합 알림을 진척과 분리해 먼저 알린다. 협업 상태는 `python .ai/tools/aidd.py collaboration-status`, 신원 대조는 `python .ai/tools/aidd.py identity-check`, 항목 수준 추적은 `--level detail`, 모듈 상세는 `--level module --module MOD-ID`, AI 교차 평가 슬롯은 `python .ai/tools/aidd.py evaluation-status`를 실행한다. 실제 평가가 필요하면 `evaluation-prompt`와 `record-evaluation`을 사용한다.
+1. 세션 시작에는 `node .ai/tools/aidd.mjs status --level executive`를 실행해 짧은 현황 브리핑부터 제공한다. `MRG` 영향 평가 대기 또는 `MRC` 재검토 대기가 있으면 병합 알림을 진척과 분리해 먼저 알린다. 협업 상태는 `node .ai/tools/aidd.mjs collaboration-status`, 신원 대조는 `node .ai/tools/aidd.mjs identity-check`, 항목 수준 추적은 `--level detail`, 모듈 상세는 `--level module --module MOD-ID`, AI 교차 평가 슬롯은 `node .ai/tools/aidd.mjs evaluation-status`를 실행한다. 실제 평가가 필요하면 `evaluation-prompt`와 `record-evaluation`을 사용한다.
 2. 브리핑 전에 검증한다. 검증 불일치를 숨은 도구 세부사항이 아니라 프로젝트 상태 문제로 보고한다.
 3. 현재 단계, 협업 프로필·활성 사람 참여자 수·미등록 Git 신원·필요 승인 또는 AI 보증, 배포 프로필, 게이트 정책과 변경별 `GTR` 승인 현황, 구조화된 증거, 차단사항, 주요 위험과 다음 고객 결정을 먼저 제시한다. 배포 위치·DBMS·인스턴스·확장·SLO·RTO·RPO가 미정이면 설계에 미치는 영향과 결정 기한을 함께 표시한다.
 4. 증거로 완료된 작업, 진행 중인 작업, 계획된 작업과 알 수 없거나 논쟁 중인 상태를 구분한다.

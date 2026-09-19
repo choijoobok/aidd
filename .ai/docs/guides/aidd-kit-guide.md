@@ -16,16 +16,16 @@ AIDD는 제품을 대신 호스팅하거나 특정 개발 언어·클라우드·
 
 | 구분 | 필요한 것 | 알아둘 제약 |
 |---|---|---|
-| 필수 | Git과 `python` 명령을 실행할 수 있는 로컬 환경 | AIDD CLI는 Python 표준 라이브러리만 사용한다. Git과 Python은 PATH에서 실행 가능해야 한다. |
+| 필수 | Git과 Node.js 22 이상을 실행할 수 있는 로컬 환경 | AIDD CLI는 Node 표준 라이브러리만 사용한다. Git과 `node`는 PATH에서 실행 가능해야 하며 별도 패키지 설치는 필요 없다. |
 | 필수 | Codex 또는 Claude Code 중 하나 | 둘 다 설치할 필요는 없다. 선택한 AI가 프로젝트 폴더를 읽고 사용자 승인 아래 파일·터미널 작업을 수행할 수 있어야 한다. |
 | 필수 | 프로젝트 폴더 읽기·쓰기 권한 | 정본·코드·생성 문서를 갱신할 수 있어야 한다. 커밋·푸시·배포 같은 외부 변경 권한은 별도로 통제한다. |
 | 처음 한 번 | export된 별도 프로젝트 템플릿과 빈 제품 정본 | Kit 원본을 직접 복사하지 않는다. Kit 관리자가 export한 폴더 또는 ZIP을 별도 프로젝트 루트로 받은 뒤 `project-init`, `project-bootstrap`을 실행한다. |
 | 선택 | GitHub 같은 원격 저장소·CI·브랜치 보호 | 로컬 기록·생성·검증에는 인터넷이 필수가 아니다. 팀 협업과 원격 통제에는 서비스 계정·권한·실제 적용 확인이 필요하다. |
 | 프로젝트별 | 클라우드, DBMS, Node·Docker, 외부 API와 비밀정보 | AIDD 자체의 선행 조건이 아니다. 제품 기술 기준선에서 결정하며 AI가 없는 권한·계정·승인을 우회해서는 안 된다. |
 
-PowerShell 예시는 Windows 기준이다. 다른 운영체제에서도 같은 `python .ai/tools/aidd.py ...` 명령을 해당 터미널에서 실행한다. 환경을 먼저 확인하려면 다음처럼 말한다.
+PowerShell 예시는 Windows 기준이다. 다른 운영체제에서도 같은 `node .ai/tools/aidd.mjs ...` 명령을 해당 터미널에서 실행한다. 환경을 먼저 확인하려면 다음처럼 말한다.
 
-> AIDD를 시작하기 전에 이 컴퓨터와 저장소에서 가능한 것과 불가능한 것을 점검해줘. Git, Python, 선택한 AI의 저장소 접근 권한, Git 훅 상태를 확인하고, 없는 권한·도구·외부 계정은 우회하지 말고 준비 목록으로 분리해줘.
+> AIDD를 시작하기 전에 이 컴퓨터와 저장소에서 가능한 것과 불가능한 것을 점검해줘. Git, Node.js 22 이상, 선택한 AI의 저장소 접근 권한, Git 훅 상태를 확인하고, 없는 권한·도구·외부 계정은 우회하지 말고 준비 목록으로 분리해줘.
 
 ## 프로젝트 시작과 제품 정본 만들기
 
@@ -55,23 +55,23 @@ AI는 `project/` 존재 여부와 Git 상태를 먼저 확인해야 한다. 기�
 
 1. Kit 관리팀이 제공한 폴더를 사용하거나, 배포 ZIP을 별도 빈 폴더에 압축 해제한다. Kit 원본 저장소를 복사하거나 그 안에서 제품을 시작하지 않는다.
 2. `.gitignore`를 먼저 검토해 비밀키, 환경 변수 파일, 운영 데이터, 개인 설정이 포함되지 않았는지 확인한다.
-3. Codex 또는 Claude Code로 템플릿 루트를 열고 `python .ai/tools/aidd.py project-init`을 실행한다. 이 명령은 Git이 없는 경우 로컬 `main` 브랜치와 `.githooks`만 만들며, 파일을 자동으로 `git add`·커밋하거나 Git 신원을 등록하지 않는다.
+3. Codex 또는 Claude Code로 템플릿 루트를 열고 `node .ai/tools/aidd.mjs project-init`을 실행한다. 이 명령은 Git이 없는 경우 로컬 `main` 브랜치와 `.githooks`만 만들며, 파일을 자동으로 `git add`·커밋하거나 Git 신원을 등록하지 않는다.
 4. 제품 작업공간과 빈 정본을 명시적으로 만든다.
 
 ```powershell
-python .ai/tools/aidd.py project-bootstrap --project-id CRM-PORTAL --name "고객 관리 포털" --mode greenfield
+node .ai/tools/aidd.mjs project-bootstrap --project-id CRM-PORTAL --name "고객 관리 포털" --mode greenfield
 ```
 
 5. 기존에 개발된 제품을 수용한다면, 현재 소스 위치를 기록만 하고 자동 이동은 하지 않는다.
 
 ```powershell
-python .ai/tools/aidd.py project-bootstrap --project-id ERP-CORE --name "기존 ERP" --mode existing-system --source-location "D:\workspace\legacy-erp"
+node .ai/tools/aidd.mjs project-bootstrap --project-id ERP-CORE --name "기존 ERP" --mode existing-system --source-location "D:\workspace\legacy-erp"
 ```
 
 6. `project-bootstrap`은 `project/`가 이미 있으면 중단하며 기존 정본·소스·문서를 덮어쓰지 않는다. 성공하면 `.aidd-role.json`을 `kit-template`에서 `product-workspace`로 전환한다. 생성 직후에는 정본이 `bootstrap` 상태이므로, 제품 목적·범위·모듈·배포 맥락을 합의하기 전에는 문서 생성이나 구현 게이트를 통과한 것으로 보지 않는다.
-7. `python .ai/tools/aidd.py project-init-status`와 `python .ai/tools/aidd.py status --level executive`로 Git 및 제품 착수 상태를 확인한다.
+7. `node .ai/tools/aidd.mjs project-init-status`와 `node .ai/tools/aidd.mjs status --level executive`로 Git 및 제품 착수 상태를 확인한다.
 
-과거 버전의 템플릿에서 제품 정본은 이미 만들었는데 역할이 `kit-template`으로 남은 경우에는 bootstrap을 다시 실행하거나 `.aidd-role.json`을 직접 고치지 않는다. `python .ai/tools/aidd.py project-reconcile-role`은 기존 `project/.aidd/ssot/`를 검증한 뒤에만 역할을 `product-workspace`로 정합화한다.
+과거 버전의 템플릿에서 제품 정본은 이미 만들었는데 역할이 `kit-template`으로 남은 경우에는 bootstrap을 다시 실행하거나 `.aidd-role.json`을 직접 고치지 않는다. `node .ai/tools/aidd.mjs project-reconcile-role`은 기존 `project/.aidd/ssot/`를 검증한 뒤에만 역할을 `product-workspace`로 정합화한다.
 
 기존 소스가 새 저장소 루트나 다른 폴더에 있다면 AI에게 먼저 “`project/src/`로 옮길 대상, 제외할 빌드 산출물·비밀정보·운영 데이터를 분석하고 이동 계획만 제안해줘”라고 요청한다. 사람의 승인 전에는 자동 이동하지 않는다.
 
@@ -214,7 +214,7 @@ AI는 요구사항별 증거, 실패 시 중단·복구·롤백, 구현과 가�
 
 ### 프로젝트 홈을 먼저 합의하기
 
-프로젝트를 시작할 때 AI와 아래 다섯 가지를 먼저 합의한다. 이 내용은 `project/.aidd/ssot/project.json`의 정본 필드이며, `python .ai/tools/aidd.py generate`를 실행하면 `project/docs/generated/site/index.html`의 첫 화면으로 생성된다.
+프로젝트를 시작할 때 AI와 아래 다섯 가지를 먼저 합의한다. 이 내용은 `project/.aidd/ssot/project.json`의 정본 필드이며, `node .ai/tools/aidd.mjs generate`를 실행하면 `project/docs/generated/site/index.html`의 첫 화면으로 생성된다.
 
 - 프로젝트 소개: 무엇을 위한 제품인가
 - 프로젝트 개요: 대상, 범위와 현재 맥락은 무엇인가
@@ -245,7 +245,7 @@ AI는 요구사항별 증거, 실패 시 중단·복구·롤백, 구현과 가�
 
 > 이 기능의 요건 정의서를 기능 요건 서식 수준으로 작성해줘. 사용자 업무 흐름, 업무 규칙, 예외, 화면·데이터 영향, 인수 기준과 되면 안 되는 경우를 분리하고, 모르는 내용은 미결사항으로 남겨줘.
 
-`python .ai/tools/aidd.py generate`를 실행하면 세 개의 오프라인 HTML 사이트가 함께 생성된다.
+`node .ai/tools/aidd.mjs generate`를 실행하면 세 개의 오프라인 HTML 사이트가 함께 생성된다.
 
 - `project/docs/generated/site/design/index.html`: 설계·검증 문서
 - `project/docs/generated/site/user/index.html`: 사용자 가이드
@@ -260,7 +260,7 @@ AI는 요구사항별 증거, 실패 시 중단·복구·롤백, 구현과 가�
 1. 문서 유형별 독자와 판단 목적을 먼저 정한다. 예를 들어 요건 정의서는 승인자·구현 AI, 사용자 매뉴얼은 실제 업무 사용자, 런북은 장애 대응 운영자가 독자다.
 2. 각 문서의 필수 항목, 용어, 근거 정본, 승인 기준을 함께 정한다. 프로젝트에만 필요한 항목은 해당 문서 유형의 `required_sections`에 추가한다.
 3. 새 필수 항목을 추가하면 생성기가 같은 유형의 기존 문서 전체에 소급 표시한다. `fill_from`으로 확인된 정본 필드를 연결한 항목은 자동으로 채우고, 근거가 없으면 ‘미작성’으로 표시해 OI로 확인한다.
-4. 구현 또는 기존 기능 수정 뒤에는 `python .ai/tools/aidd.py document-impact`를 실행한다. 요건 정의서 → 화면 요건 → 사용자 매뉴얼 → 운영 런북 → 테스트·증거를 순서대로 대조한다.
+4. 구현 또는 기존 기능 수정 뒤에는 `node .ai/tools/aidd.mjs document-impact`를 실행한다. 요건 정의서 → 화면 요건 → 사용자 매뉴얼 → 운영 런북 → 테스트·증거를 순서대로 대조한다.
 5. 소스 변경 뒤 Codex·Claude 훅도 같은 현행화 후보를 경고한다. 훅은 변경 사실만 감지하며 의미상 어느 쪽이 옳은지는 판단하지 않는다. 불일치는 `aidd-document-consistency` 검토로 근거와 처리를 기록한 뒤 정본을 확정한다.
 
 AI에게는 다음처럼 요청하면 된다.
@@ -280,29 +280,29 @@ AI에게는 다음처럼 요청하면 된다.
 AI에게 “오늘 한 작업을 이유·결과·다음 행동·연결 ID와 함께 기록해줘”라고 요청하거나 아래 명령을 사용한다. 명령은 현재 저장소의 Git `user.name`·`user.email`을 `collaboration.json`의 등록된 활성 신원과 대조해 `HUM-001.md` 같은 참여자별 파일을 선택한다. 원시 Git 이름이나 이메일을 파일명으로 쓰지 않으므로 별칭·이메일 변경에도 이력이 분산되지 않는다. 신원이 미등록이면 임의로 기록하지 않고 `identity-check`와 `collaboration-identity`로 먼저 매핑한다.
 
 ```powershell
-python .ai/tools/aidd.py record-work --summary "요건 인터뷰 정리" --why "착수 범위를 합의하기 위해" --result "REQ와 OI를 갱신" --next "화면 포맷 검토" --link CHG-001
+node .ai/tools/aidd.mjs record-work --summary "요건 인터뷰 정리" --why "착수 범위를 합의하기 위해" --result "REQ와 OI를 갱신" --next "화면 포맷 검토" --link CHG-001
 ```
 
 팀의 배정 단위는 개발 슬라이스보다 큰 작업 패키지(WRK)다. 하나 이상의 REQ와 CHG별 필수 작업 영역을 묶고, 슬라이스는 WRK 내부에서 실행한다. 기본 영역은 설계·구현·시험·문서이며 프로젝트 맥락에 따라 보안·데이터·마이그레이션·배포·운영·교육을 CHG의 `required_work_coverage`에 추가한다. 개발 배분 전에 아래 점검을 통과해야 하며, REQ 연결·책임자·필수 수행 범위가 하나라도 빠지면 배분 완료가 아니다.
 
 ```powershell
-python .ai/tools/aidd.py workload-coverage --change CHG-ID
+node .ai/tools/aidd.mjs workload-coverage --change CHG-ID
 ```
 
 팀의 기본 방식은 PM 배정이다. 두 번째 활성 참여자를 추가하기 전에 기존 참여자 또는 새 참여자에게 `PM` 역할을 지정해야 한다. PM 부재 시 PM은 활성 팀원을 위임자로 지정하거나, 오프라인으로 업무를 합의하는 자율 배정으로 바꿀 수 있다.
 
 ```powershell
-python .ai/tools/aidd.py set-assignment-policy --mode delegated --delegate HUM-002 --reason "PM 부재 기간의 업무 배정 위임"
-python .ai/tools/aidd.py set-assignment-policy --mode self_assignment --reason "팀원 오프라인 협의에 따른 자율 배정"
-python .ai/tools/aidd.py assign-work --work WRK-ID --participant HUM-ID --reason "요구사항 범위와 전문성을 고려한 배정"
-python .ai/tools/aidd.py work-check --work WRK-ID
+node .ai/tools/aidd.mjs set-assignment-policy --mode delegated --delegate HUM-002 --reason "PM 부재 기간의 업무 배정 위임"
+node .ai/tools/aidd.mjs set-assignment-policy --mode self_assignment --reason "팀원 오프라인 협의에 따른 자율 배정"
+node .ai/tools/aidd.mjs assign-work --work WRK-ID --participant HUM-ID --reason "요구사항 범위와 전문성을 고려한 배정"
+node .ai/tools/aidd.mjs work-check --work WRK-ID
 ```
 
 `pm_controlled`에서는 PM, `delegated`에서는 PM 또는 지정 위임자만 다른 사람에게 배정할 수 있다. `self_assignment`에서는 각 팀원이 오프라인 협의를 전제로 자신에게만 배정한다. `offline_coordination_required`는 `self_assignment`에서만 `true`이며 다른 두 모드에서는 `false`다. 어떤 방식에서도 점유·잠금·자동 `pull` 검사는 사용하지 않는다. 정책 변경과 작업 패키지 재배정은 이전 값·변경자·시각·사유가 협업 감사 이력에 남는다.
 
 개발 중 파생 요구가 현재 작업 패키지의 승인된 범위 안이면 담당 팀원이 CHG·REQ를 기록하고 같은 WRK의 `requirements`와 `coverage`에 추가해 끝까지 처리한다. 다른 모듈·다른 WRK·승인 범위를 넘으면 PM 또는 위임자가 새 WRK 또는 범위 변경을 결정한 뒤 다시 `workload-coverage`를 실행한다. 팀원은 구현 전 `work-check`를 실행하며, 배정자가 다르거나 배정이 없으면 작업을 시작하지 않는다. 1인 프로필은 같은 명령으로 브랜치·작업 상태만 확인하며 배정 제한은 없다.
 
-대화 원문은 상태·증거와 분리한다. 훅이 제공한 원문만 역할과 제품 활성화 여부에 관계없이 Git 무시 경로 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 날짜별 Markdown으로 남긴다. 따라서 빈 `kit-template`도 대화 기록 때문에 `project/`를 만들지 않는다.
+대화 원문은 상태·증거와 분리한다. 훅이 제공한 UTF-8 원문만 역할과 제품 활성화 여부에 관계없이 Git 무시 경로 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 날짜별 Markdown으로 남긴다. Node 훅은 Windows 기본 코드페이지와 무관하게 원본 입력 바이트를 UTF-8로 해석하며, 저장 실패는 내용 없이 오류 유형만 경고한다. `hook-trust-status`의 `TRUST_RECORD_FOUND`는 실제 실행·저장 성공을 보증하지 않으므로 다음 대화의 파일 추가도 확인한다. 따라서 빈 `kit-template`도 대화 기록 때문에 `project/`를 만들지 않는다.
 
 ## 최초 기준선 커밋
 
@@ -332,8 +332,8 @@ AI가 커밋을 만들 때는 [.ai/templates/git/commit-message.md](../../templa
 
 ```powershell
 git switch -c feature/CHG-001-설명
-python .ai/tools/aidd.py collaboration-member --id HUM-002 --name "팀원 이름" --role 개발자 --status active --reason "팀원 합류"
-python .ai/tools/aidd.py branch-check --change CHG-001
+node .ai/tools/aidd.mjs collaboration-member --id HUM-002 --name "팀원 이름" --role 개발자 --status active --reason "팀원 합류"
+node .ai/tools/aidd.mjs branch-check --change CHG-001
 ```
 
 활성 사람이 다시 한 명이 되면 1인 프로필로 자동 전환된다. 과거 참여·승인·전환 이력은 남고, 이후 변경부터 1인 통제가 적용된다. 로컬 pre-commit 훅은 팀 프로필에서 `main` 직접 커밋을 차단한다. 원격 PR·승인·병합 강제는 GitHub 규칙과 CI를 별도로 활성화·검증해야 한다.
@@ -343,15 +343,15 @@ python .ai/tools/aidd.py branch-check --change CHG-001
 대부분은 AI에게 자연어로 요청하면 된다. 사용자가 결과를 직접 확인하고 싶을 때 다음 명령을 사용한다.
 
 ```powershell
-python .ai/tools/aidd.py status --level executive
-python .ai/tools/aidd.py status --level module --module MOD-ID
-python .ai/tools/aidd.py collaboration-status
-python .ai/tools/aidd.py identity-check
-python .ai/tools/aidd.py development-check --change CHG-ID
-python .ai/tools/aidd.py branch-check --change CHG-ID
-python .ai/tools/aidd.py generate
-python .ai/tools/aidd.py validate
-python .ai/tools/aidd.py release-check --release REL-ID
+node .ai/tools/aidd.mjs status --level executive
+node .ai/tools/aidd.mjs status --level module --module MOD-ID
+node .ai/tools/aidd.mjs collaboration-status
+node .ai/tools/aidd.mjs identity-check
+node .ai/tools/aidd.mjs development-check --change CHG-ID
+node .ai/tools/aidd.mjs branch-check --change CHG-ID
+node .ai/tools/aidd.mjs generate
+node .ai/tools/aidd.mjs validate
+node .ai/tools/aidd.mjs release-check --release REL-ID
 ```
 
 명령이 실패하면 출력 전체를 AI에게 보여주고 원인과 안전한 다음 조치를 설명하게 한다. 오류를 없애기 위해 정본·증거·승인 상태를 억지로 바꾸면 안 된다.
@@ -361,8 +361,8 @@ python .ai/tools/aidd.py release-check --release REL-ID
 고객 확인 전에도 작업을 진행해야 하면 추측을 사실로 쓰지 말고 `ASM` 가정으로 등록한다. 가정은 영향 모듈·연결 ID·확인 게이트를 가지며, 확인하거나 무효가 되어도 이력을 삭제하지 않는다.
 
 ```powershell
-python .ai/tools/aidd.py add-assumption --id ASM-001 --statement "피크 동시 사용자는 50명 이하" --rationale "현재 사용자 수 기준 임시 추정" --due-gate TG-001 --module MOD-ARCH --link REQ-020
-python .ai/tools/aidd.py resolve-assumption --id ASM-001 --status confirmed --resolution "고객이 피크 40명이라고 확인했다."
+node .ai/tools/aidd.mjs add-assumption --id ASM-001 --statement "피크 동시 사용자는 50명 이하" --rationale "현재 사용자 수 기준 임시 추정" --due-gate TG-001 --module MOD-ARCH --link REQ-020
+node .ai/tools/aidd.mjs resolve-assumption --id ASM-001 --status confirmed --resolution "고객이 피크 40명이라고 확인했다."
 ```
 
 중요한 `GTR`에는 레드팀 발견사항, 업무 언어의 결정 카드, AI가 확신하지 못한 역질문을 남긴다. 기능·작업 단위에는 수정 라운드, 미검증 업무 규칙, 품질 실패, 명세 결함, 레드팀 수정 수를 `verification_load`로 기록할 수 있다. 이 값은 절대적인 통과선이 아니라 반복 품질 문제를 조기에 찾는 추세 지표다.
@@ -375,15 +375,15 @@ python .ai/tools/aidd.py resolve-assumption --id ASM-001 --status confirmed --re
 
 `modules.json`은 모든 모듈의 작은 카탈로그(목적·상태·의존성)이고, 요구사항 정본은 `project/.aidd/ssot/modules/MOD-ID.json` 조각에 저장한다. 하나의 요구사항은 한 조각에만 저장하되, 여러 모듈에 영향을 주면 `modules` 배열로 모두 연결한다. 따라서 동일한 사실을 복제하지 않으면서 모듈별로 수정·검토할 수 있다.
 
-`python .ai/tools/aidd.py generate`는 각 모듈에 `project/docs/generated/modules/MOD-ID.md`를 생성한다. 이 뷰에는 모듈 상태, 요구사항 상세, 작업, 인터페이스, 의존성, 관련 변경·결정·테스트가 포함된다. 전체 문서 대신 이 파일 또는 `python .ai/tools/aidd.py status --level module --module MOD-ID`를 사용해 모듈을 분석한다.
+`node .ai/tools/aidd.mjs generate`는 각 모듈에 `project/docs/generated/modules/MOD-ID.md`를 생성한다. 이 뷰에는 모듈 상태, 요구사항 상세, 작업, 인터페이스, 의존성, 관련 변경·결정·테스트가 포함된다. 전체 문서 대신 이 파일 또는 `node .ai/tools/aidd.mjs status --level module --module MOD-ID`를 사용해 모듈을 분석한다.
 
 새 모듈은 다음처럼 카탈로그와 빈 정본 조각을 함께 만든다. 모듈별 진행 상태는 독립적으로 갱신할 수 있다.
 
 ```powershell
-python .ai/tools/aidd.py add-module --id MOD-ORDERS --name "주문" --purpose "주문 수명주기를 관리한다." --dependency MOD-GOV
-python .ai/tools/aidd.py module-status --module MOD-ORDERS --status in_progress
-python .ai/tools/aidd.py generate
-python .ai/tools/aidd.py validate
+node .ai/tools/aidd.mjs add-module --id MOD-ORDERS --name "주문" --purpose "주문 수명주기를 관리한다." --dependency MOD-GOV
+node .ai/tools/aidd.mjs module-status --module MOD-ORDERS --status in_progress
+node .ai/tools/aidd.mjs generate
+node .ai/tools/aidd.mjs validate
 ```
 
 ## 언제든 사용할 수 있는 대화 문장
@@ -425,14 +425,14 @@ python .ai/tools/aidd.py validate
 
 ## AI용 규칙과 사용자 가이드의 경계
 
-별도의 중복 AI 가이드는 만들 필요가 없다. 루트 `AGENTS.md`가 Codex와 Claude Code가 함께 따르는 공통 수행 계약의 정본이다. `CLAUDE.md`는 첫 줄의 `@AGENTS.md`로 이를 불러오고 Claude Code 전용 연결 정보만 둔다. 공통 스킬·훅·도구·템플릿의 정본은 `.ai/`에 있으며, `python .ai/tools/aidd.py sync-ai`는 `.ai/skills/`를 Codex의 `.agents/skills/`와 Claude Code의 `.claude/skills/`로 동기화한다. `AGENTS.md`와 `CLAUDE.md`는 이 명령이 덮어쓰지 않는다.
+별도의 중복 AI 가이드는 만들 필요가 없다. 루트 `AGENTS.md`가 Codex와 Claude Code가 함께 따르는 공통 수행 계약의 정본이다. `CLAUDE.md`는 첫 줄의 `@AGENTS.md`로 이를 불러오고 Claude Code 전용 연결 정보만 둔다. 공통 스킬·훅·도구·템플릿의 정본은 `.ai/`에 있으며, `node .ai/tools/aidd.mjs sync-ai`는 `.ai/skills/`를 Codex의 `.agents/skills/`와 Claude Code의 `.claude/skills/`로 동기화한다. `AGENTS.md`와 `CLAUDE.md`는 이 명령이 덮어쓰지 않는다.
 
-공통 수행 규칙은 `AGENTS.md`에서, Claude Code에만 필요한 차이는 `CLAUDE.md`에서, 공통 스킬·훅·도구·템플릿은 `.ai/`에서 수정한다. 하네스 변경 뒤에는 `sync-ai`, `generate`, `validate`를 순서대로 실행한다. 이 문서는 사람의 학습과 프로젝트 시작을 위한 안내서이므로 AI 규칙의 또 다른 정본이 아니다.
+공통 수행 규칙은 `AGENTS.md`에서, Claude Code에만 필요한 차이는 `CLAUDE.md`에서, 공통 스킬·훅·도구·템플릿은 `.ai/`에서 수정한다. 새 훅은 `.ai/tools/`의 `.mjs`로 두며 `self-test`가 provider JSON의 Node 단일 런타임 배선을 검사한다. 하네스 변경 뒤에는 `sync-ai`, `generate`, `validate`를 순서대로 실행한다. 이 문서는 사람의 학습과 프로젝트 시작을 위한 안내서이므로 AI 규칙의 또 다른 정본이 아니다.
 
 ## 안전한 되돌리기와 문제 해결
 
 - 잘못된 결정을 발견하면 기존 기록을 삭제하지 말고, 대체 결정과 롤백 경로를 연결한다.
 - 미등록 Git 신원이 나오면 사람·기존 별칭·봇 중 무엇인지 확인한 뒤 매핑한다. 확인 전에는 C2·C3 개발 진입과 릴리스가 차단될 수 있다.
 - 팀 전환 직후 `main` 커밋이 차단되면 오류가 아니라 정책 작동이다. `git switch -c feature/CHG-ID-설명`으로 작업 브랜치를 만들고 진행한다.
-- 생성 문서가 오래되었다는 오류는 정본을 수정한 뒤 `python .ai/tools/aidd.py generate`를 실행해 해결한다.
+- 생성 문서가 오래되었다는 오류는 정본을 수정한 뒤 `node .ai/tools/aidd.mjs generate`를 실행해 해결한다.
 - 원격 브랜치 보호가 실제로 활성화되었는지는 로컬 JSON 파일이 아니라 호스팅 제공자의 조회 결과와 증거로 확인한다.

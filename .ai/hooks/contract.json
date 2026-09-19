@@ -9,7 +9,7 @@
       }
     },
     "PreToolUse": {
-      "purpose": "생성물 직접 쓰기와 파괴적·우회 셸 쓰기를 사전 보호한다. Codex에서는 사용자 훅 승인 확인 전 모든 도구 작업도 차단한다.",
+      "purpose": "생성물 직접 쓰기와 파괴적·우회 셸 쓰기를 사전 보호한다. Codex에서는 사용자 훅 승인 확인 전 일반 작업과 분류되지 않은 도구를 차단하되 계약에 열거된 읽기 전용 도구와 복구 경로는 허용한다.",
       "required_tokens": ["protect", "--kind", "file", "shell"],
       "provider_required_tokens": {
         "codex": ["approval-gate"]
@@ -45,6 +45,14 @@
     "unknown_tool_behavior": "deny",
     "windows_desktop_origin_environment": "CODEX_INTERNAL_ORIGINATOR_OVERRIDE",
     "windows_desktop_origin_value": "Codex Desktop",
+    "windows_desktop_package_environment": "CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY",
+    "cli_origin_value": "Codex CLI",
+    "cli_origin_absence_means_cli": true,
+    "unknown_client_behavior": "require_new_session",
+    "composed_shell_command_behavior": "deny",
+    "windows_desktop_new_approval_requires_new_session": true,
+    "cli_new_approval_current_session_effective": true,
+    "cli_revision_reapproval_current_session_effective": true,
     "locked_read_only_tools": [
       "web.run",
       "web__run",

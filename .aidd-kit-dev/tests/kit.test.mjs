@@ -10,10 +10,25 @@ const KIT=join(ROOT,".aidd-kit-dev/tools/kit.mjs");
 const run=(args,cwd=ROOT)=>spawnSync(process.execPath,[KIT,...args],{cwd,encoding:"utf8"});
 
 test("kit status is readable",()=>{const result=run(["status"]);assert.equal(result.status,0,result.stderr);assert.match(result.stdout,/kit-source/);});
+test("Kit CLI rejects unknown, positional, missing, conflicting, and invalid options",()=>{
+  for(const args of [["status","--typo","value"],["status","unexpected"],["export"],["export","--directory","one","--zip","two"],["new-project","--directory","one","--name","missing id"],["new-project","--directory","one","--project-id","TEST","--name","test","--mode","invalid"]]){
+    const result=run(args);
+    assert.equal(result.status,2,`${args.join(" ")}\n${result.stdout}${result.stderr}`);
+  }
+});
+test("Kit CLI accepts equals-form options",()=>{const temp=mkdtempSync(join(tmpdir(),"aidd-kit-equals-")),output=join(temp,"template");try{const result=run(["export",`--directory=${output}`]);assert.equal(result.status,0,result.stderr);assert.ok(existsSync(join(output,".aidd-role.json")));}finally{rmSync(temp,{recursive:true,force:true});}});
 test("source and export boundary validate",()=>{const result=run(["validate"]);assert.equal(result.status,0,result.stderr);});
 test("template export contains no management tree and carries the approval gate",()=>{const temp=mkdtempSync(join(tmpdir(),"aidd-export-test-")),output=join(temp,"template");try{const result=run(["export","--directory",output]);assert.equal(result.status,0,result.stderr);assert.ok(existsSync(join(output,".ai/tools/aidd.mjs")));assert.ok(!existsSync(join(output,".aidd-kit-dev")));assert.equal(JSON.parse(readFileSync(join(output,".aidd-role.json"),"utf8")).role,"kit-template");const config=JSON.stringify(JSON.parse(readFileSync(join(output,".codex/hooks.json"),"utf8")).hooks);assert.match(config,/approval-gate/);assert.match(config,/acknowledge/);assert.match(config,/approval-status/);assert.doesNotMatch(config,/project-init/);}finally{rmSync(temp,{recursive:true,force:true});}});
 test("new project bootstraps with Node only",()=>{const temp=mkdtempSync(join(tmpdir(),"aidd-project-test-")),output=join(temp,"product");try{const result=run(["new-project","--directory",output,"--project-id","TEST","--name","테스트","--mode","greenfield"]);assert.equal(result.status,0,result.stderr);assert.ok(existsSync(join(output,"project/.aidd/ssot/project.json")));assert.equal(JSON.parse(readFileSync(join(output,".aidd-role.json"),"utf8")).role,"product-workspace");const validate=spawnSync(process.execPath,[join(output,".ai/tools/aidd.mjs"),"validate"],{cwd:output,encoding:"utf8"});assert.equal(validate.status,0,validate.stdout+validate.stderr);}finally{rmSync(temp,{recursive:true,force:true});}});
-test("no executable Python sources remain",()=>{const result=spawnSync("rg",["--files","--hidden","-g","*.py","-g","!.git/**"],{cwd:ROOT,encoding:"utf8"});assert.ok(result.status===1||!result.stdout.trim(),result.stdout);});
+test("new-project reports child-process startup failures before export validation",()=>{const source=readFileSync(KIT,"utf8");assert.match(source,/if\(run\.error\)throw new Error\(`project-bootstrap process failed:/);assert.match(source,/if\(run\.status!==0\)throw new Error/);});
+test("export provenance treats an unavailable Git status as dirty",()=>{const source=readFileSync(KIT,"utf8");assert.match(source,/source_dirty:status\.status!==0\|\|Boolean\(status\.stdout\.trim\(\)\)/);});
+test("export staging is removed on success and failure",()=>{const source=readFileSync(KIT,"utf8");assert.match(source,/try\{mkdirSync\(stage\)/);assert.match(source,/finally\{rmSync\(temp,\{recursive:true,force:true\}\);\}/);});
+test("no executable Python sources remain",()=>{
+  const pythonSources=[];
+  const collect=path=>{for(const entry of readdirSync(path,{withFileTypes:true})){if(entry.name===".git")continue;const child=join(path,entry.name);if(entry.isDirectory())collect(child);else if(entry.isFile()&&entry.name.endsWith(".py"))pythonSources.push(child.slice(ROOT.length+1));}};
+  collect(ROOT);
+  assert.deepEqual(pythonSources,[]);
+});
 test("current guides and reference runtime records require Node only",()=>{
   const roots=["AGENTS.md","README.md","CLAUDE.md",".ai/docs",".ai/hooks",".ai/skills",".ai/templates",".aidd-kit-dev/guides",".aidd-kit-dev/skills",".aidd-kit-dev/export/AGENTS.md",".aidd-kit-dev/export/README.md",".aidd-kit-dev/export/CLAUDE.md"];
   const paths=[];

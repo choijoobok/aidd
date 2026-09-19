@@ -34,8 +34,11 @@ const RESTART_CONFIRMATION = "새 창에서 다시 시작했고 훅이 승인된
 function readJson(path) { return JSON.parse(readFileSync(path, "utf8")); }
 function slash(value) { return value.split(sep).join("/"); }
 function codexClientKind(environment=process.env) {
-  const gate=loadContract().approval_gate, origin=(environment[gate.windows_desktop_origin_environment]??"").trim().toLowerCase();
-  return origin===gate.windows_desktop_origin_value.toLowerCase()?"windows-desktop":"cli";
+  const gate=loadContract().approval_gate, origin=(environment[gate.windows_desktop_origin_environment]??"").trim().toLowerCase(),desktopPackage=String(environment[gate.windows_desktop_package_environment]??"").trim();
+  if(origin===gate.windows_desktop_origin_value.toLowerCase()||desktopPackage)return "windows-desktop";
+  if(origin===gate.cli_origin_value.toLowerCase())return "cli";
+  if(!origin&&gate.cli_origin_absence_means_cli===true)return "cli";
+  return "unknown";
 }
 function approvalRoot() { return process.env.AIDD_HOOK_APPROVAL_DIR ? resolve(process.env.AIDD_HOOK_APPROVAL_DIR) : join(ROOT, "chat-history/.aidd-hook-approvals"); }
 function sessionIdOf(payload) { const value=payload?.session_id??payload?.sessionId; return typeof value==="string"&&value.trim()?value.trim():null; }
@@ -92,7 +95,7 @@ function loadContract() {
   if (!runtime || runtime.minimum_major !== 22 || runtime.hook_input !== "utf-8-bytes" || runtime.dependencies !== "node-standard-library")
     throw new Error("contract node_runtime is malformed");
   const gate=value.approval_gate;
-  if (!gate || gate.platform!=="codex" || gate.unknown_tool_behavior!=="deny" || gate.windows_desktop_origin_environment!=="CODEX_INTERNAL_ORIGINATOR_OVERRIDE" || gate.windows_desktop_origin_value!=="Codex Desktop" || !Array.isArray(gate.locked_read_only_tools))
+  if (!gate || gate.platform!=="codex" || gate.unknown_tool_behavior!=="deny" || gate.windows_desktop_origin_environment!=="CODEX_INTERNAL_ORIGINATOR_OVERRIDE" || gate.windows_desktop_origin_value!=="Codex Desktop" || gate.windows_desktop_package_environment!=="CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY" || gate.cli_origin_value!=="Codex CLI" || gate.cli_origin_absence_means_cli!==true || gate.unknown_client_behavior!=="require_new_session" || gate.composed_shell_command_behavior!=="deny" || gate.windows_desktop_new_approval_requires_new_session!==true || gate.cli_new_approval_current_session_effective!==true || gate.cli_revision_reapproval_current_session_effective!==true || !Array.isArray(gate.locked_read_only_tools))
     throw new Error("contract approval_gate is malformed");
   const log = value.local_conversation_log;
   if (!log || log.root !== "chat-history" || log.transport_encoding !== "utf-8" || log.failure_reporting !== "sanitized-stderr")
@@ -208,42 +211,73 @@ function explicitGitAddPaths(command) {
   const match=command.trim().match(/^git\s+add\s+(.*)$/i); if (!match) return null;
   const args=commandArgs(match[1]); if (!args.length) return null;
   if (args[0]==="--") args.shift();
-  if (!args.length||args.some(value=>value==="."||value.includes("*")||value.startsWith("-"))) return null;
+  if (!args.length||args.some(value=>value==="."||/[*?[]/.test(value)||value.startsWith(":")||value.startsWith("-"))) return null;
   const paths=new Set(args.map(repoPath).filter(Boolean)); return paths.size===args.length?paths:null;
+}
+function stagedPaths() {
+  const run=spawnSync("git",["diff","--cached","--name-only"],{cwd:ROOT,encoding:"utf8"});
+  if(run.error||run.status!==0)return null;
+  return new Set(String(run.stdout??"").split(/\r?\n/).map(repoPath).filter(Boolean));
+}
+function isSafeCommitCommand(command) {
+  const args=commandArgs(command.trim());
+  if(args.length<4||args[0]?.toLowerCase()!=="git"||args[1]?.toLowerCase()!=="commit")return false;
+  for(let index=2;index<args.length;index++){
+    const value=args[index];
+    if(value==="-m"||value==="--message"){if(++index>=args.length)return false;continue;}
+    if((value.startsWith("-m")&&value.length>2)||value.startsWith("--message="))continue;
+    return false;
+  }
+  return true;
 }
 function isCloseOutCommand(command, session) {
   const paths=explicitGitAddPaths(command);
   if (paths) return paths.size>0&&[...paths].every(path=>session.observed_paths?.includes(path));
-  const normalized=command.trim();
-  return /^git\s+commit\b/i.test(normalized)&&!/(?:\s|^)(?:-a|--all|--amend)(?:\s|$)/i.test(normalized);
+  if(!isSafeCommitCommand(command))return false;
+  const staged=stagedPaths();
+  return !!staged&&staged.size>0&&[...staged].every(path=>session.observed_paths?.includes(path));
 }
 function isReadOnlyCommand(command) {
   const value=command.trim();
-  return /^(?:git\s+(?:status|diff|log|show|rev-parse|branch)\b|rg\b|Get-(?:Content|ChildItem)\b|Test-Path\b|(?:dir|ls|type)\b|node\s+(?:--test\b|\.ai\\tools\\aidd_hook\.mjs\s+(?:self-test|approval-status)\b|\.aidd-kit-dev\\tools\\kit\.mjs\s+(?:status|validate)\b))/i.test(value);
+  if(/^(?:git\s+(?:diff|log|show)\b).*\s--output(?:=|\s)/i.test(value)||/^rg\b.*\s--pre(?:=|\s)/i.test(value))return false;
+  if(/^git\s+branch\b/i.test(value)&&!/^git\s+branch(?:\s+--show-current)?\s*$/i.test(value))return false;
+  return /^(?:git\s+(?:status|diff|log|show|rev-parse)\b|git\s+branch(?:\s+--show-current)?\s*$|rg\b|Get-(?:Content|ChildItem)\b|Test-Path\b|(?:dir|ls|type)\b|node\s+(?:\.ai[\\/]tools[\\/]aidd\.mjs\s+hook-trust-status\b|\.ai[\\/]tools[\\/]aidd_hook\.mjs\s+(?:self-test|approval-status)\b|\.aidd-kit-dev[\\/]tools[\\/]kit\.mjs\s+(?:status|validate)\b))/i.test(value);
 }
 function isMaintenanceCommand(command) {
   const value=command.trim().replaceAll("\\","/");
-  return /^(?:node\s+(?:--check\s+)?\.ai\/tools\/aidd(?:_hook)?\.mjs\b|node\s+(?:--check|--test)?\s*\.ai\/tests\/|node\s+(?:--check|--test)\s+\.aidd-kit-dev\/tests\/|node\s+\.aidd-kit-dev\/tools\/kit\.mjs\s+(?:sync-providers|validate)\b)/i.test(value);
+  return /^(?:node\s+--check\s+\.ai\/tools\/aidd(?:_hook)?\.mjs\s*|node\s+\.ai\/tools\/aidd_hook\.mjs\s+self-test(?:\s+--hook)?\s*|node\s+(?:--check|--test)\s+\.ai\/tests\/[A-Za-z0-9_.*?-]+\.mjs\s*|node\s+(?:--check|--test)\s+\.aidd-kit-dev\/tests\/[A-Za-z0-9_.*?-]+\.mjs\s*|node\s+\.aidd-kit-dev\/tools\/kit\.mjs\s+(?:sync-providers|validate)\s*)$/i.test(value);
 }
 function isReadOnlyTool(payload) {
   const name=nameOf(payload).toLowerCase().replace(/[^a-z0-9]/g,"");
   return new Set(loadContract().approval_gate.locked_read_only_tools.map(value=>value.toLowerCase().replace(/[^a-z0-9]/g,""))).has(name);
 }
+function hasUnsafeShellComposition(command){
+  let quote=null;
+  for(let index=0;index<command.length;index++){
+    const char=command[index],next=command[index+1];
+    if(quote==="'"){if(char==="'")quote=null;continue;}
+    if(quote==='"'){if(char==='"')quote=null;else if(char==='`'||(char==="$"&&next==="("))return true;continue;}
+    if(char==="'"||char==='"'){quote=char;continue;}
+    if(";\r\n|&<>`".includes(char)||(char==="$"&&next==="("))return true;
+  }
+  return quote!==null;
+}
 function lockedToolAllowed(payload, session) {
   if (isReadOnlyTool(payload)) return true;
   const paths=targetPaths(payload); if (isMaintenancePaths(paths)) return true;
   const command=commandText(payload); if (!command) return false;
+  if(hasUnsafeShellComposition(command))return false;
   const addPaths=explicitGitAddPaths(command); if(addPaths&&isMaintenancePaths(addPaths)) return true;
   return isReadOnlyCommand(command)||isMaintenanceCommand(command)||isCloseOutCommand(command,session);
 }
 function lockedReason(session, revision, restart, client=codexClientKind()) {
-  if (!sessionIsCurrent(session,revision)) return client==="windows-desktop"
+  if (!sessionIsCurrent(session,revision)) return client!=="cli"
     ? "AIDD 훅 정의가 이 앱 세션 시작 뒤 변경됐습니다. 일반 작업은 금지됩니다. 훅 유지보수, 알려진 읽기 전용 도구와 이 세션이 관측한 경로의 close-out 커밋만 허용됩니다. CLI의 /hooks에서 최신 훅을 승인한 뒤 새 Codex 앱 창에서 다시 시작하세요."
-    : "AIDD 훅 정의가 이 CLI 세션 시작 뒤 변경됐습니다. 일반 작업은 금지됩니다. 훅 유지보수, 알려진 읽기 전용 도구와 이 세션이 관측한 경로의 close-out 커밋만 허용됩니다. /hooks에서 최신 훅을 승인한 뒤 새 CLI 세션에서 다시 시작하세요.";
+    : "AIDD 훅 정의가 이 CLI 세션 시작 뒤 변경됐습니다. 일반 작업은 최신 훅 승인 전까지 금지됩니다. /hooks에서 최신 AIDD 훅을 직접 검토·승인한 뒤 승인 질문에 `2`로 답하세요. 현재 acknowledge 훅이 그 응답을 받으면 새 CLI 세션 없이 작업을 계속할 수 있습니다. 승인 전에는 훅 유지보수, 알려진 읽기 전용 도구와 이 세션이 관측한 경로의 close-out 커밋만 허용됩니다.";
   if (session?.state === "restart_required") return `Windows Codex 앱에서 AIDD 훅을 이번 세션 시작 후 새로 승인했으므로 이 창에서는 일반 작업이 금지됩니다. 새 Codex 앱 창에서 같은 프로젝트를 다시 시작한 뒤, 새 창에서 재시작했고 훅이 승인된 상태라는 뜻을 명확히 알려주세요. 정해진 문구를 그대로 쓸 필요는 없습니다(예: \`${RESTART_CONFIRMATION}\`).`;
   if (restart) return `Windows Codex 앱에서 AIDD 훅을 새로 승인한 뒤 열린 새 세션입니다. 일반 작업 전에 새 앱 창에서 재시작했고 훅이 승인된 상태라는 뜻을 명확히 알려주세요. 정해진 문구를 그대로 쓸 필요는 없습니다(예: \`${RESTART_CONFIRMATION}\`).`;
   if (session?.state === "declared") return `AIDD 훅 승인 시점을 확인해야 합니다. 사용자에게 다음 두 선택지 중 하나를 고르게 질문하세요: 1) ${EXISTING_APPROVAL_CONFIRMATION} 2) ${NEW_APPROVAL_CONFIRMATION}. \`1\` 또는 \`2\`만 입력해도 처리하며, 답변의 의미가 분명하면 번호·어미·표현이 달라도 받아들이고 정해진 문구를 요구하지 마세요.`;
-  return `AIDD 훅 승인 게이트(${client==="windows-desktop"?"Windows Codex 앱":"Codex CLI"}): 모든 작업이 금지됩니다. ${approvalInstruction()}`;
+  return `AIDD 훅 승인 게이트(${client==="windows-desktop"?"Windows Codex 앱":client==="cli"?"Codex CLI":"알 수 없는 Codex 클라이언트"}): 모든 작업이 금지됩니다. ${approvalInstruction()}`;
 }
 async function approvalGate(platform) {
   if (platform!=="codex") return 0;
@@ -254,20 +288,25 @@ async function approvalGate(platform) {
   const {state,session,revision}=ensureApprovalState(sessionId);
   if (sessionIsCurrent(session,revision)&&session?.state==="approved") return 0;
   const reason=lockedReason(session,revision,state.restart_required,codexClientKind());
-  if ((sessionIsCurrent(session,revision)&&["restart_required"].includes(session?.state))||!sessionIsCurrent(session,revision)) {
-    if (lockedToolAllowed(payload,session)) return 0;
-  }
+  if (lockedToolAllowed(payload,session)) return 0;
   return reason?deny(reason):0;
 }
 function applyApprovalMessage(state, session, revision, message, client=codexClientKind(), now=new Date().toISOString()) {
-  if (!sessionIsCurrent(session,revision)) return false;
+  if (!sessionIsCurrent(session,revision)) {
+    const kind=approvalMessageKind(message,"unconfirmed");
+    if(client==="cli"&&kind==="new"&&!state.restart_required){
+      session.start_revision=revision; session.state="approved"; session.confirmed_at=now; session.approval_timing="new_after_revision"; session.client=client; session.revision_reapproved_at=now;
+      return true;
+    }
+    return false;
+  }
   const expectedState=state.restart_required?.revision===revision&&state.restart_required.origin_session_key!==session.session_key?"restart":session.state;
   const kind=approvalMessageKind(message,expectedState);
   if (kind==="declared"&&session.state==="unconfirmed") { session.state="declared"; session.declared_at=now; return true; }
   if (kind==="existing"&&["unconfirmed","declared"].includes(session.state)&&!state.restart_required) { session.state="approved"; session.confirmed_at=now; session.approval_timing="existing"; return true; }
   if (kind==="new"&&["unconfirmed","declared"].includes(session.state)&&!state.restart_required) {
-    session.state=client==="windows-desktop"?"restart_required":"approved"; session.confirmed_at=now; session.approval_timing="new"; session.client=client;
-    if(client==="windows-desktop")state.restart_required={revision,origin_session_key:session.session_key,client,created_at:now};
+    session.state=client==="cli"?"approved":"restart_required"; session.confirmed_at=now; session.approval_timing="new"; session.client=client;
+    if(client!=="cli")state.restart_required={revision,origin_session_key:session.session_key,client,created_at:now};
     return true;
   }
   if (kind==="restarted"&&state.restart_required?.revision===revision&&state.restart_required.origin_session_key!==session.session_key) { session.state="approved"; session.confirmed_at=now; session.approval_timing="restarted"; state.restart_required=null; return true; }
@@ -413,10 +452,15 @@ export function harnessErrors() {
   for(const [state,message,expected] of approvalCases){const actual=approvalMessageKind(message,state);if(actual!==expected)errors.push(`approval classifier: ${state} expected ${expected} but got ${actual}`);}
   if(codexClientKind({CODEX_INTERNAL_ORIGINATOR_OVERRIDE:"Codex Desktop"})!=="windows-desktop")errors.push("approval client classifier: Codex Desktop was not detected");
   if(codexClientKind({CODEX_INTERNAL_ORIGINATOR_OVERRIDE:"Codex CLI"})!=="cli")errors.push("approval client classifier: Codex CLI was not detected");
+  if(codexClientKind({})!=="cli")errors.push("approval client classifier: origin-free CLI was not detected");
+  if(codexClientKind({CODEX_INTERNAL_ORIGINATOR_OVERRIDE:"Unexpected Client"})!=="unknown")errors.push("approval client classifier: unexpected origin was not classified as unknown");
+  if(codexClientKind({CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY:"OpenAI.Codex"})!=="windows-desktop")errors.push("approval client classifier: Windows package was not detected as Desktop");
   for(const tool_name of ["web.run","web__run","webrun"])if(!isReadOnlyTool({tool_name}))errors.push(`approval read-only classifier: ${tool_name} was not detected`);
   if(!lockedToolAllowed({tool_name:"Bash",tool_input:{command:"git add -- .ai/tools/aidd_hook.mjs"}},{observed_paths:[]}))errors.push("approval close-out classifier: explicit portable hook-maintenance staging was denied");
   if(repoRole()==="kit-source"&&!lockedToolAllowed({tool_name:"Bash",tool_input:{command:"git add -- .aidd-kit-dev/evidence/KIT-EVD-010.json"}},{observed_paths:[]}))errors.push("approval close-out classifier: explicit Kit hook-maintenance staging was denied");
   if(lockedToolAllowed({tool_name:"Bash",tool_input:{command:"git add -- project/src/unrelated.js"}},{observed_paths:[]}))errors.push("approval close-out classifier: unrelated staging was allowed");
+  for(const command of ["git status --short; Set-Content project/src/x.js payload","git status --short | Set-Content project/src/x.js","git status --short > project/status.txt","git status --short $(Set-Content project/src/x.js payload)","git diff --output=project/diff.txt","git branch unsafe-write","node --test project/src/unsafe.test.mjs","node .ai/tools/aidd.mjs add-module --id MOD-UNSAFE --name unsafe --purpose unsafe"])
+    if(lockedToolAllowed({tool_name:"Bash",tool_input:{command}},{observed_paths:[]}))errors.push(`approval read-only classifier allowed unsafe command: ${command}`);
   const revision="self-test-revision", at="2026-09-19T00:00:00.000Z";
   let state={restart_required:null}, session={session_key:"existing",start_revision:revision,state:"unconfirmed"};
   if(!applyApprovalMessage(state,session,revision,"1","windows-desktop",at)||session.state!=="approved")errors.push("approval transition: direct existing choice did not approve the session");
@@ -429,6 +473,10 @@ export function harnessErrors() {
   if(!applyApprovalMessage(state,restarted,revision,"새 앱 창에서 다시 시작했고 훅도 승인된 상태야","windows-desktop",at)||restarted.state!=="approved"||state.restart_required!==null)errors.push("approval transition: Windows Desktop restart confirmation did not approve the new session");
   state={restart_required:null}; session={session_key:"cli",start_revision:revision,state:"declared"};
   if(!applyApprovalMessage(state,session,revision,"2번","cli",at)||session.state!=="approved"||state.restart_required!==null)errors.push("approval transition: Codex CLI new approval unexpectedly required an app restart");
+  state={restart_required:null}; session={session_key:"cli-stale",start_revision:"old-revision",state:"approved"};
+  if(!applyApprovalMessage(state,session,revision,"2","cli",at)||session.state!=="approved"||session.start_revision!==revision||session.approval_timing!=="new_after_revision")errors.push("approval transition: stale Codex CLI session did not accept current acknowledge reapproval");
+  state={restart_required:null}; session={session_key:"desktop-stale",start_revision:"old-revision",state:"approved"};
+  if(applyApprovalMessage(state,session,revision,"2","windows-desktop",at)||session.start_revision===revision)errors.push("approval transition: stale Windows Desktop session bypassed the new-session requirement");
   let common=skillMap(join(ROOT,".ai/skills"));
   if(repoRole()==="kit-source") for(const [path,hash] of skillMap(join(ROOT,".aidd-kit-dev/skills"))) { if(common.has(path)) errors.push(`maintainer skill collides with portable skill: ${path}`); common.set(path,hash); }
   for(const rel of [".agents/skills",".claude/skills"]) errors.push(...compareSkills(common,skillMap(join(ROOT,rel)),rel));

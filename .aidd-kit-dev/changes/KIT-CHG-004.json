@@ -29,7 +29,7 @@
     "current guide and reference fixture runtime records reject stale Python setup instructions",
     "reference fixture runtime guides are refreshed from canonical Node runtime records while historical evidence remains unchanged",
     "harness self-test and portable regression tests, including Codex SessionStart trust-status wiring",
-    "Codex 기존 승인·새 승인 자연어 변형과 부정·모호 응답, Windows 앱 재시작·CLI 비재시작 분기, 훅 리비전 변경, 읽기·유지보수 예외와 close-out 상태 전이 회귀 테스트 및 Claude 비차단 회귀 테스트",
+    "Codex 최초 질문의 `1`·`2` 직접 승인, 기존 승인·새 승인 자연어 변형과 부정·모호 응답, Windows 앱 재시작·CLI 비재시작 분기, 훅 리비전 변경, 읽기·유지보수 예외와 close-out 상태 전이 회귀 테스트 및 Claude 비차단 회귀 테스트",
     "Git 미초기화 export의 Windows SessionStart 신뢰·승인 안내 실제 명령 회귀 테스트",
     "Kit source, directory/ZIP export and sample new-project validation",
     "independent C3 compatibility and security review"

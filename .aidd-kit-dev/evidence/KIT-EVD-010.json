@@ -20,7 +20,7 @@
   "result": {
     "contract": "Codex 전용 SessionStart 신뢰 상태와 approval-status·approval-gate·acknowledge 배선, Claude 비차단 계약을 선언함",
     "source_windows_command": "실제 중첩 PowerShell SessionStart 명령이 TRUST_RECORD_FOUND 또는 REVIEW_REQUIRED를 출력함",
-    "approval_gate": "사용자 직접 승인 확인 전 차단, 현재 세션 시작 전 기존 승인과 시작 후 신규 승인 두 선택지, 자연어 표현 변형과 부정·모호 응답 거부를 순수 self-test로 검증함. Windows Codex 앱 신규 승인은 새 앱 창 재시작을 요구하고, 현재 acknowledge 훅이 답변을 실제 수신한 CLI는 별도 앱 재시작을 요구하지 않도록 분리함",
+    "approval_gate": "최초 질문에서 `1`·`2`만으로 사용자 직접 승인 사실과 기존·신규 승인 시점을 함께 확정하고, 자연어 표현 변형과 부정·모호 응답 거부를 순수 self-test와 provider 배선 테스트로 검증함. Windows Codex 앱 신규 승인은 새 앱 창 재시작을 요구하고, 현재 acknowledge 훅이 답변을 실제 수신한 CLI는 별도 앱 재시작을 요구하지 않도록 분리함",
     "portable_tests": "18/18 passed",
     "kit_tests": "14/14 passed",
     "kit_validation": "passed",
@@ -28,11 +28,11 @@
     "format": "git diff --check passed",
     "latest_recheck": {
       "date": "2026-09-19",
-      "pure_self_test": "자연어 승인 분류, Windows Codex 앱 식별, CLI 분기와 web.run 읽기 예외를 포함해 passed",
+      "pure_self_test": "최초 응답의 숫자 단독 승인, 자연어 승인 분류, Windows Codex 앱 식별, CLI 분기와 web.run 읽기 예외를 포함해 passed",
       "node_syntax": "node --check .ai/tools/aidd_hook.mjs passed",
       "kit_validation": "node .aidd-kit-dev/tools/kit.mjs validate passed",
       "format": "git diff --check passed",
-      "full_test_runner": "권한이 있는 실행에서 portable 18/18, Kit 14/14 passed",
+      "full_test_runner": "권한이 있는 실행에서 portable 18/18, Kit 14/14, 합계 32/32 passed",
       "provider_sync": "권한이 있는 실행에서 sync-providers passed"
     }
   },

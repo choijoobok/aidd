@@ -186,17 +186,14 @@ function approvalMessageKind(value, state) {
   const uncertain=/[?？]\s*$/.test(raw)||/(?:모르|기억나지|확실하지|아마|인\s*것\s*같|한\s*것\s*같|인가요|나요|까요|맞나요|말하면|쓰면|입력하면|예시)/.test(text);
   if (negated||uncertain) return null;
   const approved=/(?:승인|신뢰)(?:을|를|은|는|이|가)?\s*(?:했|함|완료|마쳤|됐|된|되어|되었|받았|상태)/.test(text);
-  if (state==="unconfirmed") {
-    return approved?"declared":null;
-  }
-  if (state==="declared") {
+  if (state==="unconfirmed"||state==="declared") {
     if (/^(?:1|1번|첫\s*번째|첫째)$/.test(text)) return "existing";
     if (/^(?:2|2번|두\s*번째|둘째)$/.test(text)) return "new";
     const existing=/(?:이번\s*(?:codex\s*)?세션\s*(?:시작\s*)?전|세션\s*시작\s*전|이미|기존|예전|사전|원래).{0,18}(?:승인|신뢰)|(?:승인|신뢰).{0,18}(?:되어\s*있|돼\s*있|된\s*상태|했었)/.test(text);
     const current=/(?:이번|현재|이)\s*(?:codex\s*)?(?:세션|창)\s*(?:(?:시작\s*)?(?:후|뒤)|에서|중에).{0,18}(?:승인|신뢰)|(?:새로|방금|지금).{0,18}(?:승인|신뢰)|(?:승인|신뢰).{0,18}(?:새로|방금|지금)/.test(text);
     if (approved&&existing&&!current) return "existing";
     if (approved&&current&&!existing) return "new";
-    return null;
+    return state==="unconfirmed"&&approved?"declared":null;
   }
   if (state==="restart") {
     const newSession=/(?:새|다른)\s*(?:(?:codex|앱)\s*)?(?:창|세션)/.test(text);
@@ -205,7 +202,7 @@ function approvalMessageKind(value, state) {
   }
   return null;
 }
-function approvalInstruction() { return `AIDD 훅을 검토·신뢰한 뒤, 직접 검토하고 승인했다는 뜻을 이 대화에서 명확히 알려주세요. 정해진 문구를 그대로 쓸 필요는 없습니다(예: \`${APPROVAL_DECLARATION}\`).`; }
+function approvalInstruction() { return `AIDD 훅을 직접 검토·신뢰했다면 승인 시점을 다음 두 선택지 중 하나로 알려주세요: 1) ${EXISTING_APPROVAL_CONFIRMATION} 2) ${NEW_APPROVAL_CONFIRMATION}. 답변은 \`1\` 또는 \`2\`만 입력해도 되며, 그 숫자는 훅을 직접 검토·승인했다는 확인도 함께 뜻합니다. 숫자 대신 자연스럽게 확인할 수도 있고 정해진 문구를 그대로 쓸 필요는 없습니다(예: \`${APPROVAL_DECLARATION}\`).`; }
 function commandArgs(command) { return command.match(/(?:"[^"]*"|'[^']*'|[^\s])+/g)?.map(value=>value.replace(/^['"]|['"]$/g,""))??[]; }
 function explicitGitAddPaths(command) {
   const match=command.trim().match(/^git\s+add\s+(.*)$/i); if (!match) return null;
@@ -245,7 +242,7 @@ function lockedReason(session, revision, restart, client=codexClientKind()) {
     : "AIDD 훅 정의가 이 CLI 세션 시작 뒤 변경됐습니다. 일반 작업은 금지됩니다. 훅 유지보수, 알려진 읽기 전용 도구와 이 세션이 관측한 경로의 close-out 커밋만 허용됩니다. /hooks에서 최신 훅을 승인한 뒤 새 CLI 세션에서 다시 시작하세요.";
   if (session?.state === "restart_required") return `Windows Codex 앱에서 AIDD 훅을 이번 세션 시작 후 새로 승인했으므로 이 창에서는 일반 작업이 금지됩니다. 새 Codex 앱 창에서 같은 프로젝트를 다시 시작한 뒤, 새 창에서 재시작했고 훅이 승인된 상태라는 뜻을 명확히 알려주세요. 정해진 문구를 그대로 쓸 필요는 없습니다(예: \`${RESTART_CONFIRMATION}\`).`;
   if (restart) return `Windows Codex 앱에서 AIDD 훅을 새로 승인한 뒤 열린 새 세션입니다. 일반 작업 전에 새 앱 창에서 재시작했고 훅이 승인된 상태라는 뜻을 명확히 알려주세요. 정해진 문구를 그대로 쓸 필요는 없습니다(예: \`${RESTART_CONFIRMATION}\`).`;
-  if (session?.state === "declared") return `AIDD 훅 승인 시점을 확인해야 합니다. 사용자에게 다음 두 선택지 중 하나를 고르게 질문하세요: 1) ${EXISTING_APPROVAL_CONFIRMATION} 2) ${NEW_APPROVAL_CONFIRMATION}. 답변의 의미가 분명하면 번호·어미·표현이 달라도 받아들이며, 정해진 문구를 요구하지 마세요.`;
+  if (session?.state === "declared") return `AIDD 훅 승인 시점을 확인해야 합니다. 사용자에게 다음 두 선택지 중 하나를 고르게 질문하세요: 1) ${EXISTING_APPROVAL_CONFIRMATION} 2) ${NEW_APPROVAL_CONFIRMATION}. \`1\` 또는 \`2\`만 입력해도 처리하며, 답변의 의미가 분명하면 번호·어미·표현이 달라도 받아들이고 정해진 문구를 요구하지 마세요.`;
   return `AIDD 훅 승인 게이트(${client==="windows-desktop"?"Windows Codex 앱":"Codex CLI"}): 모든 작업이 금지됩니다. ${approvalInstruction()}`;
 }
 async function approvalGate(platform) {
@@ -267,8 +264,8 @@ function applyApprovalMessage(state, session, revision, message, client=codexCli
   const expectedState=state.restart_required?.revision===revision&&state.restart_required.origin_session_key!==session.session_key?"restart":session.state;
   const kind=approvalMessageKind(message,expectedState);
   if (kind==="declared"&&session.state==="unconfirmed") { session.state="declared"; session.declared_at=now; return true; }
-  if (kind==="existing"&&session.state==="declared"&&!state.restart_required) { session.state="approved"; session.confirmed_at=now; session.approval_timing="existing"; return true; }
-  if (kind==="new"&&session.state==="declared"&&!state.restart_required) {
+  if (kind==="existing"&&["unconfirmed","declared"].includes(session.state)&&!state.restart_required) { session.state="approved"; session.confirmed_at=now; session.approval_timing="existing"; return true; }
+  if (kind==="new"&&["unconfirmed","declared"].includes(session.state)&&!state.restart_required) {
     session.state=client==="windows-desktop"?"restart_required":"approved"; session.confirmed_at=now; session.approval_timing="new"; session.client=client;
     if(client==="windows-desktop")state.restart_required={revision,origin_session_key:session.session_key,client,created_at:now};
     return true;
@@ -399,6 +396,8 @@ export function harnessErrors() {
   const major=Number(process.versions.node.split(".")[0]); if(major<22) errors.push(`Node.js 22+ required; current ${process.versions.node}`);
   if(!existsSync(join(ROOT,".ai/tools/aidd_hook.mjs"))) errors.push("canonical Node hook runtime missing");
   const approvalCases=[
+    ["unconfirmed","1","existing"],
+    ["unconfirmed","2번","new"],
     ["unconfirmed","네, `AIDD 훅` 내용을 확인하고 승인했어요.","declared"],
     ["unconfirmed","응, 승인했어","declared"],
     ["unconfirmed","훅은 아직 검토 안 했어요",null],
@@ -420,9 +419,11 @@ export function harnessErrors() {
   if(lockedToolAllowed({tool_name:"Bash",tool_input:{command:"git add -- project/src/unrelated.js"}},{observed_paths:[]}))errors.push("approval close-out classifier: unrelated staging was allowed");
   const revision="self-test-revision", at="2026-09-19T00:00:00.000Z";
   let state={restart_required:null}, session={session_key:"existing",start_revision:revision,state:"unconfirmed"};
+  if(!applyApprovalMessage(state,session,revision,"1","windows-desktop",at)||session.state!=="approved")errors.push("approval transition: direct existing choice did not approve the session");
+  state={restart_required:null}; session={session_key:"declared",start_revision:revision,state:"unconfirmed"};
   if(!applyApprovalMessage(state,session,revision,"승인했어","windows-desktop",at)||session.state!=="declared")errors.push("approval transition: declaration did not enter declared state");
-  if(!applyApprovalMessage(state,session,revision,"1번","windows-desktop",at)||session.state!=="approved")errors.push("approval transition: existing approval did not approve the session");
-  state={restart_required:null}; session={session_key:"desktop",start_revision:revision,state:"declared"};
+  if(!applyApprovalMessage(state,session,revision,"1번","windows-desktop",at)||session.state!=="approved")errors.push("approval transition: existing choice after declaration did not approve the session");
+  state={restart_required:null}; session={session_key:"desktop",start_revision:revision,state:"unconfirmed"};
   if(!applyApprovalMessage(state,session,revision,"2번","windows-desktop",at)||session.state!=="restart_required"||state.restart_required?.origin_session_key!=="desktop")errors.push("approval transition: Windows Desktop new approval did not require restart");
   const restarted={session_key:"desktop-new",start_revision:revision,state:"unconfirmed"};
   if(!applyApprovalMessage(state,restarted,revision,"새 앱 창에서 다시 시작했고 훅도 승인된 상태야","windows-desktop",at)||restarted.state!=="approved"||state.restart_required!==null)errors.push("approval transition: Windows Desktop restart confirmation did not approve the new session");

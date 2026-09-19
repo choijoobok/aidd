@@ -3,14 +3,23 @@
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "startup",
+        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd.mjs\" project-init",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd.mjs') project-init\"",
-            "timeout": 30,
-            "statusMessage": "AIDD 프로젝트를 안전하게 초기화하는 중"
+            "command": "node .ai/tools/aidd.mjs hook-trust-status",
+            "commandWindows": "node .ai\\tools\\aidd.mjs hook-trust-status",
+            "timeout": 15,
+            "statusMessage": "Codex hook trust status",
+            "additionalContextLimit": 4000
+          },
+          {
+            "type": "command",
+            "command": "node .ai/tools/aidd_hook.mjs approval-status",
+            "commandWindows": "node .ai\\tools\\aidd_hook.mjs approval-status",
+            "timeout": 15,
+            "statusMessage": "AIDD 훅 승인 확인",
+            "additionalContextLimit": 4000
           }
         ]
       },
@@ -19,16 +28,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" session-brief",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') session-brief\"",
+            "command": "node .ai/tools/aidd_hook.mjs session-brief",
+            "commandWindows": "node .ai\\tools\\aidd_hook.mjs session-brief",
             "timeout": 30,
             "statusMessage": "AIDD 현재 상태를 불러오는 중",
             "additionalContextLimit": 9000
           },
           {
             "type": "command",
-            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" self-test --hook",
-            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') self-test --hook\"",
+            "command": "node .ai/tools/aidd_hook.mjs self-test --hook",
+            "commandWindows": "node .ai\\tools\\aidd_hook.mjs self-test --hook",
             "timeout": 20,
             "statusMessage": "AIDD 하네스 배선을 검사하는 중",
             "additionalContextLimit": 4000
@@ -37,6 +46,18 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" approval-gate --platform codex",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') approval-gate --platform codex\"",
+            "timeout": 20,
+            "statusMessage": "AIDD 훅 승인 상태를 확인하는 중"
+          }
+        ]
+      },
       {
         "matcher": "apply_patch|Edit|Write|NotebookEdit|^mcp__.*__(?:write|edit|move|create)",
         "hooks": [
@@ -80,6 +101,13 @@
     "UserPromptSubmit": [
       {
         "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" acknowledge --platform codex",
+            "commandWindows": "powershell.exe -NoProfile -NonInteractive -Command \"node (Join-Path (git rev-parse --show-toplevel) '.ai\\tools\\aidd_hook.mjs') acknowledge --platform codex\"",
+            "timeout": 10,
+            "statusMessage": "AIDD 훅 승인 선언을 확인하는 중"
+          },
           {
             "type": "command",
             "command": "/usr/bin/env node \"$(git rev-parse --show-toplevel)/.ai/tools/aidd_hook.mjs\" local-log --platform codex --role user",

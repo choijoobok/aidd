@@ -6,6 +6,13 @@
           {
             "type": "command",
             "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "approval-status"],
+            "timeout": 15,
+            "statusMessage": "AIDD 훅 승인 확인"
+          },
+          {
+            "type": "command",
+            "command": "node",
             "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "session-brief"],
             "timeout": 30,
             "statusMessage": "AIDD 현재 상태를 불러오는 중"
@@ -21,6 +28,17 @@
       }
     ],
     "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "approval-gate", "--platform", "claude"],
+            "timeout": 20,
+            "statusMessage": "AIDD 훅 승인 상태를 확인하는 중"
+          }
+        ]
+      },
       {
         "matcher": "Write|Edit|NotebookEdit|apply_patch|^mcp__.*__(?:write|edit|move|create)",
         "hooks": [
@@ -63,6 +81,13 @@
     "UserPromptSubmit": [
       {
         "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "acknowledge", "--platform", "claude"],
+            "timeout": 10,
+            "statusMessage": "AIDD 훅 승인 선언을 확인하는 중"
+          },
           {
             "type": "command",
             "command": "node",

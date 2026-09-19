@@ -4,7 +4,8 @@
 
 ## 시작
 
-1. `.aidd-role.json`이 `kit-template`이고 `project/.aidd/ssot/`가 없으면 고객 확인 뒤 `project-bootstrap`을 실행한다. 성공하면 역할이 `product-workspace`로 전환되며, 이후에는 기존 `project/.aidd/ssot/`를 먼저 읽는다. 이미 정본이 있는데 역할만 `kit-template`이면 bootstrap을 다시 실행하지 말고 `project-reconcile-role`로 정합화한다.
+1. Codex에서는 신뢰 레코드 유무와 관계없이 `codex -C "<프로젝트 루트>"`를 열어 `/hooks`에서 모든 AIDD 훅을 직접 검토·신뢰한 뒤 이 대화에서 그 사실을 확인한다. AI는 승인 시점을 `1) 현재 세션 시작 전에 이미 모든 AIDD 훅이 승인된 상태 2) 현재 세션 시작 후 AIDD 훅을 새로 승인한 상태` 두 선택지로만 한 번에 질문한다. 답변은 고정 문구가 아니라 의미로 처리하므로 번호나 자연스러운 표현으로 답할 수 있지만, 부정·모순·모호한 답변은 다시 확인한다. Windows Codex 앱에서 2번이면 일반 쓰기를 새 앱 창에서 재개한다. CLI에서는 현재 `acknowledge` 훅이 2번 답변을 실제 수신한 경우 별도 앱 재시작 절차를 적용하지 않는다. 훅 리비전이 세션 시작 뒤 변경되면 앱과 CLI 모두 최신 훅을 승인한 뒤 같은 클라이언트의 새 세션에서 재개한다. 훅 설정·실행기·계약·관련 테스트·가이드는 잠긴 창에서도 유지보수할 수 있고, 잠긴 세션은 자신이 관측한 경로만 명시적으로 stage해 로컬 close-out 커밋할 수 있다. Claude에는 이 Codex 승인 절차가 없다.
+2. `.aidd-role.json`이 `kit-template`이고 `project/.aidd/ssot/`가 없으면 고객 확인 뒤 `project-bootstrap`을 실행한다. 성공하면 역할이 `product-workspace`로 전환되며, 이후에는 기존 `project/.aidd/ssot/`를 먼저 읽는다. 이미 정본이 있는데 역할만 `kit-template`이면 bootstrap을 다시 실행하지 말고 `project-reconcile-role`로 정합화한다.
 2. `current-actor`, `status --level executive`, `integration-status`로 신원·진척·통합 위험을 확인한다.
 3. 제품 의도·성과·범위·모듈·배포 맥락을 합의하고 미정 사항은 가정 또는 미결사항으로 기록한다.
 4. 제품 의도·목적·성과 기준을 합의한 직후 `BEN-TRIAGE`로 벤치마킹 필요성을 고객과 판단한다. 필요하면 조사 질문·후보·평가 기준·출처 품질·제외 범위를 합의한 뒤 조사하고, 불필요하면 이유와 재검토 조건을 ADR 또는 OI에 남긴다.

@@ -8,6 +8,9 @@ import { spawnSync } from "node:child_process";
 const ROOT=resolve(import.meta.dirname,"../..");
 const KIT=join(ROOT,".aidd-kit-dev/tools/kit.mjs");
 const run=(args,cwd=ROOT)=>spawnSync(process.execPath,[KIT,...args],{cwd,encoding:"utf8"});
+const runHookCommand=(command,{cwd,input,env={}})=>process.platform==="win32"
+  ?spawnSync("powershell.exe",["-NoProfile","-NonInteractive","-Command",command],{cwd,input,encoding:"utf8",env:{...process.env,...env}})
+  :spawnSync("/bin/sh",["-lc",command],{cwd,input,encoding:"utf8",env:{...process.env,...env}});
 
 test("kit status is readable",()=>{const result=run(["status"]);assert.equal(result.status,0,result.stderr);assert.match(result.stdout,/kit-source/);});
 test("Kit CLI rejects unknown, positional, missing, conflicting, and invalid options",()=>{
@@ -50,5 +53,40 @@ test("reference fixture derived runtime guides match Node SSOT and preserve hist
   assert.match(readFileSync(join(generated,"foundation/golden-paths.md"),"utf8"),/전체 Node 테스트/);
   assert.match(readFileSync(join(ROOT,".aidd-kit-dev/fixtures/reference-project/.aidd/ssot/evidence.json"),"utf8"),/Python unittest/);
 });
-test("exported Windows conversation hook writes UTF-8 history",()=>{if(process.platform!=="win32")return;const temp=mkdtempSync(join(tmpdir(),"aidd-log-e2e-")),output=join(temp,"product");try{let result=run(["new-project","--directory",output,"--project-id","LOG-TEST","--name","로그 테스트"]);assert.equal(result.status,0,result.stderr);result=spawnSync("git",["init","-b","main"],{cwd:output,encoding:"utf8"});assert.equal(result.status,0,result.stderr);const config=JSON.parse(readFileSync(join(output,".codex/hooks.json"),"utf8")),hook=config.hooks.UserPromptSubmit.flatMap(item=>item.hooks).find(item=>item.command?.includes("local-log --platform codex --role user")),command=hook?.commandWindows;assert.ok(command,"exported user conversation logger is missing");result=spawnSync("powershell.exe",["-NoProfile","-NonInteractive","-Command",command],{cwd:join(output,".ai"),input:JSON.stringify({prompt:"대화 저장 한글 왕복"}),encoding:"utf8"});assert.equal(result.status,0,result.stderr);const month=readdirSync(join(output,"chat-history")).find(name=>/^\d{4}-\d{2}$/.test(name)),file=readdirSync(join(output,"chat-history",month))[0],text=readFileSync(join(output,"chat-history",month,file),"utf8");assert.match(text,/대화 저장 한글 왕복/);assert.match(text,/codex · 사용자/);}finally{rmSync(temp,{recursive:true,force:true});}});
+test("exported Windows conversation hook writes UTF-8 history",()=>{if(process.platform!=="win32")return;const temp=mkdtempSync(join(tmpdir(),"aidd-log-e2e-")),output=join(temp,"product");try{let result=run(["new-project","--directory",output,"--project-id","LOG-TEST","--name","로그 테스트"]);assert.equal(result.status,0,result.stderr);result=spawnSync("git",["init","-b","main"],{cwd:output,encoding:"utf8"});assert.equal(result.status,0,result.stderr);const config=JSON.parse(readFileSync(join(output,".codex/hooks.json"),"utf8")),hook=config.hooks.UserPromptSubmit.flatMap(item=>item.hooks).find(item=>item.command?.includes("local-log --platform codex --role user")),command=hook?.commandWindows;assert.ok(command,"exported user conversation logger is missing");result=spawnSync("powershell.exe",["-NoProfile","-NonInteractive","-Command",command],{cwd:output,input:JSON.stringify({prompt:"대화 저장 한글 왕복"}),encoding:"utf8"});assert.equal(result.status,0,result.stderr);const month=readdirSync(join(output,"chat-history")).find(name=>/^\d{4}-\d{2}$/.test(name)),file=readdirSync(join(output,"chat-history",month))[0],text=readFileSync(join(output,"chat-history",month,file),"utf8");assert.match(text,/대화 저장 한글 왕복/);assert.match(text,/codex · 사용자/);}finally{rmSync(temp,{recursive:true,force:true});}});
 test("exported Windows SessionStart approval notice works before Git initialization",()=>{if(process.platform!=="win32")return;const temp=mkdtempSync(join(tmpdir(),"aidd-trust-e2e-")),output=join(temp,"product");try{const result=run(["new-project","--directory",output,"--project-id","TRUST-TEST","--name","신뢰 테스트"]);assert.equal(result.status,0,result.stderr);assert.ok(!existsSync(join(output,".git")));const config=JSON.parse(readFileSync(join(output,".codex/hooks.json"),"utf8")),trustEntry=config.hooks.SessionStart.find(item=>JSON.stringify(item).includes("hook-trust-status")),trustCommand=trustEntry?.hooks?.[0]?.commandWindows,approvalEntry=config.hooks.SessionStart.find(item=>JSON.stringify(item).includes("approval-status")),approvalCommand=approvalEntry?.hooks?.[1]?.commandWindows;assert.ok(trustCommand,"exported SessionStart must wire hook-trust-status");assert.ok(approvalCommand,"exported SessionStart must wire approval-status");assert.doesNotMatch(trustCommand,/git rev-parse/);assert.doesNotMatch(approvalCommand,/git rev-parse/);let processResult=spawnSync("powershell.exe",["-NoProfile","-NonInteractive","-Command",trustCommand],{cwd:output,encoding:"utf8"});assert.ok([0,1].includes(processResult.status),processResult.stderr);assert.match(processResult.stdout,/TRUST_RECORD_FOUND|REVIEW_REQUIRED/);processResult=spawnSync("powershell.exe",["-NoProfile","-NonInteractive","-Command",approvalCommand],{cwd:output,input:JSON.stringify({session_id:"template-start"}),encoding:"utf8"});assert.equal(processResult.status,0,processResult.stderr);assert.match(processResult.stdout,/AIDD 훅 승인 게이트/);}finally{rmSync(temp,{recursive:true,force:true});}});
+test("exported approval and protection hooks work before Git initialization",()=>{
+  const temp=mkdtempSync(join(tmpdir(),"aidd-pre-git-approval-e2e-")),output=join(temp,"template");
+  try{
+    const exported=run(["export","--directory",output]);
+    assert.equal(exported.status,0,exported.stderr);
+    assert.ok(!existsSync(join(output,".git")));
+    const config=JSON.parse(readFileSync(join(output,".codex/hooks.json"),"utf8"));
+    for(const entries of Object.values(config.hooks))for(const entry of entries)for(const hook of entry.hooks??[])for(const field of ["command","commandWindows"]){
+      assert.ok(hook[field],`exported hook is missing ${field}`);
+      assert.doesNotMatch(hook[field],/git rev-parse/,`pre-Git export ${field} must not require a Git root`);
+    }
+    const commandField=process.platform==="win32"?"commandWindows":"command";
+    const approval=config.hooks.PreToolUse.flatMap(item=>item.hooks).find(item=>item.command?.includes("approval-gate --platform codex"))?.[commandField];
+    const protection=config.hooks.PreToolUse.flatMap(item=>item.hooks).find(item=>item.command?.includes("protect --platform codex --kind file"))?.[commandField];
+    const acknowledge=config.hooks.UserPromptSubmit.flatMap(item=>item.hooks).find(item=>item.command?.includes("acknowledge --platform codex"))?.[commandField];
+    assert.ok(approval,"exported approval gate command is missing");
+    assert.ok(protection,"exported file protection command is missing");
+    assert.ok(acknowledge,"exported acknowledge command is missing");
+    const approvalDir=join(temp,"approvals"),env={AIDD_HOOK_APPROVAL_DIR:approvalDir,CODEX_INTERNAL_ORIGINATOR_OVERRIDE:"Codex CLI",CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY:""};
+    for(const choice of ["1","2"]){
+      const session_id=`pre-git-${choice}`,request=JSON.stringify({session_id,tool_name:"apply_patch",tool_input:{patch:"*** Update File: project/src/x.js\n@@"}});
+      let result=runHookCommand(approval,{cwd:output,input:request,env});
+      assert.equal(result.status,0,result.stderr);
+      assert.equal(JSON.parse(result.stdout).hookSpecificOutput.permissionDecision,"deny");
+      result=runHookCommand(acknowledge,{cwd:output,input:JSON.stringify({session_id,prompt:choice}),env});
+      assert.equal(result.status,0,result.stderr);
+      result=runHookCommand(approval,{cwd:output,input:request,env});
+      assert.equal(result.status,0,result.stderr);
+      assert.equal(result.stdout,"");
+    }
+    const protectedResult=runHookCommand(protection,{cwd:output,input:JSON.stringify({tool_name:"apply_patch",tool_input:{path:"project/docs/generated/pre-git.md"}}),env});
+    assert.equal(protectedResult.status,0,protectedResult.stderr);
+    assert.equal(JSON.parse(protectedResult.stdout).hookSpecificOutput.permissionDecision,"deny");
+  }finally{rmSync(temp,{recursive:true,force:true});}
+});

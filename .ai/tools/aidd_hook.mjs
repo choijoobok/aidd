@@ -15,11 +15,10 @@ const RECOVERY_PATHS = new Set([
   ".ai/tools/aidd_hook.mjs", ".claude/settings.json", ".codex/hooks.json",
   ".ai/tests/harness.test.mjs",
 ]);
-const APPROVAL_REVISION_PATHS = [
-  ".ai/hooks/policy.json", ".ai/hooks/contract.json", ".ai/tools/aidd.mjs", ".ai/tools/aidd_hook.mjs", ".claude/settings.json", ".codex/hooks.json",
-];
+const CODEX_TRUST_REVISION_PATHS = [".codex/hooks.json"];
 const HOOK_MAINTENANCE_PATHS = new Set([
-  ...APPROVAL_REVISION_PATHS, ".ai/hooks/README.md", ".ai/tests/harness.test.mjs", ".ai/spec/conformance.md",
+  ".ai/hooks/policy.json", ".ai/hooks/contract.json", ".ai/tools/aidd.mjs", ".ai/tools/aidd_hook.mjs", ".claude/settings.json", ".codex/hooks.json",
+  ".ai/hooks/README.md", ".ai/tests/harness.test.mjs", ".ai/spec/conformance.md",
   ".ai/docs/guides/aidd-kit-guide.md", ".ai/docs/guides/project-team-guide.md", "AGENTS.md",
 ]);
 const KIT_HOOK_MAINTENANCE_PATHS = new Set([
@@ -44,12 +43,12 @@ function approvalRoot() { return process.env.AIDD_HOOK_APPROVAL_DIR ? resolve(pr
 function sessionIdOf(payload) { const value=payload?.session_id??payload?.sessionId; return typeof value==="string"&&value.trim()?value.trim():null; }
 function sessionKey(sessionId) { return createHash("sha256").update(sessionId).digest("hex"); }
 function approvalStatePath() { return join(approvalRoot(), "hook-state.json"); }
-function emptyApprovalState() { return {version:2,current_revision:null,revision_changed_at:null,restart_required:null,sessions:{}}; }
-function readApprovalState() { try { const value=readJson(approvalStatePath()); return value?.version===2&&value.sessions&&!Array.isArray(value.sessions)?value:emptyApprovalState(); } catch { return emptyApprovalState(); } }
+function emptyApprovalState() { return {version:3,revision_scope:"codex-hook-definition",current_revision:null,revision_changed_at:null,restart_required:null,sessions:{}}; }
+function readApprovalState() { try { const value=readJson(approvalStatePath()); return [2,3].includes(value?.version)&&value.sessions&&!Array.isArray(value.sessions)?value:emptyApprovalState(); } catch { return emptyApprovalState(); } }
 function writeApprovalState(value) { mkdirSync(approvalRoot(), {recursive:true}); writeFileSync(approvalStatePath(), `${JSON.stringify(value)}\n`, "utf8"); }
 function currentHookRevision() {
   const hash=createHash("sha256");
-  for (const path of APPROVAL_REVISION_PATHS) {
+  for (const path of CODEX_TRUST_REVISION_PATHS) {
     hash.update(`${path}\0`);
     try { hash.update(readFileSync(join(ROOT,path))); } catch { hash.update("[missing]"); }
     hash.update("\0");
@@ -58,6 +57,13 @@ function currentHookRevision() {
 }
 function ensureApprovalState(sessionId) {
   const state=readApprovalState(), revision=currentHookRevision(), now=new Date().toISOString(); let changed=false;
+  if (state.version===2) {
+    for (const session of Object.values(state.sessions)) if (session&&typeof session==="object") {
+      session.start_revision=revision;
+    }
+    state.version=3; state.revision_scope="codex-hook-definition"; state.revision_scope_migrated_at=now;
+    state.current_revision=revision; state.revision_changed_at=now; changed=true;
+  }
   if (state.current_revision!==revision) {
     state.current_revision=revision; state.revision_changed_at=now; state.restart_required=null; changed=true;
   }
@@ -95,7 +101,7 @@ function loadContract() {
   if (!runtime || runtime.minimum_major !== 22 || runtime.hook_input !== "utf-8-bytes" || runtime.dependencies !== "node-standard-library")
     throw new Error("contract node_runtime is malformed");
   const gate=value.approval_gate;
-  if (!gate || gate.platform!=="codex" || gate.unknown_tool_behavior!=="deny" || gate.windows_desktop_origin_environment!=="CODEX_INTERNAL_ORIGINATOR_OVERRIDE" || gate.windows_desktop_origin_value!=="Codex Desktop" || gate.windows_desktop_package_environment!=="CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY" || gate.cli_origin_value!=="Codex CLI" || gate.cli_origin_absence_means_cli!==true || gate.unknown_client_behavior!=="require_new_session" || gate.composed_shell_command_behavior!=="deny" || gate.windows_desktop_new_approval_requires_new_session!==true || gate.cli_new_approval_current_session_effective!==true || gate.cli_revision_reapproval_current_session_effective!==true || !Array.isArray(gate.locked_read_only_tools))
+  if (!gate || gate.platform!=="codex" || gate.unknown_tool_behavior!=="deny" || gate.windows_desktop_origin_environment!=="CODEX_INTERNAL_ORIGINATOR_OVERRIDE" || gate.windows_desktop_origin_value!=="Codex Desktop" || gate.windows_desktop_package_environment!=="CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY" || gate.cli_origin_value!=="Codex CLI" || gate.cli_origin_absence_means_cli!==true || gate.unknown_client_behavior!=="require_new_session" || gate.composed_shell_command_behavior!=="deny" || JSON.stringify(gate.codex_trust_revision_paths)!==JSON.stringify(CODEX_TRUST_REVISION_PATHS) || gate.windows_desktop_new_approval_requires_new_session!==true || gate.cli_new_approval_current_session_effective!==true || gate.cli_revision_reapproval_current_session_effective!==true || !Array.isArray(gate.locked_read_only_tools))
     throw new Error("contract approval_gate is malformed");
   const log = value.local_conversation_log;
   if (!log || log.root !== "chat-history" || log.transport_encoding !== "utf-8" || log.failure_reporting !== "sanitized-stderr")
@@ -417,7 +423,7 @@ function nestedStrings(value, output=[]) { if(typeof value==="string") output.pu
 export function harnessErrors() {
   const errors=[]; let contract={events:{}};
   try { const policy=loadPolicy(); for(const key of ["destructive_command_patterns","shell_write_patterns"]) policy[key].forEach(pattern=>new RegExp(pattern,"i")); } catch(error){errors.push(`policy: ${error.name}: ${error.message}`);}
-  try { contract=loadContract(); if(JSON.stringify([...contract.recovery_paths].sort())!==JSON.stringify([...RECOVERY_PATHS].sort())) errors.push("contract: recovery_paths does not match runtime allow-list"); } catch(error){errors.push(`contract: ${error.name}: ${error.message}`);}
+  try { contract=loadContract(); if(JSON.stringify([...contract.recovery_paths].sort())!==JSON.stringify([...RECOVERY_PATHS].sort())) errors.push("contract: recovery_paths does not match runtime allow-list"); if(JSON.stringify(contract.approval_gate.codex_trust_revision_paths)!==JSON.stringify(CODEX_TRUST_REVISION_PATHS)) errors.push("contract: codex_trust_revision_paths does not match runtime revision scope"); } catch(error){errors.push(`contract: ${error.name}: ${error.message}`);}
   for(const rel of [".claude/settings.json",".codex/hooks.json"]) try {
     const hooks=readJson(join(ROOT,rel)).hooks??{};
     const provider=rel.startsWith(".codex/")?"codex":"claude";

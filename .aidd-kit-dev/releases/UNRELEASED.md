@@ -2,7 +2,7 @@
 
 ## KIT-CHG-004 · Node.js 단일 런타임 전환
 
-상태: 독립 C3 검토 실패 발견사항 수정, 최신 전체 재검증·독립 재검토 대기(`in_review`)
+상태: 독립 C3 검토 실패 발견사항 수정, 불변 커밋 전체 재검증 완료, 실제 provider 검증·독립 재검토 대기(`in_review`)
 
 - portable CLI, Kit 관리 CLI, provider 훅과 테스트를 Node.js 22 이상 표준 라이브러리로 통일한다.
 - 실행 가능한 `.py` 파일과 provider의 Python 명령을 제거한다.
@@ -22,10 +22,10 @@
 - portable parser는 `--option=value`, 반복 scalar의 최종값, append·variadic 반복 그룹을 argparse 기준으로 처리하고 Kit parser는 알 수 없는 옵션·위치 인자와 required·상호 배타 위반을 종료 코드 2로 거부한다.
 - 신뢰 기록 존재는 실제 훅 실행·저장 성공과 구분해 안내하며, Codex `SessionStart` 배선에서 매번 신뢰 상태를 확인한다.
 - Codex에서만 신뢰 레코드 유무와 무관하게 사용자 직접 승인 확인을 요구한다. 승인 시점은 현재 세션 시작 전 기존 승인과 시작 후 신규 승인 두 선택지로만 한 번에 묻고, 직접 검토·승인한 사용자는 최초 응답에 `1` 또는 `2`만 입력해 승인 사실과 시점을 함께 확인할 수 있다. 자연어에는 부정·모호성을 거부하는 결정적 의미 분류를 사용한다. Windows Codex 앱의 신규 승인 뒤 일반 쓰기를 새 앱 세션에서 재개하게 하며, CLI에서는 현재 acknowledge 훅이 신규 승인 답변을 실제 수신한 경우 별도 재시작 절차를 적용하지 않는다. 훅 리비전 변경 뒤 Windows 앱은 최신 훅을 승인한 새 앱 세션에서 재개하고, CLI는 최신 훅 승인 뒤 현재 acknowledge가 신규 승인 답변을 받으면 현재 세션의 시작 리비전을 갱신해 새 CLI 세션 없이 재개한다. 잠긴 창에서는 알려진 읽기 전용 도구, 훅 유지보수와 관측된 자기 변경의 close-out만 예외로 허용한다. Claude에는 이 게이트를 적용하지 않는다.
-- 검증 근거: `KIT-EVD-009`, `KIT-EVD-010`, `KIT-EVD-011`, 독립 C3 실패 판정 `KIT-EVD-012`, 동일 구현 세션의 수정 부분 검증 `KIT-EVD-013`.
+- 검증 근거: `KIT-EVD-009`, `KIT-EVD-010`, `KIT-EVD-011`, 독립 C3 실패 판정 `KIT-EVD-012`, 동일 구현 세션의 수정 부분 검증 `KIT-EVD-013`, 불변 커밋 전체 재검증 `KIT-EVD-014`.
 - 현행 가이드와 reference fixture 런타임 정본·파생 문서를 Node.js 22 기준으로 통일하고 회귀 검사로 고정한다.
 - 기존 Python 검증 근거 `KIT-EVD-007`, `KIT-EVD-008`은 전환 배경으로만 유지하며 Node 결과는 별도 증거로 기록한다.
-- Node `generate`는 reference 기준 파생 경로 53개를 모두 재생성하고 stale 생성물을 정리한다. `migrate-module-specs`는 레거시 요구사항을 모듈 소유 조각으로 원자적으로 전환하며 반복 실행을 거부한다. `validate`는 bootstrap 분기와 인수 기준·양방향 추적성·재사용 자산·문서 템플릿·작업 보드·시스템 표면 의미 게이트를 복원한다. 2026-09-20 사용자 실행 Windows CMD의 `sync-providers`, Kit source/export boundary `validate`, 최신 Kit 관리 테스트 39/39와 portable 테스트 21/21, 총 60/60이 통과했고 provider 어댑터에 추가 작업 트리 변경이 없다. directory·ZIP export는 각각 168개 파일의 경로와 SHA-256이 모두 같고 관리 전용·제품 트리가 없다. sample new-project는 AIDD validate 0 warnings이며 `.ai`·`.agents`·`.claude` portable 스킬 37개 파일이 동일하다. LF 고정 롤백 연습은 역적용 후 기준선 319개 파일의 경로·SHA-256과 validate가 일치했다. 불변 커밋의 원시 로그 해시, 구현 흐름에서 분리된 C3 재검토가 남아 있다. 실제 Codex Desktop·macOS provider 증거까지 갖추기 전에는 완료·출시 준비 완료로 표시하지 않는다.
+- Node `generate`는 reference 기준 파생 경로 53개를 모두 재생성하고 stale 생성물을 정리한다. `migrate-module-specs`는 레거시 요구사항을 모듈 소유 조각으로 원자적으로 전환하며 반복 실행을 거부한다. `validate`는 bootstrap 분기와 인수 기준·양방향 추적성·재사용 자산·문서 템플릿·작업 보드·시스템 표면 의미 게이트를 복원한다. 2026-09-20 불변 구현 커밋 `5dfb4202e3f0ab855ac77d003260f85f25d6e3c5`에서 `sync-providers`, Kit source/export boundary `validate`, 최신 Kit 관리 테스트 39/39와 portable 테스트 21/21, 총 60/60이 통과했고 provider 어댑터에 추가 작업 트리 변경이 없다. 핵심 검증 원시 로그 4개의 SHA-256과 정확한 시작·종료 시각을 `KIT-EVD-014`에 보존했다. directory·ZIP export는 각각 168개 파일의 경로와 SHA-256이 모두 같고 관리 전용·제품 트리가 없다. sample new-project는 AIDD validate 0 warnings이며 `.ai`·`.agents`·`.claude` portable 스킬 37개 파일이 동일하다. LF 고정 롤백 연습은 역적용 후 기준선 319개 파일의 경로·SHA-256과 validate가 일치했다. 구현 흐름에서 분리된 C3 재검토가 남아 있다. 실제 Codex Desktop·macOS provider 증거까지 갖추기 전에는 완료·출시 준비 완료로 표시하지 않는다.
 
 ## KIT-CHG-003 · Codex 대화 기록 훅 신뢰 사전 점검
 

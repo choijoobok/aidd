@@ -1,0 +1,115 @@
+TAP version 13
+# Subtest: self-test validates both providers
+ok 1 - self-test validates both providers
+  ---
+  duration_ms: 126.9156
+  ...
+# Subtest: only Codex enforces the approval gate
+ok 2 - only Codex enforces the approval gate
+  ---
+  duration_ms: 72.1404
+  ...
+# Subtest: tool work accepts a direct numbered existing-approval choice
+ok 3 - tool work accepts a direct numbered existing-approval choice
+  ---
+  duration_ms: 240.7759
+  ...
+# Subtest: Windows Desktop direct new-approval choice requires a natural restart confirmation
+ok 4 - Windows Desktop direct new-approval choice requires a natural restart confirmation
+  ---
+  duration_ms: 391.993
+  ...
+# Subtest: Codex CLI direct new-approval choice becomes effective without an app restart
+ok 5 - Codex CLI direct new-approval choice becomes effective without an app restart
+  ---
+  duration_ms: 164.4763
+  ...
+# Subtest: Codex CLI revision reapproval becomes effective in the current session
+ok 6 - Codex CLI revision reapproval becomes effective in the current session
+  ---
+  duration_ms: 324.5404
+  ...
+# Subtest: ambiguous or negative approval replies remain blocked
+ok 7 - ambiguous or negative approval replies remain blocked
+  ---
+  duration_ms: 589.7588
+  ...
+# Subtest: stale sessions permit only hook maintenance and their observed close-out paths
+ok 8 - stale sessions permit only hook maintenance and their observed close-out paths
+  ---
+  duration_ms: 485.977
+  ...
+# Subtest: stale sessions permit read-only web documentation tools
+ok 9 - stale sessions permit read-only web documentation tools
+  ---
+  duration_ms: 409.4888
+  ...
+# Subtest: locked approval states reject composed shell commands and permit single read-only commands
+ok 10 - locked approval states reject composed shell commands and permit single read-only commands
+  ---
+  duration_ms: 1111.9835
+  ...
+# Subtest: unknown Codex client origin requires a new session after direct new approval
+ok 11 - unknown Codex client origin requires a new session after direct new approval
+  ---
+  duration_ms: 153.6949
+  ...
+# Subtest: malformed input fails closed
+ok 12 - malformed input fails closed
+  ---
+  duration_ms: 72.8042
+  ...
+# Subtest: generated document write is denied
+ok 13 - generated document write is denied
+  ---
+  duration_ms: 72.1828
+  ...
+# Subtest: canonical SSOT write is allowed
+ok 14 - canonical SSOT write is allowed
+  ---
+  duration_ms: 73.4963
+  ...
+# Subtest: destructive shell command is denied
+ok 15 - destructive shell command is denied
+  ---
+  duration_ms: 71.8051
+  ...
+# Subtest: read-only shell command is allowed
+ok 16 - read-only shell command is allowed
+  ---
+  duration_ms: 74.0588
+  ...
+# Subtest: UTF-8 conversation round trips and secrets are masked
+ok 17 - UTF-8 conversation round trips and secrets are masked
+  ---
+  duration_ms: 69.7855
+  ...
+# Subtest: provider configs contain no Python execution
+ok 18 - provider configs contain no Python execution
+  ---
+  duration_ms: 0.6393
+  ...
+# Subtest: Windows commands contain no shell variables
+ok 19 - Windows commands contain no shell variables
+  ---
+  duration_ms: 0.3753
+  ...
+# Subtest: actual nested Windows command resolves Git root and preserves UTF-8
+ok 20 - actual nested Windows command resolves Git root and preserves UTF-8
+  ---
+  duration_ms: 808.1489
+  ...
+# Subtest: actual nested Windows SessionStart trust check reports a state
+ok 21 - actual nested Windows SessionStart trust check reports a state
+  ---
+  duration_ms: 805.1316
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6224.5158

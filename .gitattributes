@@ -10,3 +10,7 @@
 .gitignore text eol=lf
 .gitattributes text eol=lf
 .githooks/* text eol=lf
+
+# 원시 evidence 로그는 기록 당시 바이트와 SHA-256을 그대로 보존한다.
+.aidd-kit-dev/evidence/*-logs/*.log -text
+.aidd-kit-dev/evidence/*-logs/*.tap -text

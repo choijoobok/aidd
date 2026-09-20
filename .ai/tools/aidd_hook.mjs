@@ -426,7 +426,14 @@ function nestedStrings(value, output=[]) { if(typeof value==="string") output.pu
 export function harnessErrors() {
   const errors=[]; let contract={events:{}};
   try { const policy=loadPolicy(); for(const key of ["destructive_command_patterns","shell_write_patterns"]) policy[key].forEach(pattern=>new RegExp(pattern,"i")); } catch(error){errors.push(`policy: ${error.name}: ${error.message}`);}
-  try { contract=loadContract(); if(JSON.stringify([...contract.recovery_paths].sort())!==JSON.stringify([...RECOVERY_PATHS].sort())) errors.push("contract: recovery_paths does not match runtime allow-list"); if(JSON.stringify(contract.approval_gate.codex_trust_revision_paths)!==JSON.stringify(CODEX_TRUST_REVISION_PATHS)) errors.push("contract: codex_trust_revision_paths does not match runtime revision scope"); } catch(error){errors.push(`contract: ${error.name}: ${error.message}`);}
+  try {
+    contract=loadContract();
+    if(JSON.stringify([...contract.recovery_paths].sort())!==JSON.stringify([...RECOVERY_PATHS].sort())) errors.push("contract: recovery_paths does not match runtime allow-list");
+    if(JSON.stringify(contract.approval_gate.codex_trust_revision_paths)!==JSON.stringify(CODEX_TRUST_REVISION_PATHS)) errors.push("contract: codex_trust_revision_paths does not match runtime revision scope");
+    if(contract.terminology_refresh?.trigger_path!=="project/.aidd/ssot/terminology.json") errors.push("contract: terminology_refresh trigger path does not match runtime");
+    if(contract.terminology_refresh?.command!=="node .ai/tools/aidd.mjs terminology-refresh") errors.push("contract: terminology_refresh command does not match runtime");
+    if(contract.terminology_refresh?.approved_impact_required!==true) errors.push("contract: terminology_refresh must require approved impact history");
+  } catch(error){errors.push(`contract: ${error.name}: ${error.message}`);}
   for(const rel of [".claude/settings.json",".codex/hooks.json"]) try {
     const hooks=readJson(join(ROOT,rel)).hooks??{};
     const provider=rel.startsWith(".codex/")?"codex":"claude";
@@ -507,7 +514,7 @@ function recordObservedPaths(payload, platform) {
   for (const path of paths) if (!known.has(path)) { known.add(path); changed=true; }
   if (changed) { session.observed_paths=[...known].sort(); writeApprovalState(state); }
 }
-async function postCheck(platform){try{const payload=await readInput();recordObservedPaths(payload,platform);let paths=targetPaths(payload);if(!paths.size)paths=shellWriteTargets(commandText(payload));const messages=[];if([...paths].some(path=>under(path,".ai"))){const errors=harnessErrors();if(errors.length)messages.push(`공통 AI 정본 변경 뒤 provider 파생물이 어긋났습니다. node ${repoRole()==="kit-source"?".aidd-kit-dev/tools/kit.mjs sync-providers":".ai/tools/aidd.mjs sync-ai"}를 실행하세요. ${errors.slice(0,5).join("; ")}`);}if(repoRole()==="kit-source"&&[...paths].some(path=>under(path,".ai")||under(path,".aidd-kit-dev"))){const result=runNode(".aidd-kit-dev/tools/kit.mjs",["validate"]);if(result.code)messages.push(`Kit 명세·export 경계 검증 경고:\n${result.output.slice(0,4000)}`);}if([...paths].some(path=>under(path,"project/src")))messages.push("소스 변경 뒤 문서 현행화 후보를 감지했습니다. node .ai/tools/aidd.mjs document-impact로 범위를 확인하세요.");return messages.length?warning(messages.join("\n\n")):0;}catch(error){return warning(`AIDD 사후 검사 내부 경고: ${error.name}: ${error.message}`);}}
+async function postCheck(platform){try{const payload=await readInput();recordObservedPaths(payload,platform);let paths=targetPaths(payload);if(!paths.size)paths=shellWriteTargets(commandText(payload));const messages=[];if(repoRole()!=="kit-source"&&paths.has("project/.aidd/ssot/terminology.json")){const result=runNode(".ai/tools/aidd.mjs",["terminology-refresh"]);if(result.code)messages.push(`프로젝트 용어 정본 변경 뒤 용어집 현행화에 실패했습니다. 승인·영향 검토와 정본 정합성을 확인하세요.\n${result.output.slice(0,4000)}`);}if([...paths].some(path=>under(path,".ai"))){const errors=harnessErrors();if(errors.length)messages.push(`공통 AI 정본 변경 뒤 provider 파생물이 어긋났습니다. node ${repoRole()==="kit-source"?".aidd-kit-dev/tools/kit.mjs sync-providers":".ai/tools/aidd.mjs sync-ai"}를 실행하세요. ${errors.slice(0,5).join("; ")}`);}if(repoRole()==="kit-source"&&[...paths].some(path=>under(path,".ai")||under(path,".aidd-kit-dev"))){const result=runNode(".aidd-kit-dev/tools/kit.mjs",["validate"]);if(result.code)messages.push(`Kit 명세·export 경계 검증 경고:\n${result.output.slice(0,4000)}`);}if([...paths].some(path=>under(path,"project/src")))messages.push("소스 변경 뒤 문서 현행화 후보를 감지했습니다. node .ai/tools/aidd.mjs document-impact로 범위를 확인하세요.");return messages.length?warning(messages.join("\n\n")):0;}catch(error){return warning(`AIDD 사후 검사 내부 경고: ${error.name}: ${error.message}`);}}
 
 function option(name, fallback=null){const index=process.argv.indexOf(name);return index>=0?process.argv[index+1]:fallback;}
 const action=process.argv[2]; let code=0;

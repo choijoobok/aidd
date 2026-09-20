@@ -1,5 +1,17 @@
 # 미출시 변경
 
+## KIT-CHG-007 · 공통·프로젝트 용어 분리와 통합 용어집
+
+상태: 구현·전체 회귀 78/78 통과, 독립 C2 검토 대기(`in_review`, `KIT-EVD-033`~`KIT-EVD-036`)
+
+- `.ai/manifests/terminology.json`을 수정 불가 AIDD 공통 용어 정본으로 배포하고 프로젝트의 동일 용어·key·별칭 재정의를 거부한다.
+- 프로젝트 업무 용어는 `terminology.json`의 `TRM`, 변경 전 영향 검토는 `TIR`, 사용자 결정은 `TAP`으로 분리해 이력을 보존한다.
+- `term-propose` → `term-impact` → `term-decide` → `term-close` 명령으로 제안·영향 피드백·승인·영향 반영 종료 흐름을 지원하며, 승인된 용어는 완료된 영향 검토·결정·반영 결과 이력을 요구한다.
+- `TRM`·`TIR`·`TAP`은 정본 전체에서 재사용할 수 없는 안정 ID이며, 중복 ID가 승인·영향 이력 조회를 모호하게 만들기 전에 `validate`가 거부한다.
+- 공통·프로젝트 용어를 사람이 읽는 `glossary.md` 한 곳에 결정적으로 생성하고 설계·운영 HTML에는 전체 용어, 사용자 HTML에는 고객 공개 최종 사용자 용어만 포함한다.
+- 용어 정본 변경 뒤 `PostToolUse`가 생성물을 자동 현행화하며, 훅이 실행되지 않아도 `validate`가 낡은 Markdown·HTML을 거부한다.
+- `DLP`의 `glossary` 포함 정책과 독자 필터를 제출 패키지·사용자 가이드 절차에 연결한다.
+
 ## KIT-CHG-004 · Node.js 단일 런타임 전환
 
 상태: 배포물 AIDD 테스트 적합성 위반과 회귀 검사 무력화를 연속된 독립 재검토에서 확인·수정하는 중. `66c71c5` 기준 독립 C3 재검토는 PASS(`KIT-EVD-027`), 그 뒤 증분에 대한 재검토는 증거 시각 오류로 FAIL(`KIT-EVD-029`)이었고 정정 뒤 다시 독립 재검토 대기. 알려진 LOW는 `KIT-CHG-005`·`KIT-CHG-006`으로 이월. 실제 macOS Codex·Claude provider 검증은 고객의 환경 부재로 연기(`in_review`, 출시 준비 미완료)

@@ -57,6 +57,22 @@ AI가 명령어 실행을 제안할 수 있지만, 명령어는 재현·자동�
 
 작업 전에는 관련 `REQ`, `CHG`, `WRK`, 위험과 게이트를 확인한다. 기능 규모 구현은 `development-check`를 통과한 뒤 시작하고, 작은 증분마다 테스트와 `EVD`를 연결한다. 코드나 정본 변경 뒤에는 `document-impact`, `generate`, `validate`와 관련 테스트를 수행한다. 생성기는 정본의 구조화 필드, 가이드 명령·절차와 합의한 문서 필수 항목을 보존하고 근거 없는 항목은 미작성으로 표시한다. `validate`는 현재 생성 결과와 다른 내용과 더 이상 대상이 아닌 생성물을 거부한다. 생성 문서는 직접 편집하지 않는다.
 
+## 함께 쓰는 용어
+
+`.ai/manifests/terminology.json`은 AIDD 진행 대화에 쓰는 공통 용어 정본이다. 프로젝트는 이 목록을 수정하거나 같은 용어·key·별칭을 다른 뜻으로 재정의하지 않는다. 업무 시스템에만 필요한 말은 `project/.aidd/ssot/terminology.json`의 `TRM`으로 분리한다.
+
+새 업무 용어나 의미 변경이 필요하면 누구나 `term-propose`로 정의·영문 key·혼동 방지 별칭·독자·공개 범위와 연결 대상을 요청한다. 이어 `term-impact`로 요구사항·모듈·설계·데이터·API·화면·테스트·문서 영향을 기록해 프로젝트 PM에게 보여 준다. 기본적으로 PM(1인 프로젝트는 소유자)만 `term-decide`로 `TAP` 승인·반려·보류를 기록할 수 있으며, PM이 부재할 때는 PM이 `set-terminology-approval-policy`에 명시한 활성 위임자만 승인할 수 있다. 승인된 영향을 실제 정본·코드·문서에 반영한 뒤 `term-close`로 수행자·시각·결과·증거를 닫아야 용어집이 최신 상태로 생성된다. 승인 전 제안을 확정 용어로 사용하지 않는다.
+
+사람이 읽는 통합 사전은 `project/docs/generated/glossary.md`다. 공통 AIDD 용어와 승인된 프로젝트 용어를 한 곳에 보여 주지만 정본은 아니므로 직접 고치지 않는다. 용어 정본이 승인 절차에 맞게 바뀌면 훅이 Markdown과 오프라인 HTML을 현행화하며, 훅을 사용하지 않는 환경에서는 `generate`로 같은 결과를 만든다. 설계·운영 사이트는 전체 용어를, 사용자 사이트는 고객 공개 범위의 최종 사용자 용어만 보여 준다.
+
+```powershell
+node .ai/tools/aidd.mjs term-propose --id TRM-001 --term "고객 요청" --key customerRequest --category 업무 --definition "고객이 처리를 요청한 업무 단위" --requested-by HUM-002 --audience project_team --audience end_user --visibility customer
+node .ai/tools/aidd.mjs term-impact --id TIR-001 --term TRM-001 --change-type add --performed-by HUM-001 --recommendation "승인 후 요구사항·API·화면에 사용" --scope 요구사항 --scope API --scope 화면
+node .ai/tools/aidd.mjs term-decide --id TAP-001 --term TRM-001 --impact-review TIR-001 --decision approved --decided-by HUM-001 --rationale "업무 단위를 하나로 통일함"
+node .ai/tools/aidd.mjs set-terminology-approval-policy --mode delegated --delegate HUM-002 --reason "PM 부재 중 용어 승인 위임"
+node .ai/tools/aidd.mjs term-close --impact-review TIR-001 --closed-by HUM-001 --result "요구사항·API·화면에 승인 용어 반영 완료" --evidence EVD-001
+```
+
 ## 프로젝트별 확장
 
 프로젝트는 `AGENTS.md`, `.ai/skills/`, 훅·도구·템플릿을 자체 요구에 맞게 추가하거나 수정할 수 있다. 변경은 프로젝트 정본의 요구·변경·결정·위험·증거와 연결한다. 원본 Kit과 계속 동일할 필요는 없다.

@@ -14,6 +14,7 @@
 - 잠긴 세션의 close-out은 그 세션이 관측한 literal 경로를 하나씩 명시한 `git add`만 허용한다. 옵션, pathspec magic, 와일드카드와 광범위 경로는 허용하지 않는다. 로컬 커밋은 메시지 인자 형식만 허용하며, staged 집합이 비어 있지 않고 모든 staged 경로가 관측 경로일 때만 실행할 수 있다. amend 같은 기존 커밋 변경은 허용하지 않는다.
 - Codex의 Windows `commandWindows`는 바깥 PowerShell이 명령 문자열을 먼저 해석한다. 중첩된 `powershell.exe -Command`가 사용할 `$repo`·`$LASTEXITCODE` 같은 변수는 backtick으로 escape해 내부 PowerShell까지 보존하며, 회귀 테스트도 handler 문자열을 바깥 `powershell.exe -Command`의 인자로 전달해 Desktop 실행 경계를 재현한다.
 - Git pre-commit: `.githooks/pre-commit`이 브랜치 정책 다음에 `documentation-check --staged`를 실행한다. staged `project/src/` 변경은 모듈별 `SURF` 소스 패턴에 매핑되어야 하며 기존 문서 정본이 함께 staged되거나, 문서가 없는 기존 기능에 한해 고객이 선택한 기한 있는 현행화 WRK가 있어야 한다.
+- 용어집 현행화: `project/.aidd/ssot/terminology.json`이 도구로 변경되면 `PostToolUse`가 `node .ai/tools/aidd.mjs terminology-refresh`를 실행한다. 승인된 용어는 완료된 영향 검토·승인과 `term-close` 영향 반영 종료 이력을 가져야 하며, 이 조건이나 다른 정본 검증이 실패하면 생성물을 갱신하지 않고 경고한다. 성공하면 공통 AIDD 용어와 프로젝트 용어를 합친 `project/docs/generated/glossary.md` 및 대상 독자별 HTML 사이트를 같은 생성기로 다시 만든다. 생성물을 직접 수정하지 않으며 훅을 끄더라도 `validate`의 stale 검사로 완료가 차단된다.
 - 이 훅은 편의와 실수 방지 통제다. 셸 파서, OS 권한, 원격 브랜치 보호 또는 보안 경계를 대체하지 않는다.
 
 새 훅·스킬·플러그인·도구는 다음을 모두 설명한 뒤에만 수용한다: (1) 해결할 구체적 실패, (2) 기존 조합으로 해결되지 않는 이유, (3) 계약·트리거·출력, (4) 기존 항목과의 중복 여부, (5) 로컬에서 안전하게 비활성화·되돌리는 방법. 외부 서비스는 추가로 권한, 프롬프트 주입, 개인정보·비밀정보, 장애 시 안전한 동작을 검토한다.

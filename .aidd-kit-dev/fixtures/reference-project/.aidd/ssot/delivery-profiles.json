@@ -6,7 +6,7 @@
       "title": "설계 검토 패키지",
       "status": "current",
       "audience": "고객·아키텍처·개발·품질 보증",
-      "includes": ["foundation", "ui", "manuals", "operations", "traceability"],
+      "includes": ["foundation", "ui", "manuals", "operations", "traceability", "glossary"],
       "excludes": ["비밀정보", "개인정보", "미검증 실제 화면 주장"],
       "release_rules": {
         "allow_mockups": true,
@@ -23,7 +23,7 @@
       "title": "사용자 출시 패키지",
       "status": "template",
       "audience": "최종 사용자와 운영자",
-      "includes": ["manuals", "operations", "verified-ui-evidence"],
+      "includes": ["manuals", "operations", "verified-ui-evidence", "glossary"],
       "excludes": ["내부 결정 메모", "미승인 목업", "테스트 픽스처"],
       "release_rules": {
         "allow_mockups": false,

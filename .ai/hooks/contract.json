@@ -16,7 +16,7 @@
       }
     },
     "PostToolUse": {
-      "purpose": "정본·공통 AI 정책 변경 뒤의 드리프트와 제품 소스 변경 뒤 문서 현행화 후보를 경고한다.",
+      "purpose": "정본·공통 AI 정책 변경 뒤의 드리프트와 제품 소스 변경 뒤 문서 현행화 후보를 경고하고, 승인·영향 검토를 충족한 프로젝트 용어 정본 변경 뒤 Markdown과 HTML 용어집을 결정적으로 현행화한다.",
       "required_tokens": ["post-check"]
     },
     "UserPromptSubmit": {
@@ -34,6 +34,12 @@
   "git_pre_commit": {
     "purpose": "staged 제품 소스가 시스템 표면과 연결되고 문서가 함께 갱신되었거나 기한 있는 후속 작업이 승인되었는지 검사한다.",
     "command": "node .ai/tools/aidd.mjs documentation-check --staged"
+  },
+  "terminology_refresh": {
+    "trigger_path": "project/.aidd/ssot/terminology.json",
+    "command": "node .ai/tools/aidd.mjs terminology-refresh",
+    "approved_impact_required": true,
+    "failure_behavior": "warn-and-block-completion-via-validate"
   },
   "node_runtime": {
     "minimum_major": 22,

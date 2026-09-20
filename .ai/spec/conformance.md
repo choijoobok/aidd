@@ -19,6 +19,8 @@ AIDD Kit 원본은 다음을 모두 만족해야 한다.
 - 승인 전 shell 읽기 예외는 합성·파이프·개행·리다이렉션·명령 치환과 따옴표 밖의 PowerShell `()`·`@()` 그룹/배열 식이 없는 단일 명령으로 제한하고, 읽기 명령의 쓰기 가능한 옵션도 차단한다. Windows package 또는 명시적인 Desktop origin은 앱으로, origin과 package가 모두 없는 실제 CLI 환경은 CLI로 식별하며 그 밖의 알 수 없는 origin에는 더 제한적인 새 세션 확인 절차를 적용한다. 최초 `unconfirmed`, 훅 리비전이 오래된 세션과 `restart_required` 상태는 모두 같은 읽기·훅 유지보수·관측 경로 close-out 예외를 사용한다.
 - close-out의 `git add`는 옵션·경로 패턴·와일드카드·광범위 경로 없이 세션이 관측한 literal 경로만 명시해야 한다. 로컬 `git commit`은 메시지 인자 형식만 허용하고, 비어 있지 않은 staged 경로 전체가 관측 경로 집합 안에 있어야 한다.
 - `generate`는 정본의 구조화 필드, 가이드 명령·절차와 합의된 문서 필수 항목을 의미 손실 없이 결정적으로 파생한다. 확인된 근거가 없는 필수 항목은 사실로 채우지 않고 미작성으로 표시한다. `validate`는 현재 renderer로 다시 계산한 내용과 정확히 다른 생성물과 더 이상 대상이 아닌 obsolete 생성물을 모두 거부한다.
+- `.ai/manifests/terminology.json`은 배포되는 AIDD 공통 용어의 정본이며 Kit 기준 해시와 다르면 검증을 거부한다. 프로젝트는 이 ID·용어·key·별칭을 재정의하거나 변경할 수 없고, `project/.aidd/ssot/terminology.json`에는 프로젝트 전용 `TRM`, 변경 전 영향 검토 `TIR`, 사용자 승인 `TAP`을 분리해 보존한다. 승인된 프로젝트 용어는 완료된 영향 검토와 승인 이력, 영향 반영 종료자·시각·결과를 가져야 한다.
+- 생성기는 공통 용어와 프로젝트 용어를 `project/docs/generated/glossary.md` 한 곳에 합쳐 사람이 읽게 하고 설계·운영 HTML에도 포함한다. 사용자 HTML에는 고객 공개 범위이면서 `end_user` 독자인 프로젝트 용어만 포함한다. 용어 정본 변경 뒤 `PostToolUse` 자동 현행화가 실패하거나 실행되지 않아도 `validate`가 낡은 Markdown·HTML을 거부한다.
 - 소스 테스트, export 테스트와 배포물의 AIDD 테스트가 통과한다.
 
 Kit 기능 변경은 명세·구현·테스트·가이드·변경 이력·릴리스 노트 영향을 함께 검토한다. C2·C3 변경은 구현 흐름과 분리된 독립 AI 또는 사람 검토 전에는 완료로 표시하지 않는다.

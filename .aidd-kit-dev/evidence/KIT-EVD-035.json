@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "id": "KIT-EVD-035",
+  "change": "KIT-CHG-007",
+  "kind": "terminology-approval-delegation-regression-validation",
+  "performed_by": "Codex implementation session",
+  "performed_at": "2026-09-20T14:14:40+09:00",
+  "performed_at_source": "PowerShell Get-Date -Format yyyy-MM-ddTHH:mm:sszzz에서 읽은 값이다.",
+  "source_commit": "5696e67a90a5fe142f29fc4d91e54f485b1a5618",
+  "working_tree_changes": true,
+  "status": "passed-awaiting-independent-review",
+  "independent_review": false,
+  "release_ready": false,
+  "title": "PM 기본 용어 승인과 명시적 위임 정책 검증",
+  "scope": [
+    "용어별 소유자 승인 경로 제거와 요청자 기록 전환",
+    "PM(1인 프로젝트는 소유자) 기본 TAP 승인",
+    "PM의 활성 참여자 명시적 위임·해제 이력과 위임자 TAP 승인"
+  ],
+  "commands": [
+    "node --check .ai/tools/aidd.mjs",
+    "node --test .aidd-kit-dev/tests/aidd.test.mjs",
+    "node --test .aidd-kit-dev/tests/kit.test.mjs",
+    "node --test .ai/tests/harness.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "node .aidd-kit-dev/tools/kit.mjs validate",
+    "git diff --check"
+  ],
+  "result": {
+    "terminology_authority": "요청자·일반 참여자의 TAP은 거부되고, PM이 set-terminology-approval-policy로 위임한 활성 참여자의 TAP은 허용됨을 회귀 테스트로 확인했다.",
+    "audit": "정책은 mode·delegates·변경자·시각·사유와 TAE 이력을 collaboration.json에 기록한다.",
+    "kit_tests": "18/18 passed",
+    "portable_aidd_tests": "34/34 passed",
+    "portable_hook_tests": "25/25 passed",
+    "total_tests": "77/77 passed",
+    "kit_validation": "passed",
+    "format": "git diff --check passed"
+  },
+  "assurance_boundary": {
+    "independent_review": false,
+    "release_ready": false,
+    "reason": "KIT-CHG-007은 C2이므로 구현 흐름과 분리된 AI 또는 사람 검토 증거가 추가되기 전에는 verified 또는 released가 아니다."
+  },
+  "open_items": [
+    "현재 변경 전체에 대한 별도 세션의 C2 독립 검토",
+    "독립 검토 발견사항이 있으면 수정·재검증하고 새 증거로 보존"
+  ]
+}

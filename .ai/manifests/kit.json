@@ -2,6 +2,7 @@
   "schema_version": 1,
   "name": "AIDD Kit",
   "portable_spec_root": ".ai/spec",
+  "terminology_registry": ".ai/manifests/terminology.json",
   "project_team_guide": ".ai/docs/guides/project-team-guide.md",
   "product_workspace_root": "project",
   "roles": [

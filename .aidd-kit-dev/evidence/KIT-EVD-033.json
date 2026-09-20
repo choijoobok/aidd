@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "id": "KIT-EVD-033",
+  "change": "KIT-CHG-007",
+  "kind": "implementation-and-regression-validation",
+  "performed_by": "Codex implementation session",
+  "performed_at": "2026-09-20T13:33:18+09:00",
+  "performed_at_source": "PowerShell Get-Date -Format yyyy-MM-ddTHH:mm:sszzz에서 읽은 값이다.",
+  "source_commit": "5696e67a90a5fe142f29fc4d91e54f485b1a5618",
+  "working_tree_changes": true,
+  "status": "passed-awaiting-independent-review",
+  "independent_review": false,
+  "release_ready": false,
+  "title": "공통·프로젝트 용어 통제, 생성물, 훅과 배포 경계 구현 검증",
+  "scope": [
+    "수정 불가 AIDD 공통 용어 구조화 정본과 Kit 기준 해시 검사",
+    "프로젝트 TRM 제안, TIR 영향 검토, TAP 사용자 결정, 영향 반영 종료 이력",
+    "공통 용어·key·별칭 충돌과 proposed 확정 사용 차단, deprecated 사용 경고",
+    "통합 glossary.md와 설계·운영 전체/사용자 공개 범위 HTML 생성",
+    "PostToolUse 자동 현행화와 validate stale 차단",
+    "DLP glossary 포함 정책, reference fixture, export와 new-project"
+  ],
+  "commands": [
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "node .aidd-kit-dev/tools/kit.mjs refresh-fixture-guides",
+    "node .aidd-kit-dev/tools/kit.mjs validate",
+    "node --test .aidd-kit-dev/tests/*.test.mjs",
+    "node --test .ai/tests/*.test.mjs",
+    "git diff --check"
+  ],
+  "result": {
+    "provider_sync": "passed; .agents와 .claude 스킬 드리프트 0",
+    "fixture_generation": "54 generated files regenerated from canonical records",
+    "kit_validation": "passed",
+    "kit_tests": "51/51 passed",
+    "portable_tests": "25/25 passed",
+    "total_tests": "76/76 passed",
+    "export_and_sample": "Kit 회귀에서 template 배포 형태의 portable 테스트, directory·ZIP 경계, new-project bootstrap·validate가 통과했다.",
+    "terminology_behavior": "공통 용어 변경·예약 충돌·미승인 용어 사용·승인 후 미종료 영향을 차단하고, term-close 뒤 Markdown·독자별 HTML 및 훅 현행화를 확인했다.",
+    "format": "git diff --check passed"
+  },
+  "evidence_integrity": {
+    "raw_logs_attached": false,
+    "reason": "결과는 현재 세션의 실제 명령 출력에서 직접 관측했으나 원시 로그 파일로 보존하지 않았다.",
+    "self_description_note": "이 증거는 아직 커밋되지 않은 작업 트리 검증이며 독립 검토나 출시 준비 완료를 주장하지 않는다."
+  },
+  "assurance_boundary": {
+    "independent_review": false,
+    "release_ready": false,
+    "reason": "KIT-CHG-007은 C2이므로 구현 흐름과 분리된 AI 또는 사람 검토 증거가 추가되기 전에는 verified 또는 released가 아니다."
+  },
+  "open_items": [
+    "현재 변경 전체에 대한 별도 세션의 C2 독립 검토",
+    "독립 검토 발견사항이 있으면 수정·재검증하고 새 증거로 보존",
+    "검토 통과 뒤에만 KIT-CHG-007 verified 여부 결정"
+  ]
+}

@@ -27,6 +27,7 @@
 - portable 동작은 `.ai/`에서, Kit 관리 전용 동작은 `.aidd-kit-dev/`에서 구현한다. 경계가 모호하면 기본적으로 배포하지 않고 명시적인 결정으로 남긴다.
 - 사용자·AI 대화 원문은 정본·증거·배포물에 포함하지 않는다. 훅이 제공한 원문만 역할과 제품 활성화 여부에 관계없이 Git 무시 루트 `chat-history/`에 로컬 기록한다.
 - 공통 portable 스킬은 `.ai/skills/`, 관리 전용 스킬은 `.aidd-kit-dev/skills/`가 정본이다. 원본 provider 어댑터는 `node .aidd-kit-dev/tools/kit.mjs sync-providers`로 두 집합을 합쳐 갱신한다.
+- AIDD 공통 용어 정본은 `.ai/manifests/terminology.json`이며 프로젝트가 수정·재정의할 수 없게 기준 해시를 검증한다. 프로젝트 전용 용어는 `project/.aidd/ssot/terminology.json`의 `TRM`으로 관리하고, 의미 변경 전 `TIR` 영향 검토와 `TAP` 사용자 승인, 승인 뒤 영향 반영 종료 이력을 남긴다. 공통·프로젝트 용어의 사람이 읽는 단일 뷰와 HTML은 생성물이므로 직접 수정하지 않는다.
 - 생성물이나 fixture를 제품 정본으로 가장하지 않는다. 기존 제품 fixture의 레코드는 회귀 입력일 뿐 현재 Kit 상태가 아니다.
 - 작고 되돌릴 수 있는 증분을 선호하고 과거 결정·검증 이력을 지우지 않는다.
 

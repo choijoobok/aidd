@@ -5,6 +5,7 @@
 - 고객은 제품 의도, 사업 우선순위, 위험 수용과 되돌리기 어려운 결정의 최종 책임자다.
 - PM·구성원·1인 프로젝트 사용자와 AI의 공통 안내는 `.ai/docs/guides/project-team-guide.md`를 따른다. 이 수행 계약과 충돌하면 `AGENTS.md`가 우선한다.
 - `project/.aidd/ssot/*.json`을 프로젝트 정본으로 취급한다. `project/docs/generated/`는 파생 산출물이므로 직접 수정하지 않는다. 제품 소스는 `project/src/` 아래에서 아키텍처에 맞게 관리한다.
+- `.ai/manifests/terminology.json`의 AIDD 공통 용어는 수정·재정의하지 않는다. 업무 용어는 `project/.aidd/ssot/terminology.json`에 제안하고 `TIR` 영향 검토와 `TAP` 사용자 승인을 거친다. 승인된 영향을 정본·코드·문서에 반영한 뒤 `term-close`로 종료 이력을 남긴 경우에만 `glossary.md`와 독자별 HTML을 자동 또는 `generate`로 재생성하며 직접 수정하지 않는다.
 - 대화, 커밋, 구현 기록, 테스트와 보고서에서 안정적인 산출물 ID를 사용한다.
 - 코드와 정본이 다르면 불일치로 보고한다. 코드를 기준으로 요구사항을 몰래 재정의하지 않는다.
 - `.aidd-kit-origin.json`은 시작 Kit의 출처만 기록한다. 원본 Kit과 자동 업그레이드·역동기화하지 않으며, 외부 개선은 문제·의도·환경·전제·구현·검증·위험 정보를 검토해 이 프로젝트의 별도 변경으로 구현한다.

@@ -373,6 +373,12 @@ node .ai/tools/aidd.mjs resolve-assumption --id ASM-001 --status confirmed --res
 
 `project/docs/generated/`는 정본에서 파생되므로 직접 수정하지 않는다. 원하는 문서가 바뀌어야 한다면 AI에게 관련 `project/.aidd/ssot` 레코드를 먼저 갱신하도록 요청하고 생성한다. 반대로 제품별 UI·데이터 모델·인프라 문서는 해당 제품에서 적용 대상이 되면 정본과 링크해 추가한다.
 
+### 공통 용어와 프로젝트 용어
+
+프로젝트의 모든 참여자와 AI는 먼저 `project/docs/generated/glossary.md`에서 같은 용어를 확인한다. 이 파일은 `.ai/manifests/terminology.json`의 수정 불가 AIDD 공통 용어와 `project/.aidd/ssot/terminology.json`의 승인된 프로젝트 업무 용어를 한 곳에 모은 파생 문서다. AIDD 공통 용어를 프로젝트 뜻으로 재정의하지 말고, 업무에 필요한 말은 별도 `TRM` ID와 코드·DB 명명의 기준이 되는 영문 `key`를 부여한다.
+
+용어 추가·의미 변경·폐기는 `term-propose`로 제안하고, `term-impact`로 요구사항·모듈·설계·데이터·API·화면·테스트·문서 후보와 한계를 기록한 뒤, 사용자의 `term-decide` 승인·거절·보류를 이력으로 보존한다. 승인된 변경은 연결된 정본·코드·문서에 반영하고 `term-close`로 수행자·시각·결과·증거를 남겨 영향 반영을 닫는다. 이 종료 전에는 `validate`와 훅 현행화가 완료 상태를 거부한다. 종료 뒤 훅 또는 같은 생성 진입점으로 Markdown과 오프라인 HTML을 함께 재생성한다. 설계·운영 HTML은 공통·프로젝트 용어 학습용 전체 뷰를 제공하고, 고객 사용자 사이트는 `customer` 공개 범위와 `end_user` 독자를 모두 만족하는 프로젝트 용어만 제공한다. 제출 패키지는 대상 `DLP`의 `glossary` 포함 여부와 독자 필터를 따른다.
+
 ### 모듈별 정본과 문서
 
 `modules.json`은 모든 모듈의 작은 카탈로그(목적·상태·의존성)이고, 요구사항 정본은 `project/.aidd/ssot/modules/MOD-ID.json` 조각에 저장한다. 하나의 요구사항은 한 조각에만 저장하되, 여러 모듈에 영향을 주면 `modules` 배열로 모두 연결한다. 따라서 동일한 사실을 복제하지 않으면서 모듈별로 수정·검토할 수 있다.

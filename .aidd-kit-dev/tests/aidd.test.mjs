@@ -195,6 +195,7 @@ test("Node CLI regenerates the reference project home and document portals",()=>
   const generated=join(temp,"project/docs/generated");
   for(const path of [
     "project-brief.md",
+    "glossary.md",
     "foundation/documentation-standard.md",
     "modules/MOD-AI.md",
     "site/index.html",
@@ -206,6 +207,17 @@ test("Node CLI regenerates the reference project home and document portals",()=>
   const project=JSON.parse(readFileSync(join(temp,"project/.aidd/ssot/project.json"),"utf8"));
   assert.match(readFileSync(join(generated,"site/index.html"),"utf8"),new RegExp(project.name));
   assert.match(readFileSync(join(generated,"site/design/index.html"),"utf8"),/data-tree-filter/);
+  const glossary=readFileSync(join(generated,"glossary.md"),"utf8");
+  assert.match(glossary,/AIDD 공통 용어/);
+  assert.match(glossary,/AIDD-TERM-031/);
+  assert.match(glossary,/프로젝트 전용 용어/);
+  assert.match(glossary,/TRM-001/);
+  assert.match(glossary,/고객 요청/);
+  assert.match(readFileSync(join(generated,"site/design/index.html"),"utf8"),/AIDD-TERM-031/);
+  assert.match(readFileSync(join(generated,"site/operations/index.html"),"utf8"),/AIDD-TERM-031/);
+  const userSite=readFileSync(join(generated,"site/user/index.html"),"utf8");
+  assert.match(userSite,/고객 요청/);
+  assert.doesNotMatch(userSite,/AIDD-TERM-031/);
   const module=readFileSync(join(generated,"modules/MOD-AI.md"),"utf8");
   assert.match(module,/## 작업 항목/);
   assert.match(module,/## 인터페이스/);
@@ -244,6 +256,114 @@ test("Node CLI regenerates the reference project home and document portals",()=>
   assert.equal(drift.status,1,drift.stdout+drift.stderr);
   assert.match(drift.stdout,/stale generated document project\/docs\/generated\/requirements\.md/);
   assert.match(drift.stdout,/obsolete generated document project\/docs\/generated\/obsolete\.md/);
+}));
+
+test("terminology workflow preserves impact and approval history and refreshes the glossary",()=>withReferenceProject(({temp,execute})=>{
+  const generated=join(temp,"project/docs/generated");
+  let result=execute(["term-propose","--id","TRM-999","--term","처리 묶음","--key","processingBundle","--category","업무","--definition","함께 승인하고 추적하는 고객 요청의 묶음이다.","--requested-by","HUM-001","--audience","project_team","--audience","end_user","--visibility","customer","--alias","요청 묶음","--module","MOD-GOV","--requirement","REQ-001"]);
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  let terminology=JSON.parse(readFileSync(join(temp,"project/.aidd/ssot/terminology.json"),"utf8"));
+  assert.equal(terminology.terms.find(item=>item.id==="TRM-999").status,"proposed");
+  result=execute(["term-impact","--id","TIR-999","--term","TRM-999","--change-type","add","--performed-by","HUM-001","--recommendation","승인 후 요구사항과 사용자 문서에서 사용한다.","--scope","요구사항","--limitation","자연어 의미 검토는 사람이 확인한다."]);
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  result=execute(["term-decide","--id","TAP-999","--term","TRM-999","--impact-review","TIR-999","--decision","approved","--decided-by","HUM-001","--rationale","고객과 개발팀이 같은 단위를 사용하기로 결정했다."]);
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  const pending=execute(["validate"]);
+  assert.equal(pending.status,1,pending.stdout+pending.stderr);
+  assert.match(pending.stdout,/approved terminology impact application is not completed/);
+  result=execute(["term-close","--impact-review","TIR-999","--closed-by","HUM-001","--result","연결된 요구사항과 사용자 문서에 승인 용어를 반영했다."]);
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  terminology=JSON.parse(readFileSync(join(temp,"project/.aidd/ssot/terminology.json"),"utf8"));
+  const term=terminology.terms.find(item=>item.id==="TRM-999");
+  assert.equal(term.status,"approved");
+  assert.deepEqual(term.impact_reviews,["TIR-999"]);
+  assert.deepEqual(term.approvals,["TAP-999"]);
+  assert.equal(terminology.impact_reviews.find(item=>item.id==="TIR-999").status,"completed");
+  assert.equal(terminology.impact_reviews.find(item=>item.id==="TIR-999").application_status,"completed");
+  assert.match(readFileSync(join(generated,"glossary.md"),"utf8"),/처리 묶음/);
+  assert.match(readFileSync(join(generated,"site/user/index.html"),"utf8"),/처리 묶음/);
+  const validation=execute(["validate"]);
+  assert.doesNotMatch(validation.stdout+validation.stderr,/terminology\.json|TRM-999|TIR-999|TAP-999/);
+}));
+
+test("terminology approval requires the project owner unless a delegate is recorded",()=>withReferenceProject(({temp,execute})=>{
+  const collaborationPath=join(temp,"project/.aidd/ssot/collaboration.json"),collaboration=JSON.parse(readFileSync(collaborationPath,"utf8"));
+  collaboration.participants[0].roles.push("PM");
+  collaboration.policy.current_profile="CBP-TEAM";
+  collaboration.participants.push({id:"HUM-002",name:"개발 참여자",roles:["개발자"],status:"active",joined_at:"2026-09-20",left_at:null});
+  writeJson(collaborationPath,collaboration);
+  assert.equal(execute(["term-propose","--id","TRM-996","--term","승인 대기 묶음","--key","approvalBundle","--category","업무","--definition","승인이 필요한 고객 요청 묶음이다.","--requested-by","HUM-002"]).status,0);
+  assert.equal(execute(["term-impact","--id","TIR-996","--term","TRM-996","--change-type","add","--performed-by","HUM-002","--recommendation","승인 후 적용한다."]).status,0);
+  const result=execute(["term-decide","--id","TAP-996","--term","TRM-996","--impact-review","TIR-996","--decision","approved","--decided-by","HUM-002","--rationale","권한 없는 승인 시도다."]);
+  assert.equal(result.status,2,result.stdout+result.stderr);
+  assert.match(result.stdout+result.stderr,/용어 승인은 프로젝트 PM/);
+  const delegation=execute(["set-terminology-approval-policy","--mode","delegated","--delegate","HUM-002","--reason","PM 부재 중 용어 승인 위임"]);
+  assert.equal(delegation.status,0,delegation.stdout+delegation.stderr);
+  assert.deepEqual(JSON.parse(readFileSync(collaborationPath,"utf8")).terminology_approval_policy.delegates,["HUM-002"]);
+  const delegated=execute(["term-decide","--id","TAP-996","--term","TRM-996","--impact-review","TIR-996","--decision","approved","--decided-by","HUM-002","--rationale","PM 위임에 따라 승인한다."]);
+  assert.equal(delegated.status,0,delegated.stdout+delegated.stderr);
+}));
+
+test("terminology validation rejects reserved AIDD terms and normalized collisions",()=>withReferenceProject(({temp,execute})=>{
+  const path=join(temp,"project/.aidd/ssot/terminology.json"),terminology=JSON.parse(readFileSync(path,"utf8"));
+  terminology.terms.push({
+    id:"TRM-998",term:"C2",key:"customerRequest",category:"업무",definition:"예약 용어를 덮어쓴다.",status:"proposed",requested_by:"HUM-001",aliases:["업무 요청"],audiences:["project_team"],visibility:"internal",
+    impacts:{modules:[],requirements:[],architecture:[],data:[],apis:[],screens:[],tests:[],documents:[]},impact_reviews:[],approvals:[],replaced_by:null,
+  });
+  writeJson(path,terminology);
+  const result=execute(["validate"]);
+  assert.equal(result.status,1,result.stdout+result.stderr);
+  assert.match(result.stdout,/reserved AIDD term or alias/);
+  assert.match(result.stdout,/duplicate terminology key/);
+  assert.match(result.stdout,/duplicate project term or alias/);
+}));
+
+test("terminology validation rejects duplicate TRM, TIR, and TAP stable IDs",()=>withReferenceProject(({temp,execute})=>{
+  const path=join(temp,"project/.aidd/ssot/terminology.json"),terminology=JSON.parse(readFileSync(path,"utf8"));
+  const duplicateTerm=structuredClone(terminology.terms[0]);
+  duplicateTerm.term="별도 중복 식별자 용어";
+  duplicateTerm.key="duplicateStableIdTerm";
+  duplicateTerm.aliases=["별도 중복 식별자"];
+  terminology.terms.push(duplicateTerm);
+  terminology.impact_reviews.push(structuredClone(terminology.impact_reviews[0]));
+  terminology.approval_decisions.push(structuredClone(terminology.approval_decisions[0]));
+  writeJson(path,terminology);
+  const result=execute(["validate"]);
+  assert.equal(result.status,1,result.stdout+result.stderr);
+  assert.equal((result.stdout.match(/duplicate terminology stable ID: TRM-001/g)??[]).length,1);
+  assert.equal((result.stdout.match(/duplicate terminology stable ID: TIR-001/g)??[]).length,1);
+  assert.equal((result.stdout.match(/duplicate terminology stable ID: TAP-001/g)??[]).length,1);
+}));
+
+test("product validation rejects modification of the immutable AIDD terminology registry",()=>withReferenceProject(({temp,execute})=>{
+  const path=join(temp,".ai/manifests/terminology.json"),registry=JSON.parse(readFileSync(path,"utf8"));
+  registry.terms[0].definition="프로젝트에서 바꾼 정의";
+  writeJson(path,registry);
+  const result=execute(["validate"]);
+  assert.equal(result.status,1,result.stdout+result.stderr);
+  assert.match(result.stdout,/immutable AIDD terminology registry differs from the Kit baseline/);
+}));
+
+test("validation blocks proposed terminology used as an established project fact",()=>withReferenceProject(({temp,execute})=>{
+  let result=execute(["term-propose","--id","TRM-997","--term","검토 바구니","--key","reviewBasket","--category","업무","--definition","검토할 요청을 담는 업무 단위다.","--requested-by","HUM-001"]);
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  const path=join(temp,"project/.aidd/ssot/modules/MOD-GOV.json"),fragment=JSON.parse(readFileSync(path,"utf8"));
+  fragment.requirements[0].title=`${fragment.requirements[0].title} 검토 바구니`;
+  writeJson(path,fragment);
+  result=execute(["validate"]);
+  assert.equal(result.status,1,result.stdout+result.stderr);
+  assert.match(result.stdout,/proposed terminology is used outside terminology\.json/);
+}));
+
+test("post-check refreshes generated terminology views through the portable generator",()=>withReferenceProject(({temp})=>{
+  const generated=join(temp,"project/docs/generated"),hook=join(temp,".ai/tools/aidd_hook.mjs");
+  writeJson(join(temp,".aidd-role.json"),{schema_version:1,role:"product-workspace",managed_by:".ai/tools/aidd.mjs",mutable_by_user:false});
+  rmSync(generated,{recursive:true,force:true});
+  const payload=JSON.stringify({tool_name:"Edit",tool_input:{file_path:"project/.aidd/ssot/terminology.json"}});
+  const result=spawnSync(process.execPath,[hook,"post-check","--platform","claude"],{cwd:temp,input:payload,encoding:"utf8"});
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  assert.ok(existsSync(join(generated,"glossary.md")));
+  assert.match(readFileSync(join(generated,"glossary.md"),"utf8"),/고객 요청/);
 }));
 
 test("migrate-module-specs performs the legacy-to-sharded migration once",()=>withReferenceProject(({temp,execute})=>{

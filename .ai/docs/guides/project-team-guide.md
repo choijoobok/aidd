@@ -5,7 +5,7 @@
 ## 시작
 
 1. Codex에서는 신뢰 레코드 유무와 관계없이 `codex -C "<프로젝트 루트>"`를 열어 `/hooks`에서 모든 AIDD 훅을 직접 검토·신뢰한다. AI는 승인 시점을 `1) 현재 세션 시작 전에 이미 모든 AIDD 훅이 승인된 상태 2) 현재 세션 시작 후 AIDD 훅을 새로 승인한 상태` 두 선택지로만 한 번에 질문한다. 직접 검토·승인한 사실이 참이면 사용자는 `1` 또는 `2`만 답해 승인 사실과 시점을 함께 확인할 수 있다. 자연어 응답도 고정 문구가 아니라 의미로 처리하지만, 부정·모순·모호한 답변은 다시 확인한다. Windows Codex 앱에서 2번이면 일반 쓰기를 새 앱 창에서 재개한다. CLI에서는 현재 `acknowledge` 훅이 2번 답변을 실제 수신한 경우 별도 재시작 절차를 적용하지 않는다. 훅 리비전이 세션 시작 뒤 변경되면 Windows 앱은 최신 훅을 승인한 새 앱 세션에서 재개한다. CLI는 `/hooks`에서 최신 훅을 승인하고 현재 `acknowledge` 훅이 2번 답변을 실제 수신하면 현재 세션의 리비전을 갱신해 새 CLI 세션 없이 재개한다. 훅 설정·실행기·계약·관련 테스트·가이드는 잠긴 창에서도 유지보수할 수 있고, 잠긴 세션은 자신이 관측한 경로만 명시적으로 stage해 로컬 close-out 커밋할 수 있다. Claude에는 이 Codex 승인 절차가 없다.
-   훅 리비전은 `/hooks`에 표시되는 실제 Codex provider 정의 `.codex/hooks.json`의 내용이다. 이 파일이 바뀌어 새 정의를 신뢰해야 할 때만 재승인을 요구한다. Git 초기화 전 export 템플릿에서도 모든 훅은 이 명령으로 지정한 프로젝트 루트를 기준으로 실행된다.
+   훅 리비전은 `/hooks`에 표시되는 실제 Codex provider 정의 `.codex/hooks.json`의 내용이다. version 3에서는 이 파일이 바뀌어 새 정의를 신뢰해야 할 때만 재승인을 요구한다. 과거 version 2 상태는 당시 정의 단독 해시가 없어 한 번 `unconfirmed`로 전환되며, `/hooks`가 이미 active이면 선택 `1`로 기존 승인을 다시 확인한다. Git 초기화 전 export 템플릿에서도 모든 훅은 이 명령으로 지정한 프로젝트 루트를 기준으로 실행된다.
 2. `.aidd-role.json`이 `kit-template`이고 `project/.aidd/ssot/`가 없으면 고객 확인 뒤 `project-bootstrap`을 실행한다. 성공하면 역할이 `product-workspace`로 전환되며, 이후에는 기존 `project/.aidd/ssot/`를 먼저 읽는다. 이미 정본이 있는데 역할만 `kit-template`이면 bootstrap을 다시 실행하지 말고 `project-reconcile-role`로 정합화한다.
 3. `current-actor`, `status --level executive`, `integration-status`로 신원·진척·통합 위험을 확인한다.
 4. 제품 의도·성과·범위·모듈·배포 맥락을 합의하고 미정 사항은 가정 또는 미결사항으로 기록한다.

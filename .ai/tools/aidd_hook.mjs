@@ -59,10 +59,11 @@ function ensureApprovalState(sessionId) {
   const state=readApprovalState(), revision=currentHookRevision(), now=new Date().toISOString(); let changed=false;
   if (state.version===2) {
     for (const session of Object.values(state.sessions)) if (session&&typeof session==="object") {
-      session.start_revision=revision;
+      session.start_revision=revision; session.state="unconfirmed"; session.migration_reason="legacy-revision-scope-unverifiable";
+      delete session.approved_at; delete session.approval_timing;
     }
     state.version=3; state.revision_scope="codex-hook-definition"; state.revision_scope_migrated_at=now;
-    state.current_revision=revision; state.revision_changed_at=now; changed=true;
+    state.current_revision=revision; state.revision_changed_at=now; state.restart_required=null; changed=true;
   }
   if (state.current_revision!==revision) {
     state.current_revision=revision; state.revision_changed_at=now; state.restart_required=null; changed=true;
@@ -101,7 +102,7 @@ function loadContract() {
   if (!runtime || runtime.minimum_major !== 22 || runtime.hook_input !== "utf-8-bytes" || runtime.dependencies !== "node-standard-library")
     throw new Error("contract node_runtime is malformed");
   const gate=value.approval_gate;
-  if (!gate || gate.platform!=="codex" || gate.unknown_tool_behavior!=="deny" || gate.windows_desktop_origin_environment!=="CODEX_INTERNAL_ORIGINATOR_OVERRIDE" || gate.windows_desktop_origin_value!=="Codex Desktop" || gate.windows_desktop_package_environment!=="CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY" || gate.cli_origin_value!=="Codex CLI" || gate.cli_origin_absence_means_cli!==true || gate.unknown_client_behavior!=="require_new_session" || gate.composed_shell_command_behavior!=="deny" || JSON.stringify(gate.codex_trust_revision_paths)!==JSON.stringify(CODEX_TRUST_REVISION_PATHS) || gate.windows_desktop_new_approval_requires_new_session!==true || gate.cli_new_approval_current_session_effective!==true || gate.cli_revision_reapproval_current_session_effective!==true || !Array.isArray(gate.locked_read_only_tools))
+  if (!gate || gate.platform!=="codex" || gate.unknown_tool_behavior!=="deny" || gate.windows_desktop_origin_environment!=="CODEX_INTERNAL_ORIGINATOR_OVERRIDE" || gate.windows_desktop_origin_value!=="Codex Desktop" || gate.windows_desktop_package_environment!=="CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY" || gate.cli_origin_value!=="Codex CLI" || gate.cli_origin_absence_means_cli!==true || gate.unknown_client_behavior!=="require_new_session" || gate.composed_shell_command_behavior!=="deny" || JSON.stringify(gate.codex_trust_revision_paths)!==JSON.stringify(CODEX_TRUST_REVISION_PATHS) || gate.legacy_v2_migration_behavior!=="require-confirmation" || gate.windows_desktop_new_approval_requires_new_session!==true || gate.cli_new_approval_current_session_effective!==true || gate.cli_revision_reapproval_current_session_effective!==true || !Array.isArray(gate.locked_read_only_tools))
     throw new Error("contract approval_gate is malformed");
   const log = value.local_conversation_log;
   if (!log || log.root !== "chat-history" || log.transport_encoding !== "utf-8" || log.failure_reporting !== "sanitized-stderr")

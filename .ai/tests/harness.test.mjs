@@ -1,9 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { generatedWriteError, harnessErrors } from "../tools/aidd_hook.mjs";
+import { codexHookReviewOutput, generatedWriteError, harnessErrors } from "../tools/aidd_hook.mjs";
 
 test("provider events implement the portable hook contract",()=>{
   assert.deepEqual(harnessErrors(),[]);
+});
+
+test("Codex sessions receive a prominent CLI hook review reminder",()=>{
+  const output=codexHookReviewOutput();
+  assert.equal(output.continue,true);
+  assert.match(output.systemMessage,/AIDD Codex 훅 확인 필수/);
+  assert.match(output.systemMessage,/Codex CLI/);
+  assert.match(output.systemMessage,/`\/hooks`/);
 });
 
 test("generated outputs are protected without inspecting unrelated commands",()=>{

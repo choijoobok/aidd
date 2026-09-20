@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-003",
+  "title": "Codex 세션 시작 훅 신뢰 확인 안내",
+  "class": "C2",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "Codex에서 작업공간 훅 검토·신뢰 여부를 사용자가 놓치기 쉬운데, 기존 세션 브리핑은 CLI /hooks 확인을 눈에 띄게 안내하지 않았다.",
+  "intent": "Codex CLI와 Windows 앱의 매 세션 시작에 CLI /hooks 확인 경고를 표시하되 Claude에는 표시하지 않는다.",
+  "scope": [
+    "Codex 전용 SessionStart systemMessage",
+    "provider별 훅 계약·배선 검증",
+    "portable 명세와 프로젝트 팀·Kit 관리자 가이드",
+    "export Codex 어댑터와 릴리스 기록"
+  ],
+  "validation": [
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "node .ai/tools/aidd_hook.mjs self-test --hook",
+    "node .ai/tests/harness.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke"
+  ],
+  "risks": [
+    "신뢰가 이미 확인된 세션에서도 안내가 반복되어 사용자가 번거롭게 느낄 수 있다.",
+    "미신뢰 훅은 Codex가 실행하지 않으므로 최초 신뢰 경고는 Codex 자체 안내에 의존한다."
+  ],
+  "rollback": "Codex 어댑터의 codex-hook-review-reminder 연결과 계약·테스트·가이드 추가분을 제거한 뒤 sync-providers를 실행한다.",
+  "completion_blocker": "없음"
+}

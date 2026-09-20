@@ -11,4 +11,4 @@
 - [변경 정보 교환](change-sharing.md)
 - [적합성 기준](conformance.md)
 
-프로젝트 구성원이 읽을 운영 가이드는 [프로젝트 수행팀 가이드](../docs/guides/project-team-guide.md)다. Kit 관리팀 전용 가이드, export 구현, Kit 변경·릴리스 기록은 배포물에 포함하지 않는다.
+프로젝트 구성원이 읽을 사람용 단일 진입점은 [프로젝트 수행팀 가이드](../docs/guides/project-team-guide.md)다. 준비부터 완료까지의 상세 장은 그 문서에서 연결한다. `.ai/docs/methodology/`는 설명 자료, `.ai/skills/`는 AI 수행 계약, `.ai/templates/`는 입력 양식이며 이 명세나 제품 정본을 대체하지 않는다. Kit 관리팀 전용 가이드, export 구현, Kit 변경·릴리스 기록은 배포물에 포함하지 않는다.

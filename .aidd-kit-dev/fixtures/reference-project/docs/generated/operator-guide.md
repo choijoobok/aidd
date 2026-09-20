@@ -9,13 +9,13 @@
 
 ## 정상 운영 점검
 
-정본 변경 후 생성, 동기화, 검증, 테스트 순서로 실행한다. 생성 문서를 직접 수정하지 않는다.
+정본 변경 후 생성, 동기화, 검증과 변경 영역 테스트 순서로 실행한다. 생성 문서를 직접 수정하지 않고 전체 테스트는 영향 범위가 요구할 때만 실행한다.
 
 ```powershell
 node .ai/tools/aidd.mjs generate
 node .ai/tools/aidd.mjs sync-ai
 node .ai/tools/aidd.mjs validate
-node --test .ai/tests/*.test.mjs
+node <변경 영역의 test 파일>
 ```
 
 ## 릴리스와 개발 시작 점검
@@ -44,7 +44,7 @@ node .ai/tools/aidd.mjs release-check --release REL-001
 1. 현재 변경과 오류를 보존한다.
 2. UTF-8 BOM·JSON 구문·끊어진 ID·오래된 생성 문서 순으로 확인한다.
 3. 가장 작은 정본 수정을 적용한다.
-4. 전체 검증과 관련 회귀 테스트를 다시 실행한다.
+4. validate와 관련 회귀 테스트를 다시 실행한다.
 
 ## 운영자 가이드·런북 공통 항목
 

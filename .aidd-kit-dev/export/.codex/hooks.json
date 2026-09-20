@@ -3,6 +3,7 @@
   "hooks": {
     "SessionStart": [{"matcher":"startup|resume|clear|compact","hooks":[
       {"type":"command","command":"node .ai/tools/aidd_hook.mjs session-brief","commandWindows":"node .ai\\tools\\aidd_hook.mjs session-brief","timeout":15,"statusMessage":"AIDD session brief"},
+      {"type":"command","command":"node .ai/tools/aidd_hook.mjs codex-hook-review-reminder","commandWindows":"node .ai\\tools\\aidd_hook.mjs codex-hook-review-reminder","timeout":15,"statusMessage":"AIDD Codex hook review reminder"},
       {"type":"command","command":"node .ai/tools/aidd_hook.mjs self-test --hook","commandWindows":"node .ai\\tools\\aidd_hook.mjs self-test --hook","timeout":15,"statusMessage":"AIDD hook wiring check"}
     ]}],
     "PreToolUse": [

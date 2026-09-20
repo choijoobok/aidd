@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-002",
+  "title": "관리자·프로젝트 팀 가이드 분리와 문서 체계 정리",
+  "class": "C2",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "프로젝트 팀 사용법이 두 가이드에 중복되고 Kit 관리자 절차와 portable 문서의 경계가 일부 섞여 있어 독자가 시작점과 수정 대상을 판단하기 어려웠다.",
+  "intent": "관리자와 프로젝트 팀에 각각 하나의 진입점을 제공하고, 프로젝트 생성부터 운영까지 상세 사용법과 모든 Markdown 문서군의 역할을 모순 없이 정리한다.",
+  "scope": [
+    "프로젝트 팀 가이드의 단계별 상세 장 구성",
+    "명령을 외우지 않아도 되는 단계별 자연어 AI 요청 예시",
+    "Kit 유지보수 관리자 가이드의 경계·검증·export 장 구성",
+    "Kit 원본과 export의 AGENTS.md, CLAUDE.md, README.md 역할별 분리 검토",
+    "portable 훅·스킬·export 문서에서 관리자 전용 명령 제거",
+    "reference fixture의 과도한 전체 테스트 문구를 영향 기반 검증으로 현행화",
+    "모든 .ai 및 .aidd-kit-dev Markdown의 역할·링크·명령·인코딩 점검"
+  ],
+  "validation": [
+    "node .ai/tools/aidd_hook.mjs self-test --hook",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tests/aidd.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs smoke",
+    "Markdown 상대 링크와 UTF-8 BOM/LF 검사",
+    "문서에 기재한 AIDD CLI 명령·옵션 정적 대조"
+  ],
+  "risks": [
+    "기존 aidd-kit-guide.md 직접 링크 사용자는 안내 파일을 한 번 더 거쳐야 한다.",
+    "상세 장이 늘어나므로 프로젝트 팀 가이드를 단일 색인으로 유지해야 한다."
+  ],
+  "rollback": "KIT-CHG-002의 가이드 분할과 연결 변경을 되돌리고 기존 두 프로젝트 가이드를 복원한다.",
+  "completion_blocker": "없음"
+}

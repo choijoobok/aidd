@@ -1,25 +1,59 @@
-# AIDD Kit 관리 가이드
+# AIDD Kit 유지보수 관리자 가이드
 
-이 저장소는 `kit-source`다. portable 기능은 `.ai/`, Kit 관리 기록·export·fixture는 `.aidd-kit-dev/`에 둔다. 루트에 제품 `project/`를 만들지 않는다.
+이 문서는 `kit-source`를 변경·검증·export·출시하는 **관리자 전용 단일 진입점**이다. 프로젝트 생성 이후의 수행법은 배포되는 [프로젝트 수행팀 가이드](../../.ai/docs/guides/project-team-guide.md)에 둔다.
+
+## 관리자 문서 지도
+
+| 작업 | 읽을 문서 |
+|---|---|
+| `.ai`와 `.aidd-kit-dev`의 경계, Markdown 수정 위치 판단 | [저장소와 문서 경계](repository-and-document-boundaries.md) |
+| KIT-CHG·ADR, 검증 수준과 회귀 범위 결정 | [변경과 검증](change-and-validation.md) |
+| provider 동기화, export·new-project·릴리스 | [Export와 릴리스](export-and-release.md) |
 
 ## 빠른 작업 흐름
 
-1. 변경할 명세와 구현·가이드를 함께 확인한다.
-2. 스킬 변경이면 `node .aidd-kit-dev/tools/kit.mjs sync-providers`를 실행한다.
-3. `node .aidd-kit-dev/tools/kit.mjs check`와 변경한 영역의 test 파일을 실행한다.
-4. export, 새 프로젝트, provider 정의를 변경했을 때만 `node .aidd-kit-dev/tools/kit.mjs smoke`를 추가한다.
-5. 사용자가 AIDD 구현 검증을 요청하면 `aidd-requirement-verification` 스킬로 요청 범위만 확인한다.
+1. 세션 시작 상태를 확인한다.
 
-`check`는 JSON, 필수 파일, 용어 기준 해시, provider 스킬 동기화와 Kit 역할 경계만 확인한다. `smoke`는 허용 목록 export, representative `new-project`, reference fixture의 파생 문서 전체 재생성 비교를 수행한다. 전체 테스트는 일상 게이트가 아니며 관련 기반을 변경했거나 사용자가 요청한 경우에만 실행한다. 보안·권한·신원 검사는 정본 요건 또는 사용자 요청 없이 추가하지 않는다.
+   ```powershell
+   node .ai/tools/aidd_hook.mjs self-test --hook
+   node .aidd-kit-dev/tools/kit.mjs status
+   git status --short
+   ```
 
-## 훅과 용어
+2. 연결된 `.ai/spec/`, `KIT-CHG`, 필요한 `KIT-ADR`, 구현, 테스트와 두 독자용 가이드를 확인한다.
+3. portable 행동은 `.ai/`, 관리자 전용 행동과 기록은 `.aidd-kit-dev/`에서 변경한다.
+4. 스킬 변경이면 provider 복사본을 동기화한다.
 
-provider 훅은 세션 요약, 배선 self-test, 생성물 직접 수정 보호, 용어 변경 뒤 현행화, 로컬 대화 로그를 제공한다. 훅은 승인 게이트, 재시작, Git 서명, 외부 trust-root를 요구하지 않는다.
+   ```powershell
+   node .aidd-kit-dev/tools/kit.mjs sync-providers
+   ```
 
-프로젝트 용어는 `term-propose → term-impact → term-decide → term-close`로 관리한다. `TIR`과 `TAP`은 업무 이력을 남기며, 확정 전 proposed 용어는 분석 기록에만 쓴다. end-user DLP에는 고객 공개이며 `end_user` 독자인 용어집만 조립한다.
+5. 빠른 경계 검사와 변경 영역 테스트를 실행한다.
 
-## 기록과 배포
+   ```powershell
+   node .aidd-kit-dev/tools/kit.mjs check
+   node <영향받은 test 파일>
+   ```
 
-새 작업은 `KIT-CHG`로 추적하고 되돌리기 어려운 선택만 `KIT-ADR`로 남긴다. 실행한 검증과 잔여 위험은 간결한 release note에 기록하며 별도 evidence 파일은 기본 생성하지 않는다. 기준선 이전 상세 이력은 Git에서 조회한다.
+6. 생성기·fixture·export·new-project·provider 경계가 바뀐 경우에만 smoke를 추가한다.
 
-`kit.mjs export`와 `new-project`는 `.aidd-kit-dev/export-manifest.json` 허용 목록만 사용하며 기존 대상은 덮어쓰지 않는다. 변경은 문제, 의도, 구현, 검증, 위험, 롤백을 포함해 공유한다.
+   ```powershell
+   node .aidd-kit-dev/tools/kit.mjs smoke
+   ```
+
+7. 변경·결정·릴리스 기록을 현행화하고 diff를 검토한다.
+
+## 핵심 원칙
+
+- 루트에 제품용 `project/`를 만들지 않는다. 제품 데이터는 명시적 fixture로만 둔다.
+- export는 `.aidd-kit-dev/export-manifest.json`의 허용 목록만 사용한다.
+- `.aidd-kit-dev/`와 `aidd-kit-release` 스킬은 프로젝트 배포물에 포함하지 않는다.
+- 사용자·AI 대화 원문, build 결과와 fixture 생성물을 정본이나 현재 검증 증거로 취급하지 않는다.
+- 일상 검증은 빠른 구조 검사와 변경 영역 행위 테스트로 끝낸다.
+- 파생 문서는 현재 정본에서 재생성한 전체 파일과 내용을 엄격히 비교한다.
+- 보안·권한·신원·서명 검토는 명세 또는 사용자 요청에 있을 때만 수행한다.
+- 별도 evidence 파일이나 반복 독립 검토를 기본 완료 조건으로 만들지 않는다.
+
+## 프로젝트 팀과의 경계
+
+관리자는 템플릿과 `new-project` 출력이 프로젝트 팀에게 충분한지 확인하지만, Kit 저장소에서 실제 제품을 수행하지 않는다. 프로젝트 팀 문서에는 프로젝트가 실행할 명령과 개념만 두고, `kit.mjs`, KIT-CHG, 내부 fixture와 릴리스 절차는 넣지 않는다.

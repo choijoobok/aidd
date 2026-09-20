@@ -15,6 +15,7 @@ const readJson=path=>JSON.parse(readFileSync(path,"utf8"));
 function input(){try{return JSON.parse(readFileSync(0,"utf8")||"{}");}catch{return{};}}
 function text(value){return typeof value==="string"?value:JSON.stringify(value??{});}
 function payloadText(payload){return slash(text(payload.tool_input??payload.tool_input_json??payload));}
+const CODEX_HOOK_REVIEW_MESSAGE="⚠️ AIDD Codex 훅 확인 필수\nCodex CLI에서 `/hooks`를 열어 이 작업공간의 훅을 검토하고 신뢰 처리했는지 반드시 확인하세요. 신규·변경 훅은 신뢰 전에 실행되지 않습니다.";
 
 export function generatedWriteError(payload,policy=readJson(POLICY)){
   const source=payloadText(payload);
@@ -36,10 +37,24 @@ function providerEventErrors(path,contract){
       const source=JSON.stringify(hooks[event]??{});
       for(const token of definition.required_tokens??[])if(!source.includes(token))errors.push(`${path}: ${event} missing ${token}`);
     }
+    const providerName=slash(path).includes(".codex/")?"codex":"claude";
+    for(const [event,definition] of Object.entries(contract.provider_events?.[providerName]??{})){
+      const source=JSON.stringify(hooks[event]??{});
+      for(const token of definition.required_tokens??[])if(!source.includes(token))errors.push(`${path}: ${event} missing provider token ${token}`);
+      for(const token of definition.forbidden_tokens??[])if(source.includes(token))errors.push(`${path}: ${event} contains provider-forbidden token ${token}`);
+    }
     const source=JSON.stringify(provider);
     if(/approval-gate|approval-status|hook-trust-status|\backnowledge\b|restart_required|verify-commit/.test(source))errors.push(`${path}: contains retired approval, restart, or signature behavior`);
   }catch(error){errors.push(`${path}: ${error.message}`);}
   return errors;
+}
+
+export function codexHookReviewOutput(){
+  return {continue:true,systemMessage:CODEX_HOOK_REVIEW_MESSAGE};
+}
+
+function codexHookReviewReminder(){
+  console.log(JSON.stringify(codexHookReviewOutput()));
 }
 
 export function harnessErrors(){
@@ -93,8 +108,9 @@ function main(){
   else if(action==="post-check")postCheck();
   else if(action==="self-test")selfTest();
   else if(action==="session-brief")sessionBrief();
+  else if(action==="codex-hook-review-reminder")codexHookReviewReminder();
   else if(action==="local-log")localLog(args[args.indexOf("--role")+1]??"assistant");
-  else{console.error("usage: aidd_hook.mjs session-brief|self-test|protect|post-check|local-log");process.exitCode=2;}
+  else{console.error("usage: aidd_hook.mjs session-brief|codex-hook-review-reminder|self-test|protect|post-check|local-log");process.exitCode=2;}
 }
 
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))main();

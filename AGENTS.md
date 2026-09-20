@@ -12,13 +12,14 @@
 
 - Kit 관리자는 `.aidd-kit-dev/guides/kit-maintainer-guide.md`를 따른다.
 - 프로젝트 수행팀은 `.ai/docs/guides/project-team-guide.md`와 export된 `AGENTS.md`를 따른다.
+- 루트 `AGENTS.md`, `CLAUDE.md`, `README.md`는 `kit-source` 관리자용이다. `.aidd-kit-dev/export/`의 같은 이름 파일은 배포 루트에 놓일 프로젝트용 원본이며 서로 복사본으로 맞추지 않는다.
 - `.aidd-kit-dev/` 전체와 `aidd-kit-release` 관리 스킬은 프로젝트 배포물에 포함하지 않는다.
 - export는 `.aidd-kit-dev/export-manifest.json` 허용 목록으로만 조립한다. 새 루트 파일을 만들었다는 이유로 자동 배포하지 않는다.
 
 ## 작업 방식
 
 - 한글을 포함한 모든 문서와 소스는 UTF-8(BOM 없음), 줄바꿈 LF로 관리한다. 실행 도구와 provider 훅은 Node.js 22 이상과 표준 라이브러리만 사용하며, 훅 입력은 원본 바이트를 UTF-8로 해석한다.
-- Codex 세션 시작 시 `node .ai/tools/aidd_hook.mjs self-test --hook`, `node .aidd-kit-dev/tools/kit.mjs status`, `git status --short`로 훅 배선·역할·현재 변경을 확인한다. AIDD는 별도 승인 게이트나 재시작 절차를 강제하지 않는다.
+- Codex 세션 시작 시 `node .ai/tools/aidd_hook.mjs self-test --hook`, `node .aidd-kit-dev/tools/kit.mjs status`, `git status --short`로 훅 배선·역할·현재 변경을 확인한다. Codex의 `/hooks` 검토·신뢰 안내는 provider 자체 신뢰 기능을 확인하는 알림이며 AIDD의 별도 승인 게이트나 재시작 절차가 아니다. Claude에는 이 Codex 전용 안내를 연결하지 않는다.
 - 변경 전 해결할 실패, 영향 명세, 이식 가능 여부, 호환성·롤백과 검증 방법을 먼저 정한다. 보안·권한·신원 검토는 정본 요건에 있거나 사용자가 명시적으로 요청한 범위에서만 수행한다.
 - 새 훅·스킬·도구·플러그인은 기존 수단 부족, 트리거·입출력 계약, 중복, 안전한 비활성화와 롤백을 확인한 뒤 추가한다. 새 훅은 `.ai/tools/` 아래의 `.mjs`로 만들고 Node.js 표준 라이브러리만 사용하며 `self-test`의 provider 배선 검사를 통과해야 한다.
 - portable 동작은 `.ai/`에서, Kit 관리 전용 동작은 `.aidd-kit-dev/`에서 구현한다. 경계가 모호하면 기본적으로 배포하지 않고 명시적인 결정으로 남긴다.

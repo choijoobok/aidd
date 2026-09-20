@@ -1,11 +1,15 @@
-# AIDD project workspace contract
+# AIDD 프로젝트 작업공간 수행 계약
 
-This exported workspace keeps project SSOT in `project/.aidd/ssot/`; generated documents under `project/docs/generated/` are read-only outputs. Update SSOT, then run `node .ai/tools/aidd.mjs generate` and `validate` for affected project work.
+이 계약은 `kit-template` 또는 `product-workspace`를 위한 것이며 AIDD Kit 자체를 유지보수하거나 export하기 위한 것이 아니다. 프로젝트 정본은 `project/.aidd/ssot/`에 있고, `project/docs/generated/` 아래의 파생 문서는 읽기 전용 결과물이다. 프로젝트 변경 시 정본을 갱신한 뒤 영향받은 범위에 대해 `node .ai/tools/aidd.mjs generate`와 `validate`를 실행한다.
 
-Run `node .ai/tools/aidd_hook.mjs self-test --hook` when changing hook wiring. AIDD hooks provide session context, generated-output protection, terminology refresh, and optional local logging. They do not require an approval gate, a restart, Git signing, an external trust root, or broad shell inspection.
+사용자는 해결할 문제, 원하는 결과, 제약과 알고 있는 사실을 자연어로 설명할 수 있다. 그 요청을 적절한 AIDD 레코드, 스킬과 명령으로 연결하며 사용자가 CLI 문법을 외우도록 요구하지 않는다. 되돌리기 어렵거나 결과가 크게 달라질 수 있는 모호한 결정은 선택지를 제시하고 사용자의 결정을 받은 뒤 진행한다.
 
-Project terms use `term-propose`, `term-impact`, `term-decide`, and `term-close`. Keep proposed terms in analysis records until approved. `delivery-glossary` uses the DLP audience to assemble only the glossary view; an end-user delivery contains only customer-visible end-user terms and no source metadata.
+훅 배선을 변경할 때는 `node .ai/tools/aidd_hook.mjs self-test --hook`을 실행한다. AIDD 훅은 세션 맥락, 생성물 직접 수정 보호, 용어집 현행화와 선택 가능한 로컬 기록을 제공한다. AIDD 훅은 별도 승인 게이트, 재시작, Git 서명, 외부 trust root 또는 광범위한 shell 검사를 요구하지 않는다.
 
-For a normal change, run the affected test or direct check plus `node .ai/tools/aidd.mjs validate`. When the user asks whether AIDD requirements are faithfully implemented, use the `aidd-requirement-verification` skill. Do not add security, permission, identity, or signature checks unless the applicable requirement or the user asks for them. In Kit source, run `kit.mjs smoke` only when generation, fixture, export, new-project, or provider boundaries change.
+Codex 세션이 시작될 때 표시되는 안내에 따라 Codex CLI의 `/hooks`를 열고 현재 작업공간 훅을 검토하고 신뢰 처리했는지 확인한다. 이 안내는 Codex CLI와 Windows 앱에 적용되며 Claude에는 적용되지 않는다. 실제 훅 신뢰 여부는 Codex 자체 기능이 판단한다.
 
-Do not treat chat history, fixtures, or generated output as product SSOT. Keep local conversation logs under ignored `chat-history/` only when enabled. Use small reversible changes and record the problem, intent, verification, risks, and rollback for significant changes.
+프로젝트 용어는 `term-propose`, `term-impact`, `term-decide`, `term-close` 순서로 관리한다. 제안 상태의 용어는 승인될 때까지 분석 기록에서만 사용한다. `delivery-glossary`는 DLP 독자 설정에 따라 용어집 뷰만 조립하며, 최종 사용자용 결과에는 고객 공개 최종 사용자 용어만 포함하고 source metadata는 포함하지 않는다.
+
+일반 변경에서는 영향받은 테스트 또는 직접 검사와 `node .ai/tools/aidd.mjs validate`를 실행한다. 사용자가 AIDD 요건의 구현 충실성 검증을 요청하면 `aidd-requirement-verification` 스킬을 사용한다. 적용되는 요건이나 사용자의 요청이 없으면 보안·권한·신원·서명 검사를 추가하지 않는다.
+
+대화 이력, fixture와 생성물을 제품 정본으로 취급하지 않는다. 로컬 대화 기록이 활성화된 경우에만 Git에서 제외된 `chat-history/`에 보관한다. 작고 되돌릴 수 있는 변경을 사용하고, 중요한 변경에는 문제·의도·검증·위험과 롤백을 기록한다.

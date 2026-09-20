@@ -33,8 +33,12 @@ test("distributed AIDD tests pass in both export shapes",()=>{
     for(const output of [template,product]){
       const suite=readdirSync(join(output,".ai/tests")).filter(name=>name.endsWith(".test.mjs")).map(name=>join(output,".ai/tests",name));
       assert.ok(suite.length,`distributed AIDD tests are missing in ${output}`);
-      const result=spawnSync(process.execPath,["--test",...suite],{cwd:output,encoding:"utf8"});
-      assert.equal(result.status,0,`${output}\n${result.stdout}${result.stderr}`);
+      const env=Object.fromEntries(Object.entries(process.env).filter(([name])=>!name.startsWith("NODE_TEST_")));
+      const result=spawnSync(process.execPath,["--test",...suite],{cwd:output,encoding:"utf8",env});
+      const report=`${output}\n${result.stdout}${result.stderr}`;
+      assert.equal(result.status,0,report);
+      assert.doesNotMatch(result.stdout,/^not ok /m,report);
+      assert.match(result.stdout,/^# fail 0$/m,report);
     }
   }finally{rmSync(temp,{recursive:true,force:true});}
 });

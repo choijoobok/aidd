@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "id": "KIT-EVD-025",
+  "change": "KIT-CHG-004",
+  "kind": "independent-c3-rereview",
+  "performed_by": "Independent assurance session separated from the implementation flow (Claude Opus 5 subagent, fresh context, no implementer conclusions supplied)",
+  "performed_at": "2026-09-20T11:40:00+09:00",
+  "implementation_commit": "92e20bc",
+  "evidence_reviewed": ["KIT-EVD-024"],
+  "status": "failed",
+  "verdict": "FAIL",
+  "independent_review": true,
+  "release_ready": false,
+  "title": "92e20bc 독립 C3 재검토: 배포물 회귀 방어장치가 작동하지 않음",
+  "reproduced_claims": {
+    "kit_tests": "44/44 passed",
+    "portable_tests": "25/25 passed",
+    "total_tests": "69/69 passed",
+    "distributed_tests": "kit-template export 25/25 passed; sample new-project 25/25 passed",
+    "pre_fix_distributed_tests": "92e20bc^의 harness.test.mjs를 export 사본에 넣으면 21/25, exit 1",
+    "directory_zip": "168 files, SHA-256 전수 비교 차이 0",
+    "sample": "AIDD validate 0 warnings, 스킬 37/37/37 동일, 관리 트리·aidd-kit-release·.py 부재",
+    "provider_sync": "드리프트 0",
+    "working_tree_before_and_after": "clean",
+    "repository_mutation": "none"
+  },
+  "findings": [
+    {
+      "id": "C3-RR2-FND-001",
+      "severity": "HIGH",
+      "title": "distributed AIDD tests 회귀 테스트가 항상 통과하는 공허한 단정",
+      "location": ".aidd-kit-dev/tests/kit.test.mjs:36",
+      "detail": "중첩 spawnSync에 env를 주지 않아 부모의 NODE_TEST_CONTEXT=child-v8이 손자 node --test에 상속된다. 그 모드에서는 테스트가 실패해도 종료 코드가 0이므로 result.status 단정이 언제나 참이 된다. AGENTS.md 완료 조건과 CI가 사용하는 `node --test .aidd-kit-dev/tests/*.test.mjs` 경로에서만 무력화되고, 파일을 단독 실행하면 정상 동작한다.",
+      "reproduction": "저장소 사본에서 .ai/tests/harness.test.mjs만 92e20bc^로 되돌린 뒤 해당 테스트를 node --test로 실행하면 통과한다. 같은 export 트리를 직접 검사하면 21/25, exit 1이다.",
+      "impact": "이 커밋이 해결했다고 선언한 결함이 재발해도 Kit 회귀 검사와 원본 CI가 검출하지 못한다.",
+      "status": "resolved-by-KIT-EVD-026"
+    },
+    {
+      "id": "C3-RR2-FND-002",
+      "severity": "MEDIUM",
+      "title": "작동하지 않는 통제를 '강제했다'로 기록",
+      "location": "KIT-EVD-024.findings[0].evidence, KIT-CHG-004.validation, UNRELEASED.md, 92e20bc 커밋 메시지",
+      "detail": "회귀 방어장치가 무력화된 상태에서 KIT-EVD-024가 status를 implemented-validated로 두고 네 곳이 '전체 통과를 강제했다'로 단정한다. 수치 주장 자체는 모두 독립 재현에 성공했으나 효과 주장은 검증되지 않았다.",
+      "status": "resolved-by-KIT-EVD-026"
+    },
+    {
+      "id": "C3-RR2-FND-003",
+      "severity": "LOW",
+      "title": "배포 역할 Windows 훅 테스트 이름이 루트 해석을 검증하는 것처럼 읽힘",
+      "location": ".ai/tests/harness.test.mjs HOOK_CWD 분기",
+      "detail": "kit-source 분기는 하위 디렉터리에서 실행해 Git 루트 해석을 실제로 증명하지만 배포 역할은 프로젝트 루트에서 실행하므로 이름이 의미하는 루트 해석을 검증하지 않는다. 배포물 계약이 세션 cwd 기준이므로 계약 위반은 아니고 명명 정합성 문제다.",
+      "status": "resolved-by-KIT-EVD-026"
+    },
+    {
+      "id": "C3-RR2-FND-004",
+      "severity": "LOW",
+      "title": "KIT-EVD-024의 자기 기술 메타데이터가 커밋 이후 사실과 불일치",
+      "location": "KIT-EVD-024.implementation_commit, working_tree_dirty, open_items[0]",
+      "detail": "기록 시점에는 참이었으나 92e20bc로 커밋된 뒤에는 불변 커밋 기준 재실행 증거가 어느 레코드에도 없다.",
+      "status": "resolved-by-KIT-EVD-026"
+    }
+  ],
+  "assessment": {
+    "conformance_violation_resolved": "yes, 92e20bc 시점에서 배포물 AIDD 테스트 25/25로 충족됨",
+    "verification_strength_reduced": "no, kit-source 분기는 이전과 동일한 두 단정과 동일한 실행 cwd를 유지하고 배포 분기는 모든 훅 엔트리를 전수 단정하며 .aidd-role.json 손상 시 fail-closed다",
+    "regression_guard_effective": "no, C3-RR2-FND-001 참조",
+    "other_conformance_criteria_broken": "none",
+    "record_numbers_accurate": "yes, 모든 수치를 독립 재현했다",
+    "completion_marking": "correct, in_review와 release_ready=false 유지"
+  },
+  "out_of_scope": [
+    "macOS·Linux 실기 실행 (환경 부재, ubuntu CI 통과 판단은 코드 검토 기반 추론)",
+    "실제 Codex Desktop/CLI 승인 UI 흐름 (KIT-EVD-023 범위, 이번 커밋이 건드리지 않음)",
+    "KIT-EVD-001~023의 과거 수치 재검증",
+    "kit.mjs export 경로 외 내부 로직 전반의 코드 리뷰"
+  ],
+  "gate": {
+    "independent_c3": "failed",
+    "kit_chg_completion": false,
+    "release_ready": false,
+    "reason": "HIGH 발견사항 수정과 반증 증거, 기록 정정이 선행돼야 하며 실제 macOS provider 실행도 남아 있다."
+  }
+}

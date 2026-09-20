@@ -55,7 +55,51 @@ function parseOptions(command,args){
 }
 export function assemble(stage,role,project=null){const manifest=readJson(MANIFEST_PATH);for(const entry of manifest.entries)copyEntry(join(ROOT,entry.source),join(stage,entry.target));for(const target of [join(stage,".agents/skills"),join(stage,".claude/skills")])replaceTree(join(stage,".ai/skills"),target);writeJson(join(stage,".aidd-role.json"),roleRecord("kit-template"));if(project){const args=[join(stage,".ai/tools/aidd.mjs"),"project-bootstrap","--project-id",project.project_id,"--name",project.name,"--mode",project.mode];if(project.source_location)args.push("--source-location",project.source_location);const run=spawnSync(process.execPath,args,{cwd:stage,encoding:"utf8"});if(run.error)throw new Error(`project-bootstrap process failed: ${run.error.message}`);if(run.status!==0)throw new Error(`${run.stdout??""}${run.stderr??""}`.trim()||`project-bootstrap exited with status ${run.status}`);writeJson(join(stage,".aidd-role.json"),roleRecord("product-workspace"));}else if(role!=="kit-template")throw new Error(`unsupported assembled role: ${role}`);writeJson(join(stage,".aidd-kit-origin.json"),originRecord(stage,manifest));const errors=validateExportTree(stage,Boolean(project));if(errors.length)throw new Error(`invalid export:\n- ${errors.join("\n- ")}`);}
 export function validateExportTree(root,expectProject){const errors=[],manifest=readJson(MANIFEST_PATH),names=files(root).map(path=>slash(relative(root,path)));for(const prefix of manifest.forbidden_prefixes??[]){const value=prefix.replace(/\/$/,"");if(names.some(path=>path===value||path.startsWith(`${value}/`)))errors.push(`forbidden export prefix found: ${prefix}`);}if(!expectProject)for(const prefix of manifest.template_forbidden_prefixes??[]){const value=prefix.replace(/\/$/,"");if(names.some(path=>path===value||path.startsWith(`${value}/`)))errors.push(`forbidden template prefix found: ${prefix}`);}for(const name of manifest.forbidden_names??[])if(names.some(path=>path.split("/").includes(name)))errors.push(`forbidden export name found: ${name}`);for(const required of ["AGENTS.md",".ai/spec/index.md",".ai/docs/guides/project-team-guide.md",".aidd-role.json",".aidd-kit-origin.json"])if(!existsSync(join(root,required)))errors.push(`required export file missing: ${required}`);try{const expected=expectProject?"product-workspace":"kit-template";if(readJson(join(root,".aidd-role.json")).role!==expected)errors.push(`role marker must be ${expected}`);}catch(error){errors.push(`role marker invalid: ${error.message}`);}if(expectProject&&!existsSync(join(root,"project/.aidd/ssot/project.json")))errors.push("new-project output has no product SSOT");if(!expectProject&&existsSync(join(root,"project")))errors.push("template export unexpectedly contains project/");const portable=skillMap(join(root,".ai/skills"));for(const provider of [".agents/skills",".claude/skills"])if(!sameMap(skillMap(join(root,provider)),portable))errors.push(`provider skill drift: ${provider}`);return errors;}
-export function validateSource(){const errors=[];try{const active=readJson(join(DEV,"repository.json")).active_change;if(typeof active!=="string"||!existsSync(join(DEV,`changes/${active}.json`)))errors.push("repository active_change must identify an existing change record");}catch(error){errors.push(`repository metadata invalid: ${error.message}`);}try{if(readJson(ROLE_PATH).role!=="kit-source")errors.push("root .aidd-role.json must declare kit-source");}catch(error){errors.push(`root role marker invalid: ${error.message}`);}if(existsSync(join(ROOT,"project")))errors.push("kit-source root must not contain product project/");for(const required of [".ai/spec/index.md",".ai/docs/guides/project-team-guide.md",".aidd-kit-dev/guides/kit-maintainer-guide.md",".aidd-kit-dev/skills/aidd-kit-release/SKILL.md",".aidd-kit-dev/export/AGENTS.md",".ai/tools/aidd.mjs",".ai/tools/aidd_hook.mjs"])if(!existsSync(join(ROOT,required)))errors.push(`required source file missing: ${required}`);const portable=skillMap(join(ROOT,".ai/skills")),maintainer=skillMap(join(DEV,"skills"));for(const key of Object.keys(portable))if(key in maintainer)errors.push(`maintainer and portable skill paths collide: ${key}`);const expected={...portable,...maintainer};for(const provider of [".agents/skills",".claude/skills"])if(!sameMap(skillMap(join(ROOT,provider)),expected))errors.push(`source provider skill drift: ${provider}`);for(const path of files(ROOT).filter(path=>path.endsWith(".py")))errors.push(`Python runtime source is forbidden: ${slash(relative(ROOT,path))}`);try{const temp=mkdtempSync(join(tmpdir(),"aidd-kit-validate-"));try{assemble(join(temp,"template"),"kit-template");}finally{rmSync(temp,{recursive:true,force:true});}}catch(error){errors.push(error.message);}return errors;}
+const CHANGE_CLASSES=new Set(["C1","C2","C3"]);
+const CHANGE_STATUSES=new Set(["proposed","in_progress","in_review","verified","released","rejected"]);
+const DECISION_STATUSES=new Set(["proposed","accepted","superseded","rejected"]);
+const EVIDENCE_METADATA_FLOOR=11;
+const CLOCK_SKEW_MS=60000;
+function recordFiles(directory){return files(join(DEV,directory)).filter(path=>path.endsWith(".json"));}
+function idOf(path){return basename(path,".json");}
+export function recordErrors(now=Date.now()){
+  const errors=[],text=(record,field)=>typeof record[field]==="string"&&record[field].trim();
+  const changeIds=new Set(recordFiles("changes").map(idOf));
+  for(const path of recordFiles("changes")){
+    const id=idOf(path),label=`changes/${id}.json`;let record;
+    try{record=readJson(path);}catch(error){errors.push(`${label}: invalid JSON: ${error.message}`);continue;}
+    if(record.id!==id)errors.push(`${label}: id must match the file name`);
+    if(record.schema_version!==1)errors.push(`${label}: schema_version must be 1`);
+    if(!CHANGE_CLASSES.has(record.class))errors.push(`${label}: class must be one of ${[...CHANGE_CLASSES].join(", ")}`);
+    if(!CHANGE_STATUSES.has(record.status))errors.push(`${label}: status must be one of ${[...CHANGE_STATUSES].join(", ")}`);
+    for(const field of ["title","problem","intent","completion_blocker"])if(!text(record,field))errors.push(`${label}: ${field} must be a non-empty string`);
+    for(const field of ["scope","validation"])if(!Array.isArray(record[field])||!record[field].length)errors.push(`${label}: ${field} must be a non-empty list`);
+  }
+  for(const path of recordFiles("decisions")){
+    const id=idOf(path),label=`decisions/${id}.json`;let record;
+    try{record=readJson(path);}catch(error){errors.push(`${label}: invalid JSON: ${error.message}`);continue;}
+    if(record.id!==id)errors.push(`${label}: id must match the file name`);
+    if(record.schema_version!==1)errors.push(`${label}: schema_version must be 1`);
+    if(!DECISION_STATUSES.has(record.status))errors.push(`${label}: status must be one of ${[...DECISION_STATUSES].join(", ")}`);
+    for(const field of ["title","decision","rationale"])if(!text(record,field))errors.push(`${label}: ${field} must be a non-empty string`);
+  }
+  for(const path of recordFiles("evidence")){
+    const id=idOf(path),label=`evidence/${id}.json`;let record;
+    try{record=readJson(path);}catch(error){errors.push(`${label}: invalid JSON: ${error.message}`);continue;}
+    if(record.id!==id)errors.push(`${label}: id must match the file name`);
+    if(record.schema_version!==1)errors.push(`${label}: schema_version must be 1`);
+    if(typeof record.change!=="string"||!changeIds.has(record.change))errors.push(`${label}: change must reference an existing change record`);
+    const sequence=Number(id.replace(/^KIT-EVD-/,""));
+    if(Number.isInteger(sequence)&&sequence>=EVIDENCE_METADATA_FLOOR)for(const field of ["kind","performed_by","performed_at"])if(!text(record,field))errors.push(`${label}: ${field} must be a non-empty string`);
+    if(text(record,"performed_at")){
+      const performed=Date.parse(record.performed_at);
+      if(Number.isNaN(performed))errors.push(`${label}: performed_at must be a parsable date`);
+      else if(performed>now+CLOCK_SKEW_MS&&!record.performed_at_correction)errors.push(`${label}: performed_at ${record.performed_at} is in the future; record the value read from the system clock`);
+    }
+  }
+  return errors;
+}
+export function validateSource(){const errors=[...recordErrors()];try{const active=readJson(join(DEV,"repository.json")).active_change;if(typeof active!=="string"||!existsSync(join(DEV,`changes/${active}.json`)))errors.push("repository active_change must identify an existing change record");}catch(error){errors.push(`repository metadata invalid: ${error.message}`);}try{if(readJson(ROLE_PATH).role!=="kit-source")errors.push("root .aidd-role.json must declare kit-source");}catch(error){errors.push(`root role marker invalid: ${error.message}`);}if(existsSync(join(ROOT,"project")))errors.push("kit-source root must not contain product project/");for(const required of [".ai/spec/index.md",".ai/docs/guides/project-team-guide.md",".aidd-kit-dev/guides/kit-maintainer-guide.md",".aidd-kit-dev/skills/aidd-kit-release/SKILL.md",".aidd-kit-dev/export/AGENTS.md",".ai/tools/aidd.mjs",".ai/tools/aidd_hook.mjs"])if(!existsSync(join(ROOT,required)))errors.push(`required source file missing: ${required}`);const portable=skillMap(join(ROOT,".ai/skills")),maintainer=skillMap(join(DEV,"skills"));for(const key of Object.keys(portable))if(key in maintainer)errors.push(`maintainer and portable skill paths collide: ${key}`);const expected={...portable,...maintainer};for(const provider of [".agents/skills",".claude/skills"])if(!sameMap(skillMap(join(ROOT,provider)),expected))errors.push(`source provider skill drift: ${provider}`);for(const path of files(ROOT).filter(path=>path.endsWith(".py")))errors.push(`Python runtime source is forbidden: ${slash(relative(ROOT,path))}`);try{const temp=mkdtempSync(join(tmpdir(),"aidd-kit-validate-"));try{assemble(join(temp,"template"),"kit-template");}finally{rmSync(temp,{recursive:true,force:true});}}catch(error){errors.push(error.message);}return errors;}
 
 export function refreshReferenceFixtureRuntimeDocs(){
   const fixture=join(DEV,"fixtures/reference-project"),ssot=join(fixture,".aidd/ssot"),generated=join(fixture,"docs/generated");

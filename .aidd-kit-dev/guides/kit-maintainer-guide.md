@@ -14,6 +14,8 @@
 
 사용자·AI 대화 원문은 Kit 변경 이력이나 증거가 아니다. 훅이 제공한 UTF-8 원문만 Git 무시 루트 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 로컬 기록한다. 이 위치는 `kit-source`, `kit-template`, `product-workspace`에서 같으며, 빈 템플릿이 대화 기록만으로 `project/`를 생성하지 않게 한다. 모든 실행 도구는 Node.js 22 이상과 표준 라이브러리만 사용한다. 실제 Windows provider 명령에 비 ASCII 입력을 전달하는 회귀 검사를 유지하고, `commandWindows`에는 바깥 PowerShell이 조기 확장할 `$repo`·`$LASTEXITCODE` 같은 중첩 변수를 넣지 않는다. provider JSON은 `.ai/tools/`의 Node 진입점만 참조하며 `self-test`가 비-Node 실행 경로 부재를 검사한다. 신뢰 레코드 존재와 실제 훅 실행·저장 성공은 별도 상태로 검증한다.
 
+`KIT-CHG`, `KIT-ADR`, `KIT-EVD` 레코드는 `kit.mjs validate`가 스키마와 상태 어휘까지 검사한다. `status`는 변경이 `proposed`·`in_progress`·`in_review`·`verified`·`released`·`rejected`, 결정이 `proposed`·`accepted`·`superseded`·`rejected`만 쓴다. 증거의 `performed_at`은 시스템 시계에서 읽은 값만 쓰고 미래 시각은 거부한다. 기록 규약과 사후 편집 범위는 [`evidence/README.md`](../evidence/README.md)에 있다. 커밋 메시지의 검증 항목에는 **실제로 실행한 명령만** 적는다. `.githooks/pre-commit`은 `kit.mjs validate`와 Kit 관리 테스트만 실행하므로 portable 테스트는 직접 실행해 확인한다.
+
 ## AI에게 요청하는 방법
 
 명령어를 직접 실행할 필요는 없다. 이 저장소를 Codex 또는 Claude에서 열고, 현재 저장소가 `kit-source`라는 점과 원하는 결과를 함께 말한다. AI는 먼저 역할·변경 이력·영향 명세를 확인하고, 파괴적 변경이나 출시 판단은 근거와 함께 제안해야 한다.

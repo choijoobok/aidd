@@ -29,6 +29,17 @@
 - 기존 Python 검증 근거 `KIT-EVD-007`, `KIT-EVD-008`은 전환 배경으로만 유지하며 Node 결과는 별도 증거로 기록한다.
 - Node `generate`는 reference 기준 파생 경로 53개를 모두 재생성하고 stale 생성물을 정리한다. `migrate-module-specs`는 레거시 요구사항을 모듈 소유 조각으로 원자적으로 전환하며 반복 실행을 거부한다. `validate`는 bootstrap 분기와 인수 기준·양방향 추적성·재사용 자산·문서 템플릿·작업 보드·시스템 표면 의미 게이트를 복원한다. 2026-09-20 후속 수정 불변 커밋 `74dd1f8f36280c24ab72ae4bac80651951af3cfe`에서 `sync-providers`, Kit source/export 경계, 최신 Kit 관리 테스트 42/42와 portable 테스트 22/22, 총 64/64가 통과했다. directory·ZIP export는 각각 168개 파일의 경로와 SHA-256이 같고 관리 전용·제품 트리가 없으며, sample new-project는 AIDD validate 0 warnings와 `.ai`·`.agents`·`.claude` portable 스킬 37개 파일 동일성을 확인했다. 결과는 `KIT-EVD-016`에 기록했다. 독립 C3 재검토는 `KIT-EVD-022`, 실제 Windows Codex Desktop 검증은 `KIT-EVD-023`에 기록했다. 실제 macOS Codex·Claude provider 증거는 고객의 macOS 환경 부재로 연기했고, 환경을 확보하면 재개한다. 이 위험이 해소될 때까지 완료·출시 준비 완료로 표시하지 않는다.
 
+## KIT-CHG-006 · 증거 기록 무결성 관행과 행위 기반 검증 전환
+
+상태: 진행 중, 미출시(`in_progress`)
+
+- `kit.mjs validate`가 `KIT-CHG`·`KIT-ADR`·`KIT-EVD` 레코드의 id·스키마·상태 어휘·필수 필드와 증거의 변경 참조를 검사한다.
+- 증거의 `performed_at`은 시스템 시계에서 읽은 값만 허용하며 미래 시각을 거부한다. 이미 정정한 레코드는 `performed_at_correction`으로 예외 처리한다.
+- `KIT-EVD-009`·`KIT-EVD-010`의 이전 형식과 `KIT-EVD-001~008`의 날짜 단위 시각은 소급 수정하지 않고 그대로 보존한다.
+- 기록 규약과 사후 편집 허용 범위를 `evidence/README.md`와 Kit 관리팀 가이드에 명문화했다.
+- 잔여 범위: 소스 텍스트 정규식 단정의 행위 테스트 전환, 독립 검토 원본 보존 방식 결정(고객 합의와 `KIT-ADR` 필요).
+- 검증 근거: `KIT-EVD-031`.
+
 ## KIT-CHG-003 · Codex 대화 기록 훅 신뢰 사전 점검
 
 상태: 검증 완료, 미출시(`verified`)

@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const ROOT=resolve(import.meta.dirname,"../..");
@@ -49,6 +49,28 @@ test("distributed AIDD tests pass in both export shapes",()=>{
       assert.ok(tests>=MINIMUM_DISTRIBUTED_TESTS,`distributed AIDD suite reported ${tests} tests, fewer than the ${MINIMUM_DISTRIBUTED_TESTS} expected; an emptied or shrunk suite still exits 0\n${report}`);
       assert.equal(passed,tests,report);
     }
+  }finally{rmSync(temp,{recursive:true,force:true});}
+});
+const copyRepositoryFixture=target=>{cpSync(ROOT,target,{recursive:true,filter:source=>{const path=relative(ROOT,source);return !path.startsWith(".git")&&!path.startsWith("chat-history")&&!path.startsWith("node_modules");}});return join(target,".aidd-kit-dev/tools/kit.mjs");};
+test("record validation rejects malformed changes and evidence",()=>{
+  const temp=mkdtempSync(join(tmpdir(),"aidd-record-validation-"));
+  try{
+    const fixture=join(temp,"repo"),kit=copyRepositoryFixture(fixture);
+    const before=spawnSync(process.execPath,[kit,"validate"],{cwd:fixture,encoding:"utf8"});
+    assert.equal(before.status,0,`fixture must validate before injection\n${before.stdout}${before.stderr}`);
+    const changePath=join(fixture,".aidd-kit-dev/changes/KIT-CHG-005.json"),change=JSON.parse(readFileSync(changePath,"utf8"));
+    change.status="garbage-status";delete change.problem;
+    writeFileSync(changePath,`${JSON.stringify(change,null,2)}\n`,"utf8");
+    const evidencePath=join(fixture,".aidd-kit-dev/evidence/KIT-EVD-023.json"),evidence=JSON.parse(readFileSync(evidencePath,"utf8"));
+    evidence.change="KIT-CHG-999";evidence.performed_at=new Date(Date.now()+3600000).toISOString();
+    writeFileSync(evidencePath,`${JSON.stringify(evidence,null,2)}\n`,"utf8");
+    const after=spawnSync(process.execPath,[kit,"validate"],{cwd:fixture,encoding:"utf8"});
+    const report=`${after.stdout}${after.stderr}`;
+    assert.equal(after.status,1,report);
+    assert.match(report,/KIT-CHG-005\.json: status must be one of/,report);
+    assert.match(report,/KIT-CHG-005\.json: problem must be a non-empty string/,report);
+    assert.match(report,/KIT-EVD-023\.json: change must reference an existing change record/,report);
+    assert.match(report,/KIT-EVD-023\.json: performed_at .* is in the future/,report);
   }finally{rmSync(temp,{recursive:true,force:true});}
 });
 test("new-project reports child-process startup failures before export validation",()=>{const source=readFileSync(KIT,"utf8");assert.match(source,/if\(run\.error\)throw new Error\(`project-bootstrap process failed:/);assert.match(source,/if\(run\.status!==0\)throw new Error/);});

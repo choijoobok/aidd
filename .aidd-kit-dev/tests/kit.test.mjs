@@ -23,6 +23,9 @@ test("Kit CLI accepts equals-form options",()=>{const temp=mkdtempSync(join(tmpd
 test("source and export boundary validate",()=>{const result=run(["validate"]);assert.equal(result.status,0,result.stderr);});
 test("template export contains no management tree and carries the approval gate",()=>{const temp=mkdtempSync(join(tmpdir(),"aidd-export-test-")),output=join(temp,"template");try{const result=run(["export","--directory",output]);assert.equal(result.status,0,result.stderr);assert.ok(existsSync(join(output,".ai/tools/aidd.mjs")));assert.ok(!existsSync(join(output,".aidd-kit-dev")));assert.equal(JSON.parse(readFileSync(join(output,".aidd-role.json"),"utf8")).role,"kit-template");const config=JSON.stringify(JSON.parse(readFileSync(join(output,".codex/hooks.json"),"utf8")).hooks);assert.match(config,/approval-gate/);assert.match(config,/acknowledge/);assert.match(config,/approval-status/);assert.doesNotMatch(config,/project-init/);}finally{rmSync(temp,{recursive:true,force:true});}});
 test("new project bootstraps with Node only",()=>{const temp=mkdtempSync(join(tmpdir(),"aidd-project-test-")),output=join(temp,"product");try{const result=run(["new-project","--directory",output,"--project-id","TEST","--name","테스트","--mode","greenfield"]);assert.equal(result.status,0,result.stderr);assert.ok(existsSync(join(output,"project/.aidd/ssot/project.json")));assert.equal(JSON.parse(readFileSync(join(output,".aidd-role.json"),"utf8")).role,"product-workspace");const validate=spawnSync(process.execPath,[join(output,".ai/tools/aidd.mjs"),"validate"],{cwd:output,encoding:"utf8"});assert.equal(validate.status,0,validate.stdout+validate.stderr);}finally{rmSync(temp,{recursive:true,force:true});}});
+const testSuiteNames=root=>readdirSync(join(root,".ai/tests")).filter(name=>name.endsWith(".test.mjs")).sort();
+const distributedTestEnv=()=>Object.fromEntries(Object.entries(process.env).filter(([name])=>!name.startsWith("NODE_TEST_")&&name!=="NODE_OPTIONS"));
+const tapCount=(output,label)=>{const match=output.match(new RegExp(`^# ${label} (\\d+)$`,"m"));return match?Number(match[1]):null;};
 test("distributed AIDD tests pass in both export shapes",()=>{
   const temp=mkdtempSync(join(tmpdir(),"aidd-distributed-tests-")),template=join(temp,"template"),product=join(temp,"product");
   try{
@@ -30,15 +33,19 @@ test("distributed AIDD tests pass in both export shapes",()=>{
     assert.equal(exported.status,0,exported.stderr);
     const created=run(["new-project","--directory",product,"--project-id","DIST-TEST","--name","배포 테스트","--mode","greenfield"]);
     assert.equal(created.status,0,created.stderr);
+    const sourceNames=testSuiteNames(ROOT);
+    assert.ok(sourceNames.length,"portable AIDD test suite is missing in the source");
     for(const output of [template,product]){
-      const suite=readdirSync(join(output,".ai/tests")).filter(name=>name.endsWith(".test.mjs")).map(name=>join(output,".ai/tests",name));
-      assert.ok(suite.length,`distributed AIDD tests are missing in ${output}`);
-      const env=Object.fromEntries(Object.entries(process.env).filter(([name])=>!name.startsWith("NODE_TEST_")));
-      const result=spawnSync(process.execPath,["--test",...suite],{cwd:output,encoding:"utf8",env});
+      const names=testSuiteNames(output);
+      assert.deepEqual(names,sourceNames,`distributed AIDD test files differ from the portable source in ${output}`);
+      for(const name of names)assert.equal(readFileSync(join(output,".ai/tests",name),"utf8"),readFileSync(join(ROOT,".ai/tests",name),"utf8"),`distributed AIDD test ${name} differs from the portable source in ${output}`);
+      const result=spawnSync(process.execPath,["--test","--test-reporter=tap",...names.map(name=>join(output,".ai/tests",name))],{cwd:output,encoding:"utf8",env:distributedTestEnv()});
       const report=`${output}\n${result.stdout}${result.stderr}`;
       assert.equal(result.status,0,report);
       assert.doesNotMatch(result.stdout,/^not ok /m,report);
-      assert.match(result.stdout,/^# fail 0$/m,report);
+      const tests=tapCount(result.stdout,"tests"),passed=tapCount(result.stdout,"pass"),failed=tapCount(result.stdout,"fail");
+      assert.equal(failed,0,report);
+      assert.ok(tests>0&&passed===tests,`distributed AIDD suite did not report a full pass count\n${report}`);
     }
   }finally{rmSync(temp,{recursive:true,force:true});}
 });

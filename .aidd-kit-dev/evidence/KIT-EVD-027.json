@@ -6,7 +6,11 @@
   "performed_by": "Independent assurance session separated from the implementation flow (Claude Opus 5 subagent, fresh context, no implementer conclusions supplied)",
   "performed_at": "2026-09-20T12:35:00+09:00",
   "reviewed_commit": "66c71c5",
-  "evidence_reviewed": ["KIT-EVD-024", "KIT-EVD-025", "KIT-EVD-026"],
+  "evidence_reviewed": [
+    "KIT-EVD-024",
+    "KIT-EVD-025",
+    "KIT-EVD-026"
+  ],
   "status": "passed-with-provider-evidence-pending",
   "verdict": "PASS",
   "independent_review": true,
@@ -42,17 +46,69 @@
     "repository_mutation": "none"
   },
   "prior_findings_resolution": [
-    {"id": "C3-RR2-FND-001", "severity": "HIGH", "resolution": "resolved", "basis": "동일 입력 A/B 비교로 수정 전 ok, 수정 후 not ok 확인"},
-    {"id": "C3-RR2-FND-002", "severity": "MEDIUM", "resolution": "resolved", "basis": "EVD-024 append-only correction, CHG-004 completion_blocker, UNRELEASED 문구, 커밋 메시지가 실제 상태와 일치"},
-    {"id": "C3-RR2-FND-003", "severity": "LOW", "resolution": "resolved", "basis": "테스트 이름 변경, 단정 내용 불변"},
-    {"id": "C3-RR2-FND-004", "severity": "LOW", "resolution": "partially-resolved", "basis": "EVD-024는 correction으로 연결됐으나 EVD-026이 같은 패턴을 반복했다. C3-RR3-FND-N5로 다시 열려 있으며 별도 변경에서 다룬다"}
+    {
+      "id": "C3-RR2-FND-001",
+      "severity": "HIGH",
+      "resolution": "resolved",
+      "basis": "동일 입력 A/B 비교로 수정 전 ok, 수정 후 not ok 확인"
+    },
+    {
+      "id": "C3-RR2-FND-002",
+      "severity": "MEDIUM",
+      "resolution": "resolved",
+      "basis": "EVD-024 append-only correction, CHG-004 completion_blocker, UNRELEASED 문구, 커밋 메시지가 실제 상태와 일치"
+    },
+    {
+      "id": "C3-RR2-FND-003",
+      "severity": "LOW",
+      "resolution": "resolved",
+      "basis": "테스트 이름 변경, 단정 내용 불변"
+    },
+    {
+      "id": "C3-RR2-FND-004",
+      "severity": "LOW",
+      "resolution": "partially-resolved",
+      "basis": "EVD-024는 correction으로 연결됐으나 EVD-026이 같은 패턴을 반복했다. C3-RR3-FND-N5로 다시 열려 있으며 별도 변경에서 다룬다"
+    }
   ],
   "new_findings": [
-    {"id": "C3-RR3-FND-N1", "severity": "LOW", "title": "중첩 회귀 검사에 최소 테스트 수 단정이 없음", "location": ".aidd-kit-dev/tests/kit.test.mjs", "status": "open"},
-    {"id": "C3-RR3-FND-N2", "severity": "LOW", "title": "NODE_OPTIONS 미필터와 TAP 출력 형식 의존", "location": ".aidd-kit-dev/tests/kit.test.mjs", "status": "open"},
-    {"id": "C3-RR3-FND-N3", "severity": "LOW", "title": "CI가 ubuntu 전용이라 Windows 실기 훅 회귀 검사가 CI에서 실행되지 않음", "location": ".github/workflows/aidd.yml, .aidd-kit-dev/export/.github/workflows/aidd.yml", "status": "open", "note": "이번 커밋이 만든 결함이 아니다. 적합성 기준의 Windows 실기 회귀 보장은 사람이 Windows에서 실행할 때만 성립한다."},
-    {"id": "C3-RR3-FND-N4", "severity": "LOW", "title": "kit.test.mjs의 소스 텍스트 정규식 단정 3건은 행위가 아닌 문자열을 검증", "location": ".aidd-kit-dev/tests/kit.test.mjs", "status": "open"},
-    {"id": "C3-RR3-FND-N5", "severity": "LOW", "title": "증거 레코드의 자기 기술 메타데이터가 커밋 후 사실과 불일치하는 패턴 재발", "location": ".aidd-kit-dev/evidence/KIT-EVD-026.json", "status": "open", "note": "KIT-EVD-025가 독립 세션이 아니라 구현 세션의 전사로 기록됐고 원본 산출물이 저장소에 없다는 점도 함께 지적했다."}
+    {
+      "id": "C3-RR3-FND-N1",
+      "severity": "LOW",
+      "title": "중첩 회귀 검사에 최소 테스트 수 단정이 없음",
+      "location": ".aidd-kit-dev/tests/kit.test.mjs",
+      "status": "resolved-by-KIT-EVD-028"
+    },
+    {
+      "id": "C3-RR3-FND-N2",
+      "severity": "LOW",
+      "title": "NODE_OPTIONS 미필터와 TAP 출력 형식 의존",
+      "location": ".aidd-kit-dev/tests/kit.test.mjs",
+      "status": "resolved-by-KIT-EVD-028"
+    },
+    {
+      "id": "C3-RR3-FND-N3",
+      "severity": "LOW",
+      "title": "CI가 ubuntu 전용이라 Windows 실기 훅 회귀 검사가 CI에서 실행되지 않음",
+      "location": ".github/workflows/aidd.yml, .aidd-kit-dev/export/.github/workflows/aidd.yml",
+      "status": "open",
+      "note": "이번 커밋이 만든 결함이 아니다. 적합성 기준의 Windows 실기 회귀 보장은 사람이 Windows에서 실행할 때만 성립한다."
+    },
+    {
+      "id": "C3-RR3-FND-N4",
+      "severity": "LOW",
+      "title": "kit.test.mjs의 소스 텍스트 정규식 단정 3건은 행위가 아닌 문자열을 검증",
+      "location": ".aidd-kit-dev/tests/kit.test.mjs",
+      "status": "open"
+    },
+    {
+      "id": "C3-RR3-FND-N5",
+      "severity": "LOW",
+      "title": "증거 레코드의 자기 기술 메타데이터가 커밋 후 사실과 불일치하는 패턴 재발",
+      "location": ".aidd-kit-dev/evidence/KIT-EVD-026.json",
+      "status": "open",
+      "note": "KIT-EVD-025가 독립 세션이 아니라 구현 세션의 전사로 기록됐고 원본 산출물이 저장소에 없다는 점도 함께 지적했다."
+    }
   ],
   "informational": [
     "과거 KIT-EVD-010은 커밋 fdb9544에서 본문 문구가 덮어쓰기 방식으로 수정된 이력이 있다. 현재의 append-only correction 관행과 다르며 이번 커밋 범위 밖이다. 증거 파일 삭제 이력은 0건이다."

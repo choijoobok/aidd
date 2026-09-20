@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-005",
+  "title": "Windows 실기 provider 회귀 검사의 CI 실행 경로 결정",
+  "class": "C2",
+  "status": "proposed",
+  "origin": "KIT-EVD-027 C3-RR3-FND-N3 (LOW)",
+  "problem": "적합성 기준은 'Windows provider 실제 명령과 레거시 코드페이지 조건에서 비 ASCII 훅 입력이 손실 없이 처리되는 회귀 검사가 통과한다'를 요구하지만, 원본과 export된 CI가 모두 ubuntu-latest 전용이다. 해당 회귀 테스트 3건은 `process.platform!==\"win32\"`에서 조기 return하므로 Linux CI에서는 실행되지 않은 채 pass로 집계된다. 현재 이 기준의 실제 보장은 사람이 Windows에서 실행할 때(KIT-EVD-023, 이번 세션 실행)만 성립하며, 회귀는 자동으로 검출되지 않는다.",
+  "intent": "Windows 실기 경로를 CI에서 실제로 실행하거나, 실행하지 않기로 결정했다면 그 근거와 보완 통제를 명세에 드러내 '통과한다'는 기준이 실행 증거와 어긋나지 않게 한다.",
+  "scope": [
+    "원본 .github/workflows/aidd.yml과 export된 워크플로의 실행 환경 결정",
+    "조기 return하는 플랫폼 전용 테스트가 skip으로 집계되도록 할지 여부",
+    "결정에 따른 .ai/spec/conformance.md 문구 정합화",
+    "프로젝트 배포물에 같은 결정을 전달할지 여부"
+  ],
+  "options": [
+    "windows-latest를 매트릭스로 추가해 실기 경로를 CI에서 실행한다. 비용과 실행 시간이 늘고 프로젝트 배포물의 CI도 함께 무거워진다.",
+    "원본 저장소만 Windows 매트릭스를 쓰고 배포물은 ubuntu 단일로 유지한다. 배포물의 Windows 보장은 여전히 사람 실행에 의존한다.",
+    "CI는 그대로 두고 플랫폼 전용 테스트를 skip으로 표시해 미실행 사실을 드러내며, Windows 실기 검증은 릴리스 게이트의 사람·증거 절차로 명시한다."
+  ],
+  "risks": [
+    "매트릭스 추가는 배포물 프로젝트의 CI 비용·시간에 직접 영향을 준다. 고객 결정이 필요하다.",
+    "현행 유지 시 Windows 전용 회귀가 사람 실행 사이 기간 동안 검출되지 않는다.",
+    "조기 return을 skip으로 바꾸면 기존 테스트 집계 수가 달라져 과거 증거의 수치와 비교가 끊긴다."
+  ],
+  "validation": [
+    "결정에 따른 워크플로 변경과 실제 CI 실행 결과",
+    "플랫폼 전용 테스트의 집계 방식 회귀 테스트",
+    "conformance.md 문구와 실행 증거의 일치 확인",
+    "kit validate, 전체 테스트, export·sample 검증"
+  ],
+  "completion_blocker": "미착수. KIT-CHG-004가 in_review인 동안에는 활성 변경으로 전환하지 않는다. 비용이 드는 선택지가 있으므로 고객 결정이 선행돼야 하며, 결정은 KIT-ADR로 남긴다."
+}

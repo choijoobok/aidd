@@ -91,7 +91,7 @@
       "severity": "LOW",
       "title": "CI가 ubuntu 전용이라 Windows 실기 훅 회귀 검사가 CI에서 실행되지 않음",
       "location": ".github/workflows/aidd.yml, .aidd-kit-dev/export/.github/workflows/aidd.yml",
-      "status": "open",
+      "status": "separated-to-KIT-CHG-005",
       "note": "이번 커밋이 만든 결함이 아니다. 적합성 기준의 Windows 실기 회귀 보장은 사람이 Windows에서 실행할 때만 성립한다."
     },
     {
@@ -99,14 +99,14 @@
       "severity": "LOW",
       "title": "kit.test.mjs의 소스 텍스트 정규식 단정 3건은 행위가 아닌 문자열을 검증",
       "location": ".aidd-kit-dev/tests/kit.test.mjs",
-      "status": "open"
+      "status": "separated-to-KIT-CHG-006"
     },
     {
       "id": "C3-RR3-FND-N5",
       "severity": "LOW",
       "title": "증거 레코드의 자기 기술 메타데이터가 커밋 후 사실과 불일치하는 패턴 재발",
       "location": ".aidd-kit-dev/evidence/KIT-EVD-026.json",
-      "status": "open",
+      "status": "separated-to-KIT-CHG-006",
       "note": "KIT-EVD-025가 독립 세션이 아니라 구현 세션의 전사로 기록됐고 원본 산출물이 저장소에 없다는 점도 함께 지적했다."
     }
   ],
@@ -115,7 +115,7 @@
   ],
   "record_integrity": {
     "transcribed_by": "구현 세션이 독립 검토 세션의 보고를 전사했다. 독립 검토 세션의 원본 출력은 저장소에 보존하지 않았다.",
-    "known_limitation": "C3-RR3-FND-N5가 지적한 전사 관행의 한계가 이 레코드에도 동일하게 적용된다. 개선은 별도 Kit 관리 변경으로 분리한다.",
+    "known_limitation": "C3-RR3-FND-N5가 지적한 전사 관행의 한계가 이 레코드에도 동일하게 적용된다. 개선은 KIT-CHG-006으로 분리했다.",
     "raw_logs_attached": false
   },
   "out_of_scope": [
@@ -133,8 +133,8 @@
   },
   "open_items": [
     "실제 macOS Codex·Claude provider 실행",
-    "C3-RR3-FND-N1·N2 수정 (KIT-CHG-004 범위 내 후속 증분)",
-    "C3-RR3-FND-N3 CI Windows 실기 경로 결정 (별도 변경으로 분리)",
-    "C3-RR3-FND-N4·N5 개선 (별도 변경으로 분리)"
+    "C3-RR3-FND-N1·N2 수정 (KIT-EVD-028에서 완료)",
+    "C3-RR3-FND-N3 CI Windows 실기 경로 결정 (KIT-CHG-005)",
+    "C3-RR3-FND-N4·N5 개선 (KIT-CHG-006)"
   ]
 }

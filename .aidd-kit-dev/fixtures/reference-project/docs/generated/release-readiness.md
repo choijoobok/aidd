@@ -1,33 +1,21 @@
 <!-- .ai/tools/aidd.mjs가 project/.aidd/ssot 정본에서 자동 생성했습니다. 직접 수정하지 마세요. -->
 
-# 출시 준비도
+# 릴리스 준비도
 
-## REL-001 — 기반 구조 0.1
+## 릴리스
 
-- 기록된 상태: `계획됨`
-- 계산된 출시 준비도: `차단됨`
-- 목표일: -
-- 전달 프로필: DLP-001
-- 출시 화면: -
-- 출시 매뉴얼: -
-- 변경 사항: CHG-001, CHG-002, CHG-003, CHG-004, CHG-005, CHG-006, CHG-007, CHG-008
-- 필수 테스트: TC-001, TC-002, TC-003, TC-004, TC-005, TC-006, TC-007, TC-008, TC-009, TC-010, TC-011, TC-012, TC-013, TC-014, TC-015, TC-016, TC-017, TC-018, TC-019, TC-020, TC-021, TC-022
-- 출시 여부 결정: -
-- 롤백: 도입 커밋을 되돌리고 내보낸 정본 레코드를 보존한다.
+### REL-001 — 기반 구조 0.1
 
-### 차단 요소
-
-- TC-004 상태가 미실행입니다
-- TC-017 상태가 미실행입니다
-- TC-020 상태가 실패입니다
-- CHG-001 상태가 진행 중입니다
-- CHG-002 상태가 진행 중입니다
-- CHG-003 상태가 진행 중입니다
-- CHG-004 상태가 진행 중입니다
-- CHG-005 상태가 진행 중입니다
-- CHG-006 상태가 진행 중입니다
-- CHG-007 상태가 진행 중입니다
-- CHG-008 상태가 진행 중입니다
-- RSK-001는 수용되지 않은 릴리스 차단 수준 위험입니다
-- RSK-003는 수용되지 않은 릴리스 차단 수준 위험입니다
-- RSK-004는 수용되지 않은 릴리스 차단 수준 위험입니다
+- **id:** REL-001
+- **name:** 기반 구조 0.1
+- **status:** planned
+- **target_date:** -
+- **delivery_profile:** DLP-001
+- **screens:** -
+- **manuals:** -
+- **changes:** CHG-001, CHG-002, CHG-003, CHG-004, CHG-005, CHG-006, CHG-007, CHG-008
+- **required_tests:** TC-001, TC-002, TC-003, TC-004, TC-005, TC-006, TC-007, TC-008, TC-009, TC-010, TC-011, TC-012, TC-013, TC-014, TC-015, TC-016, TC-017, TC-018, TC-019, TC-020, TC-021, TC-022
+- **required_deliverables:** DLV-BRIEF, DLV-GLOSSARY, DLV-REQ, DLV-ARCH, DLV-TECH, DLV-DEPLOY, DLV-GOV-EVIDENCE, DLV-TRACE, DLV-TEST, DLV-DEV, DLV-OPS, DLV-USER, DLV-SEC, DLV-PLAN, DLV-AI-EVAL, DLV-REPO, DLV-COLLAB, DLV-RELEASE
+- **risk_blocking_levels:** critical, high
+- **rollback:** 도입 커밋을 되돌리고 내보낸 정본 레코드를 보존한다.
+- **decision:** -

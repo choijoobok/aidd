@@ -4,20 +4,16 @@
 
 ## 시작
 
-1. 세션 시작 시 provider의 일반 훅 신뢰 기능을 확인하고 `node .ai/tools/aidd_hook.mjs self-test --hook`으로 AIDD 배선을 점검한다. AIDD 훅은 세션 승인·재시작·Git 서명을 강제하지 않는다.
-   훅 리비전은 `/hooks`에 표시되는 실제 Codex provider 정의 `.codex/hooks.json`의 내용이다. version 3에서는 이 파일이 바뀌어 새 정의를 신뢰해야 할 때만 재승인을 요구한다. 과거 version 2 상태는 당시 정의 단독 해시가 없어 한 번 `unconfirmed`로 전환되며, `/hooks`가 이미 active이면 선택 `1`로 기존 승인을 다시 확인한다. Git 초기화 전 export 템플릿에서도 모든 훅은 이 명령으로 지정한 프로젝트 루트를 기준으로 실행된다.
-   Windows Desktop의 재시작 요구는 Desktop 세션에만 적용한다. 같은 프로젝트를 연 CLI는 자신의 `1`·`2` 승인 흐름을 계속 사용하고 Desktop의 미완료 재시작 요구는 그대로 남긴다.
+1. 세션 시작 시 `node .ai/tools/aidd_hook.mjs self-test --hook`으로 AIDD 배선을 점검한다. provider가 자체 훅 검토 UI를 제공하면 그 일반 기능을 사용할 수 있지만 AIDD는 별도 승인·재시작·Git 서명을 요구하지 않는다.
 2. `.aidd-role.json`이 `kit-template`이고 `project/.aidd/ssot/`가 없으면 고객 확인 뒤 `project-bootstrap`을 실행한다. 성공하면 역할이 `product-workspace`로 전환되며, 이후에는 기존 `project/.aidd/ssot/`를 먼저 읽는다. 이미 정본이 있는데 역할만 `kit-template`이면 bootstrap을 다시 실행하지 말고 `project-reconcile-role`로 정합화한다.
 3. `current-actor`, `status --level executive`, `integration-status`로 신원·진척·통합 위험을 확인한다.
 4. 제품 의도·성과·범위·모듈·배포 맥락을 합의하고 미정 사항은 가정 또는 미결사항으로 기록한다.
 5. 제품 의도·목적·성과 기준을 합의한 직후 `BEN-TRIAGE`로 벤치마킹 필요성을 고객과 판단한다. 필요하면 조사 질문·후보·평가 기준·출처 품질·제외 범위를 합의한 뒤 조사하고, 불필요하면 이유와 재검토 조건을 ADR 또는 OI에 남긴다.
 6. 프로젝트 규모와 위험에 맞는 작업·게이트·승인 수준을 정한다.
 
-잠긴 세션의 close-out은 자신이 관측한 literal 경로만 하나씩 stage하고, 비어 있지 않은 staged 경로 전체가 관측 경로일 때 메시지 형식의 새 로컬 커밋만 허용한다. 경로 패턴·와일드카드·광범위 stage와 amend는 허용하지 않는다.
-
 ## 로컬 대화 이력
 
-사용자·AI 대화 원문은 제품 정본·증거·생성물이 아니다. 훅이 제공한 UTF-8 원문만 Git 무시 루트 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 로컬 기록한다. Node 훅은 Windows 기본 코드페이지와 무관하게 원본 바이트와 파일을 UTF-8로 처리한다. 이 규칙은 아직 `kit-template`인 상태에도 같으므로, 대화 기록 때문에 `project/`가 먼저 생성되지는 않는다. 저장 실패 시 대화 내용을 노출하지 않고 오류 유형만 경고한다. `hook-trust-status`의 `TRUST_RECORD_FOUND`는 신뢰 기록 존재만 뜻하므로 다음 대화가 실제 파일에 추가되는지도 확인한다. `AIDD_LOCAL_CONVERSATION_LOG=0`이면 현재 프로세스의 기록을 끌 수 있다.
+사용자·AI 대화 원문은 제품 정본·증거·생성물이 아니다. 훅이 제공한 UTF-8 원문만 Git 무시 루트 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 로컬 기록한다. 이 규칙은 아직 `kit-template`인 상태에도 같으므로 대화 기록 때문에 `project/`가 먼저 생성되지는 않는다. 저장 실패 시 대화 내용을 노출하지 않고 오류 유형만 경고한다. `AIDD_LOCAL_CONVERSATION_LOG=0`이면 현재 프로세스의 기록을 끌 수 있다.
 
 ## AI에게 요청하는 방법
 
@@ -55,7 +51,9 @@ AI가 명령어 실행을 제안할 수 있지만, 명령어는 재현·자동�
 
 ## 일상 수행
 
-작업 전에는 관련 `REQ`, `CHG`, `WRK`, 위험과 게이트를 확인한다. 기능 규모 구현은 `development-check`를 통과한 뒤 시작하고, 작은 증분마다 테스트와 `EVD`를 연결한다. 코드나 정본 변경 뒤에는 `document-impact`, `generate`, `validate`와 관련 테스트를 수행한다. 생성기는 정본의 구조화 필드, 가이드 명령·절차와 합의한 문서 필수 항목을 보존하고 근거 없는 항목은 미작성으로 표시한다. `validate`는 현재 생성 결과와 다른 내용과 더 이상 대상이 아닌 생성물을 거부한다. 생성 문서는 직접 편집하지 않는다.
+작업 전에는 관련 `REQ`, `CHG`, `WRK`, 위험과 게이트를 확인한다. 기능 규모 구현은 `development-check`를 통과한 뒤 시작한다. 코드나 정본 변경 뒤에는 영향받은 범위의 `document-impact`, `generate`, `validate`와 관련 테스트만 수행한다. 생성기는 정본의 구조화 필드, 가이드 명령·절차와 합의한 문서 필수 항목을 보존하고 근거 없는 항목은 미작성으로 표시한다. `validate`는 현재 생성 결과와 다른 내용과 더 이상 대상이 아닌 생성물을 거부한다. 생성 문서는 직접 편집하지 않는다.
+
+AIDD 요건·스펙 구현 검증을 요청받으면 `aidd-requirement-verification` 스킬을 사용한다. 명세 밖 보안·권한 검사는 사용자가 별도로 요청하지 않는 한 추가하지 않는다.
 
 ## 함께 쓰는 용어
 

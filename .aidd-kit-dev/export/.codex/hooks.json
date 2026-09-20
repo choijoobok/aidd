@@ -11,9 +11,6 @@
     ],
     "PostToolUse":[{"matcher":"apply_patch|Edit|Write|NotebookEdit|Bash|PowerShell|^mcp__.*__(?:write|edit|move|create|start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)","hooks":[{"type":"command","command":"node .ai/tools/aidd_hook.mjs post-check --platform codex","commandWindows":"node .ai\\tools\\aidd_hook.mjs post-check --platform codex","timeout":20,"statusMessage":"AIDD post-change check"}]}],
     "UserPromptSubmit":[{"hooks":[{"type":"command","command":"node .ai/tools/aidd_hook.mjs local-log --platform codex --role user","commandWindows":"node .ai\\tools\\aidd_hook.mjs local-log --platform codex --role user","timeout":10,"statusMessage":"AIDD local log"}]}],
-    "Stop":[{"hooks":[
-      {"type":"command","command":"node .ai/tools/aidd.mjs hook --platform codex --event Stop","commandWindows":"node .ai\\tools\\aidd.mjs hook --platform codex --event Stop","timeout":15,"statusMessage":"AIDD completion hint"},
-      {"type":"command","command":"node .ai/tools/aidd_hook.mjs local-log --platform codex --role assistant","commandWindows":"node .ai\\tools\\aidd_hook.mjs local-log --platform codex --role assistant","timeout":10,"statusMessage":"AIDD local log"}
-    ]}]
+    "Stop":[{"hooks":[{"type":"command","command":"node .ai/tools/aidd_hook.mjs local-log --platform codex --role assistant","commandWindows":"node .ai\\tools\\aidd_hook.mjs local-log --platform codex --role assistant","timeout":10,"statusMessage":"AIDD local log"}]}]
   }
 }

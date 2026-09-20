@@ -202,7 +202,7 @@ AI는 요구사항과 표준을 확인하고, 가장 작은 관찰 가능한 성
 
 > 이번 변경을 출시 후보로 검토해줘. 요구사항·테스트·보안·데이터 변경·복구·운영 관측성·사용자 매뉴얼·남은 위험을 점검하고, 차단사항과 내가 결정할 일을 구분해줘.
 
-AI는 요구사항별 증거, 실패 시 중단·복구·롤백, 구현과 가이드의 일치, 보안·개인정보·데이터 이전·외부 연동 위험, 변경 등급에 맞는 독립 검토와 사람 승인을 확인한다. 특히 C2·C3 변경은 구현 흐름과 분리된 AI 검토 또는 팀의 다른 사람 검토가 필요하다.
+AI는 요구사항별 결과, 실패 시 중단·복구·롤백, 구현과 가이드의 일치를 확인한다. 보안·개인정보·권한·외부 연동 검토와 독립 검토는 해당 정본 요건이나 사용자의 명시 요청이 있을 때 수행한다.
 
 ### 8. 운영과 개선
 
@@ -302,9 +302,7 @@ node .ai/tools/aidd.mjs work-check --work WRK-ID
 
 개발 중 파생 요구가 현재 작업 패키지의 승인된 범위 안이면 담당 팀원이 CHG·REQ를 기록하고 같은 WRK의 `requirements`와 `coverage`에 추가해 끝까지 처리한다. 다른 모듈·다른 WRK·승인 범위를 넘으면 PM 또는 위임자가 새 WRK 또는 범위 변경을 결정한 뒤 다시 `workload-coverage`를 실행한다. 팀원은 구현 전 `work-check`를 실행하며, 배정자가 다르거나 배정이 없으면 작업을 시작하지 않는다. 1인 프로필은 같은 명령으로 브랜치·작업 상태만 확인하며 배정 제한은 없다.
 
-대화 원문은 상태·증거와 분리한다. 훅이 제공한 UTF-8 원문만 Git 무시 경로 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 선택적으로 남긴다. Node 훅은 입력을 UTF-8로 해석하며, 세션 요약·배선 self-test·생성물 보호·용어 현행화를 제공한다. provider의 훅 검토 UI는 사용할 수 있지만 AIDD는 별도 승인 게이트, 재시작, Git 서명, 외부 trust-root를 요구하지 않는다. 따라서 빈 `kit-template`도 대화 기록 때문에 `project/`를 만들지 않는다.
-
-잠긴 세션의 close-out은 관측한 literal 경로를 하나씩 명시해 stage하고, staged 경로 전체가 관측 범위일 때 메시지 형식의 새 로컬 커밋만 허용한다. 경로 패턴·와일드카드·광범위 stage와 amend는 허용하지 않는다.
+대화 원문은 상태·증거와 분리한다. 훅이 제공한 UTF-8 원문만 Git 무시 경로 `chat-history/YYYY-MM/YYYY-MM-DD.md`에 선택적으로 남긴다. Node 훅은 입력을 UTF-8로 해석하며 세션 요약·배선 self-test·생성물 보호·용어 현행화를 제공한다. AIDD는 별도 승인 게이트, 재시작, Git 서명, 외부 trust-root를 요구하지 않는다. 따라서 빈 `kit-template`도 대화 기록 때문에 `project/`를 만들지 않는다.
 
 ## 최초 기준선 커밋
 
@@ -435,7 +433,7 @@ node .ai/tools/aidd.mjs validate
 
 별도의 중복 AI 가이드는 만들 필요가 없다. 루트 `AGENTS.md`가 Codex와 Claude Code가 함께 따르는 공통 수행 계약의 정본이다. `CLAUDE.md`는 첫 줄의 `@AGENTS.md`로 이를 불러오고 Claude Code 전용 연결 정보만 둔다. 공통 스킬·훅·도구·템플릿의 정본은 `.ai/`에 있으며, `node .ai/tools/aidd.mjs sync-ai`는 `.ai/skills/`를 Codex의 `.agents/skills/`와 Claude Code의 `.claude/skills/`로 동기화한다. `AGENTS.md`와 `CLAUDE.md`는 이 명령이 덮어쓰지 않는다.
 
-공통 수행 규칙은 `AGENTS.md`에서, Claude Code에만 필요한 차이는 `CLAUDE.md`에서, 공통 스킬·훅·도구·템플릿은 `.ai/`에서 수정한다. 새 훅은 `.ai/tools/`의 `.mjs`로 두며 `self-test`가 provider JSON의 Node 단일 런타임 배선을 검사한다. 하네스 변경 뒤에는 `sync-ai`, `generate`, `validate`를 순서대로 실행한다. 이 문서는 사람의 학습과 프로젝트 시작을 위한 안내서이므로 AI 규칙의 또 다른 정본이 아니다.
+공통 수행 규칙은 `AGENTS.md`에서, Claude Code에만 필요한 차이는 `CLAUDE.md`에서, 공통 스킬·훅·도구·템플릿은 `.ai/`에서 수정한다. AIDD 요건 구현 검증 요청에는 `aidd-requirement-verification` 스킬을 사용한다. 새 훅은 `.ai/tools/`의 `.mjs`로 두며 `self-test`가 provider JSON의 이벤트별 배선을 검사한다. 생성기 변경에는 `generate`와 `validate`로 파생 문서 전체를 비교한다. 이 문서는 사람의 학습과 프로젝트 시작을 위한 안내서이므로 AI 규칙의 또 다른 정본이 아니다.
 
 ## 안전한 되돌리기와 문제 해결
 

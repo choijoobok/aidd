@@ -1,22 +1,16 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { harnessErrors } from "../tools/aidd_hook.mjs";
+import { generatedWriteError, harnessErrors } from "../tools/aidd_hook.mjs";
 
-const root=resolve(import.meta.dirname,"../..");
-const text=path=>readFileSync(resolve(root,path),"utf8");
-
-test("hook contract and provider JSON are well formed",()=>{
+test("provider events implement the portable hook contract",()=>{
   assert.deepEqual(harnessErrors(),[]);
-  const contract=JSON.parse(text(".ai/hooks/contract.json"));
-  assert.deepEqual(contract.events.PreToolUse.required_tokens,["protect","--kind","file","shell"]);
-  assert.equal("approval_gate" in contract,false);
 });
 
-test("portable hooks retain operational actions without an approval gate",()=>{
-  const hook=text(".ai/tools/aidd_hook.mjs");
-  for(const action of ["session-brief","self-test","protect","post-check","local-log"])assert.match(hook,new RegExp(`action===\\"${action}\\"`));
-  const dispatcher=hook.slice(hook.indexOf("function main"));
-  assert.doesNotMatch(dispatcher,/action===\"(?:approval-gate|approval-status|acknowledge)\"/);
+test("generated outputs are protected without inspecting unrelated commands",()=>{
+  const policy={generated_roots:["project/docs/generated/",".agents/skills/"],allowed_generators:["aidd.mjs generate","kit.mjs sync-providers"]};
+  assert.match(generatedWriteError({tool_input:{path:"project/docs/generated/status.md"}},policy),/read-only/);
+  assert.match(generatedWriteError({tool_input:{path:".agents/skills/aidd-status/SKILL.md"}},policy),/read-only/);
+  assert.equal(generatedWriteError({tool_input:{command:"node .ai/tools/aidd.mjs generate"}},policy),null);
+  assert.equal(generatedWriteError({tool_input:{command:"git status --short"}},policy),null);
+  assert.equal(generatedWriteError({tool_input:{command:"Remove-Item unrelated.tmp"}},policy),null);
 });

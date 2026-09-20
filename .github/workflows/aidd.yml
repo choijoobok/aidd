@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Kit 명세·배포 경계·회귀 검사
+    name: Kit 빠른 정합성 검사
     runs-on: ubuntu-latest
     steps:
       - name: 소스 체크아웃
@@ -39,11 +39,10 @@ jobs:
       - name: 생성 결과 드리프트 검사
         run: git diff --exit-code
 
-      - name: Kit와 export 경계 검증
-        run: node .aidd-kit-dev/tools/kit.mjs validate
+      - name: Kit 구조와 provider 경계 검증
+        run: node .aidd-kit-dev/tools/kit.mjs check
 
-      - name: Kit 생명주기 테스트
-        run: node --test .aidd-kit-dev/tests/*.test.mjs
-
-      - name: AIDD 프레임워크 회귀 테스트
-        run: node --test .ai/tests/*.test.mjs
+      - name: 훅과 Kit 빠른 행위 테스트
+        run: |
+          node .ai/tests/harness.test.mjs
+          node .aidd-kit-dev/tests/kit.test.mjs

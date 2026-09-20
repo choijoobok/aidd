@@ -5,7 +5,7 @@
 - 이 저장소는 업무 시스템이나 애플리케이션 프로젝트가 아니라 AIDD Kit의 `kit-source`다.
 - 고객은 Kit의 목적, 배포 정책, 호환성, 위험 수용과 되돌리기 어려운 결정의 최종 책임자다.
 - 이식 가능한 Kit 행동 명세는 `.ai/spec/`, 기계 판독 가능한 공개 목록은 `.ai/manifests/kit.json`을 정본으로 취급한다.
-- Kit 관리 생명주기와 이력은 `.aidd-kit-dev/`의 `KIT-CHG`, `KIT-ADR`, evidence, release 기록으로 관리한다.
+- Kit 관리 생명주기와 현재 기준선은 `.aidd-kit-dev/`의 `KIT-CHG`, 필요한 `KIT-ADR`, release 기록으로 관리한다. 과거 상세 이력은 Git에 남기며 별도 evidence 파일을 기본 요구하지 않는다.
 - 루트에 제품용 `project/`를 만들지 않는다. 제품 회귀 데이터는 `.aidd-kit-dev/fixtures/`의 명시적인 fixture로만 둔다.
 
 ## 독자와 공개 경계
@@ -18,15 +18,16 @@
 ## 작업 방식
 
 - 한글을 포함한 모든 문서와 소스는 UTF-8(BOM 없음), 줄바꿈 LF로 관리한다. 실행 도구와 provider 훅은 Node.js 22 이상과 표준 라이브러리만 사용하며, 훅 입력은 원본 바이트를 UTF-8로 해석한다.
-- Codex 세션 시작 시 `node .ai/tools/aidd_hook.mjs self-test --hook`, `node .aidd-kit-dev/tools/kit.mjs status`, `git status --short`로 훅 배선·역할·현재 변경을 확인한다. `/hooks` 검토는 provider가 제공하는 일반 신뢰 기능으로 맡기며, AIDD는 별도 승인 게이트나 재시작 절차를 강제하지 않는다.
-- 변경 전 해결할 실패, 영향 명세, 이식 가능 여부, 호환성·보안·롤백과 검증 방법을 먼저 정한다.
+- Codex 세션 시작 시 `node .ai/tools/aidd_hook.mjs self-test --hook`, `node .aidd-kit-dev/tools/kit.mjs status`, `git status --short`로 훅 배선·역할·현재 변경을 확인한다. AIDD는 별도 승인 게이트나 재시작 절차를 강제하지 않는다.
+- 변경 전 해결할 실패, 영향 명세, 이식 가능 여부, 호환성·롤백과 검증 방법을 먼저 정한다. 보안·권한·신원 검토는 정본 요건에 있거나 사용자가 명시적으로 요청한 범위에서만 수행한다.
 - 새 훅·스킬·도구·플러그인은 기존 수단 부족, 트리거·입출력 계약, 중복, 안전한 비활성화와 롤백을 확인한 뒤 추가한다. 새 훅은 `.ai/tools/` 아래의 `.mjs`로 만들고 Node.js 표준 라이브러리만 사용하며 `self-test`의 provider 배선 검사를 통과해야 한다.
 - portable 동작은 `.ai/`에서, Kit 관리 전용 동작은 `.aidd-kit-dev/`에서 구현한다. 경계가 모호하면 기본적으로 배포하지 않고 명시적인 결정으로 남긴다.
 - 사용자·AI 대화 원문은 정본·증거·배포물에 포함하지 않는다. 훅이 제공한 원문만 역할과 제품 활성화 여부에 관계없이 Git 무시 루트 `chat-history/`에 로컬 기록한다.
 - 공통 portable 스킬은 `.ai/skills/`, 관리 전용 스킬은 `.aidd-kit-dev/skills/`가 정본이다. 원본 provider 어댑터는 `node .aidd-kit-dev/tools/kit.mjs sync-providers`로 두 집합을 합쳐 갱신한다.
 - AIDD 공통 용어 정본은 `.ai/manifests/terminology.json`이며 프로젝트가 수정·재정의할 수 없게 기준 해시를 검증한다. 프로젝트 전용 용어는 `project/.aidd/ssot/terminology.json`의 `TRM`으로 관리하고, 의미 변경 전 `TIR` 영향 검토와 `TAP` 사용자 승인, 승인 뒤 영향 반영 종료 이력을 남긴다. 공통·프로젝트 용어의 사람이 읽는 단일 뷰와 HTML은 생성물이므로 직접 수정하지 않는다.
 - 생성물이나 fixture를 제품 정본으로 가장하지 않는다. 기존 제품 fixture의 레코드는 회귀 입력일 뿐 현재 Kit 상태가 아니다.
-- 작고 되돌릴 수 있는 증분을 선호하고 과거 결정·검증 이력을 지우지 않는다.
+- 사용자가 AIDD 요건·스펙 구현 검증을 요청하면 `aidd-requirement-verification` 스킬을 사용한다. 빠른 구조 검사와 요청 범위의 행위 테스트만 수행하고, 파생 문서는 현재 정본에서 다시 생성한 전체 결과와 비교한다.
+- 작고 되돌릴 수 있는 증분을 선호한다. 기준선 초기화가 필요하면 현재 작업 트리에는 채택된 기준선만 남기고 과거 상세 이력은 Git에서 조회한다.
 
 ## 배포와 변경 공유
 
@@ -41,6 +42,6 @@
 
 - 영향받는 `.ai/spec/`, 구현, 테스트, 독자별 가이드, export manifest, 변경·결정·릴리스 기록을 함께 검토한다.
 - 스킬 변경 뒤 `node .aidd-kit-dev/tools/kit.mjs sync-providers`와 `node .aidd-kit-dev/tools/kit.mjs check`를 실행한다.
-- 변경 범위에 맞는 `node --test <대상 test 파일>`을 실행하고, export·new-project·provider 경계 변경에는 `node .aidd-kit-dev/tools/kit.mjs smoke`를 추가한다.
-- C2·C3은 변경 사항과 검증 결과를 한 번 독립적으로 읽어 본 뒤 완료로 표시한다. 반복 재검토나 별도 증거 파일은 요구하지 않는다.
+- 변경 범위에 맞는 `node <대상 test 파일>`을 실행하고, 생성기·export·new-project·provider 경계 변경에는 `node .aidd-kit-dev/tools/kit.mjs smoke`를 추가한다.
+- 독립 검토, 보안 감사, 권한 검사는 변경 정본이나 사용자가 요구할 때만 추가한다. 별도 evidence 파일이나 반복 재검토를 기본 완료 조건으로 삼지 않는다.
 - AI가 커밋 메시지를 작성할 때는 `.ai/templates/git/commit-message.md` 형식을 따르고, 실질 기여 AI만 마지막 trailer 묶음에 기록한다.

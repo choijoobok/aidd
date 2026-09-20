@@ -1,0 +1,4 @@
+interface:
+  display_name: "AIDD 요건 구현 검증"
+  short_description: "요건에 따른 규칙·스킬·훅 구현을 빠르게 검증"
+  default_prompt: "Use $aidd-requirement-verification to verify that AIDD requirements are faithfully implemented."

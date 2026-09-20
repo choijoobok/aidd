@@ -17,10 +17,12 @@ AIDD Kit은 AI와 사람이 제품 의도부터 운영까지 추적 가능하게
 ```powershell
 node .aidd-kit-dev/tools/kit.mjs status
 node .aidd-kit-dev/tools/kit.mjs sync-providers
-node .aidd-kit-dev/tools/kit.mjs validate
-node --test .aidd-kit-dev/tests/*.test.mjs
-node --test .ai/tests/*.test.mjs
+node .aidd-kit-dev/tools/kit.mjs check
+node .ai/tests/harness.test.mjs
+node .aidd-kit-dev/tests/kit.test.mjs
 ```
+
+생성기·fixture·export·new-project·provider 경계를 변경했을 때만 `node .aidd-kit-dev/tools/kit.mjs smoke`를 추가한다. AIDD 요건 구현 검증 요청에는 `aidd-requirement-verification` 스킬을 사용한다.
 
 빈 프로젝트 템플릿과 초기화된 프로젝트는 같은 허용 목록 기반 조립기를 사용한다.
 

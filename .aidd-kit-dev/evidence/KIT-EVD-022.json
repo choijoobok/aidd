@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "id": "KIT-EVD-022",
+  "change": "KIT-CHG-004",
+  "kind": "independent-c3-closure-rereview",
+  "performed_by": "Codex independent assurance subagent /root/kit_chg_004_c3_closure_review",
+  "performed_at": "2026-09-20T09:44:13.1745781+09:00",
+  "implementation_commit": "fef5632c1fc4cb88c0c1c88e598742541ac7ab45",
+  "evidence_commit_reviewed": "47e6765",
+  "status": "passed-with-provider-evidence-pending",
+  "verdict": "PASS",
+  "independent_review": true,
+  "release_ready": false,
+  "resolved_findings": [
+    "C3-RR-FND-001",
+    "C3-FINAL-FND-001",
+    "C3-FINAL-FND-002",
+    "C3-CLOSURE-FND-001"
+  ],
+  "new_findings": [],
+  "validation": {
+    "kit_tests": "43/43 passed",
+    "portable_tests": "25/25 passed",
+    "total_tests": "68/68 passed",
+    "mixed_client_regression": "Desktop 2 -> CLI 1 passed; Desktop 2 -> CLI 2 passed; Desktop restart marker preserved; same-client Desktop bypass denied; new Desktop natural-language restart confirmation passed",
+    "directory_zip": "168/168, missing 0, extra 0, SHA difference 0",
+    "directory_payload_sha256": "9a690ad2048c1fbd5608a19c0d938c1a00ed976ddde830fbce07961573af8764",
+    "zip_sha256": "cd86489ef7ececc6398b069fc8afc1afecdd4cc2fd850a9b13ec9a3aac62e3b2",
+    "sample": "0 warnings, SSOT 32, provider skills 37/37/37, provider differences 0, management tree absent",
+    "working_tree_before_and_after": "clean",
+    "repository_mutation": "none"
+  },
+  "gate": {
+    "independent_c3": "passed",
+    "kit_chg_completion": false,
+    "release_ready": false,
+    "reason": "실제 Windows Codex Desktop 및 macOS provider 실행 증거가 남아 있다."
+  },
+  "open_items": [
+    "실제 Windows Codex Desktop UserPromptSubmit·PreToolUse·새 앱 세션 실행",
+    "실제 macOS Codex·Claude provider 실행"
+  ]
+}

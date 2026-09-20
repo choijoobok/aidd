@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-006",
+  "title": "분석·설계 용어 발견과 명확화 강화",
+  "class": "C2",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "프로젝트 용어는 정의와 자유 형식 분류만 있어 적용 범위와 유사 개념의 구분 기준을 충분히 표현하지 못하며, 요구분석·설계 중 새롭거나 모호한 용어를 발견해도 PM이 별도로 용어 관리를 요청해야만 반영 흐름이 시작된다.",
+  "intent": "요구분석·설계 중 AI가 의미 확인이 필요한 용어를 식별하면 PM에게 짧은 확인 카드를 제시하고, 확인 직후 분류·범위·예시·관련 용어·혼동 구분을 포함한 용어 정본과 파생 문서를 기존 PM 중심 흐름으로 현행화한다.",
+  "source_review": {
+    "project": "D:/source/ai-agent",
+    "adopted": [
+      "업무 용어를 요구사항보다 먼저 명확히 하는 원칙",
+      "프로젝트 용어와 외부 프레임워크 어휘의 성격 구분",
+      "실제로 혼동 가능한 용어에만 차이와 판단 규칙을 기록하는 방식",
+      "사용자 발화에서 새 업무 명사를 발견하면 정의를 추정하지 않고 확인하는 방식"
+    ],
+    "not_adopted": [
+      "프로젝트 고유 단계·상태·프레임워크 용어 목록",
+      "용어 제안 대기나 별도 승인 레코드",
+      "모든 명사를 기계적으로 용어로 등록하는 방식"
+    ]
+  },
+  "scope": [
+    "프로젝트 용어의 통제된 개념 유형, 적용 범위, 사용 예, 관련 용어와 혼동 구분 구조",
+    "요구발굴·아키텍처 스킬의 새롭거나 모호한 용어 확인 및 확인 뒤 자동 반영 절차",
+    "용어 확인 카드 작업 서식과 프로젝트 팀 가이드",
+    "term-review·term-apply CLI, 생성 용어집과 reference fixture",
+    "용어 분류·혼동 구분의 표적 행위 테스트와 provider 동기화"
+  ],
+  "validation": [
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "node .aidd-kit-dev/tests/terminology.test.mjs",
+    "node .aidd-kit-dev/tests/aidd.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke"
+  ],
+  "risks": [
+    "AI가 중요하지 않은 표현까지 용어 후보로 물으면 분석 흐름이 느려질 수 있으므로 의미·명명·계약에 영향을 주는 경우만 확인한다.",
+    "개념 유형은 공통 네 종류로 통제하지만 category는 프로젝트 도메인별 분류를 허용한다.",
+    "기존 프로젝트의 용어 레코드는 자동 마이그레이드하지 않으며 수신 프로젝트가 자체 변경으로 새 필드를 보완한다."
+  ],
+  "rollback": "개념 유형·범위·예시·관련 용어·혼동 구분 필드와 자동 확인 지침을 제거하고 KIT-CHG-005의 용어 구조와 PM 직접 요청 흐름으로 되돌린다.",
+  "completion_blocker": "없음"
+}

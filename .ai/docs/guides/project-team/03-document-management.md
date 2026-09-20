@@ -52,6 +52,7 @@ node .ai/tools/aidd.mjs validate
 - 운영 런북: 선행 조건, 단계, 확인, 롤백과 에스컬레이션
 - 테스트 결과: 실행 대상, 방법, 환경, 결과와 잔여 위험
 - 사용자 가이드: 승인된 화면 요구와 검증된 실제 화면
+- 용어 확인 카드: 분석·설계 중 새롭거나 모호한 용어의 분류·범위·사용 예·혼동 구분을 PM에게 한 번에 확인
 
 문서를 하나 더 만드는 것이 목적이 아니다. 의사결정 또는 독자 전달에 필요한 정보가 구조화 정본만으로 표현되지 않을 때만 추가한다.
 
@@ -67,12 +68,29 @@ node .ai/tools/aidd.mjs validate
 
 `.ai/manifests/terminology.json`은 공통 AIDD 용어 정본이며 프로젝트가 바꾸거나 같은 뜻을 재정의하지 않는다. 업무 용어는 `project/.aidd/ssot/terminology.json`에서 관리한다.
 
-프로젝트 용어의 추가·변경·제거는 PM만 AI에게 요청한다. 팀원이 다른 표현이나 용어 문제를 발견하면 PM과 바로 협의하며 별도 제안·승인 대기·반려 상태를 만들지 않는다.
+프로젝트 용어의 추가·변경·제거는 PM만 확인한다. 팀원이 다른 표현이나 용어 문제를 발견하면 PM과 바로 협의하며 별도 제안·승인 대기·반려 상태를 만들지 않는다.
+
+용어는 먼저 네 개의 공통 개념 유형으로 나누고, 그 안에서 프로젝트별 분류를 사용한다.
+
+| 개념 유형 | 용도 | 예 |
+|---|---|---|
+| `business` | 사용자·업무 흐름·업무 데이터 | 고객 요청, 정산 건 |
+| `product` | 제품 동작·상태·정책·화면 개념 | 승인 대기, 저장된 조회 |
+| `technical` | 구현·아키텍처·운영 개념 | 체크포인트, 실행 점유 |
+| `external` | 외부 표준·프레임워크·제품의 원래 어휘 | 특정 프레임워크의 Node |
+
+`category`는 프로젝트 도메인에 맞게 정하며 필요하면 `고객지원/접수`처럼 상위·하위 영역을 표현한다. 정의에는 “무엇인가”, 적용 범위에는 “언제·어디에 쓰는가”를 적는다. 별칭은 같은 뜻의 검색 표현이고 권장 표기는 하나로 유지한다. 비슷하지만 다른 개념은 별칭으로 합치지 않고 관련 용어와 혼동 구분에 차이와 선택 판단 규칙을 적는다. 외부 어휘는 출처를 남기고 프로젝트 명명의 기준과 구분한다.
+
+요구분석·설계 중 AI는 반복될 새 개념, 사람마다 다르게 해석할 표현, 기존 용어와 이름은 비슷하지만 범위가 다른 표현, 정의에 따라 요구·설계가 달라지는 표현만 용어 후보로 다룬다. 먼저 기존 용어를 검색하고 같은 뜻이면 별칭을 검토한다. 명확화가 필요하면 영향 브리핑을 포함한 확인 카드를 PM에게 제시한다.
+
+> “서비스 요청”이 요구사항에 반복되는데 기존 “고객 요청”과 같은 뜻인지, 별도 처리 상태를 가진 다른 개념인지에 따라 API와 상태 모델이 달라져. `business / 고객지원`, 적용 범위는 “지원 조직이 접수하고 상태를 추적하는 요청”, 고객 요청과의 판단 기준은 “접수·상태 추적 여부”로 등록해도 될까?
+
+PM이 동의하면 그 답을 용어 변경 승인으로 보고 AI가 별도 요청이나 두 번째 확인 없이 관련 요구사항·설계·데이터·API·화면·문서·소스 주석과 용어집을 함께 현행화하고 생성·검증까지 완료한다. 보류하거나 정의를 수정하면 정본은 바꾸지 않고 같은 분석 대화에서 다시 명확히 한다. 일회성 표현이나 일반적인 일상어는 등록하지 않는다.
 
 > PM으로서 프로젝트에 “고객 요청”이라는 용어를 추가하려고 해. 아직 변경하지 말고 공통·현재 프로젝트 용어 충돌과 요구사항·설계·데이터·API·화면·테스트·문서·소스 주석 영향 후보를 먼저 브리핑해줘.
 
 ```powershell
-node .ai/tools/aidd.mjs term-review --action add --id TRM-001 --term "고객 요청" --key customerRequest --category 업무 --definition "고객이 처리를 요청한 업무 단위" --requested-by HUM-001 --audience project_team --visibility customer
+node .ai/tools/aidd.mjs term-review --action add --id TRM-001 --term "고객 요청" --key customerRequest --concept-type business --category "고객지원/접수" --definition "고객이 처리를 요청한 업무 단위" --scope "접수부터 처리 종료까지 추적하는 요청" --example "고객 요청 REQ-123을 접수했다" --requested-by HUM-001 --audience project_team --visibility customer
 ```
 
 `term-review`는 읽기 전용이며 용어 정본을 바꾸지 않는다. PM이 브리핑을 검토하고 진행을 확인하면 AI에게 한 번에 마무리하도록 요청한다.
@@ -82,10 +100,10 @@ node .ai/tools/aidd.mjs term-review --action add --id TRM-001 --term "고객 요
 AI는 관련 정본·문서·소스 주석을 먼저 현행화한 뒤 다음 적용 명령으로 현재 용어와 `TCH` 이력을 함께 저장한다. 명령은 용어집을 포함한 파생 문서를 다시 생성하고 전체 `validate`까지 통과해야 성공한다.
 
 ```powershell
-node .ai/tools/aidd.mjs term-apply --action add --id TRM-001 --history TCH-001 --term "고객 요청" --key customerRequest --category 업무 --definition "고객이 처리를 요청한 업무 단위" --approved-by HUM-001 --summary "영향 브리핑 검토 후 요구사항·문서·소스 주석과 함께 반영" --audience project_team --visibility customer --affected project/.aidd/ssot/requirements.json --affected project/src
+node .ai/tools/aidd.mjs term-apply --action add --id TRM-001 --history TCH-001 --term "고객 요청" --key customerRequest --concept-type business --category "고객지원/접수" --definition "고객이 처리를 요청한 업무 단위" --scope "접수부터 처리 종료까지 추적하는 요청" --example "고객 요청 REQ-123을 접수했다" --approved-by HUM-001 --summary "영향 브리핑 검토 후 요구사항·문서·소스 주석과 함께 반영" --audience project_team --visibility customer --affected project/.aidd/ssot/requirements.json --affected project/src
 ```
 
-변경은 `--action change`, 제거는 `--action remove`를 사용한다. 제거하거나 이름·key·별칭을 바꿀 때 이전 표현이 확정 정본이나 소스에 남아 있으면 적용이 차단된다. `project/docs/generated/glossary.md`와 HTML은 생성물이므로 직접 고치지 않는다.
+사용 예는 `--example`, 관련 용어는 `--related-term`을 반복할 수 있다. 실제 혼동되는 기존 용어가 있으면 `--distinguish-from TRM-002 --distinction "두 개념의 핵심 차이" --decision-rule "어느 상황에서 어느 용어를 선택하는지"`를 함께 사용한다. 변경은 `--action change`, 제거는 `--action remove`를 사용한다. 제거하거나 이름·key·별칭을 바꿀 때 이전 표현이 확정 정본이나 소스에 남아 있으면 적용이 차단된다. `project/docs/generated/glossary.md`와 HTML은 생성물이므로 직접 고치지 않는다.
 
 ## 작업 기록과 대화 원문
 

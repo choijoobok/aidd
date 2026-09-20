@@ -60,12 +60,24 @@ const CHANGE_STATUSES=new Set(["proposed","in_progress","in_review","verified","
 const DECISION_STATUSES=new Set(["proposed","accepted","superseded","rejected"]);
 const EVIDENCE_METADATA_FLOOR=11;
 const CLOCK_SKEW_MS=60000;
-function recordFiles(directory){return files(join(DEV,directory)).filter(path=>path.endsWith(".json"));}
+const CORRECTED_EVIDENCE_IDS=new Set(["KIT-EVD-024","KIT-EVD-025","KIT-EVD-026","KIT-EVD-027","KIT-EVD-028"]);
+const RECORD_FILE_PATTERNS={changes:/^KIT-CHG-\d{3}\.json$/,decisions:/^KIT-ADR-\d{3}\.json$/,evidence:/^KIT-EVD-\d{3}\.json$/};
+function recordEntries(directory){
+  const root=join(DEV,directory),pattern=RECORD_FILE_PATTERNS[directory],paths=[],errors=[];
+  for(const entry of readdirSync(root,{withFileTypes:true})){
+    if(!entry.isFile()||!entry.name.endsWith(".json"))continue;
+    if(pattern.test(entry.name))paths.push(join(root,entry.name));
+    else errors.push(`${directory}/${entry.name}: record file name must match ${pattern.source}`);
+  }
+  return {paths:paths.sort(),errors};
+}
 function idOf(path){return basename(path,".json");}
 export function recordErrors(now=Date.now()){
-  const errors=[],text=(record,field)=>typeof record[field]==="string"&&record[field].trim();
-  const changeIds=new Set(recordFiles("changes").map(idOf));
-  for(const path of recordFiles("changes")){
+  const text=(record,field)=>typeof record[field]==="string"&&record[field].trim();
+  const changes=recordEntries("changes"),decisions=recordEntries("decisions"),evidence=recordEntries("evidence");
+  const errors=[...changes.errors,...decisions.errors,...evidence.errors];
+  const changeIds=new Set(changes.paths.map(idOf));
+  for(const path of changes.paths){
     const id=idOf(path),label=`changes/${id}.json`;let record;
     try{record=readJson(path);}catch(error){errors.push(`${label}: invalid JSON: ${error.message}`);continue;}
     if(record.id!==id)errors.push(`${label}: id must match the file name`);
@@ -75,7 +87,7 @@ export function recordErrors(now=Date.now()){
     for(const field of ["title","problem","intent","completion_blocker"])if(!text(record,field))errors.push(`${label}: ${field} must be a non-empty string`);
     for(const field of ["scope","validation"])if(!Array.isArray(record[field])||!record[field].length)errors.push(`${label}: ${field} must be a non-empty list`);
   }
-  for(const path of recordFiles("decisions")){
+  for(const path of decisions.paths){
     const id=idOf(path),label=`decisions/${id}.json`;let record;
     try{record=readJson(path);}catch(error){errors.push(`${label}: invalid JSON: ${error.message}`);continue;}
     if(record.id!==id)errors.push(`${label}: id must match the file name`);
@@ -83,7 +95,7 @@ export function recordErrors(now=Date.now()){
     if(!DECISION_STATUSES.has(record.status))errors.push(`${label}: status must be one of ${[...DECISION_STATUSES].join(", ")}`);
     for(const field of ["title","decision","rationale"])if(!text(record,field))errors.push(`${label}: ${field} must be a non-empty string`);
   }
-  for(const path of recordFiles("evidence")){
+  for(const path of evidence.paths){
     const id=idOf(path),label=`evidence/${id}.json`;let record;
     try{record=readJson(path);}catch(error){errors.push(`${label}: invalid JSON: ${error.message}`);continue;}
     if(record.id!==id)errors.push(`${label}: id must match the file name`);
@@ -91,10 +103,11 @@ export function recordErrors(now=Date.now()){
     if(typeof record.change!=="string"||!changeIds.has(record.change))errors.push(`${label}: change must reference an existing change record`);
     const sequence=Number(id.replace(/^KIT-EVD-/,""));
     if(Number.isInteger(sequence)&&sequence>=EVIDENCE_METADATA_FLOOR)for(const field of ["kind","performed_by","performed_at"])if(!text(record,field))errors.push(`${label}: ${field} must be a non-empty string`);
+    if(CORRECTED_EVIDENCE_IDS.has(id)&&!record.performed_at_correction)errors.push(`${label}: performed_at_correction is required for a record on the corrected list`);
     if(text(record,"performed_at")){
       const performed=Date.parse(record.performed_at);
       if(Number.isNaN(performed))errors.push(`${label}: performed_at must be a parsable date`);
-      else if(performed>now+CLOCK_SKEW_MS&&!record.performed_at_correction)errors.push(`${label}: performed_at ${record.performed_at} is in the future; record the value read from the system clock`);
+      else if(/[T ]\d{2}:\d{2}/.test(record.performed_at)&&performed>now+CLOCK_SKEW_MS&&!CORRECTED_EVIDENCE_IDS.has(id))errors.push(`${label}: performed_at ${record.performed_at} is in the future; record the value read from the system clock`);
     }
   }
   return errors;
@@ -150,7 +163,14 @@ function deliver(stage,directory,archive){const destination=resolve(directory??a
 const [command,...rest]=process.argv.slice(2);
 try{
   const options=parseOptions(command,rest);
-  if(command==="status"){const repository=readJson(join(DEV,"repository.json")),change=readJson(join(DEV,`changes/${repository.active_change}.json`));console.log(`# AIDD Kit 관리 상태\n- 역할: \`${readJson(ROLE_PATH).role}\`\n- 버전: \`${repository.current_version}\`\n- 현재 변경: \`${change.id}\` · ${change.status}\n- 배포: 허용 목록 기반 directory/zip, 자동 업그레이드·역동기화 없음`);}
+  if(command==="status"){
+    const repository=readJson(join(DEV,"repository.json")),change=readJson(join(DEV,`changes/${repository.active_change}.json`));
+    const others=recordEntries("changes").paths.map(readJson).filter(item=>["in_progress","in_review"].includes(item.status)&&item.id!==change.id);
+    const lines=["# AIDD Kit 관리 상태",`- 역할: \`${readJson(ROLE_PATH).role}\``,`- 버전: \`${repository.current_version}\``,`- 현재 변경: \`${change.id}\` · ${change.status}`];
+    for(const item of others)lines.push(`- 진행 중인 다른 변경: \`${item.id}\` · ${item.status}`);
+    lines.push("- 배포: 허용 목록 기반 directory/zip, 자동 업그레이드·역동기화 없음");
+    console.log(lines.join("\n"));
+  }
   else if(command==="sync-providers"){syncProviders();console.log("portable 스킬과 Kit 관리 스킬을 원본 provider 어댑터에 동기화했습니다.");}
   else if(command==="refresh-fixture-guides"){console.log(`reference fixture의 Node 런타임 파생 문서 ${refreshReferenceFixtureRuntimeDocs()}개를 갱신했습니다.`);}
   else if(command==="validate"){const errors=validateSource();if(errors.length){console.error(`Kit validation failed:\n- ${errors.join("\n- ")}`);process.exitCode=1;}else console.log("AIDD Kit source and export boundary validation passed");}

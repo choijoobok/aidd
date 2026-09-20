@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -71,6 +71,34 @@ test("record validation rejects malformed changes and evidence",()=>{
     assert.match(report,/KIT-CHG-005\.json: problem must be a non-empty string/,report);
     assert.match(report,/KIT-EVD-023\.json: change must reference an existing change record/,report);
     assert.match(report,/KIT-EVD-023\.json: performed_at .* is in the future/,report);
+  }finally{rmSync(temp,{recursive:true,force:true});}
+});
+test("record validation resists self-granted exceptions and preserves raw evidence logs",()=>{
+  const temp=mkdtempSync(join(tmpdir(),"aidd-record-exceptions-"));
+  try{
+    const fixture=join(temp,"repo"),kit=copyRepositoryFixture(fixture),evidence=join(fixture,".aidd-kit-dev/evidence");
+    const validate=()=>spawnSync(process.execPath,[kit,"validate"],{cwd:fixture,encoding:"utf8"});
+    const future=new Date(Date.now()+6*3600000).toISOString();
+    const forged=join(evidence,"KIT-EVD-900.json");
+    writeFileSync(forged,`${JSON.stringify({schema_version:1,id:"KIT-EVD-900",change:"KIT-CHG-006",kind:"forged",performed_by:"forged",performed_at:future,performed_at_correction:true},null,2)}\n`,"utf8");
+    const selfGranted=validate();
+    assert.equal(selfGranted.status,1,`a record must not grant itself the future-timestamp exception\n${selfGranted.stdout}${selfGranted.stderr}`);
+    assert.match(`${selfGranted.stdout}${selfGranted.stderr}`,/KIT-EVD-900\.json: performed_at .* is in the future/);
+    rmSync(forged);
+    const misnamed=join(evidence,"KIT-EVD-901x.json");
+    writeFileSync(misnamed,`${JSON.stringify({schema_version:1,id:"KIT-EVD-901x",change:"KIT-CHG-006"},null,2)}\n`,"utf8");
+    const named=validate();
+    assert.equal(named.status,1,`a misnamed record must not skip validation\n${named.stdout}${named.stderr}`);
+    assert.match(`${named.stdout}${named.stderr}`,/KIT-EVD-901x\.json: record file name must match/);
+    rmSync(misnamed);
+    mkdirSync(join(evidence,"KIT-EVD-014-logs"),{recursive:true});
+    writeFileSync(join(evidence,"KIT-EVD-014-logs","raw.json"),"{}\n","utf8");
+    const logs=validate();
+    assert.equal(logs.status,0,`raw evidence logs must not be validated as records\n${logs.stdout}${logs.stderr}`);
+    const dateOnly=join(evidence,"KIT-EVD-011.json"),record=JSON.parse(readFileSync(dateOnly,"utf8"));
+    writeFileSync(dateOnly,`${JSON.stringify({...record,performed_at:new Date(Date.now()+86400000).toISOString().slice(0,10)},null,2)}\n`,"utf8");
+    const legacy=validate();
+    assert.equal(legacy.status,0,`date-only timestamps must not fail on a time-zone boundary\n${legacy.stdout}${legacy.stderr}`);
   }finally{rmSync(temp,{recursive:true,force:true});}
 });
 test("new-project reports child-process startup failures before export validation",()=>{const source=readFileSync(KIT,"utf8");assert.match(source,/if\(run\.error\)throw new Error\(`project-bootstrap process failed:/);assert.match(source,/if\(run\.status!==0\)throw new Error/);});

@@ -27,7 +27,8 @@
     "과거 Python 실행을 증명하는 evidence·release 이력의 사실 보존",
     "잠긴 세션에서 따옴표 밖 PowerShell ()·@() 그룹식으로 읽기 명령 뒤 쓰기를 실행하는 승인 게이트 우회 차단",
     "portable CLI 선택 scalar·append 옵션의 값 누락을 argparse와 같은 종료 코드 2로 거부",
-    "죽은 cleanup 잠금 소유자의 잔여 잠금을 PID·token 재확인 뒤 회수하고 살아 있는 소유자는 실패 폐쇄형으로 보존"
+    "죽은 cleanup 잠금 소유자의 잔여 잠금을 PID·token 재확인 뒤 회수하고 살아 있는 소유자는 실패 폐쇄형으로 보존",
+    "portable 훅 테스트의 Codex 루트 해석 단정을 저장소 역할별로 분기하고 배포물 안에서 portable AIDD 테스트 통과를 회귀 검사"
   ],
   "validation": [
     "repository-wide executable .py absence and provider Python-command rejection",
@@ -54,7 +55,8 @@
     "PowerShell ()·@() 그룹식 deny와 따옴표 안 괄호를 포함한 단일 읽기 명령 allow 회귀 테스트",
     "선택 scalar·append 값 누락과 nargs+ 값 부족 종료 코드 2, nargs* 빈 그룹 보존 회귀 테스트",
     "죽은 main·cleanup 잠금 동시 회수와 살아 있는 cleanup 잠금 fail-closed 회귀 테스트",
+    "kit-template export와 sample new-project 안에서 portable AIDD 테스트 전체 통과 회귀 테스트",
     "independent C3 compatibility and security review"
   ],
-  "completion_blocker": "KIT-EVD-012의 HIGH 3건과 MEDIUM 2건은 수정했고 KIT-EVD-013·014에 수정 및 이전 불변 구현 커밋 검증을 기록했다. 후속 독립 재검토에서 발견된 PowerShell ()·@() 승인 게이트 우회, portable 선택 옵션 값 누락, 죽은 cleanup 잠금 잔여 문제의 수정과 표적 검증은 KIT-EVD-015에 기록했다. KIT-EVD-016은 후속 수정 불변 커밋 74dd1f8f36280c24ab72ae4bac80651951af3cfe에서 전체 64/64와 export·sample을 확인했다. 다음 독립 재검토에서 발견된 Git 미초기화 export 훅 실패와 /hooks 실제 정의가 바뀌지 않은 경우의 재승인 오탐을 a13777c1c316424ee5e4a0131de5795828bced40에서 수정했고, KIT-EVD-017은 전체 66/66, directory·ZIP 168개 파일 동일성, sample new-project, rollback 실패 폐쇄 동작을 확인했다. KIT-EVD-018 독립 재검토의 version 2 승인 승격 HIGH와 ADR 모순 MEDIUM은 58ee9f8385c1b8fffc01522ab70f40c7f5050556과 KIT-ADR-008에서 수정했다. KIT-EVD-019는 전체 67/67과 export·sample을 확인했다. KIT-EVD-020 독립 closure 검토의 Desktop 재시작/CLI 승인 결합 MEDIUM은 fef5632c1fc4cb88c0c1c88e598742541ac7ab45에서 수정했고, KIT-EVD-021은 전체 68/68, 혼용 상태 회귀, directory·ZIP 168개 동일성과 sample 검증을 확인했다. KIT-EVD-022 독립 C3 최종 재검토는 기존 발견사항이 모두 해소됐고 새 발견사항이 없음을 PASS로 판정했다. KIT-EVD-023은 실제 Windows Codex Desktop의 신규 승인·재시작·PreToolUse 실행을 확인했다. 실제 macOS Codex·Claude provider 실행은 고객의 macOS 환경 부재로 연기했으며, 환경을 확보하면 재개한다. 이 위험 때문에 변경은 in_review이며 완료·출시 준비 완료가 아니다."
+  "completion_blocker": "KIT-EVD-012의 HIGH 3건과 MEDIUM 2건은 수정했고 KIT-EVD-013·014에 수정 및 이전 불변 구현 커밋 검증을 기록했다. 후속 독립 재검토에서 발견된 PowerShell ()·@() 승인 게이트 우회, portable 선택 옵션 값 누락, 죽은 cleanup 잠금 잔여 문제의 수정과 표적 검증은 KIT-EVD-015에 기록했다. KIT-EVD-016은 후속 수정 불변 커밋 74dd1f8f36280c24ab72ae4bac80651951af3cfe에서 전체 64/64와 export·sample을 확인했다. 다음 독립 재검토에서 발견된 Git 미초기화 export 훅 실패와 /hooks 실제 정의가 바뀌지 않은 경우의 재승인 오탐을 a13777c1c316424ee5e4a0131de5795828bced40에서 수정했고, KIT-EVD-017은 전체 66/66, directory·ZIP 168개 파일 동일성, sample new-project, rollback 실패 폐쇄 동작을 확인했다. KIT-EVD-018 독립 재검토의 version 2 승인 승격 HIGH와 ADR 모순 MEDIUM은 58ee9f8385c1b8fffc01522ab70f40c7f5050556과 KIT-ADR-008에서 수정했다. KIT-EVD-019는 전체 67/67과 export·sample을 확인했다. KIT-EVD-020 독립 closure 검토의 Desktop 재시작/CLI 승인 결합 MEDIUM은 fef5632c1fc4cb88c0c1c88e598742541ac7ab45에서 수정했고, KIT-EVD-021은 전체 68/68, 혼용 상태 회귀, directory·ZIP 168개 동일성과 sample 검증을 확인했다. KIT-EVD-022 독립 C3 최종 재검토는 기존 발견사항이 모두 해소됐고 새 발견사항이 없음을 PASS로 판정했다. KIT-EVD-023은 실제 Windows Codex Desktop의 신규 승인·재시작·PreToolUse 실행을 확인했다. 실제 macOS Codex·Claude provider 실행은 고객의 macOS 환경 부재로 연기했으며, 환경을 확보하면 재개한다. 이어진 독립 spec 적합성 검토에서 portable `harness.test.mjs`의 Windows 훅 테스트가 kit-source 형태의 `.codex/hooks.json`만 단정해 배포물에서 4건 실패하고 export된 CI가 첫 실행부터 실패하는 적합성 위반을 확인했다. 테스트를 역할별 루트 해석 계약으로 분기하고 `kit.test.mjs`에 배포물 AIDD 테스트 회귀 검사를 추가한 수정과 검증은 KIT-EVD-024에 기록했으며, 같은 구현 흐름의 검증이므로 독립 재검토가 다시 필요하다. 이 위험 때문에 변경은 in_review이며 완료·출시 준비 완료가 아니다."
 }

@@ -23,6 +23,21 @@ test("Kit CLI accepts equals-form options",()=>{const temp=mkdtempSync(join(tmpd
 test("source and export boundary validate",()=>{const result=run(["validate"]);assert.equal(result.status,0,result.stderr);});
 test("template export contains no management tree and carries the approval gate",()=>{const temp=mkdtempSync(join(tmpdir(),"aidd-export-test-")),output=join(temp,"template");try{const result=run(["export","--directory",output]);assert.equal(result.status,0,result.stderr);assert.ok(existsSync(join(output,".ai/tools/aidd.mjs")));assert.ok(!existsSync(join(output,".aidd-kit-dev")));assert.equal(JSON.parse(readFileSync(join(output,".aidd-role.json"),"utf8")).role,"kit-template");const config=JSON.stringify(JSON.parse(readFileSync(join(output,".codex/hooks.json"),"utf8")).hooks);assert.match(config,/approval-gate/);assert.match(config,/acknowledge/);assert.match(config,/approval-status/);assert.doesNotMatch(config,/project-init/);}finally{rmSync(temp,{recursive:true,force:true});}});
 test("new project bootstraps with Node only",()=>{const temp=mkdtempSync(join(tmpdir(),"aidd-project-test-")),output=join(temp,"product");try{const result=run(["new-project","--directory",output,"--project-id","TEST","--name","테스트","--mode","greenfield"]);assert.equal(result.status,0,result.stderr);assert.ok(existsSync(join(output,"project/.aidd/ssot/project.json")));assert.equal(JSON.parse(readFileSync(join(output,".aidd-role.json"),"utf8")).role,"product-workspace");const validate=spawnSync(process.execPath,[join(output,".ai/tools/aidd.mjs"),"validate"],{cwd:output,encoding:"utf8"});assert.equal(validate.status,0,validate.stdout+validate.stderr);}finally{rmSync(temp,{recursive:true,force:true});}});
+test("distributed AIDD tests pass in both export shapes",()=>{
+  const temp=mkdtempSync(join(tmpdir(),"aidd-distributed-tests-")),template=join(temp,"template"),product=join(temp,"product");
+  try{
+    const exported=run(["export","--directory",template]);
+    assert.equal(exported.status,0,exported.stderr);
+    const created=run(["new-project","--directory",product,"--project-id","DIST-TEST","--name","배포 테스트","--mode","greenfield"]);
+    assert.equal(created.status,0,created.stderr);
+    for(const output of [template,product]){
+      const suite=readdirSync(join(output,".ai/tests")).filter(name=>name.endsWith(".test.mjs")).map(name=>join(output,".ai/tests",name));
+      assert.ok(suite.length,`distributed AIDD tests are missing in ${output}`);
+      const result=spawnSync(process.execPath,["--test",...suite],{cwd:output,encoding:"utf8"});
+      assert.equal(result.status,0,`${output}\n${result.stdout}${result.stderr}`);
+    }
+  }finally{rmSync(temp,{recursive:true,force:true});}
+});
 test("new-project reports child-process startup failures before export validation",()=>{const source=readFileSync(KIT,"utf8");assert.match(source,/if\(run\.error\)throw new Error\(`project-bootstrap process failed:/);assert.match(source,/if\(run\.status!==0\)throw new Error/);});
 test("export provenance treats an unavailable Git status as dirty",()=>{const source=readFileSync(KIT,"utf8");assert.match(source,/source_dirty:status\.status!==0\|\|Boolean\(status\.stdout\.trim\(\)\)/);});
 test("export staging is removed on success and failure",()=>{const source=readFileSync(KIT,"utf8");assert.match(source,/try\{mkdirSync\(stage\)/);assert.match(source,/finally\{rmSync\(temp,\{recursive:true,force:true\}\);\}/);});

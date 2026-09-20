@@ -13,7 +13,7 @@ function run(workspace,args){
   return spawnSync(process.execPath,[join(workspace,".ai/tools/aidd.mjs"),...args],{cwd:workspace,encoding:"utf8"});
 }
 
-test("PM reviews then atomically applies terminology while team members cannot apply it",()=>{
+test("team members prepare read-only terminology cards while only PM applies them",()=>{
   const temporary=mkdtempSync(join(tmpdir(),"aidd-terminology-policy-")),workspace=join(temporary,"workspace");
   try{
     cpSync(join(ROOT,".ai"),join(workspace,".ai"),{recursive:true});
@@ -41,13 +41,19 @@ test("PM reviews then atomically applies terminology while team members cannot a
     writeJson(collaborationPath,collaboration);
     spawnSync("git",["config","user.name","member"],{cwd:workspace,encoding:"utf8"});
     spawnSync("git",["config","user.email","member@example.com"],{cwd:workspace,encoding:"utf8"});
+    const memberReview=run(workspace,["term-review","--action","add","--id","TRM-002","--term","지원 요청","--key","supportRequest","--concept-type","business","--category","고객지원/처리","--definition",definition,"--scope",scope,"--example","지원 요청 SR-123의 처리 상태를 확인한다.","--related-term","TRM-001","--distinguish-from","TRM-001","--distinction","지원 요청은 지원 조직이 접수하고 처리 상태를 추적하지만 고객 요청은 분석 전 입력 전체를 뜻한다.","--decision-rule","지원 조직의 접수 번호와 상태가 있으면 지원 요청으로 부른다.","--requested-by","HUM-002","--target-pm","HUM-001","--audience","end_user","--visibility","customer"]);
+    assert.equal(memberReview.status,0,memberReview.stderr);
+    assert.match(memberReview.stdout,/카드 작성자: HUM-002/);
+    assert.match(memberReview.stdout,/확인 대상 PM: HUM-001/);
+    assert.match(memberReview.stdout,/PM 전달용 용어 확인 카드/);
+    assert.equal(readFileSync(terminologyPath,"utf8"),beforeReview);
     const denied=run(workspace,["term-apply","--action","add","--id","TRM-002","--history","TCH-002","--term","지원 요청","--key","supportRequest","--concept-type","business","--category","고객지원/처리","--definition",definition,"--scope",scope,"--approved-by","HUM-002","--summary","팀원 적용 시도"]);
     assert.notEqual(denied.status,0);
     assert.match(denied.stderr,/활성 PM만 요청하고 승인/);
 
     spawnSync("git",["config","user.name","joobok"],{cwd:workspace,encoding:"utf8"});
     spawnSync("git",["config","user.email","bbundoli@naver.com"],{cwd:workspace,encoding:"utf8"});
-    const added=run(workspace,["term-apply","--action","add","--id","TRM-002","--history","TCH-002","--term","지원 요청","--key","supportRequest","--concept-type","business","--category","고객지원/처리","--definition",definition,"--scope",scope,"--example","지원 요청 SR-123의 처리 상태를 확인한다.","--related-term","TRM-001","--distinguish-from","TRM-001","--distinction","지원 요청은 지원 조직이 접수하고 처리 상태를 추적하지만 고객 요청은 분석 전 입력 전체를 뜻한다.","--decision-rule","지원 조직의 접수 번호와 상태가 있으면 지원 요청으로 부른다.","--confusion-reason","요구분석에서 두 표현이 같은 뜻으로 사용됐다.","--approved-by","HUM-001","--summary","PM 영향 검토 후 용어 추가","--audience","project_team"]);
+    const added=run(workspace,["term-apply","--action","add","--id","TRM-002","--history","TCH-002","--term","지원 요청","--key","supportRequest","--concept-type","business","--category","고객지원/처리","--definition",definition,"--scope",scope,"--example","지원 요청 SR-123의 처리 상태를 확인한다.","--related-term","TRM-001","--distinguish-from","TRM-001","--distinction","지원 요청은 지원 조직이 접수하고 처리 상태를 추적하지만 고객 요청은 분석 전 입력 전체를 뜻한다.","--decision-rule","지원 조직의 접수 번호와 상태가 있으면 지원 요청으로 부른다.","--confusion-reason","요구분석에서 두 표현이 같은 뜻으로 사용됐다.","--approved-by","HUM-001","--summary","PM 영향 검토 후 용어 추가","--audience","end_user","--visibility","customer"]);
     assert.equal(added.status,0,added.stderr);
     assert.match(added.stdout,/파생 문서 생성, 전체 검증을 완료/);
     const afterAdd=readJson(terminologyPath).terms.find(item=>item.id==="TRM-002");
@@ -56,6 +62,8 @@ test("PM reviews then atomically applies terminology while team members cannot a
     assert.deepEqual(afterAdd.related_terms,["TRM-001"]);
     assert.equal(afterAdd.distinctions[0].term,"TRM-001");
     assert.match(readFileSync(join(workspace,"project/docs/generated/glossary.md"),"utf8"),/헷갈리기 쉬운 용어 구분/);
+    assert.match(readFileSync(join(workspace,"project/docs/generated/site/operations/index.html"),"utf8"),/지원 요청/);
+    assert.match(readFileSync(join(workspace,"project/docs/generated/site/user/index.html"),"utf8"),/지원 요청/);
 
     const changed=run(workspace,["term-apply","--action","change","--id","TRM-002","--history","TCH-003","--term","서비스 요청","--approved-by","HUM-001","--summary","PM 확인 후 명칭 변경"]);
     assert.equal(changed.status,0,changed.stderr);

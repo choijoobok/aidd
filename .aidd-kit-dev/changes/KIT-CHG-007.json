@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-007",
+  "title": "팀원 용어 확인 카드와 오프라인 PM 전달",
+  "class": "C1",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "읽기 전용 term-review까지 PM 신원을 요구해 설계 중 새 용어를 발견한 팀원이 영향 카드 자체를 만들 수 없고, 서로 다른 세션이나 오프라인 협업에서 PM에게 전달하는 절차가 명확하지 않았다.",
+  "intent": "모든 활성 팀원은 정본을 바꾸지 않는 용어 확인 카드를 만들 수 있게 하고, 카드 복사·PM 확인·PM 전용 적용 흐름과 오프라인 HTML 용어집 위치를 프로젝트 배포 가이드에 명시한다.",
+  "scope": [
+    "활성 팀원용 읽기 전용 term-review와 확인 대상 PM 선택",
+    "PM 전달에 충분한 용어 확인 카드 출력",
+    "PM 신원으로만 허용되는 term-apply 유지",
+    "프로젝트 팀 가이드와 portable 스킬·계약 현행화",
+    "내부·최종 사용자 오프라인 HTML 용어집 포함 여부 표적 테스트"
+  ],
+  "validation": [
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "node --test .aidd-kit-dev/tests/terminology.test.mjs",
+    "node .aidd-kit-dev/tests/aidd.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke"
+  ],
+  "risks": [
+    "팀원이 작성한 카드는 영향 후보일 뿐 승인이나 정본이 아니므로 PM 적용 전 내용 확인이 필요하다.",
+    "활성 PM이 여러 명이면 확인 대상을 명시하지 않은 팀원 review를 허용하지 않는다."
+  ],
+  "rollback": "팀원용 term-review 권한과 오프라인 전달 안내를 제거하고 term-review·term-apply 모두 PM 신원을 요구하는 KIT-CHG-006 흐름으로 되돌린다.",
+  "completion_blocker": "없음"
+}

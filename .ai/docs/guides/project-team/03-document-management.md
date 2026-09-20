@@ -68,7 +68,7 @@ node .ai/tools/aidd.mjs validate
 
 `.ai/manifests/terminology.json`은 공통 AIDD 용어 정본이며 프로젝트가 바꾸거나 같은 뜻을 재정의하지 않는다. 업무 용어는 `project/.aidd/ssot/terminology.json`에서 관리한다.
 
-프로젝트 용어의 추가·변경·제거는 PM만 확인한다. 팀원이 다른 표현이나 용어 문제를 발견하면 PM과 바로 협의하며 별도 제안·승인 대기·반려 상태를 만들지 않는다.
+프로젝트 용어의 실제 추가·변경·제거는 PM만 확인하고 적용한다. 다만 모든 활성 팀원은 자신의 Git 신원으로 읽기 전용 `term-review`를 실행해 용어 확인 카드와 영향 후보를 만들 수 있다. 이 단계는 용어 정본을 바꾸거나 제안·승인 대기·반려 상태를 만들지 않는다.
 
 용어는 먼저 네 개의 공통 개념 유형으로 나누고, 그 안에서 프로젝트별 분류를 사용한다.
 
@@ -81,29 +81,41 @@ node .ai/tools/aidd.mjs validate
 
 `category`는 프로젝트 도메인에 맞게 정하며 필요하면 `고객지원/접수`처럼 상위·하위 영역을 표현한다. 정의에는 “무엇인가”, 적용 범위에는 “언제·어디에 쓰는가”를 적는다. 별칭은 같은 뜻의 검색 표현이고 권장 표기는 하나로 유지한다. 비슷하지만 다른 개념은 별칭으로 합치지 않고 관련 용어와 혼동 구분에 차이와 선택 판단 규칙을 적는다. 외부 어휘는 출처를 남기고 프로젝트 명명의 기준과 구분한다.
 
-요구분석·설계 중 AI는 반복될 새 개념, 사람마다 다르게 해석할 표현, 기존 용어와 이름은 비슷하지만 범위가 다른 표현, 정의에 따라 요구·설계가 달라지는 표현만 용어 후보로 다룬다. 먼저 기존 용어를 검색하고 같은 뜻이면 별칭을 검토한다. 명확화가 필요하면 영향 브리핑을 포함한 확인 카드를 PM에게 제시한다.
+요구분석·설계 중 AI는 반복될 새 개념, 사람마다 다르게 해석할 표현, 기존 용어와 이름은 비슷하지만 범위가 다른 표현, 정의에 따라 요구·설계가 달라지는 표현만 용어 후보로 다룬다. 먼저 기존 용어를 검색하고 같은 뜻이면 별칭을 검토한다. 명확화가 필요하면 영향 브리핑을 포함한 확인 카드를 현재 팀원에게 보여준다.
 
-> “서비스 요청”이 요구사항에 반복되는데 기존 “고객 요청”과 같은 뜻인지, 별도 처리 상태를 가진 다른 개념인지에 따라 API와 상태 모델이 달라져. `business / 고객지원`, 적용 범위는 “지원 조직이 접수하고 상태를 추적하는 요청”, 고객 요청과의 판단 기준은 “접수·상태 추적 여부”로 등록해도 될까?
+> 설계 중 “서비스 요청”이라는 새 용어가 나왔어. 기존 용어를 먼저 확인하고, 별도 개념이라면 정의·범위·사용 예·혼동 구분과 영향 후보가 포함된 PM 전달용 용어 확인 카드를 만들어줘. 아직 용어집은 변경하지 마.
 
-PM이 동의하면 그 답을 용어 변경 승인으로 보고 AI가 별도 요청이나 두 번째 확인 없이 관련 요구사항·설계·데이터·API·화면·문서·소스 주석과 용어집을 함께 현행화하고 생성·검증까지 완료한다. 보류하거나 정의를 수정하면 정본은 바꾸지 않고 같은 분석 대화에서 다시 명확히 한다. 일회성 표현이나 일반적인 일상어는 등록하지 않는다.
+같은 세션에 PM이 있으면 확인 카드를 바로 검토받는다. PM이 자리에 없으면 팀원이 `term-review` 결과 전체를 복사해 메신저·메일·회의 문서 등 프로젝트가 쓰는 오프라인 채널로 PM에게 전달한다. 별도 AIDD 제안 레코드를 만들 필요는 없다.
 
-> PM으로서 프로젝트에 “고객 요청”이라는 용어를 추가하려고 해. 아직 변경하지 말고 공통·현재 프로젝트 용어 충돌과 요구사항·설계·데이터·API·화면·테스트·문서·소스 주석 영향 후보를 먼저 브리핑해줘.
+팀원 `HUM-002`가 PM `HUM-001`에게 전달할 카드를 직접 만들 때의 명령 예시는 다음과 같다. 활성 PM이 한 명이면 `--target-pm`은 생략할 수 있고, 여러 명이면 반드시 지정한다.
 
 ```powershell
-node .ai/tools/aidd.mjs term-review --action add --id TRM-001 --term "고객 요청" --key customerRequest --concept-type business --category "고객지원/접수" --definition "고객이 처리를 요청한 업무 단위" --scope "접수부터 처리 종료까지 추적하는 요청" --example "고객 요청 REQ-123을 접수했다" --requested-by HUM-001 --audience project_team --visibility customer
+node .ai/tools/aidd.mjs term-review --action add --id TRM-001 --term "고객 요청" --key customerRequest --concept-type business --category "고객지원/접수" --definition "고객이 처리를 요청한 업무 단위" --scope "접수부터 처리 종료까지 추적하는 요청" --example "고객 요청 REQ-123을 접수했다" --requested-by HUM-002 --target-pm HUM-001 --audience project_team --visibility customer
 ```
 
-`term-review`는 읽기 전용이며 용어 정본을 바꾸지 않는다. PM이 브리핑을 검토하고 진행을 확인하면 AI에게 한 번에 마무리하도록 요청한다.
+`term-review`는 카드 작성자의 현재 Git 신원이 `--requested-by`의 활성 참여자와 일치하는지만 확인한다. 출력에는 카드 작성자, 확인 대상 PM, 정의·범위·예시·관련·혼동 용어, 공개 범위, 영향 후보와 적용 전 해결 사항이 함께 들어간다.
 
-> 영향 브리핑을 확인했어. 이 용어 추가를 승인해. 브리핑에서 찾은 요구사항과 문서, 소스 주석을 모두 현행화하고 용어를 적용한 뒤 파생 문서 생성, 검증과 변경 이력 저장까지 완료해줘.
+PM은 전달받은 카드의 내용을 확인·수정한 뒤 자신의 AI 세션에 카드 전체와 승인 의사를 함께 전달한다.
 
-AI는 관련 정본·문서·소스 주석을 먼저 현행화한 뒤 다음 적용 명령으로 현재 용어와 `TCH` 이력을 함께 저장한다. 명령은 용어집을 포함한 파생 문서를 다시 생성하고 전체 `validate`까지 통과해야 성공한다.
+> 아래 용어 확인 카드의 내용으로 “고객 요청” 추가를 승인해. 카드에서 찾은 요구사항과 문서, 소스 주석을 모두 현행화하고 용어를 적용한 뒤 파생 문서 생성, 검증과 변경 이력 저장까지 완료해줘.
+
+AI는 현재 Git 신원이 승인한 활성 PM과 일치하는지 확인하고 관련 정본·문서·소스 주석을 먼저 현행화한 뒤 다음 적용 명령으로 현재 용어와 `TCH` 이력을 함께 저장한다. `term-apply`는 계속 PM 전용이며, 명령은 용어집을 포함한 파생 문서를 다시 생성하고 전체 `validate`까지 통과해야 성공한다.
 
 ```powershell
 node .ai/tools/aidd.mjs term-apply --action add --id TRM-001 --history TCH-001 --term "고객 요청" --key customerRequest --concept-type business --category "고객지원/접수" --definition "고객이 처리를 요청한 업무 단위" --scope "접수부터 처리 종료까지 추적하는 요청" --example "고객 요청 REQ-123을 접수했다" --approved-by HUM-001 --summary "영향 브리핑 검토 후 요구사항·문서·소스 주석과 함께 반영" --audience project_team --visibility customer --affected project/.aidd/ssot/requirements.json --affected project/src
 ```
 
 사용 예는 `--example`, 관련 용어는 `--related-term`을 반복할 수 있다. 실제 혼동되는 기존 용어가 있으면 `--distinguish-from TRM-002 --distinction "두 개념의 핵심 차이" --decision-rule "어느 상황에서 어느 용어를 선택하는지"`를 함께 사용한다. 변경은 `--action change`, 제거는 `--action remove`를 사용한다. 제거하거나 이름·key·별칭을 바꿀 때 이전 표현이 확정 정본이나 소스에 남아 있으면 적용이 차단된다. `project/docs/generated/glossary.md`와 HTML은 생성물이므로 직접 고치지 않는다.
+
+### 오프라인 HTML 용어집
+
+`generate` 또는 정상 `term-apply`가 파생 문서를 만들 때 용어집도 함께 생성한다.
+
+- `project/docs/generated/glossary.md`: 공통 AIDD 용어와 프로젝트 용어를 합친 내부용 Markdown
+- `project/docs/generated/site/operations/index.html`: 내부 운영·개발 가이드에 포함된 통합 용어 사전
+- `project/docs/generated/site/user/index.html`: `visibility: customer`이고 독자에 `end_user`가 포함된 프로젝트 용어만 보여주는 최종 사용자용 사전
+
+전달 프로필의 `includes`에 `glossary`가 있으면 `delivery-glossary --profile DLP-ID --directory 출력경로`로 Markdown, `index.html`, 정적 자산과 manifest를 갖춘 독립 오프라인 용어집 패키지도 조립할 수 있다. `glossary.audience`가 `internal`이면 통합 용어집을, `end_user`이면 공개 가능한 최종 사용자 용어만 포함한다.
 
 ## 작업 기록과 대화 원문
 

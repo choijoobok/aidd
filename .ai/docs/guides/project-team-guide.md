@@ -8,7 +8,7 @@
 |---|---|
 | 템플릿을 받아 새 프로젝트를 만드는 중 | [프로젝트 준비와 시작](project-team/01-project-setup.md) |
 | 요구사항부터 운영까지 전체 순서를 알고 싶음 | [수행 생명주기](project-team/02-lifecycle.md) |
-| 정본·생성 문서·작업 기록을 구분하고 싶음 | [문서 관리](project-team/03-document-management.md) |
+| 정본·생성 문서·작업 기록·용어 사전을 관리하고 싶음 | [문서 관리](project-team/03-document-management.md) |
 | AI 스킬과 훅이 언제 무엇을 하는지 알고 싶음 | [스킬과 훅](project-team/04-skills-and-hooks.md) |
 | 1인 또는 팀 Git 작업·인계·병합을 운영함 | [팀 작업 흐름](project-team/05-team-workflow.md) |
 | 완료·출시·운영 전 확인 항목이 필요함 | [완료와 출시](project-team/06-completion-and-release.md) |

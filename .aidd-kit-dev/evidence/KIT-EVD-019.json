@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "id": "KIT-EVD-019",
+  "change": "KIT-CHG-004",
+  "kind": "post-commit-full-regression-export-sample-validation",
+  "performed_by": "Codex same-session post-commit verification; not independent assurance",
+  "performed_at": "2026-09-20T09:19:49.0760365+09:00",
+  "implementation_commit": "58ee9f8385c1b8fffc01522ab70f40c7f5050556",
+  "branch": "main",
+  "validation_working_tree_dirty": false,
+  "status": "passed-awaiting-provider-runs-and-independent-rereview",
+  "title": "version 2 승인 마이그레이션 fail-closed 수정 불변 커밋의 전체 검증",
+  "scope": [
+    "C3-FINAL-FND-001 version 2 승인 상태 승격 차단과 실제 provider 정의 변경 부정 회귀",
+    "C3-FINAL-FND-002를 대체한 KIT-ADR-008과 portable·export 문서 정합성",
+    "provider 동기화, Kit 경계, Kit 관리·portable 전체 회귀",
+    "directory·ZIP export 동일성과 sample new-project 검증",
+    "롤백 시 재발 위험과 안전한 비활성화 제약"
+  ],
+  "environment": {
+    "operating_system": "Windows managed session",
+    "node": "v22.12.0",
+    "verification_root": "C:/Users/missy/AppData/Local/Temp/aidd-kit-verify-58ee9f8-28569eb5a7fe42cea77e8704b63adf43"
+  },
+  "commands": [
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "node .aidd-kit-dev/tools/kit.mjs validate",
+    "node --test .aidd-kit-dev/tests/*.test.mjs",
+    "node --test .ai/tests/*.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs export --directory <verify-root>/template-directory",
+    "node .aidd-kit-dev/tools/kit.mjs export --zip <verify-root>/template.zip",
+    "node .aidd-kit-dev/tools/kit.mjs new-project --directory <verify-root>/sample-project --project-id SAMPLE --name AIDD Sample --mode greenfield",
+    "node .ai/tools/aidd.mjs validate"
+  ],
+  "result": {
+    "provider_sync": {
+      "result": "passed",
+      "post_check": "provider 어댑터 동기화 뒤 working tree clean"
+    },
+    "kit_validation": "AIDD Kit source and export boundary validation passed",
+    "kit_tests": "43/43 passed, 0 failed, 0 skipped, 0 cancelled",
+    "portable_tests": "24/24 passed, 0 failed, 0 skipped, 0 cancelled",
+    "total_tests": "67/67 passed",
+    "security_regression": {
+      "legacy_v2_migration": "unconfirmed deny followed by explicit existing-approval confirmation",
+      "actual_definition_change_during_migration": "deny",
+      "actual_definition_change_after_version_3_approval": "deny"
+    },
+    "directory_export": {
+      "role": "kit-template",
+      "file_count": 168,
+      "source_commit": "58ee9f8385c1b8fffc01522ab70f40c7f5050556",
+      "source_dirty": false,
+      "kit_version": "0.2.0",
+      "export_manifest_sha256": "7dd166f7f8b8f78c052d4cda41796f740eb166642af0c42ffcf5f88d1cf91bcc",
+      "payload_sha256": "2d6251c69864fbf64ed7a0be7eb157dea0449ccf967d9801c5ddf1d7d7fafa19",
+      "management_tree_present": false
+    },
+    "zip_export": {
+      "role": "kit-template",
+      "file_count": 168,
+      "source_commit": "58ee9f8385c1b8fffc01522ab70f40c7f5050556",
+      "source_dirty": false,
+      "kit_version": "0.2.0",
+      "zip_sha256": "1818648b134a6f0bb43be3545e52012c3bf5e66cb71b1b47a19a7ec0e0880954",
+      "export_manifest_sha256": "7dd166f7f8b8f78c052d4cda41796f740eb166642af0c42ffcf5f88d1cf91bcc",
+      "payload_sha256": "2d6251c69864fbf64ed7a0be7eb157dea0449ccf967d9801c5ddf1d7d7fafa19",
+      "management_tree_present": false
+    },
+    "export_parity": {
+      "directory_files": 168,
+      "zip_files": 168,
+      "missing": 0,
+      "extra": 0,
+      "different_sha256": 0
+    },
+    "sample_project": {
+      "role": "product-workspace",
+      "project_id": "SAMPLE",
+      "project_name": "AIDD Sample",
+      "delivery_mode": "greenfield",
+      "phase": "bootstrap",
+      "ssot_file_count": 32,
+      "management_tree_present": false,
+      "source_commit": "58ee9f8385c1b8fffc01522ab70f40c7f5050556",
+      "source_dirty": false,
+      "validation": "Validation passed with 0 warning(s)",
+      "provider_skill_parity": {
+        "canonical_files": 37,
+        "agents_files": 37,
+        "claude_files": 37,
+        "agents_differences": 0,
+        "claude_differences": 0
+      }
+    },
+    "rollback": {
+      "direct_revert_safe": false,
+      "reason": "직전 구현으로 되돌리면 version 2 승인 상태가 실제 새 provider 정의로 승격되는 C3-FINAL-FND-001이 재발한다.",
+      "safe_constraint": "현재 fail-closed 마이그레이션을 유지한다. 되돌려야 하면 Codex approval-gate 배선을 먼저 비활성화하고 동등한 수동 승인 통제를 적용한 뒤 새 세션에서 재검증하며, pre-Git session-cwd export 수정은 유지한다."
+    }
+  },
+  "assurance_boundary": {
+    "independent_review": false,
+    "release_ready": false,
+    "reason": "구현과 같은 작업 흐름의 검증이며 실제 provider 실행과 수정 흐름에서 분리된 새 C3 재검토가 남아 있다."
+  },
+  "open_items": [
+    "실제 Windows Codex Desktop UserPromptSubmit·PreToolUse와 새 앱 세션 분기 검증",
+    "실제 macOS Codex·Claude provider 실행 검증",
+    "58ee9f8 구현 흐름과 분리된 C3 보안·호환성·의미 동등성 재검토"
+  ]
+}

@@ -15,6 +15,7 @@ const readJson=path=>JSON.parse(readFileSync(path,"utf8"));
 function input(){try{return JSON.parse(readFileSync(0,"utf8")||"{}");}catch{return{};}}
 function text(value){return typeof value==="string"?value:JSON.stringify(value??{});}
 function payloadText(payload){return slash(text(payload.tool_input??payload.tool_input_json??payload));}
+function workspaceRole(fallback="product-workspace"){try{return readJson(join(ROOT,".aidd-role.json")).role;}catch{return fallback;}}
 const CODEX_HOOK_REVIEW_MESSAGE="⚠️ AIDD Codex 훅 확인 필수\nCodex CLI에서 `/hooks`를 열어 이 작업공간의 훅을 검토하고 신뢰 처리했는지 반드시 확인하세요. 신규·변경 훅은 신뢰 전에 실행되지 않습니다.";
 
 export function generatedWriteError(payload,policy=readJson(POLICY)){
@@ -53,6 +54,12 @@ export function codexHookReviewOutput(){
   return {continue:true,systemMessage:CODEX_HOOK_REVIEW_MESSAGE};
 }
 
+export function skillSyncNotice(payload,currentRole=workspaceRole(),contract=readJson(CONTRACT)){
+  const rule=contract.skill_sync_guidance?.[currentRole];
+  if(!rule||!(rule.trigger_paths??[]).some(path=>payloadText(payload).includes(path)))return null;
+  return `AIDD note: run \`${rule.command}\` before sharing skill changes.`;
+}
+
 function codexHookReviewReminder(){
   console.log(JSON.stringify(codexHookReviewOutput()));
 }
@@ -65,6 +72,7 @@ export function harnessErrors(){
   if(Number(process.versions.node.split(".")[0])<22)errors.push("hook runtime must be Node.js 22 or newer");
   if(!Array.isArray(policy.generated_roots)||!policy.generated_roots.length)errors.push("policy must declare generated_roots");
   for(const event of ["SessionStart","PreToolUse","PostToolUse","UserPromptSubmit","Stop"])if(!Array.isArray(contract.events?.[event]?.required_tokens))errors.push(`contract event missing: ${event}`);
+  for(const role of ["kit-source","kit-template","product-workspace"]){const rule=contract.skill_sync_guidance?.[role];if(!Array.isArray(rule?.trigger_paths)||!rule.trigger_paths.length||!String(rule?.command??"").trim())errors.push(`contract skill sync guidance missing for ${role}`);}
   for(const path of PROVIDERS.filter(path=>existsSync(join(ROOT,path))))errors.push(...providerEventErrors(path,contract));
   return errors;
 }
@@ -76,19 +84,19 @@ function selfTest(){
 }
 
 function sessionBrief(){
-  try{
-    const role=readJson(join(ROOT,".aidd-role.json")).role;
-    console.log(`# AIDD session\n- role: ${role}\n- hooks: protect generated output, refresh terminology after SSOT changes, and keep optional local conversation logs`);
-  }catch{console.log("# AIDD session\n- workspace role marker is unavailable");}
+  const role=workspaceRole(null);
+  if(role)console.log(`# AIDD session\n- role: ${role}\n- hooks: protect generated output, refresh terminology after SSOT changes, and keep optional local conversation logs`);
+  else console.log("# AIDD session\n- workspace role marker is unavailable");
 }
 
 function postCheck(){
-  const source=payloadText(input());
+  const payload=input(),source=payloadText(payload);
   if(source.includes("project/.aidd/ssot/terminology.json")){
     const run=spawnSync(process.execPath,[join(ROOT,".ai/tools/aidd.mjs"),"terminology-refresh"],{cwd:ROOT,encoding:"utf8"});
     if(run.status!==0)console.error("AIDD terminology refresh needs attention; run `node .ai/tools/aidd.mjs terminology-refresh`.");
   }
-  if(source.includes(".ai/skills/")||source.includes(".aidd-kit-dev/skills/"))console.error("AIDD note: run `node .aidd-kit-dev/tools/kit.mjs sync-providers` before sharing skill changes.");
+  const notice=skillSyncNotice(payload);
+  if(notice)console.error(notice);
 }
 
 function localLog(role){

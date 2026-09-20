@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-005",
+  "title": "PM 중심 프로젝트 용어 관리 단순화",
+  "class": "C2",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "팀원의 용어 제안, 별도 영향 검토 레코드, PM 승인 판단, 반영 종료를 여러 단계로 기록하는 절차가 같은 공간에서 협업하는 프로젝트에 비해 복잡하고 승인 대기 상태를 추가로 만들었다.",
+  "intent": "PM 요청에 따라 AI가 영향을 브리핑하고, PM 확인 뒤 용어 추가·변경·제거와 관련 산출물 현행화·검증·변경 이력 저장을 하나의 수행 흐름으로 완료한다.",
+  "scope": [
+    "프로젝트 용어 정본을 현재 용어와 TCH 변경 이력으로 단순화",
+    "읽기 전용 term-review와 PM 전용 term-apply CLI",
+    "TIR·TAP·제안·반려·위임 절차 제거",
+    "용어 변경 후 파생 문서 생성과 전체 정합성 검증",
+    "portable 스킬·훅·프로젝트 팀 가이드·export 계약 현행화",
+    "reference fixture와 용어 관리 표적 행위 테스트"
+  ],
+  "validation": [
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "node .ai/tools/aidd_hook.mjs self-test --hook",
+    "node .aidd-kit-dev/tests/terminology.test.mjs",
+    "node .aidd-kit-dev/tests/aidd.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke"
+  ],
+  "risks": [
+    "기존 프로젝트의 TIR·TAP 구조는 자동 마이그레이드하지 않으므로 수신 프로젝트가 자체 변경으로 전환해야 한다.",
+    "AI의 영향 후보 검색은 문자열 기반이므로 의미상 영향은 PM 브리핑 검토와 문서 일관성 스킬로 보완해야 한다.",
+    "용어 제거 전에 남은 소스·정본 사용처가 있으면 term-apply가 차단된다."
+  ],
+  "rollback": "term-review·term-apply와 TCH 구조를 제거하고 종전 term-propose·term-impact·term-decide·term-close 및 TIR·TAP 정본 구조를 복원한다.",
+  "completion_blocker": "없음"
+}

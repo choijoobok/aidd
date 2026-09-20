@@ -8,7 +8,7 @@
 
 Codex 세션이 시작될 때 표시되는 안내에 따라 Codex CLI의 `/hooks`를 열고 현재 작업공간 훅을 검토하고 신뢰 처리했는지 확인한다. 이 안내는 Codex CLI와 Windows 앱에 적용되며 Claude에는 적용되지 않는다. 실제 훅 신뢰 여부는 Codex 자체 기능이 판단한다.
 
-프로젝트 용어는 `term-propose`, `term-impact`, `term-decide`, `term-close` 순서로 관리한다. 제안 상태의 용어는 승인될 때까지 분석 기록에서만 사용한다. `delivery-glossary`는 DLP 독자 설정에 따라 용어집 뷰만 조립하며, 최종 사용자용 결과에는 고객 공개 최종 사용자 용어만 포함하고 source metadata는 포함하지 않는다.
+프로젝트 용어의 추가·변경·제거는 PM만 AI에게 요청한다. AI는 `term-review`로 영향 후보와 충돌을 브리핑하고, PM이 확인한 뒤 관련 정본·문서·소스 주석을 현행화한 다음 `term-apply`로 현재 `TRM`, `TCH` 이력, 파생 문서 생성과 검증을 한 흐름으로 완료한다. 팀원 제안·승인 대기·반려 상태는 별도로 만들지 않는다. `delivery-glossary`는 DLP 독자 설정에 따라 용어집 뷰만 조립하며, 최종 사용자용 결과에는 고객 공개 최종 사용자 용어만 포함하고 source metadata는 포함하지 않는다.
 
 일반 변경에서는 영향받은 테스트 또는 직접 검사와 `node .ai/tools/aidd.mjs validate`를 실행한다. 사용자가 AIDD 요건의 구현 충실성 검증을 요청하면 `aidd-requirement-verification` 스킬을 사용한다. 적용되는 요건이나 사용자의 요청이 없으면 보안·권한·신원·서명 검사를 추가하지 않는다.
 

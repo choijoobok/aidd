@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-004",
+  "title": "역할별 스킬 동기화 훅 안내 정합화",
+  "class": "C1",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "공통 post-check 훅이 배포 프로젝트에서도 존재하지 않는 Kit 관리자용 sync-providers 명령을 안내했다.",
+  "intent": "작업공간 역할에 따라 Kit 원본은 sync-providers를, 프로젝트 템플릿과 제품 작업공간은 portable sync-ai를 안내한다.",
+  "scope": [
+    "역할별 스킬 동기화 안내 계약",
+    "공통 post-check 훅의 역할 판별",
+    "Kit 원본과 배포 프로젝트의 표적 행위 테스트",
+    "Unreleased 릴리스 기록"
+  ],
+  "validation": [
+    "node .ai/tools/aidd_hook.mjs self-test --hook",
+    "node --test --test-name-pattern=\"skill sync guidance\" .ai/tests/harness.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke"
+  ],
+  "risks": [
+    "역할 표식이 없거나 손상된 작업공간은 product-workspace용 안내로 안전하게 대체된다.",
+    "안내는 자동 동기화가 아니므로 사용자가 명령을 실행하지 않으면 provider 복사본 드리프트가 남을 수 있다."
+  ],
+  "rollback": "skill_sync_guidance 계약과 역할별 안내 함수를 제거하고 기존 단일 Kit 관리자 안내로 되돌린다.",
+  "completion_blocker": "없음"
+}

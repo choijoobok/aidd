@@ -7,8 +7,8 @@
       "key": "customerRequest",
       "category": "업무",
       "definition": "고객이 제품팀에 전달해 접수·분석·처리하는 요구나 문의의 단위다.",
-      "status": "approved",
-      "requested_by": "HUM-001",
+      "status": "active",
+      "managed_by": "HUM-001",
       "aliases": ["업무 요청"],
       "audiences": ["project_team", "developer", "operator", "end_user"],
       "visibility": "customer",
@@ -22,57 +22,58 @@
         "tests": [],
         "documents": ["project/docs/generated/requirements.md"]
       },
-      "impact_reviews": ["TIR-001"],
-      "approvals": ["TAP-001"],
-      "replaced_by": null
+      "updated_at": "2026-09-20T00:00:00.000Z"
     }
   ],
-  "impact_reviews": [
+  "change_history": [
     {
-      "id": "TIR-001",
+      "id": "TCH-001",
       "term": "TRM-001",
-      "change_type": "add",
-      "status": "completed",
-      "scope": ["요구사항", "거버넌스 모듈", "생성 문서"],
-      "impacts": ["MOD-GOV", "REQ-001", "project/docs/generated/requirements.md"],
-      "conflicts": [],
-      "limitations": ["자연어 문서의 의미상 동의어 사용은 사람 검토가 필요하다."],
-      "recommendation": "고객 요청을 승인 용어로 사용한다.",
+      "action": "add",
       "before": null,
-      "after": {"term": "고객 요청", "definition": "고객이 제품팀에 전달해 접수·분석·처리하는 요구나 문의의 단위다.", "status": "approved"},
-      "performed_by": "HUM-001",
-      "performed_at": "2026-09-20",
-      "application_status": "completed",
-      "applied_by": "HUM-001",
-      "application_actor": {
+      "after": {
+        "id": "TRM-001",
+        "term": "고객 요청",
+        "key": "customerRequest",
+        "category": "업무",
+        "definition": "고객이 제품팀에 전달해 접수·분석·처리하는 요구나 문의의 단위다.",
+        "status": "active",
+        "managed_by": "HUM-001",
+        "aliases": ["업무 요청"],
+        "audiences": ["project_team", "developer", "operator", "end_user"],
+        "visibility": "customer",
+        "impacts": {
+          "modules": ["MOD-GOV"],
+          "requirements": ["REQ-001"],
+          "architecture": [],
+          "data": [],
+          "apis": [],
+          "screens": [],
+          "tests": [],
+          "documents": ["project/docs/generated/requirements.md"]
+        },
+        "updated_at": "2026-09-20T00:00:00.000Z"
+      },
+      "affected": ["MOD-GOV", "REQ-001", "project/docs/generated/requirements.md"],
+      "approved_by": "HUM-001",
+      "approval_role": "PM",
+      "approval_actor": {
         "participant": "HUM-001",
         "mapping": "IDM-001",
         "git_name": "joobok",
         "git_email": "bbundoli@naver.com",
         "attestation_status": "legacy_unverified"
       },
-      "applied_at": "2026-09-20",
-      "application_result": "요구사항과 생성 문서 연결을 확인했다.",
-      "application_evidence": ["EVD-001"]
-    }
-  ],
-  "approval_decisions": [
-    {
-      "id": "TAP-001",
-      "term": "TRM-001",
-      "impact_review": "TIR-001",
-      "decision": "approved",
-      "decided_by": "HUM-001",
-      "decision_actor": {
-        "participant": "HUM-001",
-        "mapping": "IDM-001",
-        "git_name": "joobok",
-        "git_email": "bbundoli@naver.com",
-        "attestation_status": "legacy_unverified"
-      },
-      "decided_at": "2026-09-20",
-      "rationale": "요구사항과 문서에서 같은 업무 개념을 사용하기 위한 기준선이다.",
-      "follow_up": []
+      "approved_at": "2026-09-20T00:00:00.000Z",
+      "applied_by": "AI",
+      "summary": "PM 확인 후 고객 요청 용어와 영향 범위를 기준선으로 반영했다.",
+      "validation": {
+        "status": "passed",
+        "commands": [
+          "node .ai/tools/aidd.mjs terminology-refresh",
+          "node .ai/tools/aidd.mjs validate"
+        ]
+      }
     }
   ]
 }

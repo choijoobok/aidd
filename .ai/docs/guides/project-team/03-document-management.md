@@ -67,16 +67,25 @@ node .ai/tools/aidd.mjs validate
 
 `.ai/manifests/terminology.json`은 공통 AIDD 용어 정본이며 프로젝트가 바꾸거나 같은 뜻을 재정의하지 않는다. 업무 용어는 `project/.aidd/ssot/terminology.json`에서 관리한다.
 
-> 프로젝트에서 “고객 요청”이라는 용어를 새로 쓰고 싶어. 기존 공통·프로젝트 용어와 충돌하는지 확인하고, 제안·영향 검토·승인·반영 종료 순서로 진행해줘. 승인 전에는 확정 용어처럼 사용하지 마.
+프로젝트 용어의 추가·변경·제거는 PM만 AI에게 요청한다. 팀원이 다른 표현이나 용어 문제를 발견하면 PM과 바로 협의하며 별도 제안·승인 대기·반려 상태를 만들지 않는다.
+
+> PM으로서 프로젝트에 “고객 요청”이라는 용어를 추가하려고 해. 아직 변경하지 말고 공통·현재 프로젝트 용어 충돌과 요구사항·설계·데이터·API·화면·테스트·문서·소스 주석 영향 후보를 먼저 브리핑해줘.
 
 ```powershell
-node .ai/tools/aidd.mjs term-propose --id TRM-001 --term "고객 요청" --key customerRequest --category 업무 --definition "고객이 처리를 요청한 업무 단위" --requested-by HUM-001 --audience project_team --visibility customer
-node .ai/tools/aidd.mjs term-impact --id TIR-001 --term TRM-001 --change-type add --performed-by HUM-001 --recommendation "승인 후 요구사항과 화면에 사용" --scope 요구사항 --scope 화면
-node .ai/tools/aidd.mjs term-decide --id TAP-001 --term TRM-001 --impact-review TIR-001 --decision approved --decided-by HUM-001 --rationale "업무 단위를 하나로 통일"
-node .ai/tools/aidd.mjs term-close --impact-review TIR-001 --closed-by HUM-001 --result "요구사항과 화면에 반영"
+node .ai/tools/aidd.mjs term-review --action add --id TRM-001 --term "고객 요청" --key customerRequest --category 업무 --definition "고객이 처리를 요청한 업무 단위" --requested-by HUM-001 --audience project_team --visibility customer
 ```
 
-`TIR` 영향 검토와 `TAP` 승인 전 제안을 확정 용어처럼 사용하지 않는다. `project/docs/generated/glossary.md`와 HTML은 생성물이므로 직접 고치지 않는다.
+`term-review`는 읽기 전용이며 용어 정본을 바꾸지 않는다. PM이 브리핑을 검토하고 진행을 확인하면 AI에게 한 번에 마무리하도록 요청한다.
+
+> 영향 브리핑을 확인했어. 이 용어 추가를 승인해. 브리핑에서 찾은 요구사항과 문서, 소스 주석을 모두 현행화하고 용어를 적용한 뒤 파생 문서 생성, 검증과 변경 이력 저장까지 완료해줘.
+
+AI는 관련 정본·문서·소스 주석을 먼저 현행화한 뒤 다음 적용 명령으로 현재 용어와 `TCH` 이력을 함께 저장한다. 명령은 용어집을 포함한 파생 문서를 다시 생성하고 전체 `validate`까지 통과해야 성공한다.
+
+```powershell
+node .ai/tools/aidd.mjs term-apply --action add --id TRM-001 --history TCH-001 --term "고객 요청" --key customerRequest --category 업무 --definition "고객이 처리를 요청한 업무 단위" --approved-by HUM-001 --summary "영향 브리핑 검토 후 요구사항·문서·소스 주석과 함께 반영" --audience project_team --visibility customer --affected project/.aidd/ssot/requirements.json --affected project/src
+```
+
+변경은 `--action change`, 제거는 `--action remove`를 사용한다. 제거하거나 이름·key·별칭을 바꿀 때 이전 표현이 확정 정본이나 소스에 남아 있으면 적용이 차단된다. `project/docs/generated/glossary.md`와 HTML은 생성물이므로 직접 고치지 않는다.
 
 ## 작업 기록과 대화 원문
 

@@ -108,7 +108,7 @@
 
 - **id:** HUM-001
 - **name:** 프로젝트 책임자
-- **roles:** 고객, 소유자, 개발자
+- **roles:** 고객, 소유자, PM, 개발자
 - **status:** active
 - **joined_at:** 2026-09-17
 - **left_at:** -

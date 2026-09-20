@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "id": "KIT-EVD-027",
+  "change": "KIT-CHG-004",
+  "kind": "independent-c3-rereview",
+  "performed_by": "Independent assurance session separated from the implementation flow (Claude Opus 5 subagent, fresh context, no implementer conclusions supplied)",
+  "performed_at": "2026-09-20T12:35:00+09:00",
+  "reviewed_commit": "66c71c5",
+  "evidence_reviewed": ["KIT-EVD-024", "KIT-EVD-025", "KIT-EVD-026"],
+  "status": "passed-with-provider-evidence-pending",
+  "verdict": "PASS",
+  "independent_review": true,
+  "release_ready": false,
+  "title": "66c71c5 독립 C3 재검토: 회귀 검사 수정 확인, HIGH·MEDIUM 없음",
+  "review_scope_instruction": "직전 FAIL 판정 KIT-EVD-025를 신뢰하지 말고 스스로 재현하며, 반증 실험을 직접 설계하고, 새 단정이 그 자체로 공허하거나 우회 가능한지 따지도록 지시했다.",
+  "independent_counterproof": {
+    "injected_defect": ".ai/tests/harness.test.mjs의 KIT_SOURCE를 true로 고정해 원본에서는 정상이고 배포물에서만 역할 분기가 깨지는 결함을 주입했다. 직전 검토의 파일 통째 revert와 다른 방식이다.",
+    "fixed_test_clean_tree": "ok 1, exit 0",
+    "fixed_test_defect_injected": "not ok 1, exit 1, 중첩 # pass 21 / # fail 4",
+    "pre_fix_test_defect_injected": "ok 1, exit 0 (원래 HIGH 재현)",
+    "env_filter_only_defect_injected": "not ok 1, exit 1 (env 분리 단독으로 충분)",
+    "inherited_env_clean_tree": "not ok, operator match, actual '' — NODE_TEST_CONTEXT 상속 시 손자 stdout이 비므로 문자열 단정은 탐지기가 아니라 상속 재발 시 실패하는 fail-closed 트립와이어로 동작한다"
+  },
+  "bypass_probes": {
+    "spawn_failure": "status=null, stdout=undefined -> assert 실패. 조용히 통과하지 않음",
+    "timeout": "timeout 옵션 없음. 멈추면 CI hang이며 통과는 아님",
+    "reporter_difference": "NODE_OPTIONS=--test-reporter=spec는 필터되지 않고 적용되며 이 경우 # fail 0 부재로 단정이 실패한다. 거짓 통과 아님, 거짓 경보 위험",
+    "crlf": "Windows에서도 /^# fail 0$/m 매칭 확인",
+    "empty_suite": "테스트가 없는 .test.mjs는 # tests 1 / # pass 1 / # fail 0, exit 0 — 최소 통과 수 단정 부재가 이론적 사각지대"
+  },
+  "reproduced_validation": {
+    "kit_validation": "passed",
+    "kit_tests_via_test_runner": "44/44 passed",
+    "kit_tests_direct": "16/16 passed",
+    "portable_tests": "25/25 passed",
+    "total_tests": "69/69 passed",
+    "distributed_tests": "kit-template export 25/25 passed; sample new-project 25/25 passed",
+    "directory_zip": "168/168 files, SHA-256 전수 비교 diff 0",
+    "sample": "AIDD validate 0 warnings, role product-workspace, 스킬 37/37/37 diff 0, 관리 트리·kit-release·.py 부재",
+    "provider_sync": "저장소 사본에서 실행해 드리프트 0",
+    "working_tree_before_and_after": "clean, HEAD 66c71c5",
+    "repository_mutation": "none"
+  },
+  "prior_findings_resolution": [
+    {"id": "C3-RR2-FND-001", "severity": "HIGH", "resolution": "resolved", "basis": "동일 입력 A/B 비교로 수정 전 ok, 수정 후 not ok 확인"},
+    {"id": "C3-RR2-FND-002", "severity": "MEDIUM", "resolution": "resolved", "basis": "EVD-024 append-only correction, CHG-004 completion_blocker, UNRELEASED 문구, 커밋 메시지가 실제 상태와 일치"},
+    {"id": "C3-RR2-FND-003", "severity": "LOW", "resolution": "resolved", "basis": "테스트 이름 변경, 단정 내용 불변"},
+    {"id": "C3-RR2-FND-004", "severity": "LOW", "resolution": "partially-resolved", "basis": "EVD-024는 correction으로 연결됐으나 EVD-026이 같은 패턴을 반복했다. C3-RR3-FND-N5로 다시 열려 있으며 별도 변경에서 다룬다"}
+  ],
+  "new_findings": [
+    {"id": "C3-RR3-FND-N1", "severity": "LOW", "title": "중첩 회귀 검사에 최소 테스트 수 단정이 없음", "location": ".aidd-kit-dev/tests/kit.test.mjs", "status": "open"},
+    {"id": "C3-RR3-FND-N2", "severity": "LOW", "title": "NODE_OPTIONS 미필터와 TAP 출력 형식 의존", "location": ".aidd-kit-dev/tests/kit.test.mjs", "status": "open"},
+    {"id": "C3-RR3-FND-N3", "severity": "LOW", "title": "CI가 ubuntu 전용이라 Windows 실기 훅 회귀 검사가 CI에서 실행되지 않음", "location": ".github/workflows/aidd.yml, .aidd-kit-dev/export/.github/workflows/aidd.yml", "status": "open", "note": "이번 커밋이 만든 결함이 아니다. 적합성 기준의 Windows 실기 회귀 보장은 사람이 Windows에서 실행할 때만 성립한다."},
+    {"id": "C3-RR3-FND-N4", "severity": "LOW", "title": "kit.test.mjs의 소스 텍스트 정규식 단정 3건은 행위가 아닌 문자열을 검증", "location": ".aidd-kit-dev/tests/kit.test.mjs", "status": "open"},
+    {"id": "C3-RR3-FND-N5", "severity": "LOW", "title": "증거 레코드의 자기 기술 메타데이터가 커밋 후 사실과 불일치하는 패턴 재발", "location": ".aidd-kit-dev/evidence/KIT-EVD-026.json", "status": "open", "note": "KIT-EVD-025가 독립 세션이 아니라 구현 세션의 전사로 기록됐고 원본 산출물이 저장소에 없다는 점도 함께 지적했다."}
+  ],
+  "informational": [
+    "과거 KIT-EVD-010은 커밋 fdb9544에서 본문 문구가 덮어쓰기 방식으로 수정된 이력이 있다. 현재의 append-only correction 관행과 다르며 이번 커밋 범위 밖이다. 증거 파일 삭제 이력은 0건이다."
+  ],
+  "record_integrity": {
+    "transcribed_by": "구현 세션이 독립 검토 세션의 보고를 전사했다. 독립 검토 세션의 원본 출력은 저장소에 보존하지 않았다.",
+    "known_limitation": "C3-RR3-FND-N5가 지적한 전사 관행의 한계가 이 레코드에도 동일하게 적용된다. 개선은 별도 Kit 관리 변경으로 분리한다.",
+    "raw_logs_attached": false
+  },
+  "out_of_scope": [
+    "macOS·Linux 실기 실행 (환경 부재, ubuntu CI 통과 판단은 코드 검토 기반 추론)",
+    "실제 Codex Desktop/CLI 승인 UI 흐름 (KIT-EVD-023 범위)",
+    "KIT-EVD-001~023의 과거 수치 재검증",
+    "kit.mjs export 경로 외 내부 로직과 aidd.mjs·aidd_hook.mjs 전면 보안 리뷰",
+    "KIT-EVD-025를 작성한 직전 독립 세션의 원본 출력 대조"
+  ],
+  "gate": {
+    "independent_c3": "passed",
+    "kit_chg_completion": false,
+    "release_ready": false,
+    "reason": "실제 macOS Codex·Claude provider 실행 증거가 남아 있고, C3-RR3-FND-N3은 출시 전 결정으로 남긴다."
+  },
+  "open_items": [
+    "실제 macOS Codex·Claude provider 실행",
+    "C3-RR3-FND-N1·N2 수정 (KIT-CHG-004 범위 내 후속 증분)",
+    "C3-RR3-FND-N3 CI Windows 실기 경로 결정 (별도 변경으로 분리)",
+    "C3-RR3-FND-N4·N5 개선 (별도 변경으로 분리)"
+  ]
+}

@@ -44,6 +44,13 @@
       "performed_at": "2026-09-20",
       "application_status": "completed",
       "applied_by": "HUM-001",
+      "application_actor": {
+        "participant": "HUM-001",
+        "mapping": "IDM-001",
+        "git_name": "joobok",
+        "git_email": "bbundoli@naver.com",
+        "attestation_status": "legacy_unverified"
+      },
       "applied_at": "2026-09-20",
       "application_result": "요구사항과 생성 문서 연결을 확인했다.",
       "application_evidence": ["EVD-001"]
@@ -56,6 +63,13 @@
       "impact_review": "TIR-001",
       "decision": "approved",
       "decided_by": "HUM-001",
+      "decision_actor": {
+        "participant": "HUM-001",
+        "mapping": "IDM-001",
+        "git_name": "joobok",
+        "git_email": "bbundoli@naver.com",
+        "attestation_status": "legacy_unverified"
+      },
       "decided_at": "2026-09-20",
       "rationale": "요구사항과 문서에서 같은 업무 개념을 사용하기 위한 기준선이다.",
       "follow_up": []

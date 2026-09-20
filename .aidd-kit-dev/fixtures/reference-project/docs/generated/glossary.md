@@ -46,9 +46,9 @@ AIDD 공통 용어와 프로젝트 전용 용어를 한 곳에서 찾는 읽기�
 | AIDD-TERM-033 | 게이트 | 게이트 | 게이트 | 다음 단계로 진행하기 전에 기준·증거·승인을 확인하는 통제 지점이다. | Gate | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-034 | 정본 | 정본 | 정본 | 승인된 현재 사실과 의도를 기계가 읽을 수 있게 보존하는 원본 기록이다. | Canonical Record | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-035 | 파생물 | 파생물 | 정본 | 정본에서 결정적으로 다시 만들 수 있으며 직접 수정하지 않는 문서나 결과물이다. | Generated Artifact | project_team, developer, operator | .ai/spec/conformance.md |
-| AIDD-TERM-036 | TIR | 용어 영향 검토 | 용어 관리 | 용어 추가·의미 변경·폐기 전에 충돌과 영향 ID, 한계와 권장 조치를 기록하는 검토다. | Terminology Impact Review | project_team, developer | KIT-ADR-009 |
-| AIDD-TERM-037 | TAP | 용어 승인 판단 | 용어 관리 | 용어 영향 검토를 바탕으로 승인·반려·보류와 사유를 보존하는 결정 기록이다. | Terminology Approval | project_team, developer | KIT-ADR-009 |
-| AIDD-TERM-038 | TRM | 프로젝트 용어 | 용어 관리 | 프로젝트가 소유하는 업무·제품·기술 개념을 안정 ID로 정의한 항목이다. | Project Term | project_team, developer, operator | KIT-ADR-009 |
+| AIDD-TERM-036 | TIR | 용어 영향 검토 | 용어 관리 | 용어 추가·의미 변경·폐기 전에 충돌과 영향 ID, 한계와 권장 조치를 기록하는 검토다. | Terminology Impact Review | project_team, developer | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-037 | TAP | 용어 승인 판단 | 용어 관리 | 용어 영향 검토를 바탕으로 승인·반려·보류와 사유를 보존하는 결정 기록이다. | Terminology Approval | project_team, developer | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-038 | TRM | 프로젝트 용어 | 용어 관리 | 프로젝트가 소유하는 업무·제품·기술 개념을 안정 ID로 정의한 항목이다. | Project Term | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 
 ## 프로젝트 전용 용어
 

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-008",
+  "title": "경량 검증 기준선",
+  "class": "C2",
+  "status": "in_progress",
+  "delivery_path": "kit-maintenance",
+  "problem": "작은 AIDD 규칙·스킬·훅 변경에도 전체 fixture 비교, 반복 독립 검토, 서명과 외부 신뢰 루트를 요구해 개발 흐름이 느려졌다.",
+  "intent": "Kit 계약에 필요한 훅과 산출 경계는 유지하면서, 일상 확인을 빠른 정적 점검과 변경 범위 테스트로 전환한다.",
+  "scope": [
+    "승인 게이트와 Git 서명·외부 trust-root·attestation 제거",
+    "check, smoke, 변경 범위 테스트의 세 단계 검증",
+    "TIR/TAP 기록, proposed 사용 경계, DLP 용어집 경계 유지",
+    "기존 기록은 보존하고 새 기준선 이후 결과만 간결하게 기록"
+  ],
+  "validation": [
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke",
+    "변경 대상 test 파일 또는 동등한 직접 점검",
+    "C2 변경은 한 번의 독립 읽기 검토"
+  ],
+  "risks": [
+    "서명 기반 위조 방지는 제공하지 않는다.",
+    "전체 fixture 비교는 smoke에서만 수행하므로 비대표 생성물 드리프트는 이후 변경에서 발견될 수 있다."
+  ],
+  "rollback": "KIT-CHG-008 변경을 되돌리고 이전 validate 및 provider 정의를 복원한다.",
+  "completion_blocker": "배포 provider 정의와 가이드가 경량 계약에 맞고 check·smoke가 통과해야 한다."
+}

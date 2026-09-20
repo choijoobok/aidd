@@ -4,7 +4,7 @@
 
 ## 시작
 
-1. Codex에서는 신뢰 레코드 유무와 관계없이 `codex -C "<프로젝트 루트>"`를 열어 `/hooks`에서 모든 AIDD 훅을 직접 검토·신뢰한다. AI는 승인 시점을 `1) 현재 세션 시작 전에 이미 모든 AIDD 훅이 승인된 상태 2) 현재 세션 시작 후 AIDD 훅을 새로 승인한 상태` 두 선택지로만 한 번에 질문한다. 직접 검토·승인한 사실이 참이면 사용자는 `1` 또는 `2`만 답해 승인 사실과 시점을 함께 확인할 수 있다. 자연어 응답도 고정 문구가 아니라 의미로 처리하지만, 부정·모순·모호한 답변은 다시 확인한다. Windows Codex 앱에서 2번이면 일반 쓰기를 새 앱 창에서 재개한다. CLI에서는 현재 `acknowledge` 훅이 2번 답변을 실제 수신한 경우 별도 재시작 절차를 적용하지 않는다. 훅 리비전이 세션 시작 뒤 변경되면 Windows 앱은 최신 훅을 승인한 새 앱 세션에서 재개한다. CLI는 `/hooks`에서 최신 훅을 승인하고 현재 `acknowledge` 훅이 2번 답변을 실제 수신하면 현재 세션의 리비전을 갱신해 새 CLI 세션 없이 재개한다. 훅 설정·실행기·계약·관련 테스트·가이드는 잠긴 창에서도 유지보수할 수 있고, 잠긴 세션은 자신이 관측한 경로만 명시적으로 stage해 로컬 close-out 커밋할 수 있다. Claude에는 이 Codex 승인 절차가 없다.
+1. 세션 시작 시 provider의 일반 훅 신뢰 기능을 확인하고 `node .ai/tools/aidd_hook.mjs self-test --hook`으로 AIDD 배선을 점검한다. AIDD 훅은 세션 승인·재시작·Git 서명을 강제하지 않는다.
    훅 리비전은 `/hooks`에 표시되는 실제 Codex provider 정의 `.codex/hooks.json`의 내용이다. version 3에서는 이 파일이 바뀌어 새 정의를 신뢰해야 할 때만 재승인을 요구한다. 과거 version 2 상태는 당시 정의 단독 해시가 없어 한 번 `unconfirmed`로 전환되며, `/hooks`가 이미 active이면 선택 `1`로 기존 승인을 다시 확인한다. Git 초기화 전 export 템플릿에서도 모든 훅은 이 명령으로 지정한 프로젝트 루트를 기준으로 실행된다.
    Windows Desktop의 재시작 요구는 Desktop 세션에만 적용한다. 같은 프로젝트를 연 CLI는 자신의 `1`·`2` 승인 흐름을 계속 사용하고 Desktop의 미완료 재시작 요구는 그대로 남긴다.
 2. `.aidd-role.json`이 `kit-template`이고 `project/.aidd/ssot/`가 없으면 고객 확인 뒤 `project-bootstrap`을 실행한다. 성공하면 역할이 `product-workspace`로 전환되며, 이후에는 기존 `project/.aidd/ssot/`를 먼저 읽는다. 이미 정본이 있는데 역할만 `kit-template`이면 bootstrap을 다시 실행하지 말고 `project-reconcile-role`로 정합화한다.
@@ -61,17 +61,22 @@ AI가 명령어 실행을 제안할 수 있지만, 명령어는 재현·자동�
 
 `.ai/manifests/terminology.json`은 AIDD 진행 대화에 쓰는 공통 용어 정본이다. 프로젝트는 이 목록을 수정하거나 같은 용어·key·별칭을 다른 뜻으로 재정의하지 않는다. 업무 시스템에만 필요한 말은 `project/.aidd/ssot/terminology.json`의 `TRM`으로 분리한다.
 
-새 업무 용어나 의미 변경이 필요하면 누구나 `term-propose`로 정의·영문 key·혼동 방지 별칭·독자·공개 범위와 연결 대상을 요청한다. 이어 `term-impact`로 요구사항·모듈·설계·데이터·API·화면·테스트·문서 영향을 기록해 프로젝트 PM에게 보여 준다. 기본적으로 PM(1인 프로젝트는 소유자)만 `term-decide`로 `TAP` 승인·반려·보류를 기록할 수 있으며, PM이 부재할 때는 PM이 `set-terminology-approval-policy`에 명시한 활성 위임자만 승인할 수 있다. 승인된 영향을 실제 정본·코드·문서에 반영한 뒤 `term-close`로 수행자·시각·결과·증거를 닫아야 용어집이 최신 상태로 생성된다. 승인 전 제안을 확정 용어로 사용하지 않는다.
+새 업무 용어나 의미 변경이 필요하면 누구나 `term-propose`로 정의·영문 key·독자·공개 범위와 연결 대상을 요청한다. 이어 `term-impact`로 영향 후보를 기록하고, PM(1인 프로젝트는 소유자) 또는 명시된 위임자가 `term-decide`로 `TAP` 승인·반려·보류를 남긴다. 승인된 영향을 실제 정본·코드·문서에 반영한 뒤 `term-close`로 결과를 닫고 생성한다. 승인 전 제안을 확정 용어로 사용하지 않는다.
 
-사람이 읽는 통합 사전은 `project/docs/generated/glossary.md`다. 공통 AIDD 용어와 승인된 프로젝트 용어를 한 곳에 보여 주지만 정본은 아니므로 직접 고치지 않는다. 용어 정본이 승인 절차에 맞게 바뀌면 훅이 Markdown과 오프라인 HTML을 현행화하며, 훅을 사용하지 않는 환경에서는 `generate`로 같은 결과를 만든다. 설계·운영 사이트는 전체 용어를, 사용자 사이트는 고객 공개 범위의 최종 사용자 용어만 보여 준다.
+사람이 읽는 통합 사전은 `project/docs/generated/glossary.md`다. 공통 AIDD 용어와 승인된 프로젝트 용어를 한 곳에 보여 주지만 정본은 아니므로 직접 고치지 않는다. 용어 정본이 승인 절차에 맞게 바뀌면 훅이 Markdown과 오프라인 HTML을 현행화하며, 훅을 사용하지 않는 환경에서는 `generate`로 같은 결과를 만든다. 설계·운영 사이트는 전체 용어를, 사용자 사이트와 end-user DLP 용어집은 고객 공개 용어의 명칭과 정의만 보여 준다.
 
 ```powershell
 node .ai/tools/aidd.mjs term-propose --id TRM-001 --term "고객 요청" --key customerRequest --category 업무 --definition "고객이 처리를 요청한 업무 단위" --requested-by HUM-002 --audience project_team --audience end_user --visibility customer
 node .ai/tools/aidd.mjs term-impact --id TIR-001 --term TRM-001 --change-type add --performed-by HUM-001 --recommendation "승인 후 요구사항·API·화면에 사용" --scope 요구사항 --scope API --scope 화면
 node .ai/tools/aidd.mjs term-decide --id TAP-001 --term TRM-001 --impact-review TIR-001 --decision approved --decided-by HUM-001 --rationale "업무 단위를 하나로 통일함"
+git add project/.aidd/ssot/terminology.json; git commit -S -m "Record pending TAP-001"
 node .ai/tools/aidd.mjs set-terminology-approval-policy --mode delegated --delegate HUM-002 --reason "PM 부재 중 용어 승인 위임"
 node .ai/tools/aidd.mjs term-close --impact-review TIR-001 --closed-by HUM-001 --result "요구사항·API·화면에 승인 용어 반영 완료" --evidence EVD-001
+git add project/.aidd/ssot/terminology.json; git commit -S -m "Record pending TIR-001 closure"
+node .ai/tools/aidd.mjs delivery-glossary --profile DLP-002 --directory build/deliverables/DLP-002/glossary
 ```
+
+`delivery-glossary`는 기존 출력 폴더를 덮어쓰지 않으며, `DLP`가 요구한 `glossary.audience`에 따라 `internal` 전체 뷰 또는 `end_user` 공개 뷰의 **용어집만** 담은 Markdown·오프라인 HTML·assets·manifest를 조립한다. 사용자 포털에는 정본 source metadata나 다른 문서를 표시하지 않는다. end-user 뷰에는 고객 공개이면서 `end_user` 독자인 용어만 포함된다.
 
 ## 프로젝트별 확장
 

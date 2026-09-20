@@ -7,6 +7,7 @@
       "status": "current",
       "audience": "고객·아키텍처·개발·품질 보증",
       "includes": ["foundation", "ui", "manuals", "operations", "traceability", "glossary"],
+      "glossary": {"audience": "internal"},
       "excludes": ["비밀정보", "개인정보", "미검증 실제 화면 주장"],
       "release_rules": {
         "allow_mockups": true,
@@ -24,6 +25,7 @@
       "status": "template",
       "audience": "최종 사용자와 운영자",
       "includes": ["manuals", "operations", "verified-ui-evidence", "glossary"],
+      "glossary": {"audience": "end_user"},
       "excludes": ["내부 결정 메모", "미승인 목업", "테스트 픽스처"],
       "release_rules": {
         "allow_mockups": false,

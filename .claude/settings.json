@@ -1,121 +1,18 @@
 {
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "approval-status"],
-            "timeout": 15,
-            "statusMessage": "AIDD 훅 승인 확인"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "session-brief"],
-            "timeout": 30,
-            "statusMessage": "AIDD 현재 상태를 불러오는 중"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "self-test", "--hook"],
-            "timeout": 20,
-            "statusMessage": "AIDD 하네스 배선을 검사하는 중"
-          }
-        ]
-      }
-    ],
+    "SessionStart": [{"hooks": [
+      {"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","session-brief"],"timeout":15,"statusMessage":"AIDD session brief"},
+      {"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","self-test","--hook"],"timeout":15,"statusMessage":"AIDD hook wiring check"}
+    ]}],
     "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "approval-gate", "--platform", "claude"],
-            "timeout": 20,
-            "statusMessage": "AIDD 훅 승인 상태를 확인하는 중"
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|NotebookEdit|apply_patch|^mcp__.*__(?:write|edit|move|create)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "protect", "--platform", "claude", "--kind", "file"],
-            "timeout": 20,
-            "statusMessage": "AIDD 파생물 쓰기 정책을 확인하는 중"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash|PowerShell|^mcp__.*__(?:start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "protect", "--platform", "claude", "--kind", "shell"],
-            "timeout": 20,
-            "statusMessage": "AIDD 파괴 명령과 셸 쓰기를 확인하는 중"
-          }
-        ]
-      }
+      {"matcher":"Write|Edit|NotebookEdit|apply_patch|^mcp__.*__(?:write|edit|move|create)","hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","protect","--platform","claude","--kind","file"],"timeout":15,"statusMessage":"AIDD generated-output protection"}]},
+      {"matcher":"Bash|PowerShell|^mcp__.*__(?:start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)","hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","protect","--platform","claude","--kind","shell"],"timeout":15,"statusMessage":"AIDD generated-output protection"}]}
     ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|NotebookEdit|apply_patch|Bash|PowerShell|^mcp__.*__(?:write|edit|move|create|start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "post-check", "--platform", "claude"],
-            "timeout": 30,
-            "statusMessage": "AIDD 파생물과 정본 정합성을 확인하는 중"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "acknowledge", "--platform", "claude"],
-            "timeout": 10,
-            "statusMessage": "AIDD 훅 승인 선언을 확인하는 중"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "local-log", "--platform", "claude", "--role", "user"],
-            "timeout": 10,
-            "statusMessage": "로컬 대화 기록을 저장하는 중"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"${CLAUDE_PROJECT_DIR}/.ai/tools/aidd.mjs\" hook --platform claude --event Stop",
-            "timeout": 30,
-            "statusMessage": "AIDD 정합성을 검사하는 중"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs", "local-log", "--platform", "claude", "--role", "assistant"],
-            "timeout": 10,
-            "statusMessage": "로컬 대화 기록을 저장하는 중"
-          }
-        ]
-      }
-    ]
+    "PostToolUse": [{"matcher":"Write|Edit|NotebookEdit|apply_patch|Bash|PowerShell|^mcp__.*__(?:write|edit|move|create|start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)","hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","post-check","--platform","claude"],"timeout":20,"statusMessage":"AIDD post-change check"}]}],
+    "UserPromptSubmit": [{"hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","local-log","--platform","claude","--role","user"],"timeout":10,"statusMessage":"AIDD local log"}]}],
+    "Stop": [{"hooks":[
+      {"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd.mjs","hook","--platform","claude","--event","Stop"],"timeout":15,"statusMessage":"AIDD completion hint"},
+      {"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","local-log","--platform","claude","--role","assistant"],"timeout":10,"statusMessage":"AIDD local log"}
+    ]}]
   }
 }

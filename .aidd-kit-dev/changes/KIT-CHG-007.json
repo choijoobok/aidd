@@ -3,7 +3,7 @@
   "id": "KIT-CHG-007",
   "title": "공통·프로젝트 용어 사전과 협업 용어 통제",
   "class": "C2",
-  "status": "in_review",
+  "status": "in_progress",
   "delivery_path": "new_capability",
   "problem": "AIDD의 CHG·REQ·GTR·EVD·C0~C3 같은 공통 약어와 제품 도메인 용어의 정의·승인·변경 절차가 분산되어 있다. 사용자와 AI, 그리고 팀 참여자가 같은 단어를 다른 뜻으로 사용할 때 요구사항·설계·테스트·운영 의사소통에 오해가 생긴다.",
   "intent": "배포되는 Kit 공통 용어 정본과 프로젝트 전용 용어 정본을 분리한다. 모든 참여자는 공통 용어를 같은 정의로 사용하고, 제품 전용 용어는 제안·영향 검토·승인·폐기 이력을 거쳐 문서와 작업에 일관되게 적용한다. 두 정본은 사람이 한 곳에서 읽을 수 있는 통합 Markdown 용어집과 기존 오프라인 HTML 문서 사이트로 결정적으로 파생한다.",
@@ -52,11 +52,18 @@
     "통합 Markdown과 독자별 오프라인 HTML 생성·훅 현행화·stale 검사",
     "DLP·가이드·스킬·reference fixture·export/new-project 연결",
     "KIT-EVD-033의 구현 회귀와 KIT-EVD-034의 fixture 범위 정리·77/77 전체 회귀 및 Kit 경계 검증",
-    "독립 검토에서 발견한 TRM·TIR·TAP 중복 안정 ID 차단과 KIT-EVD-036의 78/78 회귀"
+    "독립 검토에서 발견한 TRM·TIR·TAP 중복 안정 ID 차단과 KIT-EVD-036의 78/78 회귀",
+    "TAP·영향 종료 Git 신원 결속, DLP 독자 필터 용어집 산출, proposed 분석 기록 허용과 KIT-EVD-037의 80/80 회귀",
+    "C2 독립 검토 발견사항의 glossary 전용 DLP HTML, 확정 계약 전체의 proposed 용어 차단, TAP·영향 종료 Git 결속 보존과 KIT-EVD-038의 57/57 회귀",
+    "독립 재검토 발견사항의 end-user 내부 메타데이터 제거와 한 글자 proposed 용어 차단 및 KIT-EVD-039의 보완 회귀",
+    "pending-to-attested TAP/TIR signature tree binding, legacy release block, deterministic fixture comparison, and KIT-EVD-041 validation",
+    "C2 security remediation: customer-provisioned trust anchor, signed PM/owner fingerprint authorization, full-record attestation hash, global fingerprint uniqueness, and final end-user DLP scan with KIT-EVD-042 validation",
+    "C2 rereview remediation: non-bootstrap portable validation in fixture verification, CLI self-bootstrap prohibition, trust_anchor validation, and canonical DLP ID matching with KIT-EVD-043 validation",
+    "C2 final remediation: external customer trust-root verification enforced by validate, term-attest, and release-check with KIT-EVD-044 validation"
   ],
   "remaining_scope": [
-    "구현 흐름과 분리된 C2 독립 검토",
-    "독립 검토 발견사항의 수정과 필요 시 재검증"
+    "Run standard Node test suites in a child-process-capable environment.",
+    "Perform a C2 independent review of the complete remediation set."
   ],
-  "evidence": ["KIT-EVD-033", "KIT-EVD-034", "KIT-EVD-035", "KIT-EVD-036"]
+  "evidence": ["KIT-EVD-033", "KIT-EVD-034", "KIT-EVD-035", "KIT-EVD-036", "KIT-EVD-037", "KIT-EVD-038", "KIT-EVD-039", "KIT-EVD-040", "KIT-EVD-041", "KIT-EVD-042", "KIT-EVD-043", "KIT-EVD-044"]
 }

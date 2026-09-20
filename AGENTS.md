@@ -18,10 +18,7 @@
 ## 작업 방식
 
 - 한글을 포함한 모든 문서와 소스는 UTF-8(BOM 없음), 줄바꿈 LF로 관리한다. 실행 도구와 provider 훅은 Node.js 22 이상과 표준 라이브러리만 사용하며, 훅 입력은 원본 바이트를 UTF-8로 해석한다.
-- Codex 세션 시작 시 먼저 `node .ai/tools/aidd.mjs hook-trust-status`를 실행하고, 신뢰 레코드 유무와 무관하게 사용자에게 터미널에서 `codex -C "<현재 루트>"`를 연 뒤 `/hooks`에서 모든 AIDD 훅을 검토·신뢰하도록 안내한다. 이어 `1) 현재 세션 시작 전에 이미 모든 AIDD 훅이 승인된 상태 2) 현재 세션 시작 후 AIDD 훅을 새로 승인한 상태` 두 선택지만 한 질문으로 제시한다. 사용자는 직접 검토·승인한 사실이 참일 때 `1` 또는 `2`만 답해도 승인 사실과 시점을 함께 확인할 수 있다. 자연어 응답도 고정 문구를 요구하지 않고 의미로 처리하되 부정·모순·모호한 답변은 다시 확인한다. Windows Codex 앱에서 2번이면 현재 창의 일반 작업을 금지하고 새 앱 창에서 재시작·승인 상태를 의미상 확인한 뒤 진행한다. CLI에서는 현재 `acknowledge` 훅이 2번 답변을 실제 수신한 경우 별도 재시작 절차를 적용하지 않는다. 훅 리비전이 세션 시작 뒤 변경되면 Windows 앱은 최신 훅을 승인한 새 앱 세션에서 재개한다. CLI는 `/hooks`에서 최신 훅을 승인하고 현재 `acknowledge` 훅이 2번 답변을 실제 수신하면 현재 세션의 리비전을 갱신해 새 CLI 세션 없이 재개한다. 승인 전에는 계약에 열거된 읽기 전용 도구, 훅 유지보수와 관측 경로 close-out만 허용하며 그 밖의 일반 작업은 금지한다. 그 뒤 `node .aidd-kit-dev/tools/kit.mjs status`와 `git status --short`로 역할, 현재 변경, 작업 트리를 확인한다.
-- 여기서 훅 리비전은 `/hooks`가 신뢰 대상으로 표시하는 실제 Codex provider 정의 `.codex/hooks.json`의 내용 해시다. 이 정의가 그대로인 정책·실행기·계약·테스트·가이드 변경은 재승인을 요구하지 않는다. 단, 과거 결합 리비전을 사용한 version 2 상태는 실제 provider 정의 단독 해시를 입증할 수 없으므로 version 3 전환 때 기존 승인을 보존하지 않고 한 번 fail-closed 확인한다.
-- Windows 앱의 `restart_required`는 Windows 앱 세션에만 적용한다. 같은 저장소의 CLI 세션은 자신의 `1`·`2` 확인 흐름을 계속 사용할 수 있으며 Desktop의 미완료 재시작 표식을 지우지 않는다.
-- 승인 전 close-out은 관측한 literal 경로만 하나씩 명시적으로 stage하고, 비어 있지 않은 staged 경로 전체가 관측 범위일 때 메시지 형식의 새 로컬 커밋만 허용한다. 경로 패턴·와일드카드·광범위 stage와 amend는 허용하지 않는다.
+- Codex 세션 시작 시 `node .ai/tools/aidd_hook.mjs self-test --hook`, `node .aidd-kit-dev/tools/kit.mjs status`, `git status --short`로 훅 배선·역할·현재 변경을 확인한다. `/hooks` 검토는 provider가 제공하는 일반 신뢰 기능으로 맡기며, AIDD는 별도 승인 게이트나 재시작 절차를 강제하지 않는다.
 - 변경 전 해결할 실패, 영향 명세, 이식 가능 여부, 호환성·보안·롤백과 검증 방법을 먼저 정한다.
 - 새 훅·스킬·도구·플러그인은 기존 수단 부족, 트리거·입출력 계약, 중복, 안전한 비활성화와 롤백을 확인한 뒤 추가한다. 새 훅은 `.ai/tools/` 아래의 `.mjs`로 만들고 Node.js 표준 라이브러리만 사용하며 `self-test`의 provider 배선 검사를 통과해야 한다.
 - portable 동작은 `.ai/`에서, Kit 관리 전용 동작은 `.aidd-kit-dev/`에서 구현한다. 경계가 모호하면 기본적으로 배포하지 않고 명시적인 결정으로 남긴다.
@@ -43,8 +40,7 @@
 ## 완료 조건
 
 - 영향받는 `.ai/spec/`, 구현, 테스트, 독자별 가이드, export manifest, 변경·결정·릴리스 기록을 함께 검토한다.
-- `node .aidd-kit-dev/tools/kit.mjs sync-providers`와 `node .aidd-kit-dev/tools/kit.mjs validate`를 실행한다.
-- `node --test .aidd-kit-dev/tests/*.test.mjs`와 `node --test .ai/tests/*.test.mjs`를 실행한다.
-- 샘플 `new-project`에서 AIDD `validate`와 provider 스킬 동일성을 확인한다.
-- C2·C3 변경은 구현 흐름과 분리된 AI 검토 세션 또는 사람 검토 증거가 있기 전에는 완료·검증·출시 준비 완료로 표시하지 않는다.
+- 스킬 변경 뒤 `node .aidd-kit-dev/tools/kit.mjs sync-providers`와 `node .aidd-kit-dev/tools/kit.mjs check`를 실행한다.
+- 변경 범위에 맞는 `node --test <대상 test 파일>`을 실행하고, export·new-project·provider 경계 변경에는 `node .aidd-kit-dev/tools/kit.mjs smoke`를 추가한다.
+- C2·C3은 변경 사항과 검증 결과를 한 번 독립적으로 읽어 본 뒤 완료로 표시한다. 반복 재검토나 별도 증거 파일은 요구하지 않는다.
 - AI가 커밋 메시지를 작성할 때는 `.ai/templates/git/commit-message.md` 형식을 따르고, 실질 기여 AI만 마지막 trailer 묶음에 기록한다.

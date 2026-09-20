@@ -102,7 +102,7 @@ function loadContract() {
   if (!runtime || runtime.minimum_major !== 22 || runtime.hook_input !== "utf-8-bytes" || runtime.dependencies !== "node-standard-library")
     throw new Error("contract node_runtime is malformed");
   const gate=value.approval_gate;
-  if (!gate || gate.platform!=="codex" || gate.unknown_tool_behavior!=="deny" || gate.windows_desktop_origin_environment!=="CODEX_INTERNAL_ORIGINATOR_OVERRIDE" || gate.windows_desktop_origin_value!=="Codex Desktop" || gate.windows_desktop_package_environment!=="CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY" || gate.cli_origin_value!=="Codex CLI" || gate.cli_origin_absence_means_cli!==true || gate.unknown_client_behavior!=="require_new_session" || gate.composed_shell_command_behavior!=="deny" || JSON.stringify(gate.codex_trust_revision_paths)!==JSON.stringify(CODEX_TRUST_REVISION_PATHS) || gate.legacy_v2_migration_behavior!=="require-confirmation" || gate.windows_desktop_new_approval_requires_new_session!==true || gate.cli_new_approval_current_session_effective!==true || gate.cli_revision_reapproval_current_session_effective!==true || !Array.isArray(gate.locked_read_only_tools))
+  if (!gate || gate.platform!=="codex" || gate.unknown_tool_behavior!=="deny" || gate.windows_desktop_origin_environment!=="CODEX_INTERNAL_ORIGINATOR_OVERRIDE" || gate.windows_desktop_origin_value!=="Codex Desktop" || gate.windows_desktop_package_environment!=="CODEX_WINDOWS_SANDBOX_PACKAGE_FAMILY" || gate.cli_origin_value!=="Codex CLI" || gate.cli_origin_absence_means_cli!==true || gate.unknown_client_behavior!=="require_new_session" || gate.composed_shell_command_behavior!=="deny" || JSON.stringify(gate.codex_trust_revision_paths)!==JSON.stringify(CODEX_TRUST_REVISION_PATHS) || gate.legacy_v2_migration_behavior!=="require-confirmation" || gate.restart_required_scope!=="client-kind" || gate.windows_desktop_new_approval_requires_new_session!==true || gate.cli_new_approval_current_session_effective!==true || gate.cli_revision_reapproval_current_session_effective!==true || !Array.isArray(gate.locked_read_only_tools))
     throw new Error("contract approval_gate is malformed");
   const log = value.local_conversation_log;
   if (!log || log.root !== "chat-history" || log.transport_encoding !== "utf-8" || log.failure_reporting !== "sanitized-stderr")
@@ -277,12 +277,13 @@ function lockedToolAllowed(payload, session) {
   const addPaths=explicitGitAddPaths(command); if(addPaths&&isMaintenancePaths(addPaths)) return true;
   return isReadOnlyCommand(command)||isMaintenanceCommand(command)||isCloseOutCommand(command,session);
 }
+function restartAppliesToClient(restart, client) { return Boolean(restart&&restart.client===client&&client!=="cli"); }
 function lockedReason(session, revision, restart, client=codexClientKind()) {
   if (!sessionIsCurrent(session,revision)) return client!=="cli"
     ? "AIDD 훅 정의가 이 앱 세션 시작 뒤 변경됐습니다. 일반 작업은 금지됩니다. 훅 유지보수, 알려진 읽기 전용 도구와 이 세션이 관측한 경로의 close-out 커밋만 허용됩니다. CLI의 /hooks에서 최신 훅을 승인한 뒤 새 Codex 앱 창에서 다시 시작하세요."
     : "AIDD 훅 정의가 이 CLI 세션 시작 뒤 변경됐습니다. 일반 작업은 최신 훅 승인 전까지 금지됩니다. /hooks에서 최신 AIDD 훅을 직접 검토·승인한 뒤 승인 질문에 `2`로 답하세요. 현재 acknowledge 훅이 그 응답을 받으면 새 CLI 세션 없이 작업을 계속할 수 있습니다. 승인 전에는 훅 유지보수, 알려진 읽기 전용 도구와 이 세션이 관측한 경로의 close-out 커밋만 허용됩니다.";
   if (session?.state === "restart_required") return `Windows Codex 앱에서 AIDD 훅을 이번 세션 시작 후 새로 승인했으므로 이 창에서는 일반 작업이 금지됩니다. 새 Codex 앱 창에서 같은 프로젝트를 다시 시작한 뒤, 새 창에서 재시작했고 훅이 승인된 상태라는 뜻을 명확히 알려주세요. 정해진 문구를 그대로 쓸 필요는 없습니다(예: \`${RESTART_CONFIRMATION}\`).`;
-  if (restart) return `Windows Codex 앱에서 AIDD 훅을 새로 승인한 뒤 열린 새 세션입니다. 일반 작업 전에 새 앱 창에서 재시작했고 훅이 승인된 상태라는 뜻을 명확히 알려주세요. 정해진 문구를 그대로 쓸 필요는 없습니다(예: \`${RESTART_CONFIRMATION}\`).`;
+  if (restartAppliesToClient(restart,client)) return `Windows Codex 앱에서 AIDD 훅을 새로 승인한 뒤 열린 새 세션입니다. 일반 작업 전에 새 앱 창에서 재시작했고 훅이 승인된 상태라는 뜻을 명확히 알려주세요. 정해진 문구를 그대로 쓸 필요는 없습니다(예: \`${RESTART_CONFIRMATION}\`).`;
   if (session?.state === "declared") return `AIDD 훅 승인 시점을 확인해야 합니다. 사용자에게 다음 두 선택지 중 하나를 고르게 질문하세요: 1) ${EXISTING_APPROVAL_CONFIRMATION} 2) ${NEW_APPROVAL_CONFIRMATION}. \`1\` 또는 \`2\`만 입력해도 처리하며, 답변의 의미가 분명하면 번호·어미·표현이 달라도 받아들이고 정해진 문구를 요구하지 마세요.`;
   return `AIDD 훅 승인 게이트(${client==="windows-desktop"?"Windows Codex 앱":client==="cli"?"Codex CLI":"알 수 없는 Codex 클라이언트"}): 모든 작업이 금지됩니다. ${approvalInstruction()}`;
 }
@@ -292,31 +293,32 @@ async function approvalGate(platform) {
   try { payload=await readInput(); }
   catch (error) { return deny(`AIDD 훅 승인 게이트 내부 실패: ${error.name}: ${error.message}`); }
   const sessionId=sessionIdOf(payload); if (!sessionId) return deny(`AIDD 훅 승인 게이트: 세션 ID를 확인할 수 없어 모든 작업을 차단했습니다. ${approvalInstruction()}`);
-  const {state,session,revision}=ensureApprovalState(sessionId);
-  if (sessionIsCurrent(session,revision)&&session?.state==="approved") return 0;
-  const reason=lockedReason(session,revision,state.restart_required,codexClientKind());
+  const {state,session,revision}=ensureApprovalState(sessionId), client=codexClientKind();
+  if (sessionIsCurrent(session,revision)&&session?.state==="approved"&&!restartAppliesToClient(state.restart_required,client)) return 0;
+  const reason=lockedReason(session,revision,state.restart_required,client);
   if (lockedToolAllowed(payload,session)) return 0;
   return reason?deny(reason):0;
 }
 function applyApprovalMessage(state, session, revision, message, client=codexClientKind(), now=new Date().toISOString()) {
   if (!sessionIsCurrent(session,revision)) {
     const kind=approvalMessageKind(message,"unconfirmed");
-    if(client==="cli"&&kind==="new"&&!state.restart_required){
+    if(client==="cli"&&kind==="new"&&!restartAppliesToClient(state.restart_required,client)){
       session.start_revision=revision; session.state="approved"; session.confirmed_at=now; session.approval_timing="new_after_revision"; session.client=client; session.revision_reapproved_at=now;
       return true;
     }
     return false;
   }
-  const expectedState=state.restart_required?.revision===revision&&state.restart_required.origin_session_key!==session.session_key?"restart":session.state;
+  const restartApplies=restartAppliesToClient(state.restart_required,client);
+  const expectedState=restartApplies&&state.restart_required?.revision===revision&&state.restart_required.origin_session_key!==session.session_key?"restart":session.state;
   const kind=approvalMessageKind(message,expectedState);
   if (kind==="declared"&&session.state==="unconfirmed") { session.state="declared"; session.declared_at=now; return true; }
-  if (kind==="existing"&&["unconfirmed","declared"].includes(session.state)&&!state.restart_required) { session.state="approved"; session.confirmed_at=now; session.approval_timing="existing"; return true; }
-  if (kind==="new"&&["unconfirmed","declared"].includes(session.state)&&!state.restart_required) {
+  if (kind==="existing"&&["unconfirmed","declared"].includes(session.state)&&!restartApplies) { session.state="approved"; session.confirmed_at=now; session.approval_timing="existing"; return true; }
+  if (kind==="new"&&["unconfirmed","declared"].includes(session.state)&&!restartApplies) {
     session.state=client==="cli"?"approved":"restart_required"; session.confirmed_at=now; session.approval_timing="new"; session.client=client;
     if(client!=="cli")state.restart_required={revision,origin_session_key:session.session_key,client,created_at:now};
     return true;
   }
-  if (kind==="restarted"&&state.restart_required?.revision===revision&&state.restart_required.origin_session_key!==session.session_key) { session.state="approved"; session.confirmed_at=now; session.approval_timing="restarted"; state.restart_required=null; return true; }
+  if (kind==="restarted"&&restartApplies&&state.restart_required?.revision===revision&&state.restart_required.origin_session_key!==session.session_key) { session.state="approved"; session.confirmed_at=now; session.approval_timing="restarted"; state.restart_required=null; return true; }
   return false;
 }
 async function acknowledge(platform) {
@@ -337,7 +339,7 @@ async function approvalStatus(platform) {
   if (platform!=="codex") return 0;
   let payload={}; try { payload=await readInput(); } catch {}
   const sessionId=sessionIdOf(payload); if (!sessionId) { process.stdout.write(`# AIDD 훅 승인 게이트\n\n- AIDD 훅 승인 게이트: 세션 ID를 확인할 수 없어 모든 작업을 차단했습니다. ${approvalInstruction()}`); return 0; }
-  const {state,session,revision}=ensureApprovalState(sessionId), reason=sessionIsCurrent(session,revision)&&session?.state==="approved"?`현재 ${codexClientKind()==="windows-desktop"?"Windows Codex 앱":"Codex CLI"} 세션은 최신 훅 리비전에 대해 승인되었습니다.`:lockedReason(session,revision,state.restart_required,codexClientKind());
+  const {state,session,revision}=ensureApprovalState(sessionId), client=codexClientKind(), reason=sessionIsCurrent(session,revision)&&session?.state==="approved"&&!restartAppliesToClient(state.restart_required,client)?`현재 ${client==="windows-desktop"?"Windows Codex 앱":"Codex CLI"} 세션은 최신 훅 리비전에 대해 승인되었습니다.`:lockedReason(session,revision,state.restart_required,client);
   process.stdout.write(`# AIDD 훅 승인 게이트\n\n- ${reason}`);
   return 0;
 }

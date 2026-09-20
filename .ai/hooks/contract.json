@@ -52,6 +52,7 @@
     "composed_shell_command_behavior": "deny",
     "codex_trust_revision_paths": [".codex/hooks.json"],
     "legacy_v2_migration_behavior": "require-confirmation",
+    "restart_required_scope": "client-kind",
     "pre_git_export_root_resolution": "session-cwd-relative",
     "pre_git_export_pretool_failure_behavior": "deny",
     "pre_git_export_events": ["SessionStart", "PreToolUse", "PostToolUse", "UserPromptSubmit", "Stop"],

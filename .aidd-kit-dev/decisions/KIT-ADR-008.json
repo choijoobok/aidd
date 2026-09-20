@@ -4,7 +4,7 @@
   "title": "Codex 훅 정의 신뢰 리비전과 pre-Git 실행 경계",
   "status": "accepted",
   "supersedes": ["KIT-ADR-007"],
-  "decision": "Codex 내부 승인 게이트의 신뢰 리비전은 /hooks가 검토하는 실제 provider 정의 .codex/hooks.json만으로 계산한다. export된 Codex 훅의 모든 이벤트는 codex -C로 지정한 세션 루트를 기준으로 .ai 실행기를 찾으며 Git 초기화를 선행 조건으로 삼지 않는다. 구형 version 2 승인 상태에는 당시 provider 정의 단독 해시가 없으므로 version 3으로 전환할 때 기존 approved 상태를 승격하지 않고 unconfirmed로 바꿔 한 번 fail-closed 확인한다. version 3 전환 뒤에는 .codex/hooks.json 정의가 실제로 바뀐 경우에만 기존 세션을 stale 처리한다.",
+  "decision": "Codex 내부 승인 게이트의 신뢰 리비전은 /hooks가 검토하는 실제 provider 정의 .codex/hooks.json만으로 계산한다. export된 Codex 훅의 모든 이벤트는 codex -C로 지정한 세션 루트를 기준으로 .ai 실행기를 찾으며 Git 초기화를 선행 조건으로 삼지 않는다. 구형 version 2 승인 상태에는 당시 provider 정의 단독 해시가 없으므로 version 3으로 전환할 때 기존 approved 상태를 승격하지 않고 unconfirmed로 바꿔 한 번 fail-closed 확인한다. version 3 전환 뒤에는 .codex/hooks.json 정의가 실제로 바뀐 경우에만 기존 세션을 stale 처리한다. 신규 승인 뒤 restart_required는 이를 만든 client kind에만 적용해 Desktop과 CLI의 상태 전이를 결합하지 않는다.",
   "rationale": "정책·실행기·계약·테스트·가이드까지 하나의 리비전으로 묶으면 /hooks에 새 승인 대상이 없는데도 재승인을 요구한다. 반대로 구형 결합 리비전에서 승인 상태를 현재 provider 해시로 무조건 승격하면 실제 훅 정의 변경도 승인된 것으로 세탁할 수 있다. 또한 Git 미초기화 export에서 git rev-parse에 의존하면 승인·보호 실행기 전에 실패해 fail-closed 보장이 사라진다. 실제 provider 정의만 추적하고 정보가 부족한 일회성 마이그레이션은 보수적으로 재확인해야 두 실패를 함께 막을 수 있다.",
   "alternatives": [
     {"option": "정책·실행기·계약·provider 설정을 계속 하나의 리비전으로 해시", "decision": "rejected", "reason": "/hooks가 요구하지 않는 변경까지 재승인 대상으로 만들어 반복 오탐과 불필요한 세션 중단을 일으킨다."},
@@ -16,6 +16,7 @@
     "실제 .codex/hooks.json 정의가 그대로이면 정책·실행기·계약·테스트·가이드 변경만으로 재승인을 요구하지 않는다.",
     "version 2 상태는 version 3으로 처음 전환할 때 기존 승인을 보존하지 않는다. 사용자가 /hooks에서 훅이 이미 active임을 확인했다면 기존 승인 선택 1로 현재 세션을 다시 확인할 수 있다.",
     "version 3에서 실제 provider 정의가 바뀌면 Windows 앱은 새 앱 세션, CLI는 최신 훅 승인과 현재 acknowledge의 신규 승인 응답을 요구하는 기존 통제를 유지한다.",
+    "Windows Desktop의 미완료 재시작 표식은 Desktop 세션만 차단한다. CLI의 기존·신규 승인 확인은 허용하되 그 표식을 제거하지 않는다.",
     "export된 모든 이벤트 명령은 프로젝트 루트에서 시작해야 하며 잘못된 cwd는 지원되는 실행 경로가 아니다. PreToolUse 실행기 내부 오류는 deny로 실패 폐쇄한다.",
     "directory와 ZIP은 동일한 상대 명령을 포함하고 Git 미초기화 상태의 Windows·POSIX 명령 회귀를 유지한다.",
     "승인 상태는 Git 무시 chat-history 아래에만 남고 정본·증거·배포물에 포함하지 않는다."

@@ -92,5 +92,16 @@
     "이번 수정 커밋에서 구현 흐름과 분리된 새 독립 C3 재검토",
     "불변 커밋 기준 전체 회귀 재실행 증거 확보",
     "실제 macOS Codex·Claude provider 실행"
-  ]
+  ],
+  "performed_at_correction": {
+    "corrected_at": "2026-09-20T12:10:14+09:00",
+    "corrected_by": "KIT-EVD-029 독립 재검토 MEDIUM-1",
+    "recorded_performed_at": "2026-09-20T11:55:00+09:00",
+    "introducing_commit": "66c71c5",
+    "introducing_commit_committed_at": "2026-09-20T11:14:30+09:00",
+    "problem": "기록된 performed_at이 이 레코드를 저장소에 들여온 커밋의 시각보다 미래다. 논리적으로 불가능한 값이다.",
+    "cause": "구현 세션이 시스템 시계를 읽지 않고 수기로 근사한 시각을 적었다. KIT-EVD-020~022의 자동 생성 타임스탬프와 달리 관측값이 아니다.",
+    "actual_value": "실제 수행 시각은 미상이며, 적어도 introducing_commit_committed_at 이전이다. 검토·수정·재검토의 선후 관계는 커밋 순서로 확인한다.",
+    "remedy": "이후 레코드는 시스템 시계에서 읽은 시각만 기록한다. 기존 performed_at 값은 당시 기록 그대로 보존한다."
+  }
 }

@@ -136,5 +136,16 @@
     "C3-RR3-FND-N1·N2 수정 (KIT-EVD-028에서 완료)",
     "C3-RR3-FND-N3 CI Windows 실기 경로 결정 (KIT-CHG-005)",
     "C3-RR3-FND-N4·N5 개선 (KIT-CHG-006)"
-  ]
+  ],
+  "performed_at_correction": {
+    "corrected_at": "2026-09-20T12:10:14+09:00",
+    "corrected_by": "KIT-EVD-029 독립 재검토 MEDIUM-1",
+    "recorded_performed_at": "2026-09-20T12:35:00+09:00",
+    "introducing_commit": "bd79513",
+    "introducing_commit_committed_at": "2026-09-20T11:33:16+09:00",
+    "problem": "기록된 performed_at이 이 레코드를 저장소에 들여온 커밋의 시각보다 미래다. 논리적으로 불가능한 값이다.",
+    "cause": "구현 세션이 시스템 시계를 읽지 않고 수기로 근사한 시각을 적었다. KIT-EVD-020~022의 자동 생성 타임스탬프와 달리 관측값이 아니다.",
+    "actual_value": "실제 수행 시각은 미상이며, 적어도 introducing_commit_committed_at 이전이다. 검토·수정·재검토의 선후 관계는 커밋 순서로 확인한다.",
+    "remedy": "이후 레코드는 시스템 시계에서 읽은 시각만 기록한다. 기존 performed_at 값은 당시 기록 그대로 보존한다."
+  }
 }

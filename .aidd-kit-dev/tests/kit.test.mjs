@@ -26,6 +26,7 @@ test("new project bootstraps with Node only",()=>{const temp=mkdtempSync(join(tm
 const testSuiteNames=root=>readdirSync(join(root,".ai/tests")).filter(name=>name.endsWith(".test.mjs")).sort();
 const distributedTestEnv=()=>Object.fromEntries(Object.entries(process.env).filter(([name])=>!name.startsWith("NODE_TEST_")&&name!=="NODE_OPTIONS"));
 const tapCount=(output,label)=>{const match=output.match(new RegExp(`^# ${label} (\\d+)$`,"m"));return match?Number(match[1]):null;};
+const MINIMUM_DISTRIBUTED_TESTS=20;
 test("distributed AIDD tests pass in both export shapes",()=>{
   const temp=mkdtempSync(join(tmpdir(),"aidd-distributed-tests-")),template=join(temp,"template"),product=join(temp,"product");
   try{
@@ -45,7 +46,8 @@ test("distributed AIDD tests pass in both export shapes",()=>{
       assert.doesNotMatch(result.stdout,/^not ok /m,report);
       const tests=tapCount(result.stdout,"tests"),passed=tapCount(result.stdout,"pass"),failed=tapCount(result.stdout,"fail");
       assert.equal(failed,0,report);
-      assert.ok(tests>0&&passed===tests,`distributed AIDD suite did not report a full pass count\n${report}`);
+      assert.ok(tests>=MINIMUM_DISTRIBUTED_TESTS,`distributed AIDD suite reported ${tests} tests, fewer than the ${MINIMUM_DISTRIBUTED_TESTS} expected; an emptied or shrunk suite still exits 0\n${report}`);
+      assert.equal(passed,tests,report);
     }
   }finally{rmSync(temp,{recursive:true,force:true});}
 });

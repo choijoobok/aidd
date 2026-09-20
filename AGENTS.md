@@ -25,7 +25,7 @@
 - portable 동작은 `.ai/`에서, Kit 관리 전용 동작은 `.aidd-kit-dev/`에서 구현한다. 경계가 모호하면 기본적으로 배포하지 않고 명시적인 결정으로 남긴다.
 - 사용자·AI 대화 원문은 정본·증거·배포물에 포함하지 않는다. 훅이 제공한 원문만 역할과 제품 활성화 여부에 관계없이 Git 무시 루트 `chat-history/`에 로컬 기록한다.
 - 공통 portable 스킬은 `.ai/skills/`, 관리 전용 스킬은 `.aidd-kit-dev/skills/`가 정본이다. 원본 provider 어댑터는 `node .aidd-kit-dev/tools/kit.mjs sync-providers`로 두 집합을 합쳐 갱신한다.
-- AIDD 공통 용어 정본은 `.ai/manifests/terminology.json`이며 프로젝트가 수정·재정의할 수 없게 기준 해시를 검증한다. 프로젝트 전용 용어는 `project/.aidd/ssot/terminology.json`의 현재 `TRM`과 `TCH` 변경 이력으로 관리한다. 요구분석·설계 중 AI가 의미·명명·계약에 영향을 주는 새롭거나 모호한 용어를 발견하면 기존 용어를 먼저 검색한다. 모든 활성 팀원은 읽기 전용 `term-review`로 개념 유형·분류·정의·범위·예시·관련 용어·혼동 구분과 영향 후보를 담은 확인 카드를 만들 수 있고, 오프라인 협업에서는 그 결과를 복사해 PM에게 전달한다. PM 확인 뒤에는 PM의 신원으로만 `term-apply`를 실행해 관련 정본·문서·소스 주석 현행화, 용어 적용, 생성·검증과 이력 저장을 한 흐름으로 완료한다. 공통·프로젝트 용어의 사람이 읽는 단일 뷰와 HTML은 생성물이므로 직접 수정하지 않는다.
+- 새롭거나 모호한 용어의 발견, 확인 카드, 추가·변경·제거와 파생 용어집 검증에는 `aidd-terminology` 스킬을 사용한다. AIDD 공통 용어 정본은 `.ai/manifests/terminology.json`, 프로젝트 용어 정본은 `project/.aidd/ssot/terminology.json`이며 생성 Markdown과 HTML은 직접 수정하지 않는다.
 - 생성물이나 fixture를 제품 정본으로 가장하지 않는다. 기존 제품 fixture의 레코드는 회귀 입력일 뿐 현재 Kit 상태가 아니다.
 - 사용자가 AIDD 요건·스펙 구현 검증을 요청하면 `aidd-requirement-verification` 스킬을 사용한다. 빠른 구조 검사와 요청 범위의 행위 테스트만 수행하고, 파생 문서는 현재 정본에서 다시 생성한 전체 결과와 비교한다.
 - 작고 되돌릴 수 있는 증분을 선호한다. 기준선 초기화가 필요하면 현재 작업 트리에는 채택된 기준선만 남기고 과거 상세 이력은 Git에서 조회한다.

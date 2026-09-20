@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-008",
+  "title": "프로젝트 용어 관리 전용 스킬 분리",
+  "class": "C2",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "새 용어 발견과 확인·적용 절차가 요구발굴·아키텍처·전달 스킬과 AGENTS.md에 중복되어 독립적인 용어 요청의 자동 선택 경계가 약하고 수행 계약을 빠르게 읽기 어려웠다.",
+  "intent": "용어 발견·확인 카드·PM 적용·파생 용어집 검증을 자동 선택 가능한 전용 portable 스킬로 모으고, 다른 스킬과 AGENTS.md는 간결한 라우팅과 정본 경계만 유지한다.",
+  "scope": [
+    "aidd-terminology portable 스킬과 provider 메타데이터",
+    "요구발굴·아키텍처·전달·문서 정합성 스킬의 용어 절차 위임",
+    "Kit 원본 AGENTS.md의 용어 규칙 축약",
+    "배포용 AGENTS.md의 제목·항목 목록 중심 재구성",
+    "프로젝트 팀 스킬·용어 가이드와 export/provider 경계 현행화"
+  ],
+  "validation": [
+    "Node 기반 스킬 frontmatter·이름·설명·미완성 placeholder 구조 검사 통과",
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "node --test .aidd-kit-dev/tests/terminology.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke"
+  ],
+  "risks": [
+    "전용 스킬 설명이 너무 넓으면 일반 문장 교정에도 잘못 선택될 수 있으므로 프로젝트 용어 의미·계약 변경으로 범위를 제한한다.",
+    "기존 스킬의 상세 절차를 제거한 뒤 전용 스킬 연결이 누락되면 용어 발견 흐름이 끊길 수 있다."
+  ],
+  "rollback": "aidd-terminology 스킬을 제거하고 KIT-CHG-007의 용어 절차를 요구발굴·아키텍처·전달·문서 정합성 스킬과 AGENTS.md에 다시 인라인으로 복원한다.",
+  "completion_blocker": "없음"
+}

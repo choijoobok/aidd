@@ -1,0 +1,3 @@
+interface:
+  display_name: "AIDD Terminology"
+  short_description: "Detect, review, and apply project terminology"

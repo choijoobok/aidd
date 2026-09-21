@@ -4,8 +4,9 @@
 
 | 상황 | 사용할 템플릿 | 반영할 정본 |
 |---|---|---|
-| 기능 범위·규칙·예외 정리 | feature-spec-workbook.md | REQ / USE / MOD |
-| 화면 정의와 구현 전 목업 | screen-requirements-workbook.md | SCR / UXB / UIP / CMP |
+| 제품 가치·관찰 가능한 요구·인수 기준 정의 | product-requirements-workbook.md | REQ / NFR |
+| 기능 범위·흐름·규칙·예외 구체화 | feature-detail-spec-workbook.md | REQ / UC / MOD / CHG / SCR / TC |
+| 화면 상태·정보·행동 정의와 구현 전 목업 | screen-spec-workbook.md | SCR / UXB / UIP / CMP |
 | 실제 사용자 업무 안내 | user-manual-workbook.md | MAN |
 | 운영 절차·장애 복구 | runbook-workbook.md | RUN / EVD |
 | 대안 조사와 수용 판단 | research-note.md | ADR / REQ / OI |

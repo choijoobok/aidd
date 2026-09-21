@@ -13,7 +13,7 @@ AIDD 공통 용어와 프로젝트 전용 용어를 한 곳에서 찾는 읽기�
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | AIDD-TERM-001 | AIDD | AI 주도 개발 | 방법론 | 의도·요구·설계·구현·검증·운영을 구조화된 정본과 증거로 연결해 AI와 사람이 함께 수행하는 개발 방식이다. | AI-Driven Development | project_team, developer, operator | .ai/spec/purpose-and-boundaries.md |
 | AIDD-TERM-002 | SSOT | 정본 | 정본 | 같은 사실을 한 곳에서만 정의하는 유일한 진실의 원천이다. | Single Source of Truth | project_team, developer, operator | .ai/spec/project-lifecycle.md |
-| AIDD-TERM-003 | REQ | 요구사항 | 추적성 ID | 제품이나 시스템이 충족해야 하는 관찰 가능한 요구를 식별한다. | - | project_team, developer | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-003 | REQ | 제품 요구사항 | 추적성 ID | 제품이나 시스템이 제공해야 하는 사용자 가치와 관찰 가능한 결과, 인수 기준을 식별한다. AIDD에서 수식어 없는 요구사항은 REQ를 뜻한다. | - | project_team, developer | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-004 | NFR | 비기능 요구사항 | 추적성 ID | 성능·보안·신뢰성·운영성처럼 기능의 품질 수준과 제약을 식별한다. | Non-Functional Requirement | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-005 | MOD | 모듈 | 추적성 ID | 책임·정본·인터페이스와 진행 상태를 독립적으로 관리하는 시스템 범위다. | - | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-006 | CHG | 변경 | 변경 관리 | 문제·의도·범위·위험·검증과 롤백을 함께 추적하는 변경 단위다. | 변경 요청 | project_team, developer, operator | .ai/spec/change-sharing.md |
@@ -29,7 +29,7 @@ AIDD 공통 용어와 프로젝트 전용 용어를 한 곳에서 찾는 읽기�
 | AIDD-TERM-016 | IFC | 인터페이스 계약 | 아키텍처 | 모듈이나 외부 시스템 사이의 입력·출력·호환성·실패 동작을 정의한다. | Interface Contract | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-017 | DPN | 의존성 | 아키텍처 | 한 모듈·작업·계약이 다른 대상에 기대는 방향과 조건을 기록한다. | Dependency | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-018 | SURF | 시스템 표면 | 문서화 | 화면·API·배치·이벤트·연동처럼 사용자나 다른 시스템이 접하는 구현 표면이다. | System Surface | project_team, developer, operator | .ai/spec/project-lifecycle.md |
-| AIDD-TERM-019 | SCR | 화면 | UI | 사용자 진입점과 상태·행동·접근성 계약을 가진 화면 명세다. | Screen | project_team, developer | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-019 | SCR | 화면 명세 | UI | 연결된 제품 요구사항과 유즈케이스를 특정 사용자 진입점의 상태·정보·행동·오류·접근성 계약으로 구체화한 정본이다. | Screen Specification | project_team, developer | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-020 | MAN | 사용자 절차 | 사용자 문서 | 사용자가 업무를 완료하도록 사전 조건·단계·예상 결과·복구를 설명하는 절차다. | Manual | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-021 | DLP | 전달 프로필 | 제출 | 독자별 산출물 포함·제외·검증·공개 범위를 정의하는 제출 정책이다. | Delivery Profile | project_team, developer, operator | .ai/spec/distribution-layout.md |
 | AIDD-TERM-022 | GPH | 골든 패스 | 개발 기반 | 대표 기능을 안전하게 구현·검증하는 권장 절차와 예시다. | Golden Path | developer | .ai/spec/project-lifecycle.md |
@@ -49,6 +49,8 @@ AIDD 공통 용어와 프로젝트 전용 용어를 한 곳에서 찾는 읽기�
 | AIDD-TERM-038 | TRM | 프로젝트 용어 | 용어 관리 | 프로젝트가 영향 검토와 자체 결정 절차를 거쳐 현재 사용하도록 정의한 업무·제품·기술 개념이다. | Project Term | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-039 | TCH | 용어 변경 이력 | 용어 관리 | 프로젝트가 결정한 용어 추가·변경·제거의 전후 값, 결정 주체, 영향 범위, 적용 결과와 검증을 보존하는 이력이다. | Terminology Change History | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-040 | HIS | 결정 이력 | 정본 | 중요한 분석·설계·용어·소스·범위·상태 결정의 주체, 내용, 이유, 이전 상태, 영향과 출처를 안정 ID에 연결해 append-only로 보존하는 기록이다. | Decision History | project_team, developer, operator | .ai/docs/methodology/artifact-model.md |
+| AIDD-TERM-041 | UC | 유즈케이스 | 분석 | 사용자나 외부 시스템이 목적을 달성하는 시작 조건, 정상 흐름, 대안·실패 흐름과 완료 결과를 식별한다. | Use Case | project_team, developer | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-042 | 기능 상세 명세 | 기능 상세 명세 | 문서화 | 하나의 기능 단위가 연결된 REQ를 충족하는 처리 흐름, 업무 규칙, 예외, 데이터·연계, 화면과 검증을 구체화한 명세다. 독립된 FEAT 정본이나 요구사항 유형을 만들지 않는다. | Feature Detail Specification | project_team, developer | .ai/docs/methodology/artifact-model.md |
 
 ## 프로젝트 전용 용어
 

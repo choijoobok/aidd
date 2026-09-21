@@ -12,7 +12,7 @@
 | 새 용어 발견·유사 용어 구분·용어집 변경 | `aidd-terminology` |
 | 구현·테스트·출시·운영 변경 | `aidd-delivery` |
 | 기존 시스템 조사와 현행화 계획 | `aidd-legacy-reconciliation` |
-| UI 요구·화면 명세 | `aidd-ui-spec` |
+| 화면 명세·사용자 절차 | `aidd-ui-spec` |
 | 구현 결정 전 HTML 목업 | `aidd-ui-prototype` |
 | 사용자 가이드와 실제 화면 검증 | `aidd-user-guide` |
 | 제출 패키지 조립 | `aidd-deliverable-build` |

@@ -1,6 +1,6 @@
 ---
 name: aidd-ui-spec
-description: AIDD JSON 정본에서 모듈별 화면 요구사항과 사용자 절차를 정의·검토한다. 새 화면, 화면 변경, 메뉴·내비게이션, SCR/MAN 결손 점검에 사용하며 생성 Markdown을 정본으로 취급하지 않는다.
+description: AIDD JSON 정본에서 모듈별 화면 명세와 사용자 절차를 정의·검토한다. 새 화면, 화면 변경, 메뉴·내비게이션, SCR/MAN 결손 점검에 사용하며 생성 Markdown을 정본으로 취급하지 않는다.
 ---
 
 # AIDD UI 명세

@@ -67,10 +67,10 @@
 - **source:** workboard.json
 - **note:** 현재 초점·다음 작업·관찰 항목만 유지하는 작고 갱신 가능한 실행 뷰다. 중요한 결정은 안정 ID와 연결된 HIS 이력으로 별도 기록한다.
 
-### DLV-REQ — 요구사항 정의서
+### DLV-REQ — 제품 요구사항 정의서
 
 - **id:** DLV-REQ
-- **name:** 요구사항 정의서
+- **name:** 제품 요구사항 정의서
 - **mode:** generated
 - **applicability:** required
 - **status:** current

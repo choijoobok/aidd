@@ -77,7 +77,7 @@
     },
     {
       "id": "DLV-REQ",
-      "name": "요구사항 정의서",
+      "name": "제품 요구사항 정의서",
       "mode": "generated",
       "applicability": "required",
       "status": "current",

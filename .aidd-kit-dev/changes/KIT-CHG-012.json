@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-012",
+  "title": "요구사항·기능 상세·화면 명세 용어 분리",
+  "class": "C2",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "제품 요구사항, 기능별 상세 정리와 화면 계약이 모두 요구사항 또는 요건으로 불리고, 비정본 FEAT·USE 표기와 화면 requirements.md 경로까지 섞여 문서의 권위와 추적 단위를 구분하기 어렵다.",
+  "intent": "요구사항이라는 명칭은 REQ/NFR 제품 계약에만 사용하고, 개발 단계 구체화 산출물은 기능 상세 명세와 화면 명세(SCR)로 구분하며 파일명·정본·생성물·스킬·가이드에서 같은 용어를 사용한다.",
+  "scope": [
+    "AIDD 공통 용어에서 REQ를 제품 요구사항으로 명확화하고 UC·기능 상세 명세·SCR 경계를 정의",
+    "제품 요구사항·기능 상세·화면 명세 워크시트를 별도 파일명과 내용으로 분리하고 FEAT·USE 비정본 표기 제거",
+    "화면 생성 문서를 requirements.md에서 specification.md로 변경하고 제목을 화면 명세서로 통일",
+    "UI 명세 스킬, 수행 가이드, 문서 영향 흐름과 reference fixture 정본·파생물 현행화",
+    "기존 aidd-template export 재생성"
+  ],
+  "compatibility": "화면 파생 문서 경로 project/docs/generated/ui/modules/<MOD>/<SCR>/requirements.md는 specification.md로 바뀐다. generate는 이전 파일을 obsolete 파생물로 제거하므로 외부 링크와 제출 목록은 새 경로로 갱신해야 한다.",
+  "validation": [
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "skill-creator quick_validate로 aidd-ui-spec 검증",
+    "변경 영역 Node 테스트와 reference fixture 전체 파생물 비교",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke",
+    "구 명칭·파일명·FEAT·USE 잔존 검색과 문서 정합성 검토",
+    "exported aidd-template 검증"
+  ],
+  "risks": [
+    "기존 프로젝트가 화면 requirements.md 경로를 외부 링크로 사용했다면 수동 링크 변경이 필요하다.",
+    "REQ/NFR와 기능 상세 명세의 경계를 문구만 바꾸고 문서 정책을 분리하지 않으면 같은 혼선이 재발할 수 있다."
+  ],
+  "rollback": "세 워크시트와 문서 정책 분리를 되돌리고 화면 생성 경로를 requirements.md로 복원한 뒤 공통 용어 baseline과 fixture를 KIT-CHG-011 상태로 재생성한다.",
+  "completion_blocker": "없음"
+}

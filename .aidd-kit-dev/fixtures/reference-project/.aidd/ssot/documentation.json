@@ -15,18 +15,44 @@
   "templates": [
     {
       "id": "DOC-REQ",
-      "name": "기능 요건 정의서",
-      "seed": ".ai/templates/artifact/feature-spec-workbook.md",
+      "name": "제품 요구사항 정의서",
+      "seed": ".ai/templates/artifact/product-requirements-workbook.md",
       "target_patterns": [
-        "requirements.md",
+        "requirements.md"
+      ],
+      "audience": "제품 범위 승인자와 분석·검증 AI",
+      "status": "pilot",
+      "required_sections": [
+        {
+          "id": "value",
+          "title": "사용자 가치와 관찰 가능한 결과",
+          "fill_from": "project.introduction"
+        },
+        {
+          "id": "scope",
+          "title": "포함 범위와 명시적 비목표",
+          "fill_from": null
+        },
+        {
+          "id": "acceptance",
+          "title": "인수 기준과 검증 연결",
+          "fill_from": null
+        }
+      ]
+    },
+    {
+      "id": "DOC-FUNC",
+      "name": "기능 상세 명세서",
+      "seed": ".ai/templates/artifact/feature-detail-spec-workbook.md",
+      "target_patterns": [
         "modules/*.md"
       ],
-      "audience": "승인자와 구현·검증 AI",
+      "audience": "구현·검증 AI와 기능 검토자",
       "status": "pilot",
       "required_sections": [
         {
           "id": "overview",
-          "title": "기능 개요와 범위",
+          "title": "기능 개요와 연결 제품 요구사항",
           "fill_from": "project.introduction"
         },
         {
@@ -43,10 +69,10 @@
     },
     {
       "id": "DOC-SCR",
-      "name": "화면 요구사항 정의서",
-      "seed": ".ai/templates/artifact/screen-requirements-workbook.md",
+      "name": "화면 명세서",
+      "seed": ".ai/templates/artifact/screen-spec-workbook.md",
       "target_patterns": [
-        "ui/modules/*/requirements.md"
+        "ui/modules/*/specification.md"
       ],
       "audience": "사용자, UX 검토자와 구현·검증 AI",
       "status": "pilot",

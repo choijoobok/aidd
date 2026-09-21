@@ -18,8 +18,7 @@
 - **states:** -
 - **accessibility:** 생성 Markdown은 구조적 제목과 표를 사용한다.
 - **responsive_rules:** -
-- **reason:** 실행 가능한 제품 UI가 없으며, 새 UI 채널을 도입할 때 TG-002에서 approved 기준선으로 대체한다.
-- **owner:** 제품·UX
+- **reason:** 실행 가능한 제품 UI가 없으며, 새 UI 채널을 도입할 때 TG-002를 통과한 기준선으로 대체한다.
 - **supersedes:** -
 - **replaced_by:** -
 

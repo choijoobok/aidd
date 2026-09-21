@@ -2,153 +2,590 @@
   "schema_version": 1,
   "changes": [
     {
-      "id": "CHG-001", "title": "AIDD 기반 구조 수립", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-GOV", "MOD-DOC", "MOD-AI", "MOD-STATUS", "MOD-CHG", "MOD-QA"],
-      "requirements": ["REQ-001", "REQ-002", "REQ-003", "REQ-004", "REQ-005", "REQ-006", "REQ-007", "REQ-008", "REQ-009", "REQ-010", "REQ-011", "REQ-012", "REQ-013", "REQ-014", "REQ-015", "REQ-016", "REQ-017", "REQ-018"], "required_gates": ["DG-001", "TG-001", "TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "security", "data", "migration", "deployment", "operations"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
+      "id": "CHG-001",
+      "title": "AIDD 기반 구조 수립",
+      "type": "feature",
+      "class": "C2",
+      "status": "in_progress",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-GOV",
+        "MOD-DOC",
+        "MOD-AI",
+        "MOD-STATUS",
+        "MOD-CHG",
+        "MOD-QA"
+      ],
+      "requirements": [
+        "REQ-001",
+        "REQ-002",
+        "REQ-003",
+        "REQ-004",
+        "REQ-005",
+        "REQ-006",
+        "REQ-007",
+        "REQ-008",
+        "REQ-009",
+        "REQ-010",
+        "REQ-011",
+        "REQ-012",
+        "REQ-013",
+        "REQ-014",
+        "REQ-015",
+        "REQ-016",
+        "REQ-017",
+        "REQ-018"
+      ],
+      "required_gates": [
+        "DG-001",
+        "TG-001",
+        "TG-002"
+      ],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "security",
+        "data",
+        "migration",
+        "deployment",
+        "operations"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "reused",
+        "design": "reused",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객",
+        "reason": "AIDD Kit 자체 거버넌스 변경"
+      },
       "impact": "프로젝트 정본 구조, 이식 가능한 스킬, 검증, 생성 뷰와 생애주기 훅을 도입한다.",
       "migration": "파일럿에 저장소 구조를 적용하고 기존 시스템에서는 현재 사실을 안정적인 레코드로 가져온다.",
       "rollback": "도입 커밋을 되돌린다. 정본 JSON은 애플리케이션 실행 환경을 변경하지 않으며 계속 내보낼 수 있다.",
-      "regression_scope": ["레지스트리 검증", "문서 생성", "AI 어댑터 동등성", "상태 렌더링", "병합 기록"]
+      "regression_scope": [
+        "레지스트리 검증",
+        "문서 생성",
+        "AI 어댑터 동등성",
+        "상태 렌더링",
+        "병합 기록"
+      ]
     },
     {
-      "id": "CHG-002", "title": "기술 스택 게이트와 방법론 분석 보강", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-GOV", "MOD-DISC", "MOD-ARCH", "MOD-DOC", "MOD-DELIVERY", "MOD-QA"],
-      "requirements": ["REQ-011", "REQ-016", "REQ-017", "REQ-019"], "required_gates": ["TG-001", "TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "security", "migration"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
+      "id": "CHG-002",
+      "title": "기술 스택 게이트와 방법론 분석 보강",
+      "type": "feature",
+      "class": "C2",
+      "status": "in_progress",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-GOV",
+        "MOD-DISC",
+        "MOD-ARCH",
+        "MOD-DOC",
+        "MOD-DELIVERY",
+        "MOD-QA"
+      ],
+      "requirements": [
+        "REQ-011",
+        "REQ-016",
+        "REQ-017",
+        "REQ-019"
+      ],
+      "required_gates": [
+        "TG-001",
+        "TG-002"
+      ],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "security",
+        "migration"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "reused",
+        "design": "reused",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객",
+        "reason": "AIDD Kit 자체 거버넌스 변경"
+      },
       "impact": "기술 선택과 개발 기반 준비를 명시적인 연속 게이트로 만들고 전통적·적응형·운영·AI 주도 방법론을 구조화해 AIDD 단계와 증거에 연결한다.",
       "migration": "기존 프로젝트는 현재 기술을 TSB 기준선으로 등록하고 다음 기능 규모 변경에서 TG-001·TG-002를 평가한다.",
       "rollback": "technology.json과 methodologies.json, 연결된 생성기·검증·문서를 제거하고 ADR-006·ADR-007을 대체 결정으로 폐기한다.",
-      "regression_scope": ["정본 참조 검증", "기술 게이트 생성 문서", "방법론 비교 생성 문서", "스킬 동기화", "상태와 릴리스 준비도"]
+      "regression_scope": [
+        "정본 참조 검증",
+        "기술 게이트 생성 문서",
+        "방법론 비교 생성 문서",
+        "스킬 동기화",
+        "상태와 릴리스 준비도"
+      ]
     },
     {
-      "id": "CHG-003", "title": "배포 환경과 설계 위험 예방 게이트 보강", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-DISC", "MOD-ARCH", "MOD-DOC", "MOD-STATUS", "MOD-QA", "MOD-DELIVERY"],
-      "requirements": ["REQ-016", "REQ-018", "REQ-020", "REQ-021"], "required_gates": ["DG-001", "TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "security", "data", "migration", "deployment", "operations"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
+      "id": "CHG-003",
+      "title": "배포 환경과 설계 위험 예방 게이트 보강",
+      "type": "feature",
+      "class": "C2",
+      "status": "in_progress",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-DISC",
+        "MOD-ARCH",
+        "MOD-DOC",
+        "MOD-STATUS",
+        "MOD-QA",
+        "MOD-DELIVERY"
+      ],
+      "requirements": [
+        "REQ-016",
+        "REQ-018",
+        "REQ-020",
+        "REQ-021"
+      ],
+      "required_gates": [
+        "DG-001",
+        "TG-002"
+      ],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "security",
+        "data",
+        "migration",
+        "deployment",
+        "operations"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "reused",
+        "design": "reused",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객",
+        "reason": "AIDD Kit 자체 거버넌스 변경"
+      },
       "impact": "기획·요구분석에서 배포·DBMS·인스턴스·확장·SLO·복구 조건을 확인하고 설계에서 트랜잭션·AOP·스레드·분산 경쟁·성능·장애 위험을 통제·검증한다.",
       "migration": "기존 프로젝트는 현재 환경을 DEP 프로필로 기준선화하고 다음 중대한 변경 전에 DG-001과 적용되는 DPR 위험 패턴을 평가한다.",
       "rollback": "deployment.json과 연결된 생성기·검증·스킬 보강을 제거하고 ADR-008을 대체 결정으로 폐기한다.",
-      "regression_scope": ["정본 참조 검증", "배포·운영 생성 문서", "DG-001·TG-001·TG-002 순서", "위험 패턴 범위", "스킬 동기화", "상태와 릴리스 준비도"]
+      "regression_scope": [
+        "정본 참조 검증",
+        "배포·운영 생성 문서",
+        "DG-001·TG-001·TG-002 순서",
+        "위험 패턴 범위",
+        "스킬 동기화",
+        "상태와 릴리스 준비도"
+      ]
     },
     {
-      "id": "CHG-004", "title": "실행 가능한 게이트와 증거 무결성", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-GOV", "MOD-QA", "MOD-STATUS"],
-      "requirements": ["REQ-003", "REQ-007", "REQ-017", "REQ-018", "REQ-022"], "required_gates": ["TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "security", "migration"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
-      "impact": "게이트 정의와 변경별 실행을 분리하고 증거·승인·예외를 구조화하여 상태값만으로 완료를 우회할 수 없게 한다.",
+      "id": "CHG-004",
+      "title": "실행 가능한 게이트와 증거 무결성",
+      "type": "feature",
+      "class": "C2",
+      "status": "in_progress",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-GOV",
+        "MOD-QA",
+        "MOD-STATUS"
+      ],
+      "requirements": [
+        "REQ-003",
+        "REQ-007",
+        "REQ-017",
+        "REQ-018",
+        "REQ-022"
+      ],
+      "required_gates": [
+        "TG-002"
+      ],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "security",
+        "migration"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "reused",
+        "design": "reused",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객",
+        "reason": "AIDD Kit 자체 거버넌스 변경"
+      },
+      "impact": "게이트 정의와 변경별 실행을 분리하고 증거·통과 판정·예외를 구조화하여 상태값만으로 완료를 우회할 수 없게 한다.",
       "migration": "기존 통과 테스트의 자유문자 증거를 EVD 레코드로 이관하고 기존 C2 변경에 미결 게이트 실행을 생성한다.",
-      "rollback": "gate-runs.json·evidence.json·approvals.json과 연결 검증을 제거하고 tests.json 증거를 이전 문자열 형식으로 되돌린다.",
-      "regression_scope": ["정본 로딩", "테스트 증거", "게이트 승인", "릴리스 차단", "상태·생성 문서", "AI 스킬"]
+      "rollback": "gate-runs.json·evidence.json의 연결 검증을 제거하고 tests.json 증거를 이전 문자열 형식으로 되돌린다.",
+      "regression_scope": [
+        "정본 로딩",
+        "테스트 증거",
+        "게이트 통과",
+        "릴리스 차단",
+        "상태·생성 문서",
+        "AI 스킬"
+      ]
     },
     {
-      "id": "CHG-005", "title": "Git 병합 훅과 GitHub CI 강제", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-AI", "MOD-CHG", "MOD-QA"],
-      "requirements": ["REQ-012", "REQ-013", "REQ-018", "REQ-023"], "required_gates": ["TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "security", "migration", "deployment", "operations"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
+      "id": "CHG-005",
+      "title": "Git 병합 훅과 GitHub CI 강제",
+      "type": "feature",
+      "class": "C2",
+      "status": "in_progress",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-AI",
+        "MOD-CHG",
+        "MOD-QA"
+      ],
+      "requirements": [
+        "REQ-012",
+        "REQ-013",
+        "REQ-018",
+        "REQ-023"
+      ],
+      "required_gates": [
+        "TG-002"
+      ],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "security",
+        "migration",
+        "deployment",
+        "operations"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "reused",
+        "design": "reused",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객",
+        "reason": "AIDD Kit 자체 거버넌스 변경"
+      },
       "impact": "Git post-merge 인자 처리와 GitHub Actions의 생성·검증·테스트·어댑터 동등성 검사를 추가한다.",
       "migration": "저장소에서 install-hooks를 실행하고 GitHub의 필수 상태 검사를 원격 설정한다.",
       "rollback": "워크플로와 훅 인자 처리를 제거하고 기존 수동 검증 절차로 복귀한다.",
-      "regression_scope": ["병합 기록", "CLI 인자", "문서 생성", "정본 검증", "단위 테스트", "스킬 동기화"]
+      "regression_scope": [
+        "병합 기록",
+        "CLI 인자",
+        "문서 생성",
+        "정본 검증",
+        "단위 테스트",
+        "스킬 동기화"
+      ]
     },
     {
-      "id": "CHG-006", "title": "프로젝트 착수 전 실행 기반 완성", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-GOV", "MOD-DOC", "MOD-AI", "MOD-QA", "MOD-STATUS", "MOD-CHG", "MOD-DELIVERY"],
-      "requirements": ["REQ-004", "REQ-005", "REQ-006", "REQ-010", "REQ-011", "REQ-024", "REQ-025", "REQ-026", "REQ-027"], "required_gates": ["TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "security", "migration", "deployment", "operations", "training"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
+      "id": "CHG-006",
+      "title": "프로젝트 착수 전 실행 기반 완성",
+      "type": "feature",
+      "class": "C2",
+      "status": "in_progress",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-GOV",
+        "MOD-DOC",
+        "MOD-AI",
+        "MOD-QA",
+        "MOD-STATUS",
+        "MOD-CHG",
+        "MOD-DELIVERY"
+      ],
+      "requirements": [
+        "REQ-004",
+        "REQ-005",
+        "REQ-006",
+        "REQ-010",
+        "REQ-011",
+        "REQ-024",
+        "REQ-025",
+        "REQ-026",
+        "REQ-027"
+      ],
+      "required_gates": [
+        "TG-002"
+      ],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "security",
+        "migration",
+        "deployment",
+        "operations",
+        "training"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "reused",
+        "design": "reused",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객",
+        "reason": "AIDD Kit 자체 거버넌스 변경"
+      },
       "impact": "모듈별 상세 계획, 결정 대체와 개발 시작 차단, 운영·사용자·보안 가이드, AI 교차 평가 하네스와 GitHub 보호 규칙 기준을 추가한다.",
       "migration": "기존 모듈과 변경을 작업·마일스톤에 연결하고 실제 프로젝트 착수 시 도메인 작업과 인터페이스를 같은 모델로 추가한다.",
       "rollback": "delivery-plan.json·guides.json·evaluations.json·repository.json과 연결 생성기·검증을 제거하되 기존 증거와 변경 이력은 보존한다.",
-      "regression_scope": ["정본 참조", "모듈 상태 뷰", "가이드 생성", "개발 시작 게이트", "AI 평가 현황", "GitHub 보호 규칙", "릴리스 준비도"]
+      "regression_scope": [
+        "정본 참조",
+        "모듈 상태 뷰",
+        "가이드 생성",
+        "개발 시작 게이트",
+        "AI 평가 현황",
+        "GitHub 보호 규칙",
+        "릴리스 준비도"
+      ]
     },
     {
-      "id": "CHG-007", "title": "1인·팀 협업 프로필의 가역적 전환", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-GOV", "MOD-CHG", "MOD-QA", "MOD-STATUS"],
-      "requirements": ["REQ-028"], "required_gates": ["TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "migration", "operations"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
-      "impact": "활성 사람 참여자 수에 따라 1인·팀 협업 프로필, 사람 승인 수와 AI 독립 검토를 전환하고 전환 이력과 GitHub ruleset을 재생성한다.",
-      "migration": "현재 프로젝트 책임자 1명을 활성 참여자로 기준선화하고 이후 참여·이탈은 collaboration-member 명령으로 기록한다.",
-      "rollback": "협업 정본과 생성 규칙을 제거하고 repository.json의 고정 승인 정책으로 복귀하되 참여자·전환 이력은 내보내 보존한다.",
-      "regression_scope": ["협업 프로필 선택", "참여자 이력", "1인·팀 양방향 전환", "ruleset 승인 수", "상태·협업 문서", "정본 참조"]
-    },
-    {
-      "id": "CHG-008", "title": "Git 신원과 협업 참여자 대조 통제", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-GOV", "MOD-CHG", "MOD-QA", "MOD-STATUS"],
-      "requirements": ["REQ-029"], "required_gates": ["TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "security", "migration", "operations"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
-      "impact": "Git 작성자·커미터를 사람 참여자 또는 봇 매핑과 대조하고 미등록 신원을 상태·개발 진입·릴리스 통제에 반영한다.",
-      "migration": "현재 joobok Git 신원을 HUM-001의 기준선 별칭으로 등록하고 이후 별칭·봇·호스팅 계정은 collaboration-identity 명령으로 추가한다.",
-      "rollback": "신원 정책·매핑·이벤트와 대조 명령을 제거하되 확인했던 신원 목록과 감사 이력을 내보내 보존한다.",
-      "regression_scope": ["Git 작성자·커미터 스캔", "사람·봇·별칭 분류", "미등록 신원 경고", "C2·C3 개발 차단", "릴리스 차단", "협업 상태·생성 문서"]
-    },
-    {
-      "id": "CHG-009", "title": "안전한 템플릿 초기화와 협업 브랜치 흐름", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-GOV", "MOD-AI", "MOD-CHG", "MOD-DOC", "MOD-QA"],
-      "requirements": ["REQ-030"], "required_gates": ["TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "security", "migration", "operations", "training"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
-      "impact": "복사본의 안전한 Git 초기화, Codex·Claude 세션 진입 규칙, 팀 전환 뒤 작업 브랜치 강제, 사람이 읽는 템플릿 사용 가이드를 추가한다.",
-      "migration": "기존 저장소는 project-init으로 훅을 다시 활성화하고 팀 프로필이면 다음 변경부터 작업 브랜치를 사용한다.",
-      "rollback": "project-init·pre-commit과 협업 브랜치 정책을 제거하되 이미 만든 Git 이력·참여 전환·기준선 커밋은 보존한다.",
-      "regression_scope": ["Git 미초기화 복사본", "자동 스테이징·커밋 방지", "로컬 훅 경로", "1인·팀 브랜치 판정", "AI 어댑터 동기화", "사용 가이드 링크"]
-    },
-    {
-      "id": "CHG-010", "title": "모듈별 정본 분할과 확장 가능한 명세", "type": "refactoring", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-GOV", "MOD-ARCH", "MOD-DOC", "MOD-STATUS", "MOD-QA"],
-      "requirements": ["REQ-001", "REQ-002", "REQ-003", "REQ-009", "REQ-024"], "required_gates": ["TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "migration"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
+      "id": "CHG-010",
+      "title": "모듈별 정본 분할과 확장 가능한 명세",
+      "type": "refactoring",
+      "class": "C2",
+      "status": "in_progress",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-GOV",
+        "MOD-ARCH",
+        "MOD-DOC",
+        "MOD-STATUS",
+        "MOD-QA"
+      ],
+      "requirements": [
+        "REQ-001",
+        "REQ-002",
+        "REQ-003",
+        "REQ-009",
+        "REQ-024"
+      ],
+      "required_gates": [
+        "TG-002"
+      ],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "migration"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "reused",
+        "design": "reused",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객",
+        "reason": "AIDD Kit 자체 거버넌스 변경"
+      },
       "impact": "요구사항 정본을 모듈 조각으로 이관하고, 모듈별 생성 명세·상태 갱신·신규 모듈 추가와 조각 무결성 검증을 제공한다.",
       "migration": "기존 requirements.json의 각 요구사항을 기존 modules 배열의 첫 모듈 조각으로 한 번만 이관한다. 다중 모듈 링크와 모든 안정적인 ID는 유지한다.",
       "rollback": "안정적인 ID와 모듈 링크를 유지하면서 조각 요구사항을 전역 requirements.json으로 병합하고, 모듈별 생성 명세와 전용 명령을 제거한다.",
-      "regression_scope": ["정본 로딩", "요구사항·모듈 양방향 링크", "전체·모듈별 문서 생성", "생성 문서 드리프트", "신규 모듈 추가", "모듈별 상태", "CLI 호환성"]
+      "regression_scope": [
+        "정본 로딩",
+        "요구사항·모듈 양방향 링크",
+        "전체·모듈별 문서 생성",
+        "생성 문서 드리프트",
+        "신규 모듈 추가",
+        "모듈별 상태",
+        "CLI 호환성"
+      ]
     },
     {
-      "id": "CHG-011", "title": "프로젝트 개발 기반·UI·운영·제출 정본 체계", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-ARCH", "MOD-DOC", "MOD-DELIVERY", "MOD-QA", "MOD-STATUS"],
-      "requirements": ["REQ-011", "REQ-015", "REQ-025", "REQ-031", "REQ-032", "REQ-033"], "required_gates": ["TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "migration", "operations", "training"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
+      "id": "CHG-011",
+      "title": "프로젝트 개발 기반·UI·운영·제출 정본 체계",
+      "type": "feature",
+      "class": "C2",
+      "status": "in_progress",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-ARCH",
+        "MOD-DOC",
+        "MOD-DELIVERY",
+        "MOD-QA",
+        "MOD-STATUS"
+      ],
+      "requirements": [
+        "REQ-011",
+        "REQ-015",
+        "REQ-025",
+        "REQ-031",
+        "REQ-032",
+        "REQ-033"
+      ],
+      "required_gates": [
+        "TG-002"
+      ],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "migration",
+        "operations",
+        "training"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "reused",
+        "design": "reused",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객",
+        "reason": "AIDD Kit 자체 거버넌스 변경"
+      },
       "impact": "기술 스택에 종속되지 않는 개발 표준·골든 패스·예외, UI 기준선·패턴·공통 컴포넌트·모듈별 화면과 매뉴얼, 운영 런북과 제출 프로필을 구조화하고 결정적 생성 뷰와 검증을 제공한다.",
       "migration": "기존 guides와 deliverables는 유지하고 새 정본 유형을 병행 도입한다. UI가 없는 기존 모듈은 조각을 만들지 않으며 새 UI가 필요할 때만 init-module-ui를 실행한다.",
       "rollback": "새 정본 파일과 생성 뷰를 내보내 보존한 뒤 FILES 등록·검증·생성 확장을 제거한다. 기존 요구사항·가이드·모듈 구조는 그대로 유지한다.",
-      "regression_scope": ["정본 로딩과 안정 ID", "모듈별 UI 조각", "표준·패턴·컴포넌트·테스트·승인 참조", "생성 문서 드리프트", "상태 요약", "산출물 카탈로그", "신규 모듈 추가"],
-      "options": [
-        {"id": "now", "label": "지금 수용", "selected": true, "reason": "기능 개발 전에 개발 기반과 파생 산출물 계약을 먼저 확정해야 한다."},
-        {"id": "later", "label": "후속 수용", "selected": false, "reason": "실제 프로젝트 착수 시 한꺼번에 도입하면 구현 편차와 마이그레이션 비용이 커진다."},
-        {"id": "not_now", "label": "수용하지 않음", "selected": false, "reason": "동일 품질의 다중 AI 개발이라는 고객 목표를 충족하지 못한다."}
+      "regression_scope": [
+        "정본 로딩과 안정 ID",
+        "모듈별 UI 조각",
+        "표준·패턴·컴포넌트·테스트·승인 참조",
+        "생성 문서 드리프트",
+        "상태 요약",
+        "산출물 카탈로그",
+        "신규 모듈 추가"
       ],
-      "scope_delta": {"requirements": 3, "standards": 2, "ui_baselines": 1, "runbooks": 1, "delivery_profiles": 2}
+      "options": [
+        {
+          "id": "now",
+          "label": "지금 수용",
+          "selected": true,
+          "reason": "기능 개발 전에 개발 기반과 파생 산출물 계약을 먼저 확정해야 한다."
+        },
+        {
+          "id": "later",
+          "label": "후속 수용",
+          "selected": false,
+          "reason": "실제 프로젝트 착수 시 한꺼번에 도입하면 구현 편차와 마이그레이션 비용이 커진다."
+        },
+        {
+          "id": "not_now",
+          "label": "수용하지 않음",
+          "selected": false,
+          "reason": "동일 품질의 다중 AI 개발이라는 고객 목표를 충족하지 못한다."
+        }
+      ],
+      "scope_delta": {
+        "requirements": 3,
+        "standards": 2,
+        "ui_baselines": 1,
+        "runbooks": 1,
+        "delivery_profiles": 2
+      }
     },
     {
-      "id": "CHG-012", "title": "감사 가능한 팀 작업 배정과 개발 범위 포괄성", "type": "feature", "class": "C2", "status": "done", "requested_by": "고객",
-      "modules": ["MOD-GOV", "MOD-DOC", "MOD-DELIVERY", "MOD-QA", "MOD-STATUS", "MOD-CHG"],
-      "requirements": ["REQ-034"], "required_gates": ["TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "migration", "operations"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit 자체 거버넌스 변경"},
-      "impact": "팀 전환의 PM 전제, PM·위임·자율 배정 모드, 정책·책임자 감사 이력, 변경별 필수 작업 영역, 파생 요구 편입과 개발 진입 포괄성 검사를 정본·CLI·생성 문서에 연결한다.",
-      "migration": "기존 pm_controlled 정책과 WRK-012 책임자를 최초 감사 이벤트로 기준선화하고, 기존 변경에는 필수 작업 영역을 명시한다.",
-      "rollback": "배정 이벤트를 내보내 보존한 뒤 정책 전환·감사 이력·포괄성 게이트 확장을 제거하고 기존 assignee 단일 필드로 복귀한다.",
-      "regression_scope": ["팀 전환 PM 필수", "세 가지 배정 모드", "오프라인 협의 적용 범위", "정책·책임자 변경 이력", "변경별 작업 영역", "개발 진입 차단", "생성 전달 계획", "Codex·Claude 동기화"]
-    },
-    {
-      "id": "CHG-013", "title": "변경 유형별 분석·설계 진입과 레거시 문서 현행화 통제", "type": "feature", "class": "C2", "status": "in_progress", "requested_by": "고객",
-      "modules": ["MOD-GOV", "MOD-DOC", "MOD-AI", "MOD-CHG", "MOD-QA", "MOD-DELIVERY"],
-      "requirements": ["REQ-035"], "required_gates": ["TG-002"],
-      "required_work_coverage": ["design", "implementation", "test", "documentation", "migration", "operations", "training"],
-      "delivery_path": {"kind": "governance", "analysis": "reused", "design": "reused", "documentation": "update_now", "surfaces": [], "documentation_work": [], "decided_by": "고객", "reason": "AIDD Kit의 변경·문서화 정책 구현"},
+      "id": "CHG-013",
+      "title": "변경 유형별 분석·설계 진입과 레거시 문서 현행화 통제",
+      "type": "feature",
+      "class": "C2",
+      "status": "in_progress",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-GOV",
+        "MOD-DOC",
+        "MOD-AI",
+        "MOD-CHG",
+        "MOD-QA",
+        "MOD-DELIVERY"
+      ],
+      "requirements": [
+        "REQ-035"
+      ],
+      "required_gates": [
+        "TG-002"
+      ],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "migration",
+        "operations",
+        "training"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "reused",
+        "design": "reused",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객",
+        "reason": "AIDD Kit의 변경·문서화 정책 구현"
+      },
       "impact": "신규 기능, 기존 기능 변경, 결함, 내부 리팩터링과 레거시 고도화를 구분하고 화면 경로·API·배치·이벤트·연동·마이그레이션 표면을 기준으로 문서 현행화를 통제한다.",
       "migration": "기존 CHG에는 거버넌스 경로를 소급하고 실제 프로젝트는 모듈별 시스템 표면을 등록한다. 레거시 프로젝트는 전체 인벤토리와 문서 전환 계획을 먼저 만든다.",
       "rollback": "system-surfaces 정본과 커밋 전 검사를 제거하고 변경별 delivery_path를 내보내 보존한 뒤 종전 수동 문서 검토로 복귀한다.",
-      "regression_scope": ["신규 기능 분석·설계 진입", "기존 기능 문서 즉시·후속 작성 선택", "화면·API 표면 매핑", "레거시 인벤토리", "커밋 전 소스·문서 검사", "릴리스 문서 부채 차단"]
+      "regression_scope": [
+        "신규 기능 분석·설계 진입",
+        "기존 기능 문서 즉시·후속 작성 선택",
+        "화면·API 표면 매핑",
+        "레거시 인벤토리",
+        "커밋 전 소스·문서 검사",
+        "릴리스 문서 부채 차단"
+      ]
+    },
+    {
+      "id": "CHG-014",
+      "title": "프로젝트 운영 분리와 결정 이력 중심 전환",
+      "type": "governance",
+      "class": "C2",
+      "status": "done",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-GOV"
+      ],
+      "requirements": [
+        "REQ-036"
+      ],
+      "required_gates": [],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "migration",
+        "operations"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "complete",
+        "design": "complete",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객과 프로젝트팀의 오프라인 협의",
+        "reason": "AIDD는 실행과 산출물에 집중하고 프로젝트 운영은 별도 도구와 절차에서 관리한다."
+      },
+      "impact": "AIDD 정본과 명령에서 신원·역할·승인·작업 배정을 제거하고 안정 ID 기반 결정 이력을 추가한다.",
+      "migration": "기존 협업·승인 정본은 제거하고 현재 항목의 상태·근거와 HIS 이력을 함께 사용한다.",
+      "rollback": "HIS 레코드를 보존한 채 이전 Kit 버전의 협업 정본과 명령을 별도 프로젝트 정책으로 복원한다.",
+      "regression_scope": [
+        "프로젝트 bootstrap",
+        "결정 이력 기록·검증·생성",
+        "용어 변경 이력",
+        "게이트·병합 재검토",
+        "가이드와 provider 어댑터"
+      ]
     }
   ]
 }

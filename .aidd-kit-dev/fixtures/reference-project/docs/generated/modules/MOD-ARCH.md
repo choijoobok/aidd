@@ -23,9 +23,9 @@
 
 ## 작업 항목
 
-| 작업 | 제목 | 상태 | 책임 참여자 | 변경 | 요구사항 | 포괄 범위 | 선행 작업 | 증거 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| WRK-012 | 개발 기반·UI·운영·제출 정본과 생성 계약 | doing | HUM-001 | CHG-011 | REQ-011, REQ-015, REQ-025, REQ-031, REQ-032, REQ-033 | design, implementation, test, documentation, migration, operations, training | WRK-003, WRK-005 | EVD-023, EVD-024 |
+| 작업 | 제목 | 상태 | 변경 | 요구사항 | 포괄 범위 | 선행 작업 | 증거 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| WRK-012 | 개발 기반·UI·운영·제출 정본과 생성 계약 | doing | CHG-011 | REQ-011, REQ-015, REQ-025, REQ-031, REQ-032, REQ-033 | design, implementation, test, documentation, migration, operations, training | WRK-003, WRK-005 | EVD-023, EVD-024 |
 
 ## 인터페이스
 
@@ -38,7 +38,6 @@
 
 | ID | 출발 | 도착 | 상태 | 설명 |
 | --- | --- | --- | --- | --- |
-| DPN-005 | IFC-004 | WRK-012 | current | 개발 기반 정본 계약이 생성기·검증기와 프로젝트별 UI·운영 파생물 구현의 입력이다. |
 
 ## 관련 변경
 
@@ -100,7 +99,6 @@
 - **rationale:** 대규모 시스템은 전체 일관성을 잃지 않으면서 병렬 진행할 수 있어야 한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 아키텍처
 - **modules:** MOD-ARCH, MOD-STATUS
 - **verification:** TC-001
 - **acceptance_criteria:** 각 모듈에 범위, 상태, 의존성과 요구사항 링크가 있다, 상태를 단일 모듈로 좁힐 수 있다, 요구사항은 하나의 모듈 정본 조각에만 저장되고 다중 모듈 영향은 ID 링크로 유지된다, 신규 모듈은 기존 모듈의 요구사항을 다시 쓰지 않고 카탈로그·빈 정본 조각·생성 명세를 추가할 수 있다
@@ -114,7 +112,6 @@
 - **rationale:** 초기 출시 후에도 생애주기가 계속되어야 한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 변경 관리
 - **modules:** MOD-CHG, MOD-ARCH, MOD-QA
 - **verification:** TC-005
 - **acceptance_criteria:** 모든 변경이 유형과 영향 산출물을 선언한다, 기존 시스템 충돌을 불일치로 기록한다
@@ -128,10 +125,9 @@
 - **rationale:** 공통 기반은 분산된 AI·사람 작업의 일관성을 보장한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 아키텍처
 - **modules:** MOD-ARCH, MOD-DELIVERY
 - **verification:** TC-007, TC-008
-- **acceptance_criteria:** 기술 선택 전에 품질 속성과 제약이 정의된다, 현행 유지안을 포함한 대안 비교와 ADR을 거쳐 기술 기준선을 승인한다, 기능 개발 게이트에 UI·개발 기반 준비도가 포함된다, 예외에는 기록된 결정이 필요하다
+- **acceptance_criteria:** 기술 선택 전에 품질 속성과 제약이 정의된다, 현행 유지안을 포함한 대안 비교와 ADR을 거쳐 기술 기준선을 결정한다, 기능 개발 게이트에 UI·개발 기반 준비도가 포함된다, 예외에는 기록된 결정이 필요하다
 - **source:** USER-2026-09-17
 
 ### REQ-014 — 다분야 역할 관점
@@ -142,7 +138,6 @@
 - **rationale:** 생애주기 전체 품질에는 소스 코드 밖의 관점이 필요하다.
 - **priority:** must
 - **status:** specified
-- **owner:** 거버넌스
 - **modules:** MOD-GOV, MOD-ARCH, MOD-QA, MOD-DELIVERY
 - **verification:** TC-001
 - **acceptance_criteria:** 아키텍처가 모든 필수 관점을 정의한다, 게이트가 증거 담당을 명시한다
@@ -156,7 +151,6 @@
 - **rationale:** 비기능 위험을 출시 직전까지 미루면 비용이 크게 증가한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 품질 보증
 - **modules:** MOD-ARCH, MOD-QA, MOD-DELIVERY
 - **verification:** TC-001
 - **acceptance_criteria:** 관련 관점을 명시적으로 승인하거나 적용 대상 아님으로 기록한다, 치명적 잔여 위험에는 고객 수용이 필요하다
@@ -170,7 +164,6 @@
 - **rationale:** 하나의 방법론을 일률적으로 적용하면 작은 변경에는 과도하고 고위험 변경에는 부족할 수 있다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 거버넌스
 - **modules:** MOD-GOV, MOD-DISC, MOD-ARCH
 - **verification:** TC-009
 - **acceptance_criteria:** 전통적 방법론과 AI 주도 방법론을 동일한 기준으로 비교한다, 채택한 통제가 AIDD 단계·게이트·정본 증거에 연결된다, 프로젝트 특성에 따른 예측형·적응형·혼합형 수행 경로 선택 규칙이 있다
@@ -184,10 +177,9 @@
 - **rationale:** 배포 토폴로지와 운영 제약을 늦게 발견하면 상태·동시성·데이터·복구 설계를 광범위하게 다시 해야 한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 제품·아키텍처·인프라
 - **modules:** MOD-DISC, MOD-ARCH, MOD-STATUS
 - **verification:** TC-010
-- **acceptance_criteria:** DG-001이 TG-001보다 먼저 수행된다, 설계를 바꾸는 환경 범주와 미결 결정이 배포 프로필에 기록된다, 미정 사항에는 담당자·기한·영향이 있으며 중대한 항목은 차단된다
+- **acceptance_criteria:** DG-001이 TG-001보다 먼저 수행된다, 설계를 바꾸는 환경 범주와 미결 결정이 배포 프로필에 기록된다, 미정 사항에는 결정 조건·영향이 있으며 중대한 항목은 차단된다
 - **source:** USER-2026-09-18
 
 ### REQ-021 — 동시성·트랜잭션·성능 위험의 설계 예방
@@ -198,7 +190,6 @@
 - **rationale:** 단일 스레드 기능 테스트만으로는 운영 환경의 데이터 손상, 중복 처리, 교착, 풀 고갈과 연쇄 장애를 예방할 수 없다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 아키텍처·품질 보증
 - **modules:** MOD-ARCH, MOD-QA, MOD-DELIVERY
 - **verification:** TC-011
 - **acceptance_criteria:** 핵심 업무에 측정 가능한 동시성 불변 조건이 있다, 적용되는 위험 패턴마다 설계 통제와 부정·경쟁·부하·장애 검증이 연결된다, 로컬 락이나 스레드 컨텍스트를 다중 인스턴스 보장으로 오인하지 않는다
@@ -212,10 +203,9 @@
 - **rationale:** 기술 규칙을 템플릿에 고정하지 않으면서도 어느 AI와 개발자가 참여해도 동일한 품질 기준을 적용해야 한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 아키텍처·개발·품질 보증
 - **modules:** MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA
 - **verification:** TC-024
-- **acceptance_criteria:** STD, GPH, EXC 레코드가 안정 ID와 기술 기준선, 모듈, 요구사항, 검증을 연결한다, 계약형과 정책형 표준을 구분하고 기술 스택 구체 규칙은 프로젝트 기준선에서 작성한다, 예외는 승인, 담당자, 만료일과 보완 통제 없이는 유효하지 않다
+- **acceptance_criteria:** STD, GPH, EXC 레코드가 안정 ID와 기술 기준선, 모듈, 요구사항, 검증을 연결한다, 계약형과 정책형 표준을 구분하고 기술 스택 구체 규칙은 프로젝트 기준선에서 작성한다, 예외는 결정 주체·이유, 만료일과 보완 통제 없이는 유효하지 않다
 - **source:** USER-2026-09-18
 
 ### REQ-032 — 모듈별 UI·공통 컴포넌트 정본
@@ -226,7 +216,6 @@
 - **rationale:** 사용자와 합의한 UI 품질을 모듈과 AI 도구에 걸쳐 재사용하고 운영 중 새 모듈에도 적용해야 한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 제품·UX·아키텍처
 - **modules:** MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA
 - **verification:** TC-025
 - **acceptance_criteria:** UXB, UIP, CMP, SCR, MAN 참조와 상태 전이가 검증된다, UI가 없는 모듈은 UI 조각 없이 정상이고 필요할 때 빈 조각을 초기화할 수 있다, 목업은 실제 화면 증거와 구분되고 출시용 매뉴얼은 검증 증거를 요구한다
@@ -417,7 +406,7 @@
 - **date:** 2026-09-18
 - **context:** 기술 선택, UI·개발 표준과 공통 컴포넌트가 기능 개발과 동시에 임의로 결정되면 AI와 사람의 구현이 분산되고 되돌림 비용이 커진다.
 - **options:** 팀별 자율 선택 후 사후 통합, 기술 스택만 선결하고 기반 표준은 기능과 함께 개발, 품질 속성 기반 기술 스택 게이트와 개발 기반 준비도 게이트를 순서대로 적용
-- **decision:** 분석·설계에서 품질 속성과 제약을 확정한 뒤 TG-001로 기술 기준선을 승인하고, TG-002로 UI·아키텍처·보안·테스트·관측성·배포 공통 기반을 검증한 후 기능 증분을 개발한다.
+- **decision:** 분석·설계에서 품질 속성과 제약을 확정한 뒤 TG-001로 기술 기준선을 결정하고, TG-002로 UI·아키텍처·보안·테스트·관측성·배포 공통 기반을 검증한 후 기능 증분을 개발한다.
 - **consequences:** 분산 개발의 일관성과 재사용성이 높아진다, 초기 기반 작업과 증거 비용이 추가된다, UI가 없는 프로젝트는 UI 증거를 적용 대상 아님으로 기록할 수 있다, 현행 기준선 변경은 명시적인 재평가가 필요하다
 - **rollback:** 게이트가 과도하면 C0~C1 변경의 증거를 축소하는 대체 결정을 작성하되 기술 기준선·보안·테스트·롤백 확인은 유지한다.
 - **supersedes:** -
@@ -618,8 +607,6 @@
 - **change:** CHG-011
 - **requirements:** REQ-011, REQ-015, REQ-025, REQ-031, REQ-032, REQ-033
 - **depends_on:** WRK-003, WRK-005
-- **owner:** 아키텍처·문서화·품질 보증
-- **assignee:** HUM-001
 - **coverage:** design, implementation, test, documentation, migration, operations, training
 - **acceptance_criteria:** 새 정본 유형의 참조·상태·대체·예외 만료를 검증한다, UI가 없는 모듈과 선택적 UI 조각을 모두 지원한다, 개발 기반·목업·매뉴얼·런북·제출 manifest를 결정적으로 생성한다, 기존 프로젝트의 가이드·산출물 구조를 새 정본 체계로 이관한다, 사용자와 AI가 새 문서·사이트 흐름을 익힐 수 있는 진행 가이드를 제공한다, TG-002의 실제 프로젝트 적용 전까지 변경과 게이트를 검토 중으로 유지한다
 - **evidence:** EVD-023, EVD-024

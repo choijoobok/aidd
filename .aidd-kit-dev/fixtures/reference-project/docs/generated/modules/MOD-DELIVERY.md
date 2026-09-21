@@ -20,13 +20,12 @@
 | REQ-031 | 프로젝트별 개발 기반 정본 | implemented | TC-024 |
 | REQ-032 | 모듈별 UI·공통 컴포넌트 정본 | implemented | TC-025 |
 | REQ-033 | 운영 런북과 제출 패키지 정책 | implemented | TC-024, TC-025 |
-| REQ-034 | 감사 가능한 작업 패키지 배정과 개발 범위 포괄성 | implemented | TC-026 |
 | REQ-035 | 변경 유형별 문서 동기화와 레거시 전환 | implemented | TC-027 |
 
 ## 작업 항목
 
-| 작업 | 제목 | 상태 | 책임 참여자 | 변경 | 요구사항 | 포괄 범위 | 선행 작업 | 증거 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 작업 | 제목 | 상태 | 변경 | 요구사항 | 포괄 범위 | 선행 작업 | 증거 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## 인터페이스
 
@@ -48,7 +47,6 @@
 | CHG-003 | C2 | in_progress | 배포 환경과 설계 위험 예방 게이트 보강 |
 | CHG-006 | C2 | in_progress | 프로젝트 착수 전 실행 기반 완성 |
 | CHG-011 | C2 | in_progress | 프로젝트 개발 기반·UI·운영·제출 정본 체계 |
-| CHG-012 | C2 | done | 감사 가능한 팀 작업 배정과 개발 범위 포괄성 |
 | CHG-013 | C2 | in_progress | 변경 유형별 분석·설계 진입과 레거시 문서 현행화 통제 |
 
 ## 관련 결정
@@ -75,7 +73,6 @@
 | TC-016 | passed | 운영자·사용자·보안 가이드 결정적 생성 |
 | TC-024 | passed | 개발 표준·골든 패스·예외·런북·제출 프로필 정본 검증 |
 | TC-025 | passed | 모듈별 UI 정본과 결정적 화면·매뉴얼 생성 |
-| TC-026 | passed | 팀 작업 배정 권한·감사 이력·개발 범위 포괄성 |
 | TC-027 | passed | 변경 유형별 분석·설계·문서 동기화와 레거시 전환 통제 |
 
 ## UI 정본
@@ -92,7 +89,7 @@
 - **purpose:** 표준, 구현, 배포, 동시성·성능 검증, 문서, 관측성과 운영 전환을 수행한다.
 - **status:** planned
 - **dependencies:** MOD-ARCH, MOD-QA
-- **requirements:** REQ-011, REQ-014, REQ-015, REQ-016, REQ-018, REQ-021, REQ-025, REQ-031, REQ-032, REQ-033, REQ-034, REQ-035
+- **requirements:** REQ-011, REQ-014, REQ-015, REQ-016, REQ-018, REQ-021, REQ-025, REQ-031, REQ-032, REQ-033, REQ-035
 
 ## 요구사항 상세
 
@@ -104,10 +101,9 @@
 - **rationale:** 공통 기반은 분산된 AI·사람 작업의 일관성을 보장한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 아키텍처
 - **modules:** MOD-ARCH, MOD-DELIVERY
 - **verification:** TC-007, TC-008
-- **acceptance_criteria:** 기술 선택 전에 품질 속성과 제약이 정의된다, 현행 유지안을 포함한 대안 비교와 ADR을 거쳐 기술 기준선을 승인한다, 기능 개발 게이트에 UI·개발 기반 준비도가 포함된다, 예외에는 기록된 결정이 필요하다
+- **acceptance_criteria:** 기술 선택 전에 품질 속성과 제약이 정의된다, 현행 유지안을 포함한 대안 비교와 ADR을 거쳐 기술 기준선을 결정한다, 기능 개발 게이트에 UI·개발 기반 준비도가 포함된다, 예외에는 기록된 결정이 필요하다
 - **source:** USER-2026-09-17
 
 ### REQ-014 — 다분야 역할 관점
@@ -118,7 +114,6 @@
 - **rationale:** 생애주기 전체 품질에는 소스 코드 밖의 관점이 필요하다.
 - **priority:** must
 - **status:** specified
-- **owner:** 거버넌스
 - **modules:** MOD-GOV, MOD-ARCH, MOD-QA, MOD-DELIVERY
 - **verification:** TC-001
 - **acceptance_criteria:** 아키텍처가 모든 필수 관점을 정의한다, 게이트가 증거 담당을 명시한다
@@ -132,7 +127,6 @@
 - **rationale:** 이해관계자는 동일한 시스템을 자신에게 맞는 뷰로 볼 수 있어야 한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 문서화
 - **modules:** MOD-DOC, MOD-DELIVERY
 - **verification:** TC-002
 - **acceptance_criteria:** 산출물 적용 여부가 선언된다, 생성 산출물이 정본 ID와 연결된다
@@ -146,7 +140,6 @@
 - **rationale:** 비기능 위험을 출시 직전까지 미루면 비용이 크게 증가한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 품질 보증
 - **modules:** MOD-ARCH, MOD-QA, MOD-DELIVERY
 - **verification:** TC-001
 - **acceptance_criteria:** 관련 관점을 명시적으로 승인하거나 적용 대상 아님으로 기록한다, 치명적 잔여 위험에는 고객 수용이 필요하다
@@ -160,7 +153,6 @@
 - **rationale:** 완료 주장은 증거가 있어야 하며 출시 후에도 생애주기가 학습해야 한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 릴리스 관리
 - **modules:** MOD-QA, MOD-DELIVERY, MOD-CHG
 - **verification:** TC-001
 - **acceptance_criteria:** 릴리스 준비도가 차단사항을 식별한다, 운영 학습으로 추적 가능한 변경을 만들 수 있다
@@ -174,7 +166,6 @@
 - **rationale:** 단일 스레드 기능 테스트만으로는 운영 환경의 데이터 손상, 중복 처리, 교착, 풀 고갈과 연쇄 장애를 예방할 수 없다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 아키텍처·품질 보증
 - **modules:** MOD-ARCH, MOD-QA, MOD-DELIVERY
 - **verification:** TC-011
 - **acceptance_criteria:** 핵심 업무에 측정 가능한 동시성 불변 조건이 있다, 적용되는 위험 패턴마다 설계 통제와 부정·경쟁·부하·장애 검증이 연결된다, 로컬 락이나 스레드 컨텍스트를 다중 인스턴스 보장으로 오인하지 않는다
@@ -188,7 +179,6 @@
 - **rationale:** 직접 작성된 가이드만 두면 기능·운영·보안 변경에서 쉽게 누락되고 정본과 모순된다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 운영·보안·제품
 - **modules:** MOD-DOC, MOD-DELIVERY, MOD-QA
 - **verification:** TC-016
 - **acceptance_criteria:** 세 대상별 가이드가 정본 출처를 가진다, 가이드 생성이 결정적이며 드리프트를 검출한다, 운영 절차에 검증·복구·병합 영향 대응이 포함된다
@@ -202,10 +192,9 @@
 - **rationale:** 기술 규칙을 템플릿에 고정하지 않으면서도 어느 AI와 개발자가 참여해도 동일한 품질 기준을 적용해야 한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 아키텍처·개발·품질 보증
 - **modules:** MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA
 - **verification:** TC-024
-- **acceptance_criteria:** STD, GPH, EXC 레코드가 안정 ID와 기술 기준선, 모듈, 요구사항, 검증을 연결한다, 계약형과 정책형 표준을 구분하고 기술 스택 구체 규칙은 프로젝트 기준선에서 작성한다, 예외는 승인, 담당자, 만료일과 보완 통제 없이는 유효하지 않다
+- **acceptance_criteria:** STD, GPH, EXC 레코드가 안정 ID와 기술 기준선, 모듈, 요구사항, 검증을 연결한다, 계약형과 정책형 표준을 구분하고 기술 스택 구체 규칙은 프로젝트 기준선에서 작성한다, 예외는 결정 주체·이유, 만료일과 보완 통제 없이는 유효하지 않다
 - **source:** USER-2026-09-18
 
 ### REQ-032 — 모듈별 UI·공통 컴포넌트 정본
@@ -216,7 +205,6 @@
 - **rationale:** 사용자와 합의한 UI 품질을 모듈과 AI 도구에 걸쳐 재사용하고 운영 중 새 모듈에도 적용해야 한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 제품·UX·아키텍처
 - **modules:** MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA
 - **verification:** TC-025
 - **acceptance_criteria:** UXB, UIP, CMP, SCR, MAN 참조와 상태 전이가 검증된다, UI가 없는 모듈은 UI 조각 없이 정상이고 필요할 때 빈 조각을 초기화할 수 있다, 목업은 실제 화면 증거와 구분되고 출시용 매뉴얼은 검증 증거를 요구한다
@@ -230,24 +218,9 @@
 - **rationale:** 검토용 목업과 출시용 실제 증거가 혼동되지 않고 대상별 산출물이 일관되게 조립돼야 한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 문서화·운영·전달
 - **modules:** MOD-DOC, MOD-DELIVERY, MOD-QA
 - **verification:** TC-024, TC-025
 - **acceptance_criteria:** RUN 레코드에 트리거, 절차, 검증, 롤백과 에스컬레이션이 있다, DLP 레코드는 포함·제외 범위와 목업·실제 캡처 정책을 구분한다, 실제 패키지 빌드 전에도 결정적 manifest로 정책을 검토할 수 있다
-- **source:** USER-2026-09-18
-
-### REQ-034 — 감사 가능한 작업 패키지 배정과 개발 범위 포괄성
-
-- **id:** REQ-034
-- **title:** 감사 가능한 작업 패키지 배정과 개발 범위 포괄성
-- **statement:** 프레임워크는 팀 전환 전에 활성 PM을 보장하고 PM 배정·위임 배정·오프라인 협의 기반 자율 배정을 지원하며, 정책과 책임자 변경 이력을 보존하고 변경별 필수 작업 영역과 요구사항이 모든 미완료 작업 패키지에 빠짐없이 배정되었는지 개발 진입 전에 검증해야 한다.
-- **rationale:** 배정되지 않은 요구사항이나 누락된 보안·데이터·배포·운영 작업은 아무도 수행하지 않으며, 현재 값만 보존하면 누가 언제 왜 책임을 바꿨는지 재구성할 수 없다.
-- **priority:** must
-- **status:** implemented
-- **owner:** PM·개발·품질 보증
-- **modules:** MOD-GOV, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG
-- **verification:** TC-026
-- **acceptance_criteria:** 팀 프로필에는 활성 PM이 최소 1명 존재한다, PM은 활성 팀원에게 배정 권한을 위임하거나 자율 배정으로 전환할 수 있다, 오프라인 협의 필수 표시는 자율 배정에만 적용된다, 배정 정책과 WRK 책임자 변경의 이전 값·변경자·시각·사유가 보존된다, 각 CHG는 프로젝트 맥락에 맞는 필수 작업 영역을 선언한다, 개발 진입 전에 모든 CHG 요구사항·필수 작업 영역·팀 책임자 누락을 차단한다, 배정 범위 안의 파생 요구는 현재 담당 WRK에 추가하고 범위를 넘으면 새 WRK 또는 범위 변경으로 처리한다, 생성 전달 계획에서 WRK의 요구사항·책임자·포괄 범위를 확인할 수 있다
 - **source:** USER-2026-09-18
 
 ### REQ-035 — 변경 유형별 문서 동기화와 레거시 전환
@@ -258,10 +231,9 @@
 - **rationale:** 화면·API와 문서의 괴리를 방치하지 않으면서 문서가 없는 기존 시스템의 단계적 고도화를 현실적으로 지원한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 문서화·변경관리·품질 보증
 - **modules:** MOD-GOV, MOD-DOC, MOD-AI, MOD-CHG, MOD-QA, MOD-DELIVERY
 - **verification:** TC-027
-- **acceptance_criteria:** 신규 기능은 승인된 요구분석과 설계 및 최신 문서 없이 개발 진입할 수 없다, 기존 문서가 있는 표면은 같은 변경에서 현행화한다, 문서가 없는 기존 표면은 고객의 즉시 작성 또는 기한 있는 후속 작업 선택을 기록한다, 레거시 화면 경로·API·배치·이벤트·연동·마이그레이션을 모듈별로 조사하고 기존 문서의 출처를 보존해 변환한다, 커밋 전 검사에서 소스 변경과 문서 변경 또는 승인된 후속 작업의 연결을 검증한다
+- **acceptance_criteria:** 신규 기능은 결정된 요구분석과 설계 및 최신 문서 없이 개발 진입할 수 없다, 기존 문서가 있는 표면은 같은 변경에서 현행화한다, 문서가 없는 기존 표면은 고객의 즉시 작성 또는 기한 있는 후속 작업 선택을 기록한다, 레거시 화면 경로·API·배치·이벤트·연동·마이그레이션을 모듈별로 조사하고 기존 문서의 출처를 보존해 변환한다, 커밋 전 검사에서 소스 변경과 문서 변경 또는 결정된 후속 작업의 연결을 검증한다
 - **source:** USER-2026-09-18
 
 ## 관련 변경
@@ -425,37 +397,6 @@
 }
 ```
 
-### CHG-012 — 감사 가능한 팀 작업 배정과 개발 범위 포괄성
-
-- **id:** CHG-012
-- **title:** 감사 가능한 팀 작업 배정과 개발 범위 포괄성
-- **type:** feature
-- **class:** C2
-- **status:** done
-- **requested_by:** 고객
-- **modules:** MOD-GOV, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG
-- **requirements:** REQ-034
-- **required_gates:** TG-002
-- **required_work_coverage:** design, implementation, test, documentation, migration, operations
-- **delivery_path:**
-
-```json
-{
-  "kind": "governance",
-  "analysis": "reused",
-  "design": "reused",
-  "documentation": "update_now",
-  "surfaces": [],
-  "documentation_work": [],
-  "decided_by": "고객",
-  "reason": "AIDD Kit 자체 거버넌스 변경"
-}
-```
-- **impact:** 팀 전환의 PM 전제, PM·위임·자율 배정 모드, 정책·책임자 감사 이력, 변경별 필수 작업 영역, 파생 요구 편입과 개발 진입 포괄성 검사를 정본·CLI·생성 문서에 연결한다.
-- **migration:** 기존 pm_controlled 정책과 WRK-012 책임자를 최초 감사 이벤트로 기준선화하고, 기존 변경에는 필수 작업 영역을 명시한다.
-- **rollback:** 배정 이벤트를 내보내 보존한 뒤 정책 전환·감사 이력·포괄성 게이트 확장을 제거하고 기존 assignee 단일 필드로 복귀한다.
-- **regression_scope:** 팀 전환 PM 필수, 세 가지 배정 모드, 오프라인 협의 적용 범위, 정책·책임자 변경 이력, 변경별 작업 영역, 개발 진입 차단, 생성 전달 계획, Codex·Claude 동기화
-
 ### CHG-013 — 변경 유형별 분석·설계 진입과 레거시 문서 현행화 통제
 
 - **id:** CHG-013
@@ -539,7 +480,7 @@
 - **date:** 2026-09-18
 - **context:** 기술 선택, UI·개발 표준과 공통 컴포넌트가 기능 개발과 동시에 임의로 결정되면 AI와 사람의 구현이 분산되고 되돌림 비용이 커진다.
 - **options:** 팀별 자율 선택 후 사후 통합, 기술 스택만 선결하고 기반 표준은 기능과 함께 개발, 품질 속성 기반 기술 스택 게이트와 개발 기반 준비도 게이트를 순서대로 적용
-- **decision:** 분석·설계에서 품질 속성과 제약을 확정한 뒤 TG-001로 기술 기준선을 승인하고, TG-002로 UI·아키텍처·보안·테스트·관측성·배포 공통 기반을 검증한 후 기능 증분을 개발한다.
+- **decision:** 분석·설계에서 품질 속성과 제약을 확정한 뒤 TG-001로 기술 기준선을 결정하고, TG-002로 UI·아키텍처·보안·테스트·관측성·배포 공통 기반을 검증한 후 기능 증분을 개발한다.
 - **consequences:** 분산 개발의 일관성과 재사용성이 높아진다, 초기 기반 작업과 증거 비용이 추가된다, UI가 없는 프로젝트는 UI 증거를 적용 대상 아님으로 기록할 수 있다, 현행 기준선 변경은 명시적인 재평가가 필요하다
 - **rollback:** 게이트가 과도하면 C0~C1 변경의 증거를 축소하는 대체 결정을 작성하되 기술 기준선·보안·테스트·롤백 확인은 유지한다.
 - **supersedes:** -
@@ -696,33 +637,6 @@
   ],
   "evidence": [
     "EVD-024"
-  ]
-}
-```
-
-### TC-026 — 팀 작업 배정 권한·감사 이력·개발 범위 포괄성
-
-- **id:** TC-026
-- **title:** 팀 작업 배정 권한·감사 이력·개발 범위 포괄성
-- **type:** scenario
-- **status:** passed
-- **required:** true
-- **requirements:** REQ-034
-- **evidence:** EVD-026
-- **rule_mutation:**
-
-```json
-{
-  "applicable": true,
-  "rules": [
-    "활성 PM 없이 팀 프로필로 전환할 수 없다",
-    "자율 배정이 아닌 모드에 오프라인 협의 필수를 표시할 수 없다",
-    "배정 정책·책임자 변경 이력 필드 누락을 거부한다",
-    "CHG별 필수 작업 영역 누락과 WRK 포괄 범위 누락을 거부한다",
-    "생성 전달 계획에서 요구사항·책임자·포괄 범위 누락을 탐지한다"
-  ],
-  "evidence": [
-    "EVD-026"
   ]
 }
 ```

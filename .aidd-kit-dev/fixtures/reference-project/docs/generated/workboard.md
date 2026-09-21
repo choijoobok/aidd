@@ -18,7 +18,6 @@
 - **id:** FOC-001
 - **title:** AIDD Kit 구조와 프로젝트 산출물 체계 정비
 - **change:** CHG-001
-- **assignee:** HUM-001
 - **modules:** MOD-GOV, MOD-DOC, MOD-AI
 - **why_now:** 재사용 가능한 Kit과 제품 정본·문서·소스의 경계를 먼저 안정화해야 이후 프로젝트에 같은 작업 방식을 적용할 수 있다.
 - **completion_condition:** Kit·프로젝트 구조, 문서 생성, AI 어댑터와 검증 흐름이 일관되게 동작한다.
@@ -30,7 +29,7 @@
 - **id:** ACT-001
 - **title:** 첫 실제 제품의 문서 포맷을 사용자와 합의
 - **links:** DOC-STD-001, REQ-004
-- **completion_condition:** 요건·화면·매뉴얼·런북의 독자·필수 항목·근거·승인 기준이 documentation.json에 합의 상태로 기록된다.
+- **completion_condition:** 요건·화면·매뉴얼·런북의 독자·필수 항목·근거·검증 기준이 documentation.json에 합의 상태로 기록된다.
 
 ## 관찰 항목
 

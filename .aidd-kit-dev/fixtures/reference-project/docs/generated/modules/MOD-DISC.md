@@ -18,8 +18,8 @@
 
 ## 작업 항목
 
-| 작업 | 제목 | 상태 | 책임 참여자 | 변경 | 요구사항 | 포괄 범위 | 선행 작업 | 증거 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 작업 | 제목 | 상태 | 변경 | 요구사항 | 포괄 범위 | 선행 작업 | 증거 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## 인터페이스
 
@@ -82,7 +82,6 @@
 - **rationale:** 명확한 의도와 검증된 가정은 이후의 비싼 재작업을 줄인다.
 - **priority:** must
 - **status:** specified
-- **owner:** 제품
 - **modules:** MOD-DISC
 - **verification:** TC-004
 - **acceptance_criteria:** 모르는 내용은 추측하지 않고 기록한다, 중대한 가정에 반대 검토를 수행한다
@@ -96,7 +95,6 @@
 - **rationale:** 고객에게는 숨겨진 AI 선호가 아니라 높은 의사결정 품질이 필요하다.
 - **priority:** must
 - **status:** specified
-- **owner:** 제품
 - **modules:** MOD-DISC, MOD-GOV
 - **verification:** TC-004
 - **acceptance_criteria:** 추천과 고객 결정을 분리한다, 결정 기록에 채택하지 않은 대안을 포함한다
@@ -110,7 +108,6 @@
 - **rationale:** 하나의 방법론을 일률적으로 적용하면 작은 변경에는 과도하고 고위험 변경에는 부족할 수 있다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 거버넌스
 - **modules:** MOD-GOV, MOD-DISC, MOD-ARCH
 - **verification:** TC-009
 - **acceptance_criteria:** 전통적 방법론과 AI 주도 방법론을 동일한 기준으로 비교한다, 채택한 통제가 AIDD 단계·게이트·정본 증거에 연결된다, 프로젝트 특성에 따른 예측형·적응형·혼합형 수행 경로 선택 규칙이 있다
@@ -124,10 +121,9 @@
 - **rationale:** 배포 토폴로지와 운영 제약을 늦게 발견하면 상태·동시성·데이터·복구 설계를 광범위하게 다시 해야 한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 제품·아키텍처·인프라
 - **modules:** MOD-DISC, MOD-ARCH, MOD-STATUS
 - **verification:** TC-010
-- **acceptance_criteria:** DG-001이 TG-001보다 먼저 수행된다, 설계를 바꾸는 환경 범주와 미결 결정이 배포 프로필에 기록된다, 미정 사항에는 담당자·기한·영향이 있으며 중대한 항목은 차단된다
+- **acceptance_criteria:** DG-001이 TG-001보다 먼저 수행된다, 설계를 바꾸는 환경 범주와 미결 결정이 배포 프로필에 기록된다, 미정 사항에는 결정 조건·영향이 있으며 중대한 항목은 차단된다
 - **source:** USER-2026-09-18
 
 ### REQ-026 — Codex·Claude 행동 품질 동등성 평가
@@ -138,7 +134,6 @@
 - **rationale:** 동일한 스킬 파일도 모델과 훅 차이 때문에 다른 행동 결과를 만들 수 있다.
 - **priority:** must
 - **status:** specified
-- **owner:** AI 플랫폼·품질 보증
 - **modules:** MOD-AI, MOD-DISC, MOD-QA
 - **verification:** TC-004, TC-017, TC-018
 - **acceptance_criteria:** 두 플랫폼이 같은 픽스처와 루브릭을 사용한다, 플랫폼별 결과와 증거가 분리된다, 중대 금지 행동과 점수 차이 기준을 모두 통과한다

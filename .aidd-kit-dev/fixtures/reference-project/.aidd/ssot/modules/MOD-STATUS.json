@@ -9,7 +9,6 @@
       "rationale": "의사결정 종류에 따라 필요한 상세 수준이 다르다.",
       "priority": "must",
       "status": "specified",
-      "owner": "PM",
       "modules": [
         "MOD-STATUS"
       ],

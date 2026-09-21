@@ -1,13 +1,106 @@
 {
   "schema_version": 1,
   "risks": [
-    {"id": "RSK-001", "title": "구조 검증을 통과한 의미 불일치", "likelihood": "medium", "impact": "high", "status": "open", "owner": "감리", "mitigation": "고객 게이트, 레드팀 검토, 실행 가능한 인수 기준과 정기 산출물 감사를 사용한다.", "accepted_by": null, "requirements": ["REQ-003", "REQ-017"]},
-    {"id": "RSK-002", "title": "변경 가치보다 큰 절차 비용", "likelihood": "medium", "impact": "medium", "status": "mitigated", "owner": "PM", "mitigation": "C0~C3 위험 비례 엄격성을 사용하고 리드타임과 유출 결함을 측정한다.", "accepted_by": null, "requirements": ["REQ-017"]},
-    {"id": "RSK-003", "title": "AI 플랫폼 동작 불일치", "likelihood": "medium", "impact": "high", "status": "open", "owner": "AI 플랫폼", "mitigation": "공통 SKILL.md 내용, 얇은 어댑터, 동등성 검사와 두 AI의 대표 평가를 유지한다.", "accepted_by": null, "requirements": ["REQ-013"]},
-    {"id": "RSK-004", "title": "자동 생성 산출물이 주는 잘못된 확신", "likelihood": "medium", "impact": "high", "status": "open", "owner": "품질 보증", "mitigation": "구조 검증과 의미 검토를 분리하고 완료 주장에 증거를 요구한다.", "accepted_by": null, "requirements": ["REQ-002", "REQ-018"]},
-    {"id": "RSK-005", "title": "이른 기술 고정과 공급자 종속", "likelihood": "medium", "impact": "high", "status": "mitigated", "owner": "아키텍처", "mitigation": "TG-001에서 품질 속성, 현행 유지안, 대안, 실험, 지원 수명과 가역성을 비교하고 재개방 조건을 둔다.", "accepted_by": null, "requirements": ["REQ-011", "REQ-016"]},
-    {"id": "RSK-006", "title": "방법론 테일러링의 자의적 절차 생략", "likelihood": "medium", "impact": "high", "status": "mitigated", "owner": "감리", "mitigation": "방법론 선택 근거와 채택 통제를 정본에 기록하고 AIDD 공통 추적·증거·고객 결정 규칙은 면제하지 않는다.", "accepted_by": null, "requirements": ["REQ-017", "REQ-019"]},
-    {"id": "RSK-007", "title": "단일 인스턴스 가정이 분산 환경에 고착", "likelihood": "medium", "impact": "high", "status": "mitigated", "owner": "아키텍처·인프라", "mitigation": "DG-001에서 인스턴스·확장·상태·스케줄·DB 토폴로지를 확인하고 다중 서버 가능성이 있으면 DPR-004·DPR-006 검증을 TG-002에 연결한다.", "accepted_by": null, "requirements": ["REQ-020", "REQ-021"]},
-    {"id": "RSK-008", "title": "기능 테스트 통과 후 운영 부하에서 동시성·성능 실패", "likelihood": "medium", "impact": "high", "status": "mitigated", "owner": "품질 보증", "mitigation": "업무 불변 조건, 대표 데이터·부하, 다중 프로세스 경쟁, 포화·복구와 장애 주입 검증을 설계 시점에 정의한다.", "accepted_by": null, "requirements": ["REQ-021"]}
+    {
+      "id": "RSK-001",
+      "title": "구조 검증을 통과한 의미 불일치",
+      "likelihood": "medium",
+      "impact": "high",
+      "status": "open",
+      "mitigation": "고객 게이트, 레드팀 검토, 실행 가능한 인수 기준과 정기 산출물 감사를 사용한다.",
+      "accepted_by": null,
+      "requirements": [
+        "REQ-003",
+        "REQ-017"
+      ]
+    },
+    {
+      "id": "RSK-002",
+      "title": "변경 가치보다 큰 절차 비용",
+      "likelihood": "medium",
+      "impact": "medium",
+      "status": "mitigated",
+      "mitigation": "C0~C3 위험 비례 엄격성을 사용하고 리드타임과 유출 결함을 측정한다.",
+      "accepted_by": null,
+      "requirements": [
+        "REQ-017"
+      ]
+    },
+    {
+      "id": "RSK-003",
+      "title": "AI 플랫폼 동작 불일치",
+      "likelihood": "medium",
+      "impact": "high",
+      "status": "open",
+      "mitigation": "공통 SKILL.md 내용, 얇은 어댑터, 동등성 검사와 두 AI의 대표 평가를 유지한다.",
+      "accepted_by": null,
+      "requirements": [
+        "REQ-013"
+      ]
+    },
+    {
+      "id": "RSK-004",
+      "title": "자동 생성 산출물이 주는 잘못된 확신",
+      "likelihood": "medium",
+      "impact": "high",
+      "status": "open",
+      "mitigation": "구조 검증과 의미 검토를 분리하고 완료 주장에 증거를 요구한다.",
+      "accepted_by": null,
+      "requirements": [
+        "REQ-002",
+        "REQ-018"
+      ]
+    },
+    {
+      "id": "RSK-005",
+      "title": "이른 기술 고정과 공급자 종속",
+      "likelihood": "medium",
+      "impact": "high",
+      "status": "mitigated",
+      "mitigation": "TG-001에서 품질 속성, 현행 유지안, 대안, 실험, 지원 수명과 가역성을 비교하고 재개방 조건을 둔다.",
+      "accepted_by": null,
+      "requirements": [
+        "REQ-011",
+        "REQ-016"
+      ]
+    },
+    {
+      "id": "RSK-006",
+      "title": "방법론 테일러링의 자의적 절차 생략",
+      "likelihood": "medium",
+      "impact": "high",
+      "status": "mitigated",
+      "mitigation": "방법론 선택 근거와 채택 통제를 정본에 기록하고 AIDD 공통 추적·증거·고객 결정 규칙은 면제하지 않는다.",
+      "accepted_by": null,
+      "requirements": [
+        "REQ-017",
+        "REQ-019"
+      ]
+    },
+    {
+      "id": "RSK-007",
+      "title": "단일 인스턴스 가정이 분산 환경에 고착",
+      "likelihood": "medium",
+      "impact": "high",
+      "status": "mitigated",
+      "mitigation": "DG-001에서 인스턴스·확장·상태·스케줄·DB 토폴로지를 확인하고 다중 서버 가능성이 있으면 DPR-004·DPR-006 검증을 TG-002에 연결한다.",
+      "accepted_by": null,
+      "requirements": [
+        "REQ-020",
+        "REQ-021"
+      ]
+    },
+    {
+      "id": "RSK-008",
+      "title": "기능 테스트 통과 후 운영 부하에서 동시성·성능 실패",
+      "likelihood": "medium",
+      "impact": "high",
+      "status": "mitigated",
+      "mitigation": "업무 불변 조건, 대표 데이터·부하, 다중 프로세스 경쟁, 포화·복구와 장애 주입 검증을 설계 시점에 정의한다.",
+      "accepted_by": null,
+      "requirements": [
+        "REQ-021"
+      ]
+    }
   ]
 }

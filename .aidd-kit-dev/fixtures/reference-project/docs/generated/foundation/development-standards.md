@@ -14,12 +14,11 @@
 - **modules:** MOD-GOV, MOD-DOC
 - **requirements:** REQ-001, REQ-002, REQ-031
 - **technology_baseline:** TSB-001
-- **rules:** project/.aidd/ssot의 구조화 레코드를 승인된 의도의 정본으로 취급한다., project/docs/generated와 제출 manifest는 정본에서 결정적으로 재생성한다., 코드와 정본의 불일치는 어느 한쪽을 몰래 우선하지 않고 변경 또는 결함으로 기록한다.
-- **guarantees:** 사람과 AI가 동일한 승인 기록과 안정 ID를 참조한다.
+- **rules:** project/.aidd/ssot의 구조화 레코드를 현재 의도의 정본으로 취급한다., project/docs/generated와 제출 manifest는 정본에서 결정적으로 재생성한다., 코드와 정본의 불일치는 어느 한쪽을 몰래 우선하지 않고 변경 또는 결함으로 기록한다.
+- **guarantees:** 사람과 AI가 동일한 결정 이력과 안정 ID를 참조한다.
 - **non_guarantees:** 문서 또는 훅의 존재만으로 실제 준수나 게이트 통과를 보장하지 않는다.
 - **verification:** TC-024
 - **evidence:** EVD-023
-- **owner:** 거버넌스
 - **supersedes:** -
 - **replaced_by:** -
 
@@ -38,6 +37,5 @@
 - **non_guarantees:** 이 템플릿은 특정 프레임워크, 언어 또는 UI 라이브러리를 선택하지 않는다.
 - **verification:** TC-024
 - **evidence:** EVD-023
-- **owner:** 아키텍처·개발
 - **supersedes:** -
 - **replaced_by:** -

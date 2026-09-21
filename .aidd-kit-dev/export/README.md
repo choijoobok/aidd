@@ -12,7 +12,7 @@
 
 이미 제품 정본이 있다면 다음처럼 요청한다.
 
-> 기존 AIDD 프로젝트를 이어서 진행하려고 해. 현재 작업자, 확정된 목표와 범위, 막힌 결정, 진행 중 작업과 통합 위험을 정본에서 확인해 짧게 브리핑해줘. 대화만으로 완료를 추정하지 마.
+> 기존 AIDD 프로젝트를 이어서 진행하려고 해. 확정된 목표와 범위, 최근 주요 결정, 막힌 항목, 진행 중 실행 범위와 통합 위험을 정본에서 확인해 짧게 브리핑해줘. 대화만으로 완료를 추정하지 마.
 
 프로젝트가 준비된 뒤의 자연어 요청 예시는 [.ai/docs/guides/project-team-guide.md](.ai/docs/guides/project-team-guide.md)와 각 상세 장에서 확인한다.
 
@@ -32,6 +32,6 @@ node .ai/tools/aidd.mjs project-bootstrap --project-id <ID> --name "<이름>" --
 node .ai/tools/aidd.mjs project-reconcile-role
 ```
 
-정본이 준비되면 `AGENTS.md`와 [.ai/docs/guides/project-team-guide.md](.ai/docs/guides/project-team-guide.md)를 따른다. 이 가이드에서 프로젝트 준비, 전체 생명주기, 문서 관리, 스킬·훅, 팀 작업, 완료·출시 장으로 이동할 수 있다. 제품 정본은 `project/.aidd/ssot/`, 파생 문서는 `project/docs/generated/`, 제품 소스는 `project/src/`에 둔다.
+정본이 준비되면 `AGENTS.md`와 [.ai/docs/guides/project-team-guide.md](.ai/docs/guides/project-team-guide.md)를 따른다. 제품 정본과 결정 이력은 `project/.aidd/ssot/`, 파생 문서는 `project/docs/generated/`, 제품 소스는 `project/src/`에 둔다. 인력·역할·배정·일정은 별도 프로젝트 운영 절차에서 관리한다.
 
 `.aidd-kit-origin.json`은 생성에 사용한 Kit의 출처만 나타낸다. 원본 Kit과 자동 업그레이드·역동기화되지 않으며, 이 프로젝트의 규칙·스킬·훅은 프로젝트 정본과 검증 절차에 따라 독립적으로 수정할 수 있다.

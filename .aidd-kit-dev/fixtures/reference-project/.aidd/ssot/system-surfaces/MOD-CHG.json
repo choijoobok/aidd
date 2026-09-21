@@ -1,1 +1,5 @@
-{"schema_version": 1, "module": "MOD-CHG", "surfaces": []}
+{
+  "schema_version": 1,
+  "module": "MOD-CHG",
+  "surfaces": []
+}

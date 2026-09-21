@@ -14,7 +14,7 @@
 - **workflow:** .github/workflows/aidd.yml
 - **ruleset:** .github/rulesets/main.json
 - **required_checks:** 정본·문서·스킬·테스트 검증
-- **protections:** 직접 삭제와 강제 푸시 금지, Pull Request를 통한 변경, 활성 협업 프로필에 따른 사람 승인 수 적용, 팀 프로필에서는 작업 브랜치에서만 커밋, 검토 대화 해결, 최신 main 기준의 필수 AIDD 검사 통과
+- **protections:** 직접 삭제와 강제 푸시 금지, Pull Request를 통한 변경, 검토 대화 해결, 최신 main 기준의 필수 AIDD 검사 통과
 - **options:**
 
 ```json

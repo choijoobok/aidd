@@ -9,7 +9,6 @@
       "rationale": "완료 주장은 증거가 있어야 하며 출시 후에도 생애주기가 학습해야 한다.",
       "priority": "must",
       "status": "specified",
-      "owner": "릴리스 관리",
       "modules": [
         "MOD-QA",
         "MOD-DELIVERY",

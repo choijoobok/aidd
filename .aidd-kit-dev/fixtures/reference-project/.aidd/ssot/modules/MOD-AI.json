@@ -9,7 +9,6 @@
       "rationale": "도구 선택이 수행 품질이나 거버넌스 기대 수준을 바꾸면 안 된다.",
       "priority": "must",
       "status": "specified",
-      "owner": "AI 플랫폼",
       "modules": [
         "MOD-AI"
       ],
@@ -30,7 +29,6 @@
       "rationale": "로컬 자발적 실행만으로는 팀 저장소의 정합성과 병합 품질을 보장할 수 없다.",
       "priority": "must",
       "status": "implemented",
-      "owner": "DevOps·품질 보증",
       "modules": [
         "MOD-AI",
         "MOD-CHG",
@@ -54,7 +52,6 @@
       "rationale": "동일한 스킬 파일도 모델과 훅 차이 때문에 다른 행동 결과를 만들 수 있다.",
       "priority": "must",
       "status": "specified",
-      "owner": "AI 플랫폼·품질 보증",
       "modules": [
         "MOD-AI",
         "MOD-DISC",

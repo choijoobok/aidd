@@ -36,28 +36,29 @@ AIDD 공통 용어와 프로젝트 전용 용어를 한 곳에서 찾는 읽기�
 | AIDD-TERM-023 | STD | 개발 표준 | 개발 기반 | 코드·오류·보안·테스트·관측성·배포에 반복 적용하는 기준이다. | Standard | developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-024 | UXB | UX 기준선 | UI | 사용자 여정·정보 구조·접근성·레이아웃의 공통 결정 기준이다. | UX Baseline | project_team, developer | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-025 | UIP | UI 패턴 | UI | 여러 화면에서 재사용하는 상호작용과 상태 표현 규칙이다. | UI Pattern | project_team, developer | .ai/spec/project-lifecycle.md |
-| AIDD-TERM-026 | CMP | 공통 컴포넌트 | UI | 승인된 계약과 상태를 갖고 여러 화면에서 재사용하는 UI 구성 요소다. | Component | developer | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-026 | CMP | 공통 컴포넌트 | UI | 현재 유효한 계약과 상태를 갖고 여러 화면에서 재사용하는 UI 구성 요소다. | Component | developer | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-027 | MRG | 병합 기록 | 통합 | 병합 커밋의 부모·변경·충돌 해결·영향 평가를 보존하는 기록이다. | Merge Record | project_team, developer | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-028 | MRC | 병합 후 재검토 | 통합 | 병합 영향으로 다시 수행해야 하는 검토나 테스트 항목이다. | Merge Recheck | project_team, developer | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-029 | C0 | 경미한 변경 | 변경 등급 | 의미·계약·실행 동작에 영향을 주지 않는 낮은 위험의 변경 등급이다. | - | project_team, developer | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-030 | C1 | 국소 변경 | 변경 등급 | 영향 범위가 제한적이고 기존 계약을 유지하는 변경 등급이다. | - | project_team, developer | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-031 | C2 | 중요 변경 | 변경 등급 | 여러 산출물·계약 또는 사용자 동작에 영향을 주어 독립 검토가 필요한 변경 등급이다. | - | project_team, developer, operator | .ai/spec/conformance.md |
-| AIDD-TERM-032 | C3 | 중대 변경 | 변경 등급 | 광범위하거나 되돌리기 어렵고 높은 위험을 가져 강화된 승인과 독립 검토가 필요한 변경 등급이다. | - | project_team, developer, operator | .ai/spec/conformance.md |
-| AIDD-TERM-033 | 게이트 | 게이트 | 게이트 | 다음 단계로 진행하기 전에 기준·증거·승인을 확인하는 통제 지점이다. | Gate | project_team, developer, operator | .ai/spec/project-lifecycle.md |
-| AIDD-TERM-034 | 정본 | 정본 | 정본 | 승인된 현재 사실과 의도를 기계가 읽을 수 있게 보존하는 원본 기록이다. | Canonical Record | project_team, developer, operator | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-032 | C3 | 중대 변경 | 변경 등급 | 광범위하거나 되돌리기 어렵고 높은 위험을 가져 강화된 검증과 독립 검토가 필요한 변경 등급이다. | - | project_team, developer, operator | .ai/spec/conformance.md |
+| AIDD-TERM-033 | 게이트 | 게이트 | 게이트 | 다음 단계로 진행하기 전에 기준과 증거의 충족 여부를 확인하는 통제 지점이다. | Gate | project_team, developer, operator | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-034 | 정본 | 정본 | 정본 | 현재 유효한 사실과 의도를 기계가 읽을 수 있게 보존하는 원본 기록이다. | Canonical Record | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-035 | 파생물 | 파생물 | 정본 | 정본에서 결정적으로 다시 만들 수 있으며 직접 수정하지 않는 문서나 결과물이다. | Generated Artifact | project_team, developer, operator | .ai/spec/conformance.md |
-| AIDD-TERM-038 | TRM | 프로젝트 용어 | 용어 관리 | 프로젝트 PM이 영향 검토와 확인을 거쳐 현재 사용하도록 정의한 업무·제품·기술 개념이다. | Project Term | project_team, developer, operator | .ai/spec/project-lifecycle.md |
-| AIDD-TERM-039 | TCH | 용어 변경 이력 | 용어 관리 | PM이 확인한 용어 추가·변경·제거의 전후 값, 영향 범위, 적용 결과와 검증을 보존하는 이력이다. | Terminology Change History | project_team, developer, operator | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-038 | TRM | 프로젝트 용어 | 용어 관리 | 프로젝트가 영향 검토와 자체 결정 절차를 거쳐 현재 사용하도록 정의한 업무·제품·기술 개념이다. | Project Term | project_team, developer, operator | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-039 | TCH | 용어 변경 이력 | 용어 관리 | 프로젝트가 결정한 용어 추가·변경·제거의 전후 값, 결정 주체, 영향 범위, 적용 결과와 검증을 보존하는 이력이다. | Terminology Change History | project_team, developer, operator | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-040 | HIS | 결정 이력 | 정본 | 중요한 분석·설계·용어·소스·범위·상태 결정의 주체, 내용, 이유, 이전 상태, 영향과 출처를 안정 ID에 연결해 append-only로 보존하는 기록이다. | Decision History | project_team, developer, operator | .ai/docs/methodology/artifact-model.md |
 
 ## 프로젝트 전용 용어
 
 - 정본: `project/.aidd/ssot/terminology.json`
-- 변경: 모든 활성 팀원은 읽기 전용 확인 카드를 만들 수 있고, PM 확인 뒤에만 관련 산출물과 `TCH`를 일괄 반영
+- 변경: 오프라인으로 결정한 결과를 `TCH`에 결정자·이유·전후 값·영향과 함께 기록하고 관련 산출물을 일괄 반영
 - 개념 유형: `business` 업무, `product` 제품 동작·정책, `technical` 구현·운영, `external` 외부 표준·제품 어휘
 
-| ID | 용어 | key | 유형 | 분류 | 정의 | 적용 범위 | 출처 | 별칭 | 사용 예 | 관련 용어 | 독자 | 관리 PM | 영향 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| TRM-001 | 고객 요청 | customerRequest | 업무 | 고객지원/접수 | 고객이 제품팀에 전달해 접수·분석·처리하는 요구나 문의의 단위다. | 고객의 최초 접수부터 분석·처리 종료까지 추적하는 업무 요청에 사용한다. | - | 업무 요청 | 고객 요청 REQ-001을 접수하고 처리 상태를 기록한다. | AIDD-TERM-003 | project_team, developer, operator, end_user | HUM-001 | MOD-GOV, REQ-001, project/docs/generated/requirements.md |
+| ID | 용어 | key | 유형 | 분류 | 정의 | 적용 범위 | 출처 | 별칭 | 사용 예 | 관련 용어 | 독자 | 영향 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| TRM-001 | 고객 요청 | customerRequest | 업무 | 고객지원/접수 | 고객이 제품팀에 전달해 접수·분석·처리하는 요구나 문의의 단위다. | 고객의 최초 접수부터 분석·처리 종료까지 추적하는 업무 요청에 사용한다. | - | 업무 요청 | 고객 요청 REQ-001을 접수하고 처리 상태를 기록한다. | AIDD-TERM-003 | project_team, developer, operator, end_user | MOD-GOV, REQ-001, project/docs/generated/requirements.md |
 
 ## 헷갈리기 쉬운 용어 구분
 
@@ -65,4 +66,4 @@ AIDD 공통 용어와 프로젝트 전용 용어를 한 곳에서 찾는 읽기�
 
 | 용어 | 구분 대상 | 핵심 차이 | 판단 규칙 | 근거 |
 | --- | --- | --- | --- | --- |
-| TRM-001 고객 요청 | AIDD-TERM-003 | 고객 요청은 분석 전 입력 단위이고 REQ는 합의된 시스템 요구사항이다. | 고객이 전달한 원문·문의는 고객 요청, 분석과 합의를 거쳐 검증 기준이 생긴 내용은 REQ로 부른다. | 접수된 표현을 곧바로 승인된 요구사항으로 오해하지 않기 위해 구분한다. |
+| TRM-001 고객 요청 | AIDD-TERM-003 | 고객 요청은 분석 전 입력 단위이고 REQ는 합의된 시스템 요구사항이다. | 고객이 전달한 원문·문의는 고객 요청, 분석과 합의를 거쳐 검증 기준이 생긴 내용은 REQ로 부른다. | 접수된 표현을 곧바로 결정된 요구사항으로 오해하지 않기 위해 구분한다. |

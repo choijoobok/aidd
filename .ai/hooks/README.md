@@ -6,7 +6,7 @@ Hooks have four responsibilities:
 
 - show a small session brief and verify event wiring;
 - prevent direct edits to generated documents and provider skill copies;
-- refresh generated terminology documents as a fallback after direct terminology SSOT edits; the normal PM flow uses `term-apply`, which generates and validates them itself;
+- refresh generated terminology documents as a fallback after direct terminology SSOT edits; the normal offline-decision flow uses `term-apply`, which generates and validates them itself;
 - optionally append hook-provided conversation text to ignored `chat-history/`.
 
 Hooks do not approve work, require a new session, inspect Git signatures, enforce a trust root, classify general shell commands, or run broad verification automatically. Run `node .ai/tools/aidd_hook.mjs self-test --hook` after changing hook wiring.

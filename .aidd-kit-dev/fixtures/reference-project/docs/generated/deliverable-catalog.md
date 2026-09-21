@@ -44,7 +44,7 @@
 - **status:** current
 - **path:** project/docs/generated/glossary.md
 - **source:** .ai/manifests/terminology.json, terminology.json
-- **note:** 수정 불가 AIDD 공통 용어와 승인된 프로젝트 전용 용어를 한 곳에서 읽게 하며, 고객용 HTML에는 customer 공개 범위와 end_user 독자 용어만 노출한다.
+- **note:** 수정 불가 AIDD 공통 용어와 프로젝트에서 결정한 전용 용어를 한 곳에서 읽게 하며, 고객용 HTML에는 customer 공개 범위와 end_user 독자 용어만 노출한다.
 
 ### DLV-SURFACE — 시스템 표면과 문서 현행화 범위
 
@@ -65,7 +65,7 @@
 - **status:** current
 - **path:** project/docs/generated/workboard.md
 - **source:** workboard.json
-- **note:** 현재 초점·다음 작업·관찰 항목만 유지하는 작고 갱신 가능한 운영 뷰다. 날짜별 수행 이력은 project/work-log/에 별도로 기록한다.
+- **note:** 현재 초점·다음 작업·관찰 항목만 유지하는 작고 갱신 가능한 실행 뷰다. 중요한 결정은 안정 ID와 연결된 HIS 이력으로 별도 기록한다.
 
 ### DLV-REQ — 요구사항 정의서
 
@@ -155,7 +155,7 @@
 - **applicability:** required
 - **status:** current
 - **path:** project/docs/generated/governance-evidence.md
-- **source:** gate-runs.json, evidence.json, approvals.json, changes.json
+- **source:** gate-runs.json, evidence.json, changes.json
 
 ### DLV-METHOD — 방법론 비교와 적용 지침
 
@@ -185,7 +185,7 @@
 - **applicability:** conditional
 - **status:** current
 - **path:** project/docs/generated/ui
-- **source:** ui-system.json, ui-modules/*.json, modules.json, requirements.json, modules/*.json, tests.json, approvals.json
+- **source:** ui-system.json, ui-modules/*.json, modules.json, requirements.json, modules/*.json, tests.json
 - **note:** 현재 CLI에는 UI가 적용 대상이 아니며 기준선에 사유를 기록했다. 제품 UI 모듈은 선택적 조각에서 화면과 목업을 생성한다.
 
 ### DLV-MANUALS — 모듈별 사용자 매뉴얼
@@ -327,17 +327,7 @@
 - **applicability:** required
 - **status:** current
 - **path:** project/docs/generated/repository-governance.md
-- **source:** repository.json, collaboration.json
-
-### DLV-COLLAB — 협업 운영 프로필
-
-- **id:** DLV-COLLAB
-- **name:** 협업 운영 프로필
-- **mode:** generated
-- **applicability:** required
-- **status:** current
-- **path:** project/docs/generated/collaboration-governance.md
-- **source:** collaboration.json, repository.json
+- **source:** repository.json
 
 ### DLV-TEMPLATE — AIDD Kit 사용자 가이드
 
@@ -347,7 +337,7 @@
 - **applicability:** required
 - **status:** current
 - **path:** .ai/docs/guides/aidd-kit-guide.md
-- **source:** README.md, collaboration.json
+- **source:** README.md
 - **note:** 자연어 초기화부터 프로젝트 생애주기, 문서·협업·Git 운영까지 제공하는 단일 사용자 진입점이다.
 
 ### DLV-CONVERSATION — AI 대화형 프로젝트 진행 가이드(통합됨)
@@ -361,3 +351,14 @@
 - **source:** README.md
 - **replaced_by:** DLV-TEMPLATE
 - **note:** 중복을 제거하기 위해 전체 내용을 DLV-TEMPLATE에 통합했다.
+
+### DLV-HISTORY — 결정 이력
+
+- **id:** DLV-HISTORY
+- **name:** 결정 이력
+- **mode:** generated
+- **applicability:** required
+- **status:** current
+- **path:** project/docs/generated/decision-history.md
+- **source:** history/**/*.json, changes.json, decisions.json, terminology.json
+- **note:** 현재 정본의 근거를 보완하는 append-only 결정 이력이다.

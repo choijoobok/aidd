@@ -31,11 +31,8 @@
 | REQ-025 | MOD-DOC, MOD-DELIVERY, MOD-QA | TC-016 | implemented |
 | REQ-026 | MOD-AI, MOD-DISC, MOD-QA | TC-004, TC-017, TC-018 | specified |
 | REQ-027 | MOD-CHG, MOD-QA | TC-019, TC-020 | specified |
-| REQ-028 | MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS | TC-021 | implemented |
-| REQ-029 | MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS | TC-022 | implemented |
-| REQ-030 | MOD-GOV, MOD-AI, MOD-CHG, MOD-DOC, MOD-QA | TC-023 | implemented |
 | REQ-031 | MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA | TC-024 | implemented |
 | REQ-032 | MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA | TC-025 | implemented |
 | REQ-033 | MOD-DOC, MOD-DELIVERY, MOD-QA | TC-024, TC-025 | implemented |
-| REQ-034 | MOD-GOV, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG | TC-026 | implemented |
 | REQ-035 | MOD-GOV, MOD-DOC, MOD-AI, MOD-CHG, MOD-QA, MOD-DELIVERY | TC-027 | implemented |
+| REQ-036 | MOD-GOV | TC-028 | implemented |

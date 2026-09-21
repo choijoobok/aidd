@@ -1,0 +1,27 @@
+{
+  "id": "HIS-20260921-001",
+  "occurred_at": "2026-09-21T00:00:00.000Z",
+  "type": "decision",
+  "subjects": [
+    "REQ-036",
+    "CHG-014",
+    "ADR-013"
+  ],
+  "change": "CHG-014",
+  "decided_by": "고객과 프로젝트팀의 오프라인 협의",
+  "decision": "AIDD에서 인력·역할·승인·작업 배정을 제거하고 실행 산출물과 결정 이력에 집중한다.",
+  "reason": "팀 운영 절차를 제품 실행 프레임워크가 중복 관리하는 비용을 줄이면서 장기 영향 분석에 필요한 결정 근거는 보존하기 위해서다.",
+  "previous": "AIDD가 협업 프로필·Git 신원·PM 권한·WRK 담당자·승인을 정본으로 관리했다.",
+  "impacts": [
+    "MOD-GOV",
+    "프로젝트 bootstrap",
+    "실행·릴리스 게이트",
+    "용어 변경",
+    "가이드와 스킬"
+  ],
+  "source_refs": [
+    "KIT-ADR-002",
+    "USER-2026-09-21"
+  ],
+  "supersedes": null
+}

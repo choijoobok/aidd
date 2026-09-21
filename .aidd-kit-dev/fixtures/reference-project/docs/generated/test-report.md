@@ -114,10 +114,10 @@
 - **requirements:** REQ-021
 - **evidence:** EVD-007
 
-### TC-012 — 게이트 실행·증거·승인 우회 방지
+### TC-012 — 게이트 실행·증거·게이트 우회 방지
 
 - **id:** TC-012
-- **title:** 게이트 실행·증거·승인 우회 방지
+- **title:** 게이트 실행·증거·게이트 우회 방지
 - **type:** automated
 - **status:** passed
 - **required:** true
@@ -204,36 +204,6 @@
 - **requirements:** REQ-027
 - **evidence:** EVD-018
 
-### TC-021 — 1인·팀 협업 프로필 양방향 전환과 ruleset 생성
-
-- **id:** TC-021
-- **title:** 1인·팀 협업 프로필 양방향 전환과 ruleset 생성
-- **type:** scenario
-- **status:** passed
-- **required:** true
-- **requirements:** REQ-028
-- **evidence:** EVD-019
-
-### TC-022 — Git 신원 매핑·미등록 탐지·사람 수 분리
-
-- **id:** TC-022
-- **title:** Git 신원 매핑·미등록 탐지·사람 수 분리
-- **type:** scenario
-- **status:** passed
-- **required:** true
-- **requirements:** REQ-029
-- **evidence:** EVD-020
-
-### TC-023 — 안전한 템플릿 Git 초기화와 1인·팀 브랜치 정책
-
-- **id:** TC-023
-- **title:** 안전한 템플릿 Git 초기화와 1인·팀 브랜치 정책
-- **type:** integration
-- **status:** passed
-- **required:** true
-- **requirements:** REQ-030
-- **evidence:** EVD-021
-
 ### TC-024 — 개발 표준·골든 패스·예외·런북·제출 프로필 정본 검증
 
 - **id:** TC-024
@@ -285,33 +255,6 @@
 }
 ```
 
-### TC-026 — 팀 작업 배정 권한·감사 이력·개발 범위 포괄성
-
-- **id:** TC-026
-- **title:** 팀 작업 배정 권한·감사 이력·개발 범위 포괄성
-- **type:** scenario
-- **status:** passed
-- **required:** true
-- **requirements:** REQ-034
-- **evidence:** EVD-026
-- **rule_mutation:**
-
-```json
-{
-  "applicable": true,
-  "rules": [
-    "활성 PM 없이 팀 프로필로 전환할 수 없다",
-    "자율 배정이 아닌 모드에 오프라인 협의 필수를 표시할 수 없다",
-    "배정 정책·책임자 변경 이력 필드 누락을 거부한다",
-    "CHG별 필수 작업 영역 누락과 WRK 포괄 범위 누락을 거부한다",
-    "생성 전달 계획에서 요구사항·책임자·포괄 범위 누락을 탐지한다"
-  ],
-  "evidence": [
-    "EVD-026"
-  ]
-}
-```
-
 ### TC-027 — 변경 유형별 분석·설계·문서 동기화와 레거시 전환 통제
 
 - **id:** TC-027
@@ -335,6 +278,32 @@
   ],
   "evidence": [
     "EVD-028"
+  ]
+}
+```
+
+### TC-028 — 프로젝트 운영 분리와 결정 이력 계약
+
+- **id:** TC-028
+- **title:** 프로젝트 운영 분리와 결정 이력 계약
+- **type:** scenario
+- **status:** passed
+- **required:** true
+- **requirements:** REQ-036
+- **evidence:** EVD-029
+- **rule_mutation:**
+
+```json
+{
+  "applicable": true,
+  "rules": [
+    "사람·역할·신원 정본 없이 bootstrap과 검증이 성공한다",
+    "알 수 없는 대상 ID와 잘못된 HIS 날짜를 거부한다",
+    "유효한 HIS가 월별 경로에 저장되고 결정 이력 문서에 생성된다",
+    "용어 변경은 PM 신원 없이 결정 주체와 이유를 기록한다"
+  ],
+  "evidence": [
+    "EVD-029"
   ]
 }
 ```

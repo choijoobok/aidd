@@ -4,14 +4,14 @@
 
 | 상황 | 사용할 템플릿 | 반영할 정본 |
 |---|---|---|
-| 기능 범위·규칙·예외 합의 | feature-spec-workbook.md | REQ / USE / MOD |
-| 화면 정의와 승인 전 목업 | screen-requirements-workbook.md | SCR / UXB / UIP / CMP |
+| 기능 범위·규칙·예외 정리 | feature-spec-workbook.md | REQ / USE / MOD |
+| 화면 정의와 구현 전 목업 | screen-requirements-workbook.md | SCR / UXB / UIP / CMP |
 | 실제 사용자 업무 안내 | user-manual-workbook.md | MAN |
 | 운영 절차·장애 복구 | runbook-workbook.md | RUN / EVD |
 | 대안 조사와 수용 판단 | research-note.md | ADR / REQ / OI |
 | 중요한 선택과 트레이드오프 | decision-card.md | DEC / ADR |
 | 테스트 실행 결과 | test-result-workbook.md | EVD / TST |
-| 일별 수행 맥락과 다음 행동 기록 | daily-work-log.md | work-log / CHG / WRK / OI / EVD |
+| 중요한 결정의 주체·이유·영향 기록 | decision-history-entry.md | HIS / REQ / ADR / CHG / TRM / WRK |
 | 요구분석·설계 중 새롭거나 모호한 용어 확인 | terminology-workbook.md | TRM / TCH |
 
-정본을 갱신한 뒤 node .ai/tools/aidd.mjs generate를 실행한다. project/docs/generated/site/의 HTML은 파생물이며 직접 수정하지 않는다.
+정본을 갱신한 뒤 `node .ai/tools/aidd.mjs generate`를 실행한다. `project/docs/generated/site/`의 HTML은 파생물이며 직접 수정하지 않는다.

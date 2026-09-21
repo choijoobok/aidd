@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-009",
+  "title": "인력 거버넌스 제거와 결정 이력 중심 전환",
+  "class": "C3",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "신뢰 기반 프로젝트에서도 AIDD가 참여자·Git 신원·PM 권한·승인·작업 배정을 직접 관리해 프로젝트 착수와 계정 변경, 역할 위임에 불필요한 운영 부담을 만들고, 정작 장기간 보존해야 할 결정의 이유와 영향 이력은 산출물 유형마다 서로 다른 방식으로 남았다.",
+  "intent": "인력·역할·일정·승인·배정은 프로젝트 운영 영역으로 돌리고, AIDD는 현재 정본과 누가 왜 결정했는지를 자유문자와 안정 ID로 연결하는 간결한 결정 이력, 실행 범위와 검증 증거에 집중한다.",
+  "scope": [
+    "collaboration 정본과 HUM·IDM·협업 프로필·신원 대조·작업 배정 CLI 제거",
+    "PM 전용 용어 흐름을 오프라인 결정 결과와 TCH 이력 중심으로 전환",
+    "APR 승인 정본과 사람 승인 기반 개발·릴리스 차단 제거",
+    "WRK 담당자·개인 작업 기록 제거와 요구사항·범위·의존성·증거 중심 전달 계획 유지",
+    "HIS 결정 이력 정본 조각, 기록 CLI, 검증과 생성 뷰 추가",
+    "portable 명세·스킬·훅·가이드·템플릿·fixture·릴리스 기록 현행화"
+  ],
+  "validation": [
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "node --test .aidd-kit-dev/tests/terminology.test.mjs",
+    "node --test .aidd-kit-dev/tests/history.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke",
+    "변경 후 aidd-document-consistency 기준의 의미 정합성 검토"
+  ],
+  "risks": [
+    "사람 승인 강제를 제거하면 조직 정책 준수 여부를 AIDD만으로 판정할 수 없으므로 외부 운영 도구와 오프라인 절차의 책임 경계를 명확히 안내한다.",
+    "결정 이력을 모든 파일 수정에 남기면 잡음이 커지므로 의미·범위·계약·동작을 바꾸는 결정만 HIS·ADR·CHG·TCH로 기록한다.",
+    "기존 collaboration·approval 기반 프로젝트에는 자동 업그레이드를 제공하지 않으므로 변경 설명서에 수동 이관 원칙을 남긴다."
+  ],
+  "rollback": "HIS 조각과 관련 CLI·생성 뷰를 제거하고 KIT-CHG-008의 collaboration·PM 승인·작업 배정 모델을 portable 명세와 fixture에서 복원한다.",
+  "completion_blocker": "없음"
+}

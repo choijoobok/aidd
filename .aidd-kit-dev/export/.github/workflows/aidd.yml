@@ -43,8 +43,5 @@ jobs:
       - name: 정본 정합성 검사
         run: node .ai/tools/aidd.mjs validate
 
-      - name: Git 신원 대조
-        run: node .ai/tools/aidd.mjs identity-check --warning-only
-
       - name: 프레임워크 테스트
         run: node --test .ai/tests/*.test.mjs

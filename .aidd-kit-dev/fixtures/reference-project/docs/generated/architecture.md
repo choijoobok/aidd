@@ -149,7 +149,7 @@
 - **id:** CMP-EVIDENCE
 - **name:** 게이트 실행과 증거 원장
 - **type:** 거버넌스
-- **responsibility:** 변경별 게이트 기준, 검증 증거, 승인과 예외를 구조화하고 완료·릴리스 차단에 사용한다.
+- **responsibility:** 변경별 게이트 기준, 검증 증거, 통과 판정과 예외를 구조화하고 완료·릴리스 차단에 사용한다.
 - **modules:** MOD-GOV, MOD-QA, MOD-STATUS, MOD-CHG
 
 ### CMP-PLAN — 모듈 전달 계획
@@ -175,22 +175,6 @@
 - **type:** 거버넌스
 - **responsibility:** CI 필수 검사와 기본 브랜치 보호의 로컬 구성 및 원격 활성화 증거를 관리한다.
 - **modules:** MOD-CHG, MOD-QA
-
-### CMP-COLLAB — 가변 협업 프로필
-
-- **id:** CMP-COLLAB
-- **name:** 가변 협업 프로필
-- **type:** 거버넌스
-- **responsibility:** 활성 사람 참여자 수에 따라 1인·팀 검토 통제를 전환하고 이력과 저장소 규칙을 동기화한다.
-- **modules:** MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS
-
-### CMP-IDENTITY — 협업 신원 대조
-
-- **id:** CMP-IDENTITY
-- **name:** 협업 신원 대조
-- **type:** 거버넌스
-- **responsibility:** Git·호스팅 신원을 사람 참여자 또는 봇과 연결하고 설명되지 않은 신원을 고위험 변경과 릴리스 통제에 반영한다.
-- **modules:** MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS
 
 ### CMP-SURFACE — 시스템 표면과 문서 동기화
 
@@ -234,10 +218,10 @@
 
 ## 역할 관점
 
-### ROLE-PM — PM/제품
+### ROLE-PRODUCT — 제품 의도
 
-- **id:** ROLE-PM
-- **name:** PM/제품
+- **id:** ROLE-PRODUCT
+- **name:** 제품 의도
 - **evidence:** 성과, 범위, 우선순위, 이해관계자 게이트
 
 ### ROLE-BA — 사업·도메인 분석

@@ -10,7 +10,7 @@
       "required_tokens": ["protect"]
     },
     "PostToolUse": {
-      "purpose": "용어 정본 직접 변경 뒤 파생 문서 현행화를 보조하고 스킬 변경 뒤 역할별 provider 동기화를 안내한다. 정상 PM 용어 변경은 term-apply가 생성·검증까지 수행한다.",
+      "purpose": "용어 정본 직접 변경 뒤 파생 문서 현행화를 보조하고 스킬 변경 뒤 역할별 provider 동기화를 안내한다. 정상 용어 변경은 오프라인 결정 뒤 term-apply가 생성·검증까지 수행한다.",
       "required_tokens": ["post-check"]
     },
     "UserPromptSubmit": {

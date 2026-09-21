@@ -12,7 +12,7 @@
 - **modules:** MOD-GOV, MOD-ARCH, MOD-DOC, MOD-AI, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG
 - **target_date:** -
 - **exit_criteria:** 모든 로컬 합성 검증이 통과한다, Codex와 Claude 실제 행동 평가가 완료된다, GitHub 기본 브랜치 보호가 원격에서 확인된다
-- **work_items:** WRK-001, WRK-002, WRK-003, WRK-004, WRK-005, WRK-006, WRK-007, WRK-008, WRK-009, WRK-010, WRK-011, WRK-012, WRK-013, WRK-014
+- **work_items:** WRK-001, WRK-002, WRK-003, WRK-004, WRK-005, WRK-006, WRK-007, WRK-008, WRK-009, WRK-012, WRK-014
 
 ## 작업
 
@@ -26,8 +26,7 @@
 - **change:** CHG-004
 - **requirements:** REQ-022
 - **depends_on:** -
-- **owner:** 거버넌스·품질 보증
-- **acceptance_criteria:** 증거 없는 통과와 승인 우회를 검증기가 거부한다
+- **acceptance_criteria:** 증거 없는 통과와 게이트 우회를 검증기가 거부한다
 - **evidence:** EVD-008, EVD-009
 
 ### WRK-002 — 병합 훅과 CI 검사 구현
@@ -40,7 +39,6 @@
 - **change:** CHG-005
 - **requirements:** REQ-023
 - **depends_on:** WRK-001
-- **owner:** DevOps·품질 보증
 - **acceptance_criteria:** 실제 병합 커밋을 기록하고 CI가 결정적 검사를 실행한다
 - **evidence:** EVD-010, EVD-011
 
@@ -54,7 +52,6 @@
 - **change:** CHG-006
 - **requirements:** REQ-024
 - **depends_on:** WRK-001
-- **owner:** PM·아키텍처
 - **acceptance_criteria:** 모듈 뷰에서 요구사항과 작업 및 의존성을 함께 추적한다
 - **evidence:** EVD-012
 
@@ -68,8 +65,7 @@
 - **change:** CHG-006
 - **requirements:** REQ-006, REQ-010, REQ-011
 - **depends_on:** WRK-001
-- **owner:** 품질 보증
-- **acceptance_criteria:** 결정 대체 순환을 거부한다, 미승인 필수 게이트가 구현 시작을 차단한다
+- **acceptance_criteria:** 결정 대체 순환을 거부한다, 미통과 필수 게이트가 구현 시작을 차단한다
 - **evidence:** EVD-013, EVD-014
 
 ### WRK-005 — 운영자·사용자·보안 가이드 자동 생성
@@ -82,7 +78,6 @@
 - **change:** CHG-006
 - **requirements:** REQ-025
 - **depends_on:** WRK-003
-- **owner:** 운영·보안·제품
 - **acceptance_criteria:** 세 가이드가 구조화된 정본에서 결정적으로 생성된다
 - **evidence:** EVD-015
 
@@ -96,7 +91,6 @@
 - **change:** CHG-006
 - **requirements:** REQ-026
 - **depends_on:** WRK-003
-- **owner:** AI 플랫폼·품질 보증
 - **acceptance_criteria:** 두 플랫폼이 같은 픽스처와 루브릭으로 평가된다
 - **evidence:** EVD-016
 
@@ -110,7 +104,6 @@
 - **change:** CHG-006
 - **requirements:** REQ-026
 - **depends_on:** WRK-006
-- **owner:** AI 플랫폼·독립 검토자
 - **acceptance_criteria:** 모든 필수 시나리오에서 두 플랫폼이 기준 점수 이상을 얻는다, 중대 금지 행동이 없다
 - **evidence:** -
 
@@ -124,8 +117,7 @@
 - **change:** CHG-006
 - **requirements:** REQ-027
 - **depends_on:** WRK-002
-- **owner:** DevOps
-- **acceptance_criteria:** 기본 브랜치의 PR·승인·필수 CI 규칙이 버전 관리된다
+- **acceptance_criteria:** 기본 브랜치의 PR·필수 CI 규칙이 버전 관리된다
 - **evidence:** EVD-017
 
 ### WRK-009 — GitHub 브랜치 보호 원격 활성화 검증
@@ -138,37 +130,8 @@
 - **change:** CHG-006
 - **requirements:** REQ-027
 - **depends_on:** WRK-008
-- **owner:** 저장소 관리자
-- **acceptance_criteria:** 원격 main 규칙이 필수 CI와 승인을 강제한다
+- **acceptance_criteria:** 원격 main 규칙이 필수 CI를 강제한다
 - **evidence:** EVD-018
-
-### WRK-010 — 1인·팀 협업 프로필 양방향 전환
-
-- **id:** WRK-010
-- **title:** 1인·팀 협업 프로필 양방향 전환
-- **type:** governance
-- **status:** completed
-- **module:** MOD-GOV
-- **change:** CHG-007
-- **requirements:** REQ-028
-- **depends_on:** WRK-001, WRK-008
-- **owner:** PM·DevOps·품질 보증
-- **acceptance_criteria:** 활성 참여자 수로 협업 프로필을 결정한다, 팀원 참여와 이탈 모두 이력을 남긴다, 현재 프로필에서 ruleset을 재생성한다
-- **evidence:** EVD-019
-
-### WRK-011 — Git 신원과 협업 참여자 대조
-
-- **id:** WRK-011
-- **title:** Git 신원과 협업 참여자 대조
-- **type:** governance
-- **status:** completed
-- **module:** MOD-CHG
-- **change:** CHG-008
-- **requirements:** REQ-029
-- **depends_on:** WRK-002, WRK-010
-- **owner:** PM·DevOps·품질 보증
-- **acceptance_criteria:** 도달 가능한 Git 신원을 명시적 사람·봇 매핑과 대조한다, 미등록 신원은 자동 참여자로 만들지 않고 통제에 반영한다, 원격 push 행위자 대조 한계를 명시한다
-- **evidence:** EVD-020
 
 ### WRK-012 — 개발 기반·UI·운영·제출 정본과 생성 계약
 
@@ -180,27 +143,9 @@
 - **change:** CHG-011
 - **requirements:** REQ-011, REQ-015, REQ-025, REQ-031, REQ-032, REQ-033
 - **depends_on:** WRK-003, WRK-005
-- **owner:** 아키텍처·문서화·품질 보증
-- **assignee:** HUM-001
 - **coverage:** design, implementation, test, documentation, migration, operations, training
 - **acceptance_criteria:** 새 정본 유형의 참조·상태·대체·예외 만료를 검증한다, UI가 없는 모듈과 선택적 UI 조각을 모두 지원한다, 개발 기반·목업·매뉴얼·런북·제출 manifest를 결정적으로 생성한다, 기존 프로젝트의 가이드·산출물 구조를 새 정본 체계로 이관한다, 사용자와 AI가 새 문서·사이트 흐름을 익힐 수 있는 진행 가이드를 제공한다, TG-002의 실제 프로젝트 적용 전까지 변경과 게이트를 검토 중으로 유지한다
 - **evidence:** EVD-023, EVD-024
-
-### WRK-013 — 팀 작업 배정·감사 이력·포괄성 게이트
-
-- **id:** WRK-013
-- **title:** 팀 작업 배정·감사 이력·포괄성 게이트
-- **type:** governance
-- **status:** completed
-- **module:** MOD-GOV
-- **change:** CHG-012
-- **requirements:** REQ-034
-- **depends_on:** WRK-003, WRK-010, WRK-011
-- **owner:** PM·개발·품질 보증
-- **assignee:** HUM-001
-- **coverage:** design, implementation, test, documentation, migration, operations
-- **acceptance_criteria:** 팀 전환 전에 활성 PM을 검증한다, PM 배정·위임 배정·자율 배정의 권한을 구분한다, 오프라인 협의는 자율 배정에만 필수로 표시한다, 정책과 WRK 책임자 변경 이력을 보존한다, CHG별 필수 작업 영역과 모든 요구사항·미완료 WRK 책임자 누락을 개발 진입에서 차단한다, 생성 전달 계획과 협업 문서에서 요구사항·포괄 범위·변경 이력을 확인한다
-- **evidence:** EVD-026
 
 ### WRK-014 — 변경 유형별 문서 동기화와 레거시 전환 통제
 
@@ -211,12 +156,24 @@
 - **module:** MOD-DOC
 - **change:** CHG-013
 - **requirements:** REQ-035
-- **depends_on:** WRK-003, WRK-005, WRK-013
-- **owner:** 문서화·변경관리·품질 보증
-- **assignee:** HUM-001
+- **depends_on:** WRK-003, WRK-005
 - **coverage:** design, implementation, test, documentation, migration, operations, training
 - **acceptance_criteria:** CHG delivery_path가 신규·기존·결함·레거시·내부·거버넌스 경로를 구분한다, 모듈별 시스템 표면과 레거시 인벤토리 계획을 정본으로 관리한다, 문서가 없는 기존 표면의 후속 작성에는 대상 문서와 마감이 있는 WRK가 필요하다, pre-commit이 staged 제품 소스와 staged 문서 또는 후속 작업 연결을 검사한다, 레거시 문서 변환 스킬과 자연어 사용 지침을 제공한다
 - **evidence:** EVD-028
+
+### WRK-015 — 프로젝트 운영 분리와 결정 이력 계약
+
+- **id:** WRK-015
+- **title:** 프로젝트 운영 분리와 결정 이력 계약
+- **type:** governance
+- **status:** completed
+- **module:** MOD-GOV
+- **change:** CHG-014
+- **requirements:** REQ-036
+- **depends_on:** WRK-003
+- **coverage:** design, implementation, test, documentation, migration, operations
+- **acceptance_criteria:** 인력·역할·일정·승인은 AIDD 정본과 실행 게이트에서 제외한다, 중요 결정은 안정 ID·결정 주체·결정·이유·영향과 함께 HIS에 기록한다, 현재 정본과 append-only 이력을 함께 조회할 수 있다
+- **evidence:** EVD-029
 
 ## 인터페이스
 

@@ -9,7 +9,6 @@
       "rationale": "명확한 의도와 검증된 가정은 이후의 비싼 재작업을 줄인다.",
       "priority": "must",
       "status": "specified",
-      "owner": "제품",
       "modules": [
         "MOD-DISC"
       ],
@@ -29,7 +28,6 @@
       "rationale": "고객에게는 숨겨진 AI 선호가 아니라 높은 의사결정 품질이 필요하다.",
       "priority": "must",
       "status": "specified",
-      "owner": "제품",
       "modules": [
         "MOD-DISC",
         "MOD-GOV"
@@ -50,7 +48,6 @@
       "rationale": "배포 토폴로지와 운영 제약을 늦게 발견하면 상태·동시성·데이터·복구 설계를 광범위하게 다시 해야 한다.",
       "priority": "must",
       "status": "implemented",
-      "owner": "제품·아키텍처·인프라",
       "modules": [
         "MOD-DISC",
         "MOD-ARCH",
@@ -62,7 +59,7 @@
       "acceptance_criteria": [
         "DG-001이 TG-001보다 먼저 수행된다",
         "설계를 바꾸는 환경 범주와 미결 결정이 배포 프로필에 기록된다",
-        "미정 사항에는 담당자·기한·영향이 있으며 중대한 항목은 차단된다"
+        "미정 사항에는 결정 조건·영향이 있으며 중대한 항목은 차단된다"
       ],
       "source": "USER-2026-09-18"
     }

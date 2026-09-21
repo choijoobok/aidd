@@ -38,7 +38,7 @@
 - **strengths:** 기준선과 책임이 명확함, 일정·비용·범위 변경을 통제하기 쉬움, 감사와 인수 증거를 계획하기 쉬움
 - **limitations:** 불확실성이 높으면 늦은 학습과 재작업 비용이 커짐, 문서 완료가 실제 가치 전달로 오인될 수 있음
 - **adopted_controls:** 단계별 진입·종료 기준, 승인된 기준선, 변경·위험·이슈 통제, 공식 인수와 종료
-- **aidd_mapping:** 발견·범위화의 고객 승인, C2·C3 게이트, 정본 변경 이력, 릴리스 승인
+- **aidd_mapping:** 발견·범위화의 고객 승인, C2·C3 게이트, 정본 변경 이력, 릴리스 결정
 - **sources:** https://www.pmi.org/learning/thought-leadership/series/achieving-greater-agility/spectrum-of-approaches, https://www.pmi.org/about/what-is-a-project
 
 ### MTH-002 — 시스템공학 V 모델

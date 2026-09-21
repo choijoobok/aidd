@@ -9,7 +9,6 @@
       "rationale": "초기 출시 후에도 생애주기가 계속되어야 한다.",
       "priority": "must",
       "status": "specified",
-      "owner": "변경 관리",
       "modules": [
         "MOD-CHG",
         "MOD-ARCH",
@@ -31,7 +30,6 @@
       "rationale": "기계적으로 성공한 팀 병합도 기존 가정을 무효화할 수 있다.",
       "priority": "must",
       "status": "specified",
-      "owner": "DevOps",
       "modules": [
         "MOD-CHG",
         "MOD-QA"
@@ -53,7 +51,6 @@
       "rationale": "워크플로 파일만 존재하고 필수 검사로 연결되지 않으면 팀원이 검증을 우회할 수 있다.",
       "priority": "must",
       "status": "specified",
-      "owner": "DevOps·저장소 관리자",
       "modules": [
         "MOD-CHG",
         "MOD-QA"
@@ -64,7 +61,7 @@
       ],
       "acceptance_criteria": [
         "보호 규칙의 필수 검사 이름이 CI 작업 이름과 일치한다",
-        "main 직접 삭제·강제 푸시와 미승인 병합을 차단한다",
+        "main 직접 삭제·강제 푸시와 필수 검사 없는 병합을 차단한다",
         "원격 조회 증거 없이 활성화 완료를 선언하지 않는다"
       ],
       "source": "AUDIT-2026-09-18"

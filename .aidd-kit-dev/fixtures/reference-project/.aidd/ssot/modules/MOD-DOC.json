@@ -9,7 +9,6 @@
       "rationale": "생성된 뷰는 별도의 정본이 되지 않으면서 최신 상태를 유지한다.",
       "priority": "must",
       "status": "specified",
-      "owner": "거버넌스",
       "modules": [
         "MOD-DOC"
       ],
@@ -29,7 +28,6 @@
       "rationale": "이해관계자는 동일한 시스템을 자신에게 맞는 뷰로 볼 수 있어야 한다.",
       "priority": "must",
       "status": "specified",
-      "owner": "문서화",
       "modules": [
         "MOD-DOC",
         "MOD-DELIVERY"
@@ -50,7 +48,6 @@
       "rationale": "직접 작성된 가이드만 두면 기능·운영·보안 변경에서 쉽게 누락되고 정본과 모순된다.",
       "priority": "must",
       "status": "implemented",
-      "owner": "운영·보안·제품",
       "modules": [
         "MOD-DOC",
         "MOD-DELIVERY",
@@ -73,9 +70,15 @@
       "rationale": "검토용 목업과 출시용 실제 증거가 혼동되지 않고 대상별 산출물이 일관되게 조립돼야 한다.",
       "priority": "must",
       "status": "implemented",
-      "owner": "문서화·운영·전달",
-      "modules": ["MOD-DOC", "MOD-DELIVERY", "MOD-QA"],
-      "verification": ["TC-024", "TC-025"],
+      "modules": [
+        "MOD-DOC",
+        "MOD-DELIVERY",
+        "MOD-QA"
+      ],
+      "verification": [
+        "TC-024",
+        "TC-025"
+      ],
       "acceptance_criteria": [
         "RUN 레코드에 트리거, 절차, 검증, 롤백과 에스컬레이션이 있다",
         "DLP 레코드는 포함·제외 범위와 목업·실제 캡처 정책을 구분한다",
@@ -90,15 +93,23 @@
       "rationale": "화면·API와 문서의 괴리를 방치하지 않으면서 문서가 없는 기존 시스템의 단계적 고도화를 현실적으로 지원한다.",
       "priority": "must",
       "status": "implemented",
-      "owner": "문서화·변경관리·품질 보증",
-      "modules": ["MOD-GOV", "MOD-DOC", "MOD-AI", "MOD-CHG", "MOD-QA", "MOD-DELIVERY"],
-      "verification": ["TC-027"],
+      "modules": [
+        "MOD-GOV",
+        "MOD-DOC",
+        "MOD-AI",
+        "MOD-CHG",
+        "MOD-QA",
+        "MOD-DELIVERY"
+      ],
+      "verification": [
+        "TC-027"
+      ],
       "acceptance_criteria": [
-        "신규 기능은 승인된 요구분석과 설계 및 최신 문서 없이 개발 진입할 수 없다",
+        "신규 기능은 결정된 요구분석과 설계 및 최신 문서 없이 개발 진입할 수 없다",
         "기존 문서가 있는 표면은 같은 변경에서 현행화한다",
         "문서가 없는 기존 표면은 고객의 즉시 작성 또는 기한 있는 후속 작업 선택을 기록한다",
         "레거시 화면 경로·API·배치·이벤트·연동·마이그레이션을 모듈별로 조사하고 기존 문서의 출처를 보존해 변환한다",
-        "커밋 전 검사에서 소스 변경과 문서 변경 또는 승인된 후속 작업의 연결을 검증한다"
+        "커밋 전 검사에서 소스 변경과 문서 변경 또는 결정된 후속 작업의 연결을 검증한다"
       ],
       "source": "USER-2026-09-18"
     }

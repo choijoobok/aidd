@@ -4,7 +4,7 @@
 
 ## 전통적·적응형·운영 방법론
 
-- [PMI의 수행 접근법 스펙트럼](https://www.pmi.org/learning/thought-leadership/series/achieving-greater-agility/spectrum-of-approaches)은 예측형, 반복형, 증분형과 애자일 사이에 모든 프로젝트에 맞는 단일 방식이 없다고 설명한다. AIDD는 예측형의 기준선·승인·변경 통제를 C2·C3과 규제 작업에 적용하고, 상황별 혼합 경로를 명시한다.
+- [PMI의 수행 접근법 스펙트럼](https://www.pmi.org/learning/thought-leadership/series/achieving-greater-agility/spectrum-of-approaches)은 예측형, 반복형, 증분형과 애자일 사이에 모든 프로젝트에 맞는 단일 방식이 없다고 설명한다. AIDD는 예측형의 기준선·검증·변경 추적을 C2·C3과 규제 작업에 적용하고, 상황별 혼합 경로를 명시한다.
 - [NASA 시스템공학 핸드북](https://www.nasa.gov/reference/systems-engineering-handbook/)과 [제품 실현 지침](https://www.nasa.gov/reference/5-0-product-realization/)은 생애주기 전반의 요구 분해, 통합, 검증과 유효성 확인을 연결한다. AIDD는 요구사항마다 검증 ID를 두고 설계 시점에 테스트 방법을 정하는 통제를 채택한다.
 - [IBM RUP 프로젝트 계획 지침](https://www.ibm.com/docs/en/rational-clearquest/10.0.7?topic=settings-project-planning)은 착수·정교화·구축·전환을 반복으로 나누어 점진적으로 가치를 전달한다. AIDD는 고위험 기술을 먼저 검증하고 모듈별로 실행 가능한 기준선을 만드는 관점을 채택하되 역할과 문서를 일괄 강제하지 않는다.
 - [애자일 선언 원칙](https://agilemanifesto.org/principles)은 조기·지속 전달, 변경 수용, 기술적 우수성과 정기적 개선을 강조한다. AIDD는 작은 가역적 증분과 운영 피드백을 채택하면서 장기 추적성과 규제 증거를 별도 정본으로 보완한다.

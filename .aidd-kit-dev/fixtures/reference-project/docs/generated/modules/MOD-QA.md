@@ -23,20 +23,16 @@
 | REQ-025 | 운영자·사용자·보안 가이드의 정본 기반 생성 | implemented | TC-016 |
 | REQ-026 | Codex·Claude 행동 품질 동등성 평가 | specified | TC-004, TC-017, TC-018 |
 | REQ-027 | 기본 브랜치 보호와 필수 CI 검사 | specified | TC-019, TC-020 |
-| REQ-028 | 1인·팀 프로젝트의 가역적 협업 전환 | implemented | TC-021 |
-| REQ-029 | Git·호스팅 신원과 협업 참여자 대조 | implemented | TC-022 |
-| REQ-030 | 안전한 템플릿 초기화와 협업 브랜치 흐름 | implemented | TC-023 |
 | REQ-031 | 프로젝트별 개발 기반 정본 | implemented | TC-024 |
 | REQ-032 | 모듈별 UI·공통 컴포넌트 정본 | implemented | TC-025 |
 | REQ-033 | 운영 런북과 제출 패키지 정책 | implemented | TC-024, TC-025 |
-| REQ-034 | 감사 가능한 작업 패키지 배정과 개발 범위 포괄성 | implemented | TC-026 |
 | REQ-035 | 변경 유형별 문서 동기화와 레거시 전환 | implemented | TC-027 |
 
 ## 작업 항목
 
-| 작업 | 제목 | 상태 | 책임 참여자 | 변경 | 요구사항 | 포괄 범위 | 선행 작업 | 증거 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| WRK-004 | 결정 대체와 개발 시작 차단 합성 시나리오 | completed | - | CHG-006 | REQ-006, REQ-010, REQ-011 | - | WRK-001 | EVD-013, EVD-014 |
+| 작업 | 제목 | 상태 | 변경 | 요구사항 | 포괄 범위 | 선행 작업 | 증거 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| WRK-004 | 결정 대체와 개발 시작 차단 합성 시나리오 | completed | CHG-006 | REQ-006, REQ-010, REQ-011 | - | WRK-001 | EVD-013, EVD-014 |
 
 ## 인터페이스
 
@@ -62,12 +58,8 @@
 | CHG-004 | C2 | in_progress | 실행 가능한 게이트와 증거 무결성 |
 | CHG-005 | C2 | in_progress | Git 병합 훅과 GitHub CI 강제 |
 | CHG-006 | C2 | in_progress | 프로젝트 착수 전 실행 기반 완성 |
-| CHG-007 | C2 | in_progress | 1인·팀 협업 프로필의 가역적 전환 |
-| CHG-008 | C2 | in_progress | Git 신원과 협업 참여자 대조 통제 |
-| CHG-009 | C2 | in_progress | 안전한 템플릿 초기화와 협업 브랜치 흐름 |
 | CHG-010 | C2 | in_progress | 모듈별 정본 분할과 확장 가능한 명세 |
 | CHG-011 | C2 | in_progress | 프로젝트 개발 기반·UI·운영·제출 정본 체계 |
-| CHG-012 | C2 | done | 감사 가능한 팀 작업 배정과 개발 범위 포괄성 |
 | CHG-013 | C2 | in_progress | 변경 유형별 분석·설계 진입과 레거시 문서 현행화 통제 |
 
 ## 관련 결정
@@ -93,7 +85,7 @@
 | TC-005 | passed | 결정 대체와 기존 시스템 변경 정본 전이 시나리오 |
 | TC-006 | passed | 병합 커밋 기록·영향 평가·재검토 이력 |
 | TC-011 | passed | 동시성·트랜잭션·성능 위험 카탈로그 검증 |
-| TC-012 | passed | 게이트 실행·증거·승인 우회 방지 |
+| TC-012 | passed | 게이트 실행·증거·게이트 우회 방지 |
 | TC-013 | passed | 정본 참조와 증거 무결성 부정 테스트 |
 | TC-014 | passed | 병합 훅 인자와 GitHub CI 정의 검증 |
 | TC-016 | passed | 운영자·사용자·보안 가이드 결정적 생성 |
@@ -101,12 +93,8 @@
 | TC-018 | passed | AI 교차 평가 하네스와 공통 루브릭 검증 |
 | TC-019 | passed | GitHub 브랜치 보호 구성과 CI 이름 정합성 |
 | TC-020 | failed | GitHub 브랜치 보호 원격 활성화 검증 |
-| TC-021 | passed | 1인·팀 협업 프로필 양방향 전환과 ruleset 생성 |
-| TC-022 | passed | Git 신원 매핑·미등록 탐지·사람 수 분리 |
-| TC-023 | passed | 안전한 템플릿 Git 초기화와 1인·팀 브랜치 정책 |
 | TC-024 | passed | 개발 표준·골든 패스·예외·런북·제출 프로필 정본 검증 |
 | TC-025 | passed | 모듈별 UI 정본과 결정적 화면·매뉴얼 생성 |
-| TC-026 | passed | 팀 작업 배정 권한·감사 이력·개발 범위 포괄성 |
 | TC-027 | passed | 변경 유형별 분석·설계·문서 동기화와 레거시 전환 통제 |
 
 ## UI 정본
@@ -123,7 +111,7 @@
 - **purpose:** 테스트, 보안, 감리, 추적성, 동시성·성능·장애와 위험 기반 품질 증거를 제공한다.
 - **status:** in_progress
 - **dependencies:** MOD-GOV
-- **requirements:** REQ-003, REQ-010, REQ-012, REQ-014, REQ-016, REQ-017, REQ-018, REQ-021, REQ-022, REQ-023, REQ-025, REQ-026, REQ-027, REQ-028, REQ-029, REQ-030, REQ-031, REQ-032, REQ-033, REQ-034, REQ-035
+- **requirements:** REQ-003, REQ-010, REQ-012, REQ-014, REQ-016, REQ-017, REQ-018, REQ-021, REQ-022, REQ-023, REQ-025, REQ-026, REQ-027, REQ-031, REQ-032, REQ-033, REQ-035
 
 ## 요구사항 상세
 
@@ -135,7 +123,6 @@
 - **rationale:** 생애주기 전체 연결이 없으면 영향과 완전성을 판단할 수 없다.
 - **priority:** must
 - **status:** specified
-- **owner:** 감리
 - **modules:** MOD-GOV, MOD-QA
 - **verification:** TC-001
 - **acceptance_criteria:** 알 수 없는 참조는 검증에 실패한다, 추적성 매트릭스가 생성된다
@@ -149,7 +136,6 @@
 - **rationale:** 초기 출시 후에도 생애주기가 계속되어야 한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 변경 관리
 - **modules:** MOD-CHG, MOD-ARCH, MOD-QA
 - **verification:** TC-005
 - **acceptance_criteria:** 모든 변경이 유형과 영향 산출물을 선언한다, 기존 시스템 충돌을 불일치로 기록한다
@@ -163,7 +149,6 @@
 - **rationale:** 기계적으로 성공한 팀 병합도 기존 가정을 무효화할 수 있다.
 - **priority:** must
 - **status:** specified
-- **owner:** DevOps
 - **modules:** MOD-CHG, MOD-QA
 - **verification:** TC-006
 - **acceptance_criteria:** 병합 커밋에서 영향 레코드를 생성할 수 있다, 평가하지 않은 병합과 대기 중인 병합 후 재검토가 세션 브리핑에 표시된다, 재검토 완료 시 실제 수행자·시각·결과·증거를 기록하고 필수 미완료 항목은 릴리스를 차단한다
@@ -177,7 +162,6 @@
 - **rationale:** 생애주기 전체 품질에는 소스 코드 밖의 관점이 필요하다.
 - **priority:** must
 - **status:** specified
-- **owner:** 거버넌스
 - **modules:** MOD-GOV, MOD-ARCH, MOD-QA, MOD-DELIVERY
 - **verification:** TC-001
 - **acceptance_criteria:** 아키텍처가 모든 필수 관점을 정의한다, 게이트가 증거 담당을 명시한다
@@ -191,7 +175,6 @@
 - **rationale:** 비기능 위험을 출시 직전까지 미루면 비용이 크게 증가한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 품질 보증
 - **modules:** MOD-ARCH, MOD-QA, MOD-DELIVERY
 - **verification:** TC-001
 - **acceptance_criteria:** 관련 관점을 명시적으로 승인하거나 적용 대상 아님으로 기록한다, 치명적 잔여 위험에는 고객 수용이 필요하다
@@ -205,7 +188,6 @@
 - **rationale:** 일률적인 중량 프로세스는 작은 작업을 늦추고, 게이트가 없으면 큰 작업을 위험하게 만든다.
 - **priority:** must
 - **status:** specified
-- **owner:** 감리
 - **modules:** MOD-GOV, MOD-QA
 - **verification:** TC-001
 - **acceptance_criteria:** 모든 변경에 엄격성 등급이 있다, 높은 위험 등급일수록 강한 증거가 필요하다
@@ -219,7 +201,6 @@
 - **rationale:** 완료 주장은 증거가 있어야 하며 출시 후에도 생애주기가 학습해야 한다.
 - **priority:** must
 - **status:** specified
-- **owner:** 릴리스 관리
 - **modules:** MOD-QA, MOD-DELIVERY, MOD-CHG
 - **verification:** TC-001
 - **acceptance_criteria:** 릴리스 준비도가 차단사항을 식별한다, 운영 학습으로 추적 가능한 변경을 만들 수 있다
@@ -233,7 +214,6 @@
 - **rationale:** 단일 스레드 기능 테스트만으로는 운영 환경의 데이터 손상, 중복 처리, 교착, 풀 고갈과 연쇄 장애를 예방할 수 없다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 아키텍처·품질 보증
 - **modules:** MOD-ARCH, MOD-QA, MOD-DELIVERY
 - **verification:** TC-011
 - **acceptance_criteria:** 핵심 업무에 측정 가능한 동시성 불변 조건이 있다, 적용되는 위험 패턴마다 설계 통제와 부정·경쟁·부하·장애 검증이 연결된다, 로컬 락이나 스레드 컨텍스트를 다중 인스턴스 보장으로 오인하지 않는다
@@ -243,14 +223,13 @@
 
 - **id:** REQ-022
 - **title:** 실행 가능한 게이트와 증거 무결성
-- **statement:** 프레임워크는 변경별 게이트 실행, 판정 기준, 증거, 승인과 예외를 구조화하고 승인되지 않았거나 증거가 없는 상태가 릴리스 준비 완료로 계산되지 않게 해야 한다.
+- **statement:** 프레임워크는 변경별 게이트 실행, 판정 기준, 증거, 통과 판정과 예외를 구조화하고 통과하지 않았거나 증거가 없는 상태가 릴리스 준비 완료로 계산되지 않게 해야 한다.
 - **rationale:** 정책 문서와 상태 문자열만으로는 게이트 우회와 근거 없는 완료 선언을 막을 수 없다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 거버넌스·품질 보증
 - **modules:** MOD-GOV, MOD-QA, MOD-STATUS
 - **verification:** TC-012, TC-013
-- **acceptance_criteria:** 승인된 게이트의 모든 통과 기준에 유효한 증거가 연결된다, 증거에는 수행자·명령 또는 방법·시각·커밋·결과가 있다, 미승인·거절·만료 게이트와 유효하지 않은 예외는 릴리스를 차단한다, 알 수 없는 정본 참조와 증거 없는 통과 상태는 검증에 실패한다
+- **acceptance_criteria:** 통과한 게이트의 모든 통과 기준에 유효한 증거가 연결된다, 증거에는 수행자·명령 또는 방법·시각·커밋·결과가 있다, 미통과·실패·만료 게이트와 유효하지 않은 예외는 릴리스를 차단한다, 알 수 없는 정본 참조와 증거 없는 통과 상태는 검증에 실패한다
 - **source:** AUDIT-2026-09-18
 
 ### REQ-023 — Git과 CI 품질 게이트 강제
@@ -261,7 +240,6 @@
 - **rationale:** 로컬 자발적 실행만으로는 팀 저장소의 정합성과 병합 품질을 보장할 수 없다.
 - **priority:** must
 - **status:** implemented
-- **owner:** DevOps·품질 보증
 - **modules:** MOD-AI, MOD-CHG, MOD-QA
 - **verification:** TC-006, TC-014
 - **acceptance_criteria:** Git post-merge 훅이 Git 전달 인자를 처리한다, GitHub CI가 생성 문서·정본·테스트·어댑터 불일치를 차단한다, 병합 영향 레코드의 모듈·추가 테스트 참조가 검증된다
@@ -275,7 +253,6 @@
 - **rationale:** 직접 작성된 가이드만 두면 기능·운영·보안 변경에서 쉽게 누락되고 정본과 모순된다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 운영·보안·제품
 - **modules:** MOD-DOC, MOD-DELIVERY, MOD-QA
 - **verification:** TC-016
 - **acceptance_criteria:** 세 대상별 가이드가 정본 출처를 가진다, 가이드 생성이 결정적이며 드리프트를 검출한다, 운영 절차에 검증·복구·병합 영향 대응이 포함된다
@@ -289,7 +266,6 @@
 - **rationale:** 동일한 스킬 파일도 모델과 훅 차이 때문에 다른 행동 결과를 만들 수 있다.
 - **priority:** must
 - **status:** specified
-- **owner:** AI 플랫폼·품질 보증
 - **modules:** MOD-AI, MOD-DISC, MOD-QA
 - **verification:** TC-004, TC-017, TC-018
 - **acceptance_criteria:** 두 플랫폼이 같은 픽스처와 루브릭을 사용한다, 플랫폼별 결과와 증거가 분리된다, 중대 금지 행동과 점수 차이 기준을 모두 통과한다
@@ -303,53 +279,10 @@
 - **rationale:** 워크플로 파일만 존재하고 필수 검사로 연결되지 않으면 팀원이 검증을 우회할 수 있다.
 - **priority:** must
 - **status:** specified
-- **owner:** DevOps·저장소 관리자
 - **modules:** MOD-CHG, MOD-QA
 - **verification:** TC-019, TC-020
-- **acceptance_criteria:** 보호 규칙의 필수 검사 이름이 CI 작업 이름과 일치한다, main 직접 삭제·강제 푸시와 미승인 병합을 차단한다, 원격 조회 증거 없이 활성화 완료를 선언하지 않는다
+- **acceptance_criteria:** 보호 규칙의 필수 검사 이름이 CI 작업 이름과 일치한다, main 직접 삭제·강제 푸시와 필수 검사 없는 병합을 차단한다, 원격 조회 증거 없이 활성화 완료를 선언하지 않는다
 - **source:** AUDIT-2026-09-18
-
-### REQ-028 — 1인·팀 프로젝트의 가역적 협업 전환
-
-- **id:** REQ-028
-- **title:** 1인·팀 프로젝트의 가역적 협업 전환
-- **statement:** 프레임워크는 활성 사람 참여자가 1명이면 1인 프로젝트 통제를, 2명 이상이면 팀 프로젝트 통제를 적용하고 참여자 증감에 따라 양방향으로 전환하며 이력과 저장소 규칙을 함께 갱신해야 한다.
-- **rationale:** 고정된 사람 승인 규칙은 1인 프로젝트를 막거나 팀 프로젝트의 상호 검토를 약화시킨다.
-- **priority:** must
-- **status:** implemented
-- **owner:** PM·DevOps·품질 보증
-- **modules:** MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS
-- **verification:** TC-021
-- **acceptance_criteria:** 활성 참여자 1명은 사람 승인 0명의 1인 프로필을 적용한다, 두 번째 활성 참여자가 생기면 최소 1명 승인의 팀 프로필로 전환한다, 다시 1명이 되면 1인 프로필로 복귀한다, 모든 참여자 변경과 프로필 전환 이력이 보존된다, 현재 프로필에서 ruleset이 결정적으로 생성된다
-- **source:** USER-2026-09-18
-
-### REQ-029 — Git·호스팅 신원과 협업 참여자 대조
-
-- **id:** REQ-029
-- **title:** Git·호스팅 신원과 협업 참여자 대조
-- **statement:** 프레임워크는 Git 작성자·커미터와 호스팅 계정을 사람 참여자 또는 봇에 명시적으로 연결하고, 설명되지 않은 신원을 자동으로 팀원으로 단정하지 않으면서 경고·고위험 변경·릴리스 통제에 반영해야 한다.
-- **rationale:** 여러 Git 아이디가 한 사람의 별칭인지 실제 미등록 팀원인지 봇인지 확인하지 않으면 1인·팀 통제와 승인 독립성을 잘못 판단할 수 있다.
-- **priority:** must
-- **status:** implemented
-- **owner:** PM·DevOps·품질 보증
-- **modules:** MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS
-- **verification:** TC-022
-- **acceptance_criteria:** Git 이름과 이메일 쌍을 기존 HUM 참여자 또는 봇에 연결한다, 미등록 신원만으로 참여자나 팀 프로필을 자동 생성하지 않는다, 미등록 신원과 참여자 이탈 뒤의 새 커밋은 경고되고 C2·C3 개발 진입과 릴리스를 차단한다, 봇 신원은 활성 사람 수에서 제외한다, Git에서 알 수 없는 실제 push·PR 행위자는 호스팅 제공자 증거와 별도로 대조한다
-- **source:** USER-2026-09-18
-
-### REQ-030 — 안전한 템플릿 초기화와 협업 브랜치 흐름
-
-- **id:** REQ-030
-- **title:** 안전한 템플릿 초기화와 협업 브랜치 흐름
-- **statement:** 프레임워크는 복사한 템플릿에서 로컬 Git과 훅을 안전하게 초기화하고, 1인·팀 프로필에 맞는 기본 브랜치·작업 브랜치 흐름을 안내·검증하며 사람이 학습할 수 있는 사용 가이드를 제공해야 한다.
-- **rationale:** 자동 스테이징·커밋·신원 등록은 비밀정보와 책임자를 잘못 확정할 수 있고, 팀 전환 뒤 기본 브랜치 직접 작업은 검토 통제를 우회할 수 있다.
-- **priority:** must
-- **status:** implemented
-- **owner:** DevOps·PM·AI 플랫폼
-- **modules:** MOD-GOV, MOD-AI, MOD-CHG, MOD-DOC, MOD-QA
-- **verification:** TC-023
-- **acceptance_criteria:** 초기화는 local main과 훅만 만들고 자동 스테이징·커밋·신원 등록을 하지 않는다, 팀 프로필에서는 기본 브랜치 직접 커밋을 로컬에서 차단한다, 1인 프로필과 팀 프로필의 브랜치 규칙이 명시된다, 사람용 한글 템플릿 사용 가이드가 존재한다, Codex·Claude의 AI 정본 규칙이 동기화된다
-- **source:** USER-2026-09-18
 
 ### REQ-031 — 프로젝트별 개발 기반 정본
 
@@ -359,10 +292,9 @@
 - **rationale:** 기술 규칙을 템플릿에 고정하지 않으면서도 어느 AI와 개발자가 참여해도 동일한 품질 기준을 적용해야 한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 아키텍처·개발·품질 보증
 - **modules:** MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA
 - **verification:** TC-024
-- **acceptance_criteria:** STD, GPH, EXC 레코드가 안정 ID와 기술 기준선, 모듈, 요구사항, 검증을 연결한다, 계약형과 정책형 표준을 구분하고 기술 스택 구체 규칙은 프로젝트 기준선에서 작성한다, 예외는 승인, 담당자, 만료일과 보완 통제 없이는 유효하지 않다
+- **acceptance_criteria:** STD, GPH, EXC 레코드가 안정 ID와 기술 기준선, 모듈, 요구사항, 검증을 연결한다, 계약형과 정책형 표준을 구분하고 기술 스택 구체 규칙은 프로젝트 기준선에서 작성한다, 예외는 결정 주체·이유, 만료일과 보완 통제 없이는 유효하지 않다
 - **source:** USER-2026-09-18
 
 ### REQ-032 — 모듈별 UI·공통 컴포넌트 정본
@@ -373,7 +305,6 @@
 - **rationale:** 사용자와 합의한 UI 품질을 모듈과 AI 도구에 걸쳐 재사용하고 운영 중 새 모듈에도 적용해야 한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 제품·UX·아키텍처
 - **modules:** MOD-ARCH, MOD-DOC, MOD-DELIVERY, MOD-QA
 - **verification:** TC-025
 - **acceptance_criteria:** UXB, UIP, CMP, SCR, MAN 참조와 상태 전이가 검증된다, UI가 없는 모듈은 UI 조각 없이 정상이고 필요할 때 빈 조각을 초기화할 수 있다, 목업은 실제 화면 증거와 구분되고 출시용 매뉴얼은 검증 증거를 요구한다
@@ -387,24 +318,9 @@
 - **rationale:** 검토용 목업과 출시용 실제 증거가 혼동되지 않고 대상별 산출물이 일관되게 조립돼야 한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 문서화·운영·전달
 - **modules:** MOD-DOC, MOD-DELIVERY, MOD-QA
 - **verification:** TC-024, TC-025
 - **acceptance_criteria:** RUN 레코드에 트리거, 절차, 검증, 롤백과 에스컬레이션이 있다, DLP 레코드는 포함·제외 범위와 목업·실제 캡처 정책을 구분한다, 실제 패키지 빌드 전에도 결정적 manifest로 정책을 검토할 수 있다
-- **source:** USER-2026-09-18
-
-### REQ-034 — 감사 가능한 작업 패키지 배정과 개발 범위 포괄성
-
-- **id:** REQ-034
-- **title:** 감사 가능한 작업 패키지 배정과 개발 범위 포괄성
-- **statement:** 프레임워크는 팀 전환 전에 활성 PM을 보장하고 PM 배정·위임 배정·오프라인 협의 기반 자율 배정을 지원하며, 정책과 책임자 변경 이력을 보존하고 변경별 필수 작업 영역과 요구사항이 모든 미완료 작업 패키지에 빠짐없이 배정되었는지 개발 진입 전에 검증해야 한다.
-- **rationale:** 배정되지 않은 요구사항이나 누락된 보안·데이터·배포·운영 작업은 아무도 수행하지 않으며, 현재 값만 보존하면 누가 언제 왜 책임을 바꿨는지 재구성할 수 없다.
-- **priority:** must
-- **status:** implemented
-- **owner:** PM·개발·품질 보증
-- **modules:** MOD-GOV, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG
-- **verification:** TC-026
-- **acceptance_criteria:** 팀 프로필에는 활성 PM이 최소 1명 존재한다, PM은 활성 팀원에게 배정 권한을 위임하거나 자율 배정으로 전환할 수 있다, 오프라인 협의 필수 표시는 자율 배정에만 적용된다, 배정 정책과 WRK 책임자 변경의 이전 값·변경자·시각·사유가 보존된다, 각 CHG는 프로젝트 맥락에 맞는 필수 작업 영역을 선언한다, 개발 진입 전에 모든 CHG 요구사항·필수 작업 영역·팀 책임자 누락을 차단한다, 배정 범위 안의 파생 요구는 현재 담당 WRK에 추가하고 범위를 넘으면 새 WRK 또는 범위 변경으로 처리한다, 생성 전달 계획에서 WRK의 요구사항·책임자·포괄 범위를 확인할 수 있다
 - **source:** USER-2026-09-18
 
 ### REQ-035 — 변경 유형별 문서 동기화와 레거시 전환
@@ -415,10 +331,9 @@
 - **rationale:** 화면·API와 문서의 괴리를 방치하지 않으면서 문서가 없는 기존 시스템의 단계적 고도화를 현실적으로 지원한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 문서화·변경관리·품질 보증
 - **modules:** MOD-GOV, MOD-DOC, MOD-AI, MOD-CHG, MOD-QA, MOD-DELIVERY
 - **verification:** TC-027
-- **acceptance_criteria:** 신규 기능은 승인된 요구분석과 설계 및 최신 문서 없이 개발 진입할 수 없다, 기존 문서가 있는 표면은 같은 변경에서 현행화한다, 문서가 없는 기존 표면은 고객의 즉시 작성 또는 기한 있는 후속 작업 선택을 기록한다, 레거시 화면 경로·API·배치·이벤트·연동·마이그레이션을 모듈별로 조사하고 기존 문서의 출처를 보존해 변환한다, 커밋 전 검사에서 소스 변경과 문서 변경 또는 승인된 후속 작업의 연결을 검증한다
+- **acceptance_criteria:** 신규 기능은 결정된 요구분석과 설계 및 최신 문서 없이 개발 진입할 수 없다, 기존 문서가 있는 표면은 같은 변경에서 현행화한다, 문서가 없는 기존 표면은 고객의 즉시 작성 또는 기한 있는 후속 작업 선택을 기록한다, 레거시 화면 경로·API·배치·이벤트·연동·마이그레이션을 모듈별로 조사하고 기존 문서의 출처를 보존해 변환한다, 커밋 전 검사에서 소스 변경과 문서 변경 또는 결정된 후속 작업의 연결을 검증한다
 - **source:** USER-2026-09-18
 
 ## 관련 변경
@@ -542,10 +457,10 @@
   "reason": "AIDD Kit 자체 거버넌스 변경"
 }
 ```
-- **impact:** 게이트 정의와 변경별 실행을 분리하고 증거·승인·예외를 구조화하여 상태값만으로 완료를 우회할 수 없게 한다.
+- **impact:** 게이트 정의와 변경별 실행을 분리하고 증거·통과 판정·예외를 구조화하여 상태값만으로 완료를 우회할 수 없게 한다.
 - **migration:** 기존 통과 테스트의 자유문자 증거를 EVD 레코드로 이관하고 기존 C2 변경에 미결 게이트 실행을 생성한다.
-- **rollback:** gate-runs.json·evidence.json·approvals.json과 연결 검증을 제거하고 tests.json 증거를 이전 문자열 형식으로 되돌린다.
-- **regression_scope:** 정본 로딩, 테스트 증거, 게이트 승인, 릴리스 차단, 상태·생성 문서, AI 스킬
+- **rollback:** gate-runs.json·evidence.json의 연결 검증을 제거하고 tests.json 증거를 이전 문자열 형식으로 되돌린다.
+- **regression_scope:** 정본 로딩, 테스트 증거, 게이트 통과, 릴리스 차단, 상태·생성 문서, AI 스킬
 
 ### CHG-005 — Git 병합 훅과 GitHub CI 강제
 
@@ -608,99 +523,6 @@
 - **migration:** 기존 모듈과 변경을 작업·마일스톤에 연결하고 실제 프로젝트 착수 시 도메인 작업과 인터페이스를 같은 모델로 추가한다.
 - **rollback:** delivery-plan.json·guides.json·evaluations.json·repository.json과 연결 생성기·검증을 제거하되 기존 증거와 변경 이력은 보존한다.
 - **regression_scope:** 정본 참조, 모듈 상태 뷰, 가이드 생성, 개발 시작 게이트, AI 평가 현황, GitHub 보호 규칙, 릴리스 준비도
-
-### CHG-007 — 1인·팀 협업 프로필의 가역적 전환
-
-- **id:** CHG-007
-- **title:** 1인·팀 협업 프로필의 가역적 전환
-- **type:** feature
-- **class:** C2
-- **status:** in_progress
-- **requested_by:** 고객
-- **modules:** MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS
-- **requirements:** REQ-028
-- **required_gates:** TG-002
-- **required_work_coverage:** design, implementation, test, documentation, migration, operations
-- **delivery_path:**
-
-```json
-{
-  "kind": "governance",
-  "analysis": "reused",
-  "design": "reused",
-  "documentation": "update_now",
-  "surfaces": [],
-  "documentation_work": [],
-  "decided_by": "고객",
-  "reason": "AIDD Kit 자체 거버넌스 변경"
-}
-```
-- **impact:** 활성 사람 참여자 수에 따라 1인·팀 협업 프로필, 사람 승인 수와 AI 독립 검토를 전환하고 전환 이력과 GitHub ruleset을 재생성한다.
-- **migration:** 현재 프로젝트 책임자 1명을 활성 참여자로 기준선화하고 이후 참여·이탈은 collaboration-member 명령으로 기록한다.
-- **rollback:** 협업 정본과 생성 규칙을 제거하고 repository.json의 고정 승인 정책으로 복귀하되 참여자·전환 이력은 내보내 보존한다.
-- **regression_scope:** 협업 프로필 선택, 참여자 이력, 1인·팀 양방향 전환, ruleset 승인 수, 상태·협업 문서, 정본 참조
-
-### CHG-008 — Git 신원과 협업 참여자 대조 통제
-
-- **id:** CHG-008
-- **title:** Git 신원과 협업 참여자 대조 통제
-- **type:** feature
-- **class:** C2
-- **status:** in_progress
-- **requested_by:** 고객
-- **modules:** MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS
-- **requirements:** REQ-029
-- **required_gates:** TG-002
-- **required_work_coverage:** design, implementation, test, documentation, security, migration, operations
-- **delivery_path:**
-
-```json
-{
-  "kind": "governance",
-  "analysis": "reused",
-  "design": "reused",
-  "documentation": "update_now",
-  "surfaces": [],
-  "documentation_work": [],
-  "decided_by": "고객",
-  "reason": "AIDD Kit 자체 거버넌스 변경"
-}
-```
-- **impact:** Git 작성자·커미터를 사람 참여자 또는 봇 매핑과 대조하고 미등록 신원을 상태·개발 진입·릴리스 통제에 반영한다.
-- **migration:** 현재 joobok Git 신원을 HUM-001의 기준선 별칭으로 등록하고 이후 별칭·봇·호스팅 계정은 collaboration-identity 명령으로 추가한다.
-- **rollback:** 신원 정책·매핑·이벤트와 대조 명령을 제거하되 확인했던 신원 목록과 감사 이력을 내보내 보존한다.
-- **regression_scope:** Git 작성자·커미터 스캔, 사람·봇·별칭 분류, 미등록 신원 경고, C2·C3 개발 차단, 릴리스 차단, 협업 상태·생성 문서
-
-### CHG-009 — 안전한 템플릿 초기화와 협업 브랜치 흐름
-
-- **id:** CHG-009
-- **title:** 안전한 템플릿 초기화와 협업 브랜치 흐름
-- **type:** feature
-- **class:** C2
-- **status:** in_progress
-- **requested_by:** 고객
-- **modules:** MOD-GOV, MOD-AI, MOD-CHG, MOD-DOC, MOD-QA
-- **requirements:** REQ-030
-- **required_gates:** TG-002
-- **required_work_coverage:** design, implementation, test, documentation, security, migration, operations, training
-- **delivery_path:**
-
-```json
-{
-  "kind": "governance",
-  "analysis": "reused",
-  "design": "reused",
-  "documentation": "update_now",
-  "surfaces": [],
-  "documentation_work": [],
-  "decided_by": "고객",
-  "reason": "AIDD Kit 자체 거버넌스 변경"
-}
-```
-- **impact:** 복사본의 안전한 Git 초기화, Codex·Claude 세션 진입 규칙, 팀 전환 뒤 작업 브랜치 강제, 사람이 읽는 템플릿 사용 가이드를 추가한다.
-- **migration:** 기존 저장소는 project-init으로 훅을 다시 활성화하고 팀 프로필이면 다음 변경부터 작업 브랜치를 사용한다.
-- **rollback:** project-init·pre-commit과 협업 브랜치 정책을 제거하되 이미 만든 Git 이력·참여 전환·기준선 커밋은 보존한다.
-- **regression_scope:** Git 미초기화 복사본, 자동 스테이징·커밋 방지, 로컬 훅 경로, 1인·팀 브랜치 판정, AI 어댑터 동기화, 사용 가이드 링크
 
 ### CHG-010 — 모듈별 정본 분할과 확장 가능한 명세
 
@@ -799,37 +621,6 @@
 }
 ```
 
-### CHG-012 — 감사 가능한 팀 작업 배정과 개발 범위 포괄성
-
-- **id:** CHG-012
-- **title:** 감사 가능한 팀 작업 배정과 개발 범위 포괄성
-- **type:** feature
-- **class:** C2
-- **status:** done
-- **requested_by:** 고객
-- **modules:** MOD-GOV, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG
-- **requirements:** REQ-034
-- **required_gates:** TG-002
-- **required_work_coverage:** design, implementation, test, documentation, migration, operations
-- **delivery_path:**
-
-```json
-{
-  "kind": "governance",
-  "analysis": "reused",
-  "design": "reused",
-  "documentation": "update_now",
-  "surfaces": [],
-  "documentation_work": [],
-  "decided_by": "고객",
-  "reason": "AIDD Kit 자체 거버넌스 변경"
-}
-```
-- **impact:** 팀 전환의 PM 전제, PM·위임·자율 배정 모드, 정책·책임자 감사 이력, 변경별 필수 작업 영역, 파생 요구 편입과 개발 진입 포괄성 검사를 정본·CLI·생성 문서에 연결한다.
-- **migration:** 기존 pm_controlled 정책과 WRK-012 책임자를 최초 감사 이벤트로 기준선화하고, 기존 변경에는 필수 작업 영역을 명시한다.
-- **rollback:** 배정 이벤트를 내보내 보존한 뒤 정책 전환·감사 이력·포괄성 게이트 확장을 제거하고 기존 assignee 단일 필드로 복귀한다.
-- **regression_scope:** 팀 전환 PM 필수, 세 가지 배정 모드, 오프라인 협의 적용 범위, 정책·책임자 변경 이력, 변경별 작업 영역, 개발 진입 차단, 생성 전달 계획, Codex·Claude 동기화
-
 ### CHG-013 — 변경 유형별 분석·설계 진입과 레거시 문서 현행화 통제
 
 - **id:** CHG-013
@@ -913,7 +704,7 @@
 - **date:** 2026-09-18
 - **context:** 기술 선택, UI·개발 표준과 공통 컴포넌트가 기능 개발과 동시에 임의로 결정되면 AI와 사람의 구현이 분산되고 되돌림 비용이 커진다.
 - **options:** 팀별 자율 선택 후 사후 통합, 기술 스택만 선결하고 기반 표준은 기능과 함께 개발, 품질 속성 기반 기술 스택 게이트와 개발 기반 준비도 게이트를 순서대로 적용
-- **decision:** 분석·설계에서 품질 속성과 제약을 확정한 뒤 TG-001로 기술 기준선을 승인하고, TG-002로 UI·아키텍처·보안·테스트·관측성·배포 공통 기반을 검증한 후 기능 증분을 개발한다.
+- **decision:** 분석·설계에서 품질 속성과 제약을 확정한 뒤 TG-001로 기술 기준선을 결정하고, TG-002로 UI·아키텍처·보안·테스트·관측성·배포 공통 기반을 검증한 후 기능 증분을 개발한다.
 - **consequences:** 분산 개발의 일관성과 재사용성이 높아진다, 초기 기반 작업과 증거 비용이 추가된다, UI가 없는 프로젝트는 UI 증거를 적용 대상 아님으로 기록할 수 있다, 현행 기준선 변경은 명시적인 재평가가 필요하다
 - **rollback:** 게이트가 과도하면 C0~C1 변경의 증거를 축소하는 대체 결정을 작성하되 기술 기준선·보안·테스트·롤백 확인은 유지한다.
 - **supersedes:** -
@@ -1041,10 +832,10 @@
 - **requirements:** REQ-021
 - **evidence:** EVD-007
 
-### TC-012 — 게이트 실행·증거·승인 우회 방지
+### TC-012 — 게이트 실행·증거·게이트 우회 방지
 
 - **id:** TC-012
-- **title:** 게이트 실행·증거·승인 우회 방지
+- **title:** 게이트 실행·증거·게이트 우회 방지
 - **type:** automated
 - **status:** passed
 - **required:** true
@@ -1121,36 +912,6 @@
 - **requirements:** REQ-027
 - **evidence:** EVD-018
 
-### TC-021 — 1인·팀 협업 프로필 양방향 전환과 ruleset 생성
-
-- **id:** TC-021
-- **title:** 1인·팀 협업 프로필 양방향 전환과 ruleset 생성
-- **type:** scenario
-- **status:** passed
-- **required:** true
-- **requirements:** REQ-028
-- **evidence:** EVD-019
-
-### TC-022 — Git 신원 매핑·미등록 탐지·사람 수 분리
-
-- **id:** TC-022
-- **title:** Git 신원 매핑·미등록 탐지·사람 수 분리
-- **type:** scenario
-- **status:** passed
-- **required:** true
-- **requirements:** REQ-029
-- **evidence:** EVD-020
-
-### TC-023 — 안전한 템플릿 Git 초기화와 1인·팀 브랜치 정책
-
-- **id:** TC-023
-- **title:** 안전한 템플릿 Git 초기화와 1인·팀 브랜치 정책
-- **type:** integration
-- **status:** passed
-- **required:** true
-- **requirements:** REQ-030
-- **evidence:** EVD-021
-
 ### TC-024 — 개발 표준·골든 패스·예외·런북·제출 프로필 정본 검증
 
 - **id:** TC-024
@@ -1202,33 +963,6 @@
 }
 ```
 
-### TC-026 — 팀 작업 배정 권한·감사 이력·개발 범위 포괄성
-
-- **id:** TC-026
-- **title:** 팀 작업 배정 권한·감사 이력·개발 범위 포괄성
-- **type:** scenario
-- **status:** passed
-- **required:** true
-- **requirements:** REQ-034
-- **evidence:** EVD-026
-- **rule_mutation:**
-
-```json
-{
-  "applicable": true,
-  "rules": [
-    "활성 PM 없이 팀 프로필로 전환할 수 없다",
-    "자율 배정이 아닌 모드에 오프라인 협의 필수를 표시할 수 없다",
-    "배정 정책·책임자 변경 이력 필드 누락을 거부한다",
-    "CHG별 필수 작업 영역 누락과 WRK 포괄 범위 누락을 거부한다",
-    "생성 전달 계획에서 요구사항·책임자·포괄 범위 누락을 탐지한다"
-  ],
-  "evidence": [
-    "EVD-026"
-  ]
-}
-```
-
 ### TC-027 — 변경 유형별 분석·설계·문서 동기화와 레거시 전환 통제
 
 - **id:** TC-027
@@ -1272,8 +1006,7 @@
 - **change:** CHG-006
 - **requirements:** REQ-006, REQ-010, REQ-011
 - **depends_on:** WRK-001
-- **owner:** 품질 보증
-- **acceptance_criteria:** 결정 대체 순환을 거부한다, 미승인 필수 게이트가 구현 시작을 차단한다
+- **acceptance_criteria:** 결정 대체 순환을 거부한다, 미통과 필수 게이트가 구현 시작을 차단한다
 - **evidence:** EVD-013, EVD-014
 
 ## 기능 요건 정의서 공통 항목

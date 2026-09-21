@@ -13,15 +13,14 @@
 | REQ-013 | Codex·Claude 동등성 | specified | TC-003 |
 | REQ-023 | Git과 CI 품질 게이트 강제 | implemented | TC-006, TC-014 |
 | REQ-026 | Codex·Claude 행동 품질 동등성 평가 | specified | TC-004, TC-017, TC-018 |
-| REQ-030 | 안전한 템플릿 초기화와 협업 브랜치 흐름 | implemented | TC-023 |
 | REQ-035 | 변경 유형별 문서 동기화와 레거시 전환 | implemented | TC-027 |
 
 ## 작업 항목
 
-| 작업 | 제목 | 상태 | 책임 참여자 | 변경 | 요구사항 | 포괄 범위 | 선행 작업 | 증거 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| WRK-006 | Codex·Claude 공통 행동 평가 하네스 | completed | - | CHG-006 | REQ-026 | - | WRK-003 | EVD-016 |
-| WRK-007 | Codex·Claude 실제 교차 행동 평가 | todo | - | CHG-006 | REQ-026 | - | WRK-006 | - |
+| 작업 | 제목 | 상태 | 변경 | 요구사항 | 포괄 범위 | 선행 작업 | 증거 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| WRK-006 | Codex·Claude 공통 행동 평가 하네스 | completed | CHG-006 | REQ-026 | - | WRK-003 | EVD-016 |
+| WRK-007 | Codex·Claude 실제 교차 행동 평가 | todo | CHG-006 | REQ-026 | - | WRK-006 | - |
 
 ## 인터페이스
 
@@ -33,7 +32,6 @@
 
 | ID | 출발 | 도착 | 상태 | 설명 |
 | --- | --- | --- | --- | --- |
-| DPN-003 | WRK-006 | WRK-007 | blocked | 실제 교차 평가에는 검증된 공통 하네스가 선행한다. |
 
 ## 관련 변경
 
@@ -42,7 +40,6 @@
 | CHG-001 | C2 | in_progress | AIDD 기반 구조 수립 |
 | CHG-005 | C2 | in_progress | Git 병합 훅과 GitHub CI 강제 |
 | CHG-006 | C2 | in_progress | 프로젝트 착수 전 실행 기반 완성 |
-| CHG-009 | C2 | in_progress | 안전한 템플릿 초기화와 협업 브랜치 흐름 |
 | CHG-013 | C2 | in_progress | 변경 유형별 분석·설계 진입과 레거시 문서 현행화 통제 |
 
 ## 관련 결정
@@ -63,7 +60,6 @@
 | TC-014 | passed | 병합 훅 인자와 GitHub CI 정의 검증 |
 | TC-017 | not_run | Codex·Claude 실제 교차 행동 평가 |
 | TC-018 | passed | AI 교차 평가 하네스와 공통 루브릭 검증 |
-| TC-023 | passed | 안전한 템플릿 Git 초기화와 1인·팀 브랜치 정책 |
 | TC-027 | passed | 변경 유형별 분석·설계·문서 동기화와 레거시 전환 통제 |
 
 ## UI 정본
@@ -80,7 +76,7 @@
 - **purpose:** 이식 가능한 스킬과 공통 정책을 Codex·Claude Code 검색 경로와 생애주기 훅에 동기화한다.
 - **status:** in_progress
 - **dependencies:** MOD-GOV
-- **requirements:** REQ-013, REQ-023, REQ-026, REQ-030, REQ-035
+- **requirements:** REQ-013, REQ-023, REQ-026, REQ-035
 
 ## 요구사항 상세
 
@@ -92,7 +88,6 @@
 - **rationale:** 도구 선택이 수행 품질이나 거버넌스 기대 수준을 바꾸면 안 된다.
 - **priority:** must
 - **status:** specified
-- **owner:** AI 플랫폼
 - **modules:** MOD-AI
 - **verification:** TC-003
 - **acceptance_criteria:** AGENTS.md가 공통 규칙의 단일 정본이고 CLAUDE.md가 이를 import한다, 두 에이전트가 동일한 스킬 내용을 읽는다, 어댑터 불일치가 검증에 실패한다
@@ -106,7 +101,6 @@
 - **rationale:** 로컬 자발적 실행만으로는 팀 저장소의 정합성과 병합 품질을 보장할 수 없다.
 - **priority:** must
 - **status:** implemented
-- **owner:** DevOps·품질 보증
 - **modules:** MOD-AI, MOD-CHG, MOD-QA
 - **verification:** TC-006, TC-014
 - **acceptance_criteria:** Git post-merge 훅이 Git 전달 인자를 처리한다, GitHub CI가 생성 문서·정본·테스트·어댑터 불일치를 차단한다, 병합 영향 레코드의 모듈·추가 테스트 참조가 검증된다
@@ -120,25 +114,10 @@
 - **rationale:** 동일한 스킬 파일도 모델과 훅 차이 때문에 다른 행동 결과를 만들 수 있다.
 - **priority:** must
 - **status:** specified
-- **owner:** AI 플랫폼·품질 보증
 - **modules:** MOD-AI, MOD-DISC, MOD-QA
 - **verification:** TC-004, TC-017, TC-018
 - **acceptance_criteria:** 두 플랫폼이 같은 픽스처와 루브릭을 사용한다, 플랫폼별 결과와 증거가 분리된다, 중대 금지 행동과 점수 차이 기준을 모두 통과한다
 - **source:** AUDIT-2026-09-18
-
-### REQ-030 — 안전한 템플릿 초기화와 협업 브랜치 흐름
-
-- **id:** REQ-030
-- **title:** 안전한 템플릿 초기화와 협업 브랜치 흐름
-- **statement:** 프레임워크는 복사한 템플릿에서 로컬 Git과 훅을 안전하게 초기화하고, 1인·팀 프로필에 맞는 기본 브랜치·작업 브랜치 흐름을 안내·검증하며 사람이 학습할 수 있는 사용 가이드를 제공해야 한다.
-- **rationale:** 자동 스테이징·커밋·신원 등록은 비밀정보와 책임자를 잘못 확정할 수 있고, 팀 전환 뒤 기본 브랜치 직접 작업은 검토 통제를 우회할 수 있다.
-- **priority:** must
-- **status:** implemented
-- **owner:** DevOps·PM·AI 플랫폼
-- **modules:** MOD-GOV, MOD-AI, MOD-CHG, MOD-DOC, MOD-QA
-- **verification:** TC-023
-- **acceptance_criteria:** 초기화는 local main과 훅만 만들고 자동 스테이징·커밋·신원 등록을 하지 않는다, 팀 프로필에서는 기본 브랜치 직접 커밋을 로컬에서 차단한다, 1인 프로필과 팀 프로필의 브랜치 규칙이 명시된다, 사람용 한글 템플릿 사용 가이드가 존재한다, Codex·Claude의 AI 정본 규칙이 동기화된다
-- **source:** USER-2026-09-18
 
 ### REQ-035 — 변경 유형별 문서 동기화와 레거시 전환
 
@@ -148,10 +127,9 @@
 - **rationale:** 화면·API와 문서의 괴리를 방치하지 않으면서 문서가 없는 기존 시스템의 단계적 고도화를 현실적으로 지원한다.
 - **priority:** must
 - **status:** implemented
-- **owner:** 문서화·변경관리·품질 보증
 - **modules:** MOD-GOV, MOD-DOC, MOD-AI, MOD-CHG, MOD-QA, MOD-DELIVERY
 - **verification:** TC-027
-- **acceptance_criteria:** 신규 기능은 승인된 요구분석과 설계 및 최신 문서 없이 개발 진입할 수 없다, 기존 문서가 있는 표면은 같은 변경에서 현행화한다, 문서가 없는 기존 표면은 고객의 즉시 작성 또는 기한 있는 후속 작업 선택을 기록한다, 레거시 화면 경로·API·배치·이벤트·연동·마이그레이션을 모듈별로 조사하고 기존 문서의 출처를 보존해 변환한다, 커밋 전 검사에서 소스 변경과 문서 변경 또는 승인된 후속 작업의 연결을 검증한다
+- **acceptance_criteria:** 신규 기능은 결정된 요구분석과 설계 및 최신 문서 없이 개발 진입할 수 없다, 기존 문서가 있는 표면은 같은 변경에서 현행화한다, 문서가 없는 기존 표면은 고객의 즉시 작성 또는 기한 있는 후속 작업 선택을 기록한다, 레거시 화면 경로·API·배치·이벤트·연동·마이그레이션을 모듈별로 조사하고 기존 문서의 출처를 보존해 변환한다, 커밋 전 검사에서 소스 변경과 문서 변경 또는 결정된 후속 작업의 연결을 검증한다
 - **source:** USER-2026-09-18
 
 ## 관련 변경
@@ -248,37 +226,6 @@
 - **migration:** 기존 모듈과 변경을 작업·마일스톤에 연결하고 실제 프로젝트 착수 시 도메인 작업과 인터페이스를 같은 모델로 추가한다.
 - **rollback:** delivery-plan.json·guides.json·evaluations.json·repository.json과 연결 생성기·검증을 제거하되 기존 증거와 변경 이력은 보존한다.
 - **regression_scope:** 정본 참조, 모듈 상태 뷰, 가이드 생성, 개발 시작 게이트, AI 평가 현황, GitHub 보호 규칙, 릴리스 준비도
-
-### CHG-009 — 안전한 템플릿 초기화와 협업 브랜치 흐름
-
-- **id:** CHG-009
-- **title:** 안전한 템플릿 초기화와 협업 브랜치 흐름
-- **type:** feature
-- **class:** C2
-- **status:** in_progress
-- **requested_by:** 고객
-- **modules:** MOD-GOV, MOD-AI, MOD-CHG, MOD-DOC, MOD-QA
-- **requirements:** REQ-030
-- **required_gates:** TG-002
-- **required_work_coverage:** design, implementation, test, documentation, security, migration, operations, training
-- **delivery_path:**
-
-```json
-{
-  "kind": "governance",
-  "analysis": "reused",
-  "design": "reused",
-  "documentation": "update_now",
-  "surfaces": [],
-  "documentation_work": [],
-  "decided_by": "고객",
-  "reason": "AIDD Kit 자체 거버넌스 변경"
-}
-```
-- **impact:** 복사본의 안전한 Git 초기화, Codex·Claude 세션 진입 규칙, 팀 전환 뒤 작업 브랜치 강제, 사람이 읽는 템플릿 사용 가이드를 추가한다.
-- **migration:** 기존 저장소는 project-init으로 훅을 다시 활성화하고 팀 프로필이면 다음 변경부터 작업 브랜치를 사용한다.
-- **rollback:** project-init·pre-commit과 협업 브랜치 정책을 제거하되 이미 만든 Git 이력·참여 전환·기준선 커밋은 보존한다.
-- **regression_scope:** Git 미초기화 복사본, 자동 스테이징·커밋 방지, 로컬 훅 경로, 1인·팀 브랜치 판정, AI 어댑터 동기화, 사용 가이드 링크
 
 ### CHG-013 — 변경 유형별 분석·설계 진입과 레거시 문서 현행화 통제
 
@@ -417,16 +364,6 @@
 - **requirements:** REQ-026
 - **evidence:** EVD-016
 
-### TC-023 — 안전한 템플릿 Git 초기화와 1인·팀 브랜치 정책
-
-- **id:** TC-023
-- **title:** 안전한 템플릿 Git 초기화와 1인·팀 브랜치 정책
-- **type:** integration
-- **status:** passed
-- **required:** true
-- **requirements:** REQ-030
-- **evidence:** EVD-021
-
 ### TC-027 — 변경 유형별 분석·설계·문서 동기화와 레거시 전환 통제
 
 - **id:** TC-027
@@ -470,7 +407,6 @@
 - **change:** CHG-006
 - **requirements:** REQ-026
 - **depends_on:** WRK-003
-- **owner:** AI 플랫폼·품질 보증
 - **acceptance_criteria:** 두 플랫폼이 같은 픽스처와 루브릭으로 평가된다
 - **evidence:** EVD-016
 
@@ -484,7 +420,6 @@
 - **change:** CHG-006
 - **requirements:** REQ-026
 - **depends_on:** WRK-006
-- **owner:** AI 플랫폼·독립 검토자
 - **acceptance_criteria:** 모든 필수 시나리오에서 두 플랫폼이 기준 점수 이상을 얻는다, 중대 금지 행동이 없다
 - **evidence:** -
 

@@ -9,7 +9,6 @@
       "rationale": "대규모 시스템은 전체 일관성을 잃지 않으면서 병렬 진행할 수 있어야 한다.",
       "priority": "must",
       "status": "specified",
-      "owner": "아키텍처",
       "modules": [
         "MOD-ARCH",
         "MOD-STATUS"
@@ -32,7 +31,6 @@
       "rationale": "공통 기반은 분산된 AI·사람 작업의 일관성을 보장한다.",
       "priority": "must",
       "status": "specified",
-      "owner": "아키텍처",
       "modules": [
         "MOD-ARCH",
         "MOD-DELIVERY"
@@ -43,7 +41,7 @@
       ],
       "acceptance_criteria": [
         "기술 선택 전에 품질 속성과 제약이 정의된다",
-        "현행 유지안을 포함한 대안 비교와 ADR을 거쳐 기술 기준선을 승인한다",
+        "현행 유지안을 포함한 대안 비교와 ADR을 거쳐 기술 기준선을 결정한다",
         "기능 개발 게이트에 UI·개발 기반 준비도가 포함된다",
         "예외에는 기록된 결정이 필요하다"
       ],
@@ -56,7 +54,6 @@
       "rationale": "비기능 위험을 출시 직전까지 미루면 비용이 크게 증가한다.",
       "priority": "must",
       "status": "specified",
-      "owner": "품질 보증",
       "modules": [
         "MOD-ARCH",
         "MOD-QA",
@@ -78,7 +75,6 @@
       "rationale": "단일 스레드 기능 테스트만으로는 운영 환경의 데이터 손상, 중복 처리, 교착, 풀 고갈과 연쇄 장애를 예방할 수 없다.",
       "priority": "must",
       "status": "implemented",
-      "owner": "아키텍처·품질 보증",
       "modules": [
         "MOD-ARCH",
         "MOD-QA",
@@ -101,13 +97,19 @@
       "rationale": "기술 규칙을 템플릿에 고정하지 않으면서도 어느 AI와 개발자가 참여해도 동일한 품질 기준을 적용해야 한다.",
       "priority": "must",
       "status": "implemented",
-      "owner": "아키텍처·개발·품질 보증",
-      "modules": ["MOD-ARCH", "MOD-DOC", "MOD-DELIVERY", "MOD-QA"],
-      "verification": ["TC-024"],
+      "modules": [
+        "MOD-ARCH",
+        "MOD-DOC",
+        "MOD-DELIVERY",
+        "MOD-QA"
+      ],
+      "verification": [
+        "TC-024"
+      ],
       "acceptance_criteria": [
         "STD, GPH, EXC 레코드가 안정 ID와 기술 기준선, 모듈, 요구사항, 검증을 연결한다",
         "계약형과 정책형 표준을 구분하고 기술 스택 구체 규칙은 프로젝트 기준선에서 작성한다",
-        "예외는 승인, 담당자, 만료일과 보완 통제 없이는 유효하지 않다"
+        "예외는 결정 주체·이유, 만료일과 보완 통제 없이는 유효하지 않다"
       ],
       "source": "USER-2026-09-18"
     },
@@ -118,9 +120,15 @@
       "rationale": "사용자와 합의한 UI 품질을 모듈과 AI 도구에 걸쳐 재사용하고 운영 중 새 모듈에도 적용해야 한다.",
       "priority": "must",
       "status": "implemented",
-      "owner": "제품·UX·아키텍처",
-      "modules": ["MOD-ARCH", "MOD-DOC", "MOD-DELIVERY", "MOD-QA"],
-      "verification": ["TC-025"],
+      "modules": [
+        "MOD-ARCH",
+        "MOD-DOC",
+        "MOD-DELIVERY",
+        "MOD-QA"
+      ],
+      "verification": [
+        "TC-025"
+      ],
       "acceptance_criteria": [
         "UXB, UIP, CMP, SCR, MAN 참조와 상태 전이가 검증된다",
         "UI가 없는 모듈은 UI 조각 없이 정상이고 필요할 때 빈 조각을 초기화할 수 있다",

@@ -138,7 +138,7 @@
 - **executed_at:** 2026-09-18T01:25:44+09:00
 - **commit:** working-tree
 - **artifacts:** .ai/tests/test_aidd.py, .ai/tools/aidd.py
-- **result:** 증거 없는 통과와 승인 조건 누락을 검증 오류로 탐지
+- **result:** 증거 없는 통과와 통과 조건 누락을 검증 오류로 탐지
 
 ### EVD-009 — 정본 참조 무결성 부정 테스트
 
@@ -189,7 +189,7 @@
 - **executed_at:** 2026-09-18T01:25:44+09:00
 - **commit:** working-tree
 - **artifacts:** .ai/tests/test_aidd.py, .ai/tools/aidd.py, AGENTS.md, .ai/skills/aidd-document-consistency/SKILL.md
-- **result:** 두 부모가 있는 병합 커밋의 MRG 생성, 영향 모듈·해결 메모·추가 테스트 결정, 담당자 없는 MRC 생성, 완료 시 실제 수행자·시각·결과·증거 기록, 세션 브리핑·릴리스 차단 검증 통과
+- **result:** 두 부모가 있는 병합 커밋의 MRG 생성, 영향 모듈·해결 메모·추가 테스트 결정, 대기 MRC 생성, 완료 시 실제 수행 주체·시각·결과·증거 기록, 세션 브리핑·릴리스 차단 검증 통과
 
 ### EVD-012 — 모듈 상세 실행 계획 무결성 검증
 
@@ -240,7 +240,7 @@
 - **executed_at:** 2026-09-18T01:25:44+09:00
 - **commit:** working-tree
 - **artifacts:** .ai/tests/test_aidd.py, .ai/tools/aidd.py
-- **result:** 미승인 필수 게이트가 구현 시작을 차단하고 합성 승인 상태에서만 허용됨을 검증
+- **result:** 미통과 필수 게이트가 구현 시작을 차단하고 합성 통과 상태에서만 허용됨을 검증
 
 ### EVD-015 — 운영자·사용자·보안 가이드 생성 검증
 
@@ -310,57 +310,6 @@
 - **artifacts:** project/.aidd/ssot/repository.json, project/docs/generated/repository-governance.md
 - **result:** HTTP 403: 비공개 저장소에서 ruleset을 사용하려면 GitHub Pro 업그레이드 또는 공개 저장소 전환이 필요함
 
-### EVD-019 — 1인·팀 협업 프로필 양방향 전환 검증
-
-- **id:** EVD-019
-- **title:** 1인·팀 협업 프로필 양방향 전환 검증
-- **type:** automated-test
-- **status:** passed
-- **requirements:** REQ-028
-- **tests:** TC-021
-- **changes:** CHG-007
-- **gates:** TG-002
-- **producer:** Python unittest와 AIDD CLI
-- **command:** python -m unittest discover -s .ai/tests -v; python .ai/tools/aidd.py collaboration-status
-- **executed_at:** 2026-09-18T01:41:55+09:00
-- **commit:** working-tree
-- **artifacts:** project/.aidd/ssot/collaboration.json, .github/rulesets/main.json, project/docs/generated/collaboration-governance.md
-- **result:** 활성 참여자 1명에서 1인 프로필, 2명에서 팀 프로필, 다시 1명에서 1인 프로필을 선택하고 프로필별 승인 규칙을 생성함. 마지막 활성 소유자 이탈은 상태를 변경하지 않고 차단함
-
-### EVD-020 — Git 신원과 협업 참여자 대조 검증
-
-- **id:** EVD-020
-- **title:** Git 신원과 협업 참여자 대조 검증
-- **type:** automated-test
-- **status:** passed
-- **requirements:** REQ-029
-- **tests:** TC-022
-- **changes:** CHG-008
-- **gates:** TG-002
-- **producer:** Python unittest와 AIDD CLI
-- **command:** python .ai/tools/aidd.py identity-check; python -m unittest discover -s .ai/tests -v
-- **executed_at:** 2026-09-18T01:56:18+09:00
-- **commit:** working-tree
-- **artifacts:** project/.aidd/ssot/collaboration.json, .ai/tools/aidd.py, project/docs/generated/collaboration-governance.md
-- **result:** 기존 Git 신원을 HUM-001로 대조하고 미등록 신원 탐지, 별칭·봇 분류, 자동 참여자 생성 금지, 참여자 이탈 뒤의 새 커밋 탐지와 C2·C3·릴리스 차단 규칙을 검증함
-
-### EVD-021 — 안전한 템플릿 초기화와 협업 브랜치 정책 검증
-
-- **id:** EVD-021
-- **title:** 안전한 템플릿 초기화와 협업 브랜치 정책 검증
-- **type:** automated-test
-- **status:** passed
-- **requirements:** REQ-030
-- **tests:** TC-023
-- **changes:** CHG-009
-- **gates:** TG-002
-- **producer:** Python unittest와 AIDD CLI
-- **command:** python -m unittest discover -s .ai/tests -v; python .ai/tools/aidd.py project-init-status; python .ai/tools/aidd.py branch-check --change CHG-009
-- **executed_at:** 2026-09-18T03:00:00+09:00
-- **commit:** working-tree
-- **artifacts:** .ai/tools/aidd.py, .githooks/pre-commit, AGENTS.md, .ai/docs/guides/aidd-kit-guide.md
-- **result:** 임시 복사본에서 local main·hooksPath만 초기화하고 자동 스테이징·커밋이 없음을 확인했으며, 팀 프로필의 main은 차단하고 작업 브랜치는 허용함
-
 ### EVD-022 — 모듈별 정본 조각과 생성 명세 검증
 
 - **id:** EVD-022
@@ -429,23 +378,6 @@
 - **artifacts:** .ai/tools/aidd.py, .ai/tools/aidd_hook.py, .ai/tests/test_aidd.py, .ai/tests/test_harness.py, project/.aidd/ssot/foundation.json, project/.aidd/ssot/ui-system.json
 - **result:** 실제 훅 payload·하위 경로 실행·승인 및 예외 우회·DLP 출시 캡처·stale 파생물·동시 모듈 갱신·실제 SHA-256 대조 결함을 발견해 보완했고 최종 독립 재검토에서 차단급 잔여 없음
 
-### EVD-026 — 팀 작업 배정 권한·감사 이력·개발 범위 포괄성 검증
-
-- **id:** EVD-026
-- **title:** 팀 작업 배정 권한·감사 이력·개발 범위 포괄성 검증
-- **type:** automated-test
-- **status:** passed
-- **requirements:** REQ-034
-- **tests:** TC-026
-- **changes:** CHG-012
-- **gates:** TG-002
-- **producer:** Python unittest와 AIDD CLI·하네스 자체검사
-- **command:** python .ai/tools/aidd.py sync-ai; python .ai/tools/aidd.py generate; python .ai/tools/aidd_hook.py self-test; python .ai/tests/test_aidd.py; python .ai/tests/test_harness.py; python .ai/tools/aidd.py validate; python .ai/tools/aidd.py workload-coverage --change CHG-012
-- **executed_at:** 2026-09-18T18:04:43+09:00
-- **commit:** working-tree
-- **artifacts:** .ai/tools/aidd.py, .ai/tests/test_aidd.py, AGENTS.md, .ai/docs/guides/aidd-kit-guide.md, project/.aidd/ssot/collaboration.json, project/.aidd/ssot/changes.json, project/.aidd/ssot/delivery-plan.json, project/docs/generated/collaboration-governance.md, project/docs/generated/delivery-plan.md
-- **result:** 활성 PM 없는 팀 전환 차단, 세 가지 배정 모드 권한, 자율 배정 전용 오프라인 협의, 정책·책임자 감사 이력, CHG별 필수 작업 영역, 개발 진입 포괄성 차단과 생성 문서 노출을 검증함
-
 ### EVD-027 — AGENTS.md 단일 정본·Claude import·AI 기여 표기 검증
 
 - **id:** EVD-027
@@ -480,18 +412,22 @@
 - **artifacts:** project/.aidd/ssot/system-surfaces.json, project/.aidd/ssot/system-surfaces, project/.aidd/ssot/changes.json, project/.aidd/ssot/delivery-plan.json, .ai/tools/aidd.py, .ai/skills/aidd-legacy-reconciliation, .githooks/pre-commit, .ai/tests/test_aidd.py, .ai/tests/test_harness.py
 - **result:** 신규 기능 분석·설계 선행, 기존 문서 즉시 현행화, 문서 없는 기존 기능의 기한 있는 후속 WRK, 레거시 인벤토리 계획, staged 소스 문서 게이트와 모듈별 표면 조각 시나리오를 검증함
 
-## 승인
+### EVD-029 — 프로젝트 운영 분리와 결정 이력 계약 검증
 
-### APR-001
-
-- **id:** APR-001
-- **subject_type:** gate-run
-- **subject:** GTR-016
-- **decision:** approved
-- **approver:** HUM-001
-- **role:** 고객·프로젝트 소유자
-- **decided_at:** 2026-09-18T18:13:18+09:00
-- **comment:** 사용자가 대화에서 GTR-016 승인을 명시했다.
+- **id:** EVD-029
+- **title:** 프로젝트 운영 분리와 결정 이력 계약 검증
+- **type:** automated-test
+- **status:** passed
+- **requirements:** REQ-036
+- **tests:** TC-028
+- **changes:** CHG-014
+- **gates:** -
+- **producer:** Node.js AIDD Kit 회귀 테스트
+- **command:** node .aidd-kit-dev/tests/history.test.mjs; node .aidd-kit-dev/tests/terminology.test.mjs; node .aidd-kit-dev/tools/kit.mjs check
+- **executed_at:** 2026-09-21T00:00:00.000Z
+- **commit:** working-tree
+- **artifacts:** project/.aidd/ssot/history, project/docs/generated/decision-history.md, .ai/tools/aidd.mjs, .ai/skills
+- **result:** 인력 거버넌스 없이 프로젝트 bootstrap·검증이 동작하고 의미 있는 결정이 안정 ID와 연결된 HIS로 기록·검증·생성됨
 
 ## 게이트 실행
 
@@ -514,7 +450,6 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T00:00:00+09:00
 - **evaluated_at:** -
@@ -539,7 +474,6 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T00:00:00+09:00
 - **evaluated_at:** -
@@ -564,7 +498,6 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T00:00:00+09:00
 - **evaluated_at:** -
@@ -591,7 +524,6 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T00:00:00+09:00
 - **evaluated_at:** -
@@ -618,7 +550,6 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T00:00:00+09:00
 - **evaluated_at:** -
@@ -645,7 +576,6 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T00:00:00+09:00
 - **evaluated_at:** -
@@ -672,7 +602,6 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T00:00:00+09:00
 - **evaluated_at:** -
@@ -700,7 +629,6 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T00:00:00+09:00
 - **evaluated_at:** 2026-09-18T00:00:00+09:00
@@ -728,7 +656,6 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T00:00:00+09:00
 - **evaluated_at:** 2026-09-18T00:00:00+09:00
@@ -774,118 +701,9 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T00:00:00+09:00
 - **evaluated_at:** -
-- **commit:** working-tree
-
-### GTR-011
-
-- **id:** GTR-011
-- **gate:** TG-002
-- **change:** CHG-007
-- **modules:** MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS
-- **status:** in_review
-- **criteria:**
-
-```json
-[
-  {
-    "id": "GCR-013",
-    "description": "1인·팀 협업 프로필 양방향 전환과 ruleset 재생성 검증",
-    "status": "passed",
-    "evidence": [
-      "EVD-019"
-    ]
-  }
-]
-```
-- **approvals:** -
-- **exceptions:** -
-- **opened_at:** 2026-09-18T01:41:55+09:00
-- **evaluated_at:** 2026-09-18T01:41:55+09:00
-- **commit:** working-tree
-
-### GTR-012
-
-- **id:** GTR-012
-- **gate:** TG-002
-- **change:** CHG-008
-- **modules:** MOD-GOV, MOD-CHG, MOD-QA, MOD-STATUS
-- **status:** in_review
-- **criteria:**
-
-```json
-[
-  {
-    "id": "GCR-014",
-    "description": "Git 신원 매핑·미등록 탐지·사람 수 분리와 차단 검증",
-    "status": "passed",
-    "evidence": [
-      "EVD-020"
-    ]
-  }
-]
-```
-- **approvals:** -
-- **exceptions:** -
-- **opened_at:** 2026-09-18T01:56:18+09:00
-- **evaluated_at:** 2026-09-18T01:56:18+09:00
-- **commit:** working-tree
-
-### GTR-013
-
-- **id:** GTR-013
-- **gate:** TG-002
-- **change:** CHG-009
-- **modules:** MOD-GOV, MOD-AI, MOD-CHG, MOD-DOC, MOD-QA
-- **status:** in_review
-- **criteria:**
-
-```json
-[
-  {
-    "id": "GCR-015",
-    "description": "안전한 Git 초기화, 1인·팀 브랜치 통제, AI 동기화와 한글 사용 가이드 검증",
-    "status": "passed",
-    "evidence": [
-      "EVD-021"
-    ]
-  }
-]
-```
-- **approvals:** -
-- **exceptions:** -
-- **opened_at:** 2026-09-18T03:00:00+09:00
-- **evaluated_at:** 2026-09-18T03:00:00+09:00
-- **commit:** working-tree
-
-### GTR-014
-
-- **id:** GTR-014
-- **gate:** TG-002
-- **change:** CHG-010
-- **modules:** MOD-GOV, MOD-ARCH, MOD-DOC, MOD-STATUS, MOD-QA
-- **status:** in_review
-- **criteria:**
-
-```json
-[
-  {
-    "id": "GCR-016",
-    "description": "모듈별 요구사항 정본 조각, 생성 명세, 신규 모듈 추가와 무결성 검증",
-    "status": "passed",
-    "evidence": [
-      "EVD-022"
-    ]
-  }
-]
-```
-- **approvals:** -
-- **exceptions:** -
-- **opened_at:** 2026-09-18T11:23:13+09:00
-- **evaluated_at:** 2026-09-18T11:23:13+09:00
 - **commit:** working-tree
 
 ### GTR-015
@@ -911,44 +729,16 @@
   },
   {
     "id": "GCR-018",
-    "description": "실제 제품 프로젝트에서 승인된 UI 패턴·컴포넌트·실제 화면 캡처를 포함한 TG-002 적용",
+    "description": "실제 제품 프로젝트에서 결정된 UI 패턴·컴포넌트·실제 화면 캡처를 포함한 TG-002 적용",
     "status": "pending",
     "evidence": []
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T15:00:00+09:00
 - **evaluated_at:** -
 - **commit:** working-tree
-
-### GTR-016
-
-- **id:** GTR-016
-- **gate:** TG-002
-- **change:** CHG-012
-- **modules:** MOD-GOV, MOD-DOC, MOD-DELIVERY, MOD-QA, MOD-STATUS, MOD-CHG
-- **status:** approved
-- **criteria:**
-
-```json
-[
-  {
-    "id": "GCR-019",
-    "description": "팀 작업 배정 권한·감사 이력·필수 작업 영역·생성 문서 포괄성 검증",
-    "status": "passed",
-    "evidence": [
-      "EVD-026"
-    ]
-  }
-]
-```
-- **approvals:** APR-001
-- **exceptions:** -
-- **opened_at:** 2026-09-18T18:01:43+09:00
-- **evaluated_at:** 2026-09-18T18:04:43+09:00
-- **commit:** c450a604212bd7fcf46115c611217670485d8d44
 
 ### GTR-017
 
@@ -971,7 +761,6 @@
   }
 ]
 ```
-- **approvals:** -
 - **exceptions:** -
 - **opened_at:** 2026-09-18T20:00:00+09:00
 - **evaluated_at:** 2026-09-18T20:30:00+09:00

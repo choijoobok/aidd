@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-010",
+  "title": "Codex 세션 시작 훅 신뢰 안내 복구",
+  "class": "C2",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "Codex SessionStart 훅의 systemMessage는 Windows 앱 대화 화면에 보이지 않을 수 있고, 모델 지시의 '첫 사용자 응답'은 접히는 commentary와 final_answer를 구분하지 않아 안내가 진행 영역에만 남을 수 있다. 상대 경로 명령은 하위 폴더에서 세션을 시작하면 실행기를 찾지 못하며 기존 테스트는 최종 응답 채널과 작업 디렉터리 독립성을 보장하지 못했다.",
+  "intent": "Codex 새 세션의 첫 사용자 요청에 대한 final_answer에서 CLI /hooks 확인 안내를 반드시 보여 주되 AIDD 승인 상태를 저장하거나 응답을 요구하거나 작업을 차단하지 않는다. commentary 표시는 final_answer 표시를 대체하지 않는다. repo-local 훅 명령은 Git 루트를 우선하고 아직 Git 저장소가 아닌 템플릿에서는 작업공간 역할 표식을 기준으로 실행기를 찾도록 한다.",
+  "scope": [
+    "SessionStart 경고에 모델용 additionalContext와 startup 첫 턴 final_answer 전용 표시 지시 추가",
+    "Codex 훅 명령을 Git 루트 또는 가장 가까운 작업공간 역할 표식 기준으로 해석하고 additionalContextLimit 설정",
+    "Kit 원본과 export AGENTS, portable 훅 명세·가이드 현행화",
+    "startup·resume 출력 계약과 하위 폴더 실행 회귀 테스트 추가",
+    "기존 aidd-template 배포본 재생성"
+  ],
+  "validation": [
+    "node .ai/tools/aidd_hook.mjs self-test --hook",
+    "node --test .ai/tests/harness.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke",
+    "exported aidd-template에서 Git 미초기화 상태의 node --test .ai/tests/harness.test.mjs",
+    "변경 후 aidd-document-consistency 기준의 의미 정합성 검토"
+  ],
+  "risks": [
+    "commentary와 final_answer에 안내가 모두 보일 수 있으나 접히는 진행 영역만으로는 요구를 충족하지 못하므로 final_answer 표시를 우선한다. 이 지시는 startup에만 제공하고 resume·clear·compact에는 경고 문맥만 제공한다.",
+    "안내를 훅 자체로 전달하므로 아직 신뢰되지 않은 훅은 실행되지 않을 수 있다. Codex 자체 시작 경고와 AGENTS 계약을 함께 사용하되 AIDD가 신뢰 상태를 추정하거나 차단하지 않는다."
+  ],
+  "rollback": "additionalContext와 final_answer 표시 계약을 제거하고 Codex 어댑터를 systemMessage 전용 상대 경로 구성으로 되돌린다.",
+  "completion_blocker": "없음"
+}

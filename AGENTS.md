@@ -19,7 +19,9 @@
 ## 작업 방식
 
 - 한글을 포함한 모든 문서와 소스는 UTF-8(BOM 없음), 줄바꿈 LF로 관리한다. 실행 도구와 provider 훅은 Node.js 22 이상과 표준 라이브러리만 사용하며, 훅 입력은 원본 바이트를 UTF-8로 해석한다.
-- Codex 세션 시작 시 `node .ai/tools/aidd_hook.mjs self-test --hook`, `node .aidd-kit-dev/tools/kit.mjs status`, `git status --short`로 훅 배선·역할·현재 변경을 확인한다. Codex의 `/hooks` 검토·신뢰 안내는 provider 자체 신뢰 기능을 확인하는 알림이며 AIDD의 별도 승인 게이트나 재시작 절차가 아니다. Claude에는 이 Codex 전용 안내를 연결하지 않는다.
+- Codex 세션 시작 시 `node .ai/tools/aidd_hook.mjs self-test --hook`, `node .aidd-kit-dev/tools/kit.mjs status`, `git status --short`로 훅 배선·역할·현재 변경을 확인한다. 새 `startup` 세션의 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에는 아래 문구를 그대로 한 번 표시한다. 진행 메시지(`commentary`)에 표시한 것은 이 요구를 충족한 것으로 보지 않으며, commentary에 이미 표시했더라도 final_answer에서 다시 표시한다. 이 문구는 provider 자체 신뢰 기능을 확인하는 비차단 알림이며 AIDD가 승인 상태나 재시작 상태를 저장하거나 사용자의 답을 기다리거나 작업을 막지 않는다. Claude에는 이 Codex 전용 안내를 연결하지 않는다.
+
+  > [Codex 주의] 훅은 Codex CLI에서 승인해야 작동합니다. CLI의 `/hooks`에서 승인 여부를 반드시 확인하세요. 새로 승인했다면 기존 Windows 앱 세션에는 적용되지 않으므로 새 세션 창을 여세요.
 - 변경 전 해결할 실패, 영향 명세, 이식 가능 여부, 호환성·롤백과 검증 방법을 먼저 정한다. 보안·권한·신원 검토는 정본 요건에 있거나 사용자가 명시적으로 요청한 범위에서만 수행한다.
 - 새 훅·스킬·도구·플러그인은 기존 수단 부족, 트리거·입출력 계약, 중복, 안전한 비활성화와 롤백을 확인한 뒤 추가한다. 새 훅은 `.ai/tools/` 아래의 `.mjs`로 만들고 Node.js 표준 라이브러리만 사용하며 `self-test`의 provider 배선 검사를 통과해야 한다.
 - portable 동작은 `.ai/`에서, Kit 관리 전용 동작은 `.aidd-kit-dev/`에서 구현한다. 경계가 모호하면 기본적으로 배포하지 않고 명시적인 결정으로 남긴다.

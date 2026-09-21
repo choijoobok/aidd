@@ -25,8 +25,8 @@
   "provider_events": {
     "codex": {
       "SessionStart": {
-        "purpose": "Codex 사용자에게 CLI /hooks에서 현재 작업공간 훅을 검토하고 신뢰 처리했는지 확인하도록 눈에 띄는 경고를 표시한다.",
-        "required_tokens": ["codex-hook-review-reminder"]
+        "purpose": "Codex 사용자에게 CLI /hooks에서 현재 작업공간 훅을 검토하고 신뢰 처리했는지 확인하도록 systemMessage와 startup 첫 턴의 final_answer로 눈에 띄는 비차단 경고를 표시한다. commentary 표시는 final_answer 표시를 대체하지 않는다.",
+        "required_tokens": ["codex-hook-review-reminder", "additionalContextLimit"]
       }
     },
     "claude": {

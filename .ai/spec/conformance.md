@@ -23,7 +23,7 @@ Kit 원본은 다음 경계를 만족해야 한다.
 
 ## 훅
 
-provider 훅은 세션 요약과 배선 self-test, 생성물 직접 수정 보호, 용어 정본 변경 뒤의 현행화, 선택 가능한 로컬 대화 로그를 제공한다. Codex `SessionStart`는 실행 표면에 관계없이 CLI `/hooks`에서 현재 작업공간 훅을 검토·신뢰했는지 확인하라는 `systemMessage`를 표시하며 Claude에는 이 안내를 연결하지 않는다. 이 안내는 Codex 자체 훅 신뢰 기능을 사용하며 AIDD 승인 상태를 별도로 저장하거나 작업을 차단하지 않는다. 훅은 AIDD 자체 승인, 세션 재시작, Git 서명, 외부 trust-root, 일반 shell 권한 검사를 강제하지 않는다. 훅 실패는 해당 자동화 실패만 간결하게 알리고 별도의 정책 승인을 만들지 않는다.
+provider 훅은 세션 요약과 배선 self-test, 생성물 직접 수정 보호, 용어 정본 변경 뒤의 현행화, 선택 가능한 로컬 대화 로그를 제공한다. Codex `SessionStart`는 실행 표면에 관계없이 CLI `/hooks`에서 현재 작업공간 훅을 검토·신뢰했는지 확인하라는 `systemMessage`와 모델용 `additionalContext`를 함께 반환한다. 새 `startup`의 컨텍스트는 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에 같은 경고를 표시하게 한다. 접히는 진행 메시지(`commentary`)에 표시한 것은 충족으로 보지 않으며 commentary에 이미 표시했더라도 final_answer에서 다시 표시한다. resume·clear·compact는 최종 답변 표시를 다시 요구하지 않는다. Claude에는 이 안내를 연결하지 않는다. 이 안내는 Codex 자체 훅 신뢰 기능을 사용하며 AIDD 승인 상태를 별도로 저장하거나 사용자의 답을 기다리거나 작업을 차단하지 않는다. repo-local Codex 명령은 세션 작업 디렉터리와 무관하게 Git 루트를 우선하고, 아직 Git 저장소가 아닌 템플릿에서는 가장 가까운 상위 `.aidd-role.json`을 기준으로 실행기를 찾는다. 훅은 AIDD 자체 승인 상태, Git 서명, 외부 trust-root, 일반 shell 권한 검사를 강제하지 않는다. 훅 실패는 해당 자동화 실패만 간결하게 알리고 별도의 정책 승인을 만들지 않는다.
 
 ## 파생 문서
 

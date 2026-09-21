@@ -61,9 +61,9 @@ node .ai/tools/aidd_hook.mjs self-test --hook
 - 프로젝트 용어 정본을 직접 변경한 경우 용어 문서 현행화 보조; 정상 오프라인 결정 흐름의 `term-apply`는 자체적으로 생성·검증까지 완료
 - 훅이 제공받은 대화 원문의 선택 가능한 로컬 기록
 
-훅은 AIDD 승인 게이트, 세션 재시작, Git 서명, 외부 trust root, 일반 shell 명령 분류, 원격 권한 확인이나 광범위 테스트를 자동으로 강제하지 않는다.
+훅은 AIDD 승인 게이트나 재시작 상태를 저장하지 않고, Git 서명, 외부 trust root, 일반 shell 명령 분류, 원격 권한 확인이나 광범위 테스트를 자동으로 강제하지 않는다.
 
-Codex는 CLI와 Windows 앱 구분 없이 매 `SessionStart`에 CLI `/hooks`에서 현재 작업공간 훅을 검토하고 신뢰 처리했는지 확인하라는 경고를 표시한다. Claude에는 이 경고를 표시하지 않는다. 신규·변경된 훅의 실제 신뢰 판정과 실행 여부는 Codex 자체 기능이 담당하며 AIDD는 별도 승인 상태를 저장하지 않는다.
+Codex는 CLI와 Windows 앱 구분 없이 매 `SessionStart`에 CLI `/hooks`에서 현재 작업공간 훅을 검토하고 신뢰 처리했는지 확인하라는 `systemMessage`와 모델 문맥을 전달한다. 새 `startup`에서는 Windows 앱이 `systemMessage`를 대화에 표시하지 않아도 보이도록 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에 같은 안내를 표시한다. 접히는 진행 메시지(`commentary`)에 표시한 것은 충족으로 보지 않으며 commentary에 이미 표시했더라도 final_answer에서 다시 표시한다. resume·clear·compact에서는 그 최종 답변 줄을 반복하지 않는다. Claude에는 이 경고를 표시하지 않는다. 신규·변경된 훅의 실제 신뢰 판정과 실행 여부는 Codex 자체 기능이 담당하며 AIDD는 별도 승인 상태를 저장하거나 사용자의 답을 기다리거나 작업을 차단하지 않는다. 하위 폴더에서 세션을 시작해도 훅 실행기는 Git 루트를 우선하고, 아직 Git 저장소가 아닌 템플릿에서는 가장 가까운 상위 `.aidd-role.json`을 기준으로 찾는다.
 
 ## self-test의 정확한 범위
 

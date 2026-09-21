@@ -32,10 +32,14 @@ test("Codex startup gives the UI and model the same non-blocking review reminder
   assert.match(output.hookSpecificOutput.additionalContext,/final_answer/);
   assert.match(output.hookSpecificOutput.additionalContext,/commentary/);
   assert.match(output.hookSpecificOutput.additionalContext,/충족한 것으로 보지/);
+  assert.match(output.hookSpecificOutput.additionalContext,/매 요청에 적용하는 지시가 아닙니다/);
+  assert.match(output.hookSpecificOutput.additionalContext,/이후 응답에서는 절대 반복하지 마세요/);
   assert.match(output.hookSpecificOutput.additionalContext,/비차단/);
   assert.doesNotMatch(JSON.stringify(output),/permissionDecision|approval-gate|acknowledge/);
   assert.ok(KIT_AGENTS.includes(output.systemMessage));
   assert.ok(PROJECT_AGENTS.includes(output.systemMessage));
+  assert.match(KIT_AGENTS,/이후 응답에서는 절대 반복하지 않는다/);
+  assert.match(PROJECT_AGENTS,/이후 응답에서는 절대 반복하지 않는다/);
 });
 
 test("Codex resume keeps context without requesting another final-answer notice",()=>{

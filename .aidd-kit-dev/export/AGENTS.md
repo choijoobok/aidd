@@ -27,7 +27,7 @@
 - AIDD 훅은 세션 맥락, 생성물 직접 수정 보호, 용어집 현행화와 선택 가능한 로컬 대화 기록을 제공한다.
 - 훅 배선을 변경하면 `node .ai/tools/aidd_hook.mjs self-test --hook`을 실행한다.
 - 훅은 별도 승인 게이트나 재시작 상태를 저장하지 않고, Git 서명, 외부 trust root 또는 광범위한 shell 검사를 요구하지 않는다.
-- Codex 새 `startup` 세션의 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에는 아래 문구를 그대로 한 번 표시한다. 진행 메시지(`commentary`)에 표시한 것은 이 요구를 충족한 것으로 보지 않으며, commentary에 이미 표시했더라도 final_answer에서 다시 표시한다. 이 비차단 안내는 Codex CLI와 Windows 앱에만 적용되며 실제 신뢰 여부는 Codex가 판단한다. AIDD는 승인 상태나 재시작 상태를 저장하거나 사용자의 답을 기다리거나 작업을 막지 않는다.
+- Codex 새 `startup` 세션의 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에는 아래 문구를 그대로 한 번 표시한다. 진행 메시지(`commentary`)에 표시한 것은 이 요구를 충족한 것으로 보지 않으며, commentary에 이미 표시했더라도 final_answer에서 다시 표시한다. 이 규칙은 매 요청에 적용하지 않는다. 현재 대화의 이전 assistant `final_answer`에 이 문구가 이미 있으면 이후 응답에서는 절대 반복하지 않는다. 이 비차단 안내는 Codex CLI와 Windows 앱에만 적용되며 실제 신뢰 여부는 Codex가 판단한다. AIDD는 승인 상태나 재시작 상태를 저장하거나 사용자의 답을 기다리거나 작업을 막지 않는다.
 
   > [Codex 주의] 훅은 Codex CLI에서 승인해야 작동합니다. CLI의 `/hooks`에서 승인 여부를 반드시 확인하세요. 새로 승인했다면 기존 Windows 앱 세션에는 적용되지 않으므로 새 세션 창을 여세요.
 

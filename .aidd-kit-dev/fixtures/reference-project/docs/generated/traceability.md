@@ -36,3 +36,4 @@
 | REQ-033 | MOD-DOC, MOD-DELIVERY, MOD-QA | TC-024, TC-025 | implemented |
 | REQ-035 | MOD-GOV, MOD-DOC, MOD-AI, MOD-CHG, MOD-QA, MOD-DELIVERY | TC-027 | implemented |
 | REQ-036 | MOD-GOV | TC-028 | implemented |
+| REQ-037 | MOD-GOV, MOD-STATUS, MOD-AI | TC-029 | implemented |

@@ -715,6 +715,35 @@
         ".ai/skills"
       ],
       "result": "인력 거버넌스 없이 프로젝트 bootstrap·검증이 동작하고 의미 있는 결정이 안정 ID와 연결된 HIS로 기록·검증·생성됨"
+    },
+    {
+      "id": "EVD-030",
+      "title": "세션 간 결정 요청 복원과 상태 브리핑 검증",
+      "type": "automated-test",
+      "status": "passed",
+      "requirements": [
+        "REQ-037"
+      ],
+      "tests": [
+        "TC-029"
+      ],
+      "changes": [
+        "CHG-015"
+      ],
+      "gates": [],
+      "producer": "Node.js AIDD Kit 회귀 테스트",
+      "command": "node .aidd-kit-dev/tests/decision-continuity.test.mjs; node .aidd-kit-dev/tools/kit.mjs smoke",
+      "executed_at": "2026-09-22T00:00:00.000Z",
+      "commit": "working-tree",
+      "artifacts": [
+        "project/.aidd/ssot/workboard.json",
+        "project/docs/generated/status.md",
+        "project/docs/generated/workboard.md",
+        ".ai/tools/aidd.mjs",
+        ".ai/skills/aidd-decision-management",
+        ".ai/tests/fixtures/evaluations/EVS-004.md"
+      ],
+      "result": "모든 미응답 DRQ의 열린 OI 참조, OI와 DRQ 건수·묶음 수를 구분한 상태 브리핑, 복수 미응답 묶음 보존, 차단·우선순위·대기 시각에 따른 권장 질문 재노출, 묶음별 1~3건 검증, 구버전 작업 보드 호환과 bootstrap 실제 상태 보고를 검증함"
     }
   ]
 }

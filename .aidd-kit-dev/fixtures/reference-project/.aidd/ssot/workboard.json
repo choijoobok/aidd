@@ -28,6 +28,84 @@
       "completion_condition": "요건·화면·매뉴얼·런북의 독자·필수 항목·근거·검증 기준이 documentation.json에 합의 상태로 기록된다."
     }
   ],
+  "decision_requests": [
+    {
+      "id": "DRQ-001",
+      "title": "첫 파일럿 제품 선정",
+      "stage": "discovery",
+      "subject_refs": [
+        "OI-001",
+        "REQ-004"
+      ],
+      "question": "첫 AIDD 파일럿은 신규 구축 제품과 기존 시스템의 단일 모듈 중 어느 쪽으로 진행할까요?",
+      "options": [
+        "신규 구축 제품",
+        "기존 시스템의 단일 모듈",
+        "선정을 보류하고 평가 기준부터 결정"
+      ],
+      "recommendation": "기존 시스템의 경계가 작은 단일 모듈",
+      "recommendation_reason": "현재 동작 기준선과 문서 현행화 효과를 제한된 범위에서 함께 검증할 수 있다.",
+      "impact_if_unanswered": "실제 제품에서 방법론을 검증할 대상과 다음 실행 범위를 확정할 수 없다.",
+      "blocking": false,
+      "priority": 1,
+      "due_gate": "첫 파일럿 착수 전",
+      "status": "awaiting_decision",
+      "waiting_on": "고객",
+      "asked_at": "2026-09-18T09:00:00+09:00",
+      "sequence": 1
+    },
+    {
+      "id": "DRQ-002",
+      "title": "운영 거버넌스 프로필 확인 시점",
+      "stage": "requirements",
+      "subject_refs": [
+        "OI-003",
+        "REQ-016",
+        "REQ-017"
+      ],
+      "question": "첫 운영 프로젝트의 규제·개인정보·보안 제약을 지금 확정할까요?",
+      "options": [
+        "첫 파일럿 선정과 함께 확정",
+        "파일럿 후보가 정해진 뒤 확정"
+      ],
+      "recommendation": "파일럿 후보가 정해진 뒤 확정",
+      "recommendation_reason": "적용 제품과 데이터 경계를 알아야 불필요한 통제를 만들지 않을 수 있다.",
+      "impact_if_unanswered": "운영 거버넌스 프로필과 적용 품질 게이트가 미정으로 남는다.",
+      "blocking": false,
+      "priority": 2,
+      "status": "awaiting_decision",
+      "waiting_on": "고객",
+      "asked_at": "2026-09-19T09:00:00+09:00",
+      "sequence": 1
+    },
+    {
+      "id": "DRQ-003",
+      "title": "CI 호스팅 어댑터 선택",
+      "stage": "governance",
+      "subject_refs": [
+        "OI-002",
+        "REQ-012",
+        "REQ-018",
+        "REQ-023"
+      ],
+      "question": "현재 원격 저장소의 CI 호스팅 어댑터로 GitHub Actions를 사용할까요?",
+      "options": [
+        "GitHub Actions 사용",
+        "다른 CI 호스팅 선택"
+      ],
+      "recommendation": "GitHub Actions 사용",
+      "recommendation_reason": "현재 저장소와 가장 직접적으로 연결된다.",
+      "impact_if_unanswered": "CI 검증과 원격 브랜치 보호 연결을 확정할 수 없다.",
+      "blocking": false,
+      "priority": 3,
+      "status": "resolved",
+      "asked_at": "2026-09-17T12:00:00+09:00",
+      "sequence": 1,
+      "resolution": "현재 원격 저장소에 맞춰 GitHub Actions를 사용한다.",
+      "decided_by": "고객",
+      "resolved_at": "2026-09-17T12:30:00+09:00"
+    }
+  ],
   "watch_items": [
     {
       "id": "WATCH-001",

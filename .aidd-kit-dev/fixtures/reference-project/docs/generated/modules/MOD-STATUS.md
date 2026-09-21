@@ -16,6 +16,7 @@
 | REQ-020 | 배포·운영 환경의 조기 확인 | implemented | TC-010 |
 | REQ-022 | 실행 가능한 게이트와 증거 무결성 | implemented | TC-012, TC-013 |
 | REQ-024 | 모듈 단위 상세 실행 계획과 진척 추적 | implemented | TC-015 |
+| REQ-037 | 세션 간 결정 요청 연속성과 신속한 상태 브리핑 | implemented | TC-029 |
 
 ## 작업 항목
 
@@ -46,6 +47,7 @@
 | CHG-006 | C2 | in_progress | 프로젝트 착수 전 실행 기반 완성 |
 | CHG-010 | C2 | in_progress | 모듈별 정본 분할과 확장 가능한 명세 |
 | CHG-011 | C2 | in_progress | 프로젝트 개발 기반·UI·운영·제출 정본 체계 |
+| CHG-015 | C2 | done | 생애주기 전체 결정 요청 연속성과 상태 브리핑 보강 |
 
 ## 관련 결정
 
@@ -53,6 +55,11 @@
 | --- | --- | --- |
 | ADR-008 | accepted | 기술 선택 전에 배포·운영 맥락을 게이트로 확인 |
 | ADR-009 | accepted | 모듈별 요구사항 조각과 생성 명세 사용 |
+
+## 관련 결정 요청
+
+| ID | 상태 | 질문 | 차단 |
+| --- | --- | --- | --- |
 
 ## 관련 테스트
 
@@ -63,6 +70,7 @@
 | TC-012 | passed | 게이트 실행·증거·게이트 우회 방지 |
 | TC-013 | passed | 정본 참조와 증거 무결성 부정 테스트 |
 | TC-015 | passed | 모듈 상세 실행 계획과 참조 무결성 |
+| TC-029 | passed | 세션 간 결정 요청 복원과 상태 브리핑 계약 |
 
 ## UI 정본
 
@@ -78,7 +86,7 @@
 - **purpose:** 경영진, 모듈과 항목 수준의 진척·의사결정 브리핑을 생성한다.
 - **status:** in_progress
 - **dependencies:** MOD-GOV
-- **requirements:** REQ-007, REQ-008, REQ-009, REQ-020, REQ-022, REQ-024
+- **requirements:** REQ-007, REQ-008, REQ-009, REQ-020, REQ-022, REQ-024, REQ-037
 
 ## 요구사항 상세
 
@@ -159,6 +167,19 @@
 - **verification:** TC-015
 - **acceptance_criteria:** 작업은 단일 담당 모듈과 변경·요구사항·인수 기준을 가진다, 완료 작업은 구조화된 증거를 가진다, 모듈 뷰에서 요구사항·작업·의존성을 함께 확인한다
 - **source:** AUDIT-2026-09-18
+
+### REQ-037 — 세션 간 결정 요청 연속성과 신속한 상태 브리핑
+
+- **id:** REQ-037
+- **title:** 세션 간 결정 요청 연속성과 신속한 상태 브리핑
+- **statement:** 프레임워크는 요구분석·설계·개발·검증·통합·출시·운영 중 모든 미결 결정을 프로젝트 전체 공통 OI에 먼저 저장하고 대상 정본을 링크하며, 사용자에게 실제로 물은 질문 묶음을 별도 큐에 보존하고, 다음 세션에서 현재 상태·권장 작업 흐름·미결 건수와 묶음 수를 설명한 뒤 우선 답변할 질문을 다시 제시해야 한다.
+- **rationale:** 미결 결정을 저장하지 않고 질문부터 하면 세션 전환 때 유실되며, 단일 질문 묶음만 허용하면 사용자가 앞 질문을 건너뛴 뒤 다른 작업에서 생긴 결정을 보존할 수 없다.
+- **priority:** must
+- **status:** implemented
+- **modules:** MOD-GOV, MOD-STATUS, MOD-AI
+- **verification:** TC-029
+- **acceptance_criteria:** 사용자에게 질문을 보내기 전에 실제 미결 결정이 공통 OI에 기록되고 대상 정본 링크와 1~3개의 DRQ 질문 묶음이 저장된다, 기존 질문에 답하지 않은 채 새 결정 질문이 생겨도 여러 미응답 묶음을 덮어쓰지 않고 함께 보존한다, 상태 브리핑은 OI와 DRQ 건수·묶음 수를 구분하고 차단·우선순위·대기 시각으로 고른 질문을 마지막에 표시한다, 사용자 답변은 대상 정본과 필요한 HIS에 반영되고 OI가 닫힌 뒤 해당 DRQ를 해결 상태로 종료한다, decision_requests가 없는 기존 프로젝트도 빈 대기열로 호환된다
+- **source:** USER-2026-09-22
 
 ## 관련 변경
 
@@ -383,6 +404,37 @@
 }
 ```
 
+### CHG-015 — 생애주기 전체 결정 요청 연속성과 상태 브리핑 보강
+
+- **id:** CHG-015
+- **title:** 생애주기 전체 결정 요청 연속성과 상태 브리핑 보강
+- **type:** feature
+- **class:** C2
+- **status:** done
+- **requested_by:** 고객
+- **modules:** MOD-GOV, MOD-STATUS, MOD-AI
+- **requirements:** REQ-037
+- **required_gates:** -
+- **required_work_coverage:** design, implementation, test, documentation, operations
+- **delivery_path:**
+
+```json
+{
+  "kind": "governance",
+  "analysis": "complete",
+  "design": "complete",
+  "documentation": "update_now",
+  "surfaces": [],
+  "documentation_work": [],
+  "decided_by": "고객",
+  "reason": "모든 생애주기 단계에서 미응답 질문을 정본으로 복원하고 빠르게 결정할 수 있어야 한다."
+}
+```
+- **impact:** 작업 보드에 공통 DRQ 대기열을 추가하고 상태 명령과 전 생애주기 스킬이 질문 전 저장·재개·해결 계약을 사용한다.
+- **migration:** 기존 workboard에 decision_requests가 없으면 빈 배열로 처리하고 다음 결정 질문부터 점진적으로 등록한다.
+- **rollback:** DRQ 데이터를 별도 보존한 뒤 관련 검증·출력·스킬 연결을 제거하고 기존 OI와 단계별 정본만 사용한다.
+- **regression_scope:** 질문 전 결정 요청 저장, 세션 재개 질문 복원, 상태 브리핑, 개발·릴리스 차단, 기존 작업 보드 호환, provider 스킬 동기화
+
 ## 관련 결정
 
 ### ADR-008 — 기술 선택 전에 배포·운영 맥락을 게이트로 확인
@@ -464,6 +516,33 @@
 - **required:** true
 - **requirements:** REQ-024
 - **evidence:** EVD-012
+
+### TC-029 — 세션 간 결정 요청 복원과 상태 브리핑 계약
+
+- **id:** TC-029
+- **title:** 세션 간 결정 요청 복원과 상태 브리핑 계약
+- **type:** automated
+- **status:** passed
+- **required:** true
+- **requirements:** REQ-037
+- **evidence:** EVD-030
+- **rule_mutation:**
+
+```json
+{
+  "applicable": true,
+  "rules": [
+    "각 결정 요청 묶음은 같은 질문 시각의 연속 순서 1~3건으로 제한하고 여러 미응답 묶음을 허용한다",
+    "미응답 DRQ는 열린 OI를, 해결 DRQ는 닫힌 OI를 참조한다",
+    "알 수 없는 대상 정본과 불완전한 해결·보류 상태를 거부한다",
+    "상태 브리핑은 OI와 DRQ 건수·묶음 수를 구분하고 마지막에 우선 질문을 복원한다",
+    "decision_requests가 없는 기존 작업 보드를 빈 대기열로 허용한다"
+  ],
+  "evidence": [
+    "EVD-030"
+  ]
+}
+```
 
 ## 가정
 

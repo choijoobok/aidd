@@ -586,6 +586,51 @@
         "게이트·병합 재검토",
         "가이드와 provider 어댑터"
       ]
+    },
+    {
+      "id": "CHG-015",
+      "title": "생애주기 전체 결정 요청 연속성과 상태 브리핑 보강",
+      "type": "feature",
+      "class": "C2",
+      "status": "done",
+      "requested_by": "고객",
+      "modules": [
+        "MOD-GOV",
+        "MOD-STATUS",
+        "MOD-AI"
+      ],
+      "requirements": [
+        "REQ-037"
+      ],
+      "required_gates": [],
+      "required_work_coverage": [
+        "design",
+        "implementation",
+        "test",
+        "documentation",
+        "operations"
+      ],
+      "delivery_path": {
+        "kind": "governance",
+        "analysis": "complete",
+        "design": "complete",
+        "documentation": "update_now",
+        "surfaces": [],
+        "documentation_work": [],
+        "decided_by": "고객",
+        "reason": "모든 생애주기 단계에서 미응답 질문을 정본으로 복원하고 빠르게 결정할 수 있어야 한다."
+      },
+      "impact": "작업 보드에 공통 DRQ 대기열을 추가하고 상태 명령과 전 생애주기 스킬이 질문 전 저장·재개·해결 계약을 사용한다.",
+      "migration": "기존 workboard에 decision_requests가 없으면 빈 배열로 처리하고 다음 결정 질문부터 점진적으로 등록한다.",
+      "rollback": "DRQ 데이터를 별도 보존한 뒤 관련 검증·출력·스킬 연결을 제거하고 기존 OI와 단계별 정본만 사용한다.",
+      "regression_scope": [
+        "질문 전 결정 요청 저장",
+        "세션 재개 질문 복원",
+        "상태 브리핑",
+        "개발·릴리스 차단",
+        "기존 작업 보드 호환",
+        "provider 스킬 동기화"
+      ]
     }
   ]
 }

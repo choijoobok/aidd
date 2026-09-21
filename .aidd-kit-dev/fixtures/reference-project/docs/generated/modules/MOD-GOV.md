@@ -22,6 +22,7 @@
 | REQ-024 | 모듈 단위 상세 실행 계획과 진척 추적 | implemented | TC-015 |
 | REQ-035 | 변경 유형별 문서 동기화와 레거시 전환 | implemented | TC-027 |
 | REQ-036 | 프로젝트 운영 분리와 추적 가능한 결정 이력 | implemented | TC-028 |
+| REQ-037 | 세션 간 결정 요청 연속성과 신속한 상태 브리핑 | implemented | TC-029 |
 
 ## 작업 항목
 
@@ -54,6 +55,7 @@
 | CHG-010 | C2 | in_progress | 모듈별 정본 분할과 확장 가능한 명세 |
 | CHG-013 | C2 | in_progress | 변경 유형별 분석·설계 진입과 레거시 문서 현행화 통제 |
 | CHG-014 | C2 | done | 프로젝트 운영 분리와 결정 이력 중심 전환 |
+| CHG-015 | C2 | done | 생애주기 전체 결정 요청 연속성과 상태 브리핑 보강 |
 
 ## 관련 결정
 
@@ -68,6 +70,12 @@
 | ADR-012 | accepted | 구현 표면 기반 문서 동기화와 레거시 단계 전환 |
 | ADR-013 | accepted | 프로젝트 운영과 AIDD 산출물 추적을 분리 |
 
+## 관련 결정 요청
+
+| ID | 상태 | 질문 | 차단 |
+| --- | --- | --- | --- |
+| DRQ-002 | awaiting_decision | 첫 운영 프로젝트의 규제·개인정보·보안 제약을 지금 확정할까요? | 아니요 |
+
 ## 관련 테스트
 
 | ID | 상태 | 제목 |
@@ -81,6 +89,7 @@
 | TC-015 | passed | 모듈 상세 실행 계획과 참조 무결성 |
 | TC-027 | passed | 변경 유형별 분석·설계·문서 동기화와 레거시 전환 통제 |
 | TC-028 | passed | 프로젝트 운영 분리와 결정 이력 계약 |
+| TC-029 | passed | 세션 간 결정 요청 복원과 상태 브리핑 계약 |
 
 ## UI 정본
 
@@ -96,7 +105,7 @@
 - **purpose:** 산출물 식별자, 추적성, 의사결정, 미결사항, 위험과 게이트를 관리한다.
 - **status:** in_progress
 - **dependencies:** -
-- **requirements:** REQ-001, REQ-003, REQ-005, REQ-006, REQ-007, REQ-014, REQ-017, REQ-019, REQ-022, REQ-024, REQ-035, REQ-036
+- **requirements:** REQ-001, REQ-003, REQ-005, REQ-006, REQ-007, REQ-014, REQ-017, REQ-019, REQ-022, REQ-024, REQ-035, REQ-036, REQ-037
 
 ## 요구사항 상세
 
@@ -255,6 +264,19 @@
 - **verification:** TC-028
 - **acceptance_criteria:** 프로젝트 bootstrap과 검증은 사람·역할·Git 신원 정본을 요구하지 않는다, 실행·릴리스 게이트는 사람 승인이나 WRK 담당자 배정을 요구하지 않는다, HIS는 결정 시각·유형·대상 안정 ID·결정 주체·결정·이유·영향·출처를 기록한다, 현재 정본에는 현재 상태와 핵심 근거를 유지하고 상세 변경 과정은 HIS에서 조회한다, 용어 변경은 TCH에 결정 주체·시각·요약·영향을 남기며 PM 역할을 요구하지 않는다
 - **source:** USER-2026-09-21
+
+### REQ-037 — 세션 간 결정 요청 연속성과 신속한 상태 브리핑
+
+- **id:** REQ-037
+- **title:** 세션 간 결정 요청 연속성과 신속한 상태 브리핑
+- **statement:** 프레임워크는 요구분석·설계·개발·검증·통합·출시·운영 중 모든 미결 결정을 프로젝트 전체 공통 OI에 먼저 저장하고 대상 정본을 링크하며, 사용자에게 실제로 물은 질문 묶음을 별도 큐에 보존하고, 다음 세션에서 현재 상태·권장 작업 흐름·미결 건수와 묶음 수를 설명한 뒤 우선 답변할 질문을 다시 제시해야 한다.
+- **rationale:** 미결 결정을 저장하지 않고 질문부터 하면 세션 전환 때 유실되며, 단일 질문 묶음만 허용하면 사용자가 앞 질문을 건너뛴 뒤 다른 작업에서 생긴 결정을 보존할 수 없다.
+- **priority:** must
+- **status:** implemented
+- **modules:** MOD-GOV, MOD-STATUS, MOD-AI
+- **verification:** TC-029
+- **acceptance_criteria:** 사용자에게 질문을 보내기 전에 실제 미결 결정이 공통 OI에 기록되고 대상 정본 링크와 1~3개의 DRQ 질문 묶음이 저장된다, 기존 질문에 답하지 않은 채 새 결정 질문이 생겨도 여러 미응답 묶음을 덮어쓰지 않고 함께 보존한다, 상태 브리핑은 OI와 DRQ 건수·묶음 수를 구분하고 차단·우선순위·대기 시각으로 고른 질문을 마지막에 표시한다, 사용자 답변은 대상 정본과 필요한 HIS에 반영되고 OI가 닫힌 뒤 해당 DRQ를 해결 상태로 종료한다, decision_requests가 없는 기존 프로젝트도 빈 대기열로 호환된다
+- **source:** USER-2026-09-22
 
 ## 관련 변경
 
@@ -474,6 +496,37 @@
 - **migration:** 기존 협업·승인 정본은 제거하고 현재 항목의 상태·근거와 HIS 이력을 함께 사용한다.
 - **rollback:** HIS 레코드를 보존한 채 이전 Kit 버전의 협업 정본과 명령을 별도 프로젝트 정책으로 복원한다.
 - **regression_scope:** 프로젝트 bootstrap, 결정 이력 기록·검증·생성, 용어 변경 이력, 게이트·병합 재검토, 가이드와 provider 어댑터
+
+### CHG-015 — 생애주기 전체 결정 요청 연속성과 상태 브리핑 보강
+
+- **id:** CHG-015
+- **title:** 생애주기 전체 결정 요청 연속성과 상태 브리핑 보강
+- **type:** feature
+- **class:** C2
+- **status:** done
+- **requested_by:** 고객
+- **modules:** MOD-GOV, MOD-STATUS, MOD-AI
+- **requirements:** REQ-037
+- **required_gates:** -
+- **required_work_coverage:** design, implementation, test, documentation, operations
+- **delivery_path:**
+
+```json
+{
+  "kind": "governance",
+  "analysis": "complete",
+  "design": "complete",
+  "documentation": "update_now",
+  "surfaces": [],
+  "documentation_work": [],
+  "decided_by": "고객",
+  "reason": "모든 생애주기 단계에서 미응답 질문을 정본으로 복원하고 빠르게 결정할 수 있어야 한다."
+}
+```
+- **impact:** 작업 보드에 공통 DRQ 대기열을 추가하고 상태 명령과 전 생애주기 스킬이 질문 전 저장·재개·해결 계약을 사용한다.
+- **migration:** 기존 workboard에 decision_requests가 없으면 빈 배열로 처리하고 다음 결정 질문부터 점진적으로 등록한다.
+- **rollback:** DRQ 데이터를 별도 보존한 뒤 관련 검증·출력·스킬 연결을 제거하고 기존 OI와 단계별 정본만 사용한다.
+- **regression_scope:** 질문 전 결정 요청 저장, 세션 재개 질문 복원, 상태 브리핑, 개발·릴리스 차단, 기존 작업 보드 호환, provider 스킬 동기화
 
 ## 관련 결정
 
@@ -710,6 +763,33 @@
   ],
   "evidence": [
     "EVD-029"
+  ]
+}
+```
+
+### TC-029 — 세션 간 결정 요청 복원과 상태 브리핑 계약
+
+- **id:** TC-029
+- **title:** 세션 간 결정 요청 복원과 상태 브리핑 계약
+- **type:** automated
+- **status:** passed
+- **required:** true
+- **requirements:** REQ-037
+- **evidence:** EVD-030
+- **rule_mutation:**
+
+```json
+{
+  "applicable": true,
+  "rules": [
+    "각 결정 요청 묶음은 같은 질문 시각의 연속 순서 1~3건으로 제한하고 여러 미응답 묶음을 허용한다",
+    "미응답 DRQ는 열린 OI를, 해결 DRQ는 닫힌 OI를 참조한다",
+    "알 수 없는 대상 정본과 불완전한 해결·보류 상태를 거부한다",
+    "상태 브리핑은 OI와 DRQ 건수·묶음 수를 구분하고 마지막에 우선 질문을 복원한다",
+    "decision_requests가 없는 기존 작업 보드를 빈 대기열로 허용한다"
+  ],
+  "evidence": [
+    "EVD-030"
   ]
 }
 ```

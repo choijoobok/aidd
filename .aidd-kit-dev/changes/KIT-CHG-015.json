@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-015",
+  "title": "생애주기 전체 결정 요청 연속성과 상태 브리핑 보강",
+  "class": "C2",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "AI가 요구분석·설계·개발·검증·출시 중 사용자 결정을 질문한 뒤 세션이 끝나면, 질문이 대화 로그에만 남고 재개 가능한 정본 상태가 없어 다음 세션이 다른 질문이나 포괄적인 OI로 이동할 수 있다. 현재 status 명령은 bootstrap에서 실제 정본을 무시하고 고정 문구를 반환하며, 그 밖에도 열린 OI 수와 활성 CHG만 보여 결정 대기·차단·다음 작업을 빠르게 확인할 수 없다.",
+  "intent": "모든 미결 결정을 단계와 무관한 프로젝트 전체 공통 OI에 먼저 저장하고 실제 전문 정본을 링크하며, 사용자에게 제시한 질문을 공통 DRQ 큐에 기록한다. 여러 미응답 묶음을 유실 없이 보존하고 차단·명시적 우선순위·대기 시각으로 권장 답변 묶음을 선택하며, 답변 뒤 대상 정본과 결정 이력을 갱신하고 OI와 DRQ를 닫는다. status는 OI와 결정 요청의 건수·묶음 수를 구분하고 bootstrap에서도 실제 기록을 보고한다.",
+  "scope": [
+    "모든 결정 질문 전에 프로젝트 전체 공통 OI를 만들고 단계별 대상 정본을 링크하는 계약 추가",
+    "workboard.decision_requests에 단계·열린 OI·대상 정본·질문·선택지·권장안·미응답 영향·차단·우선순위·상태·질문 시각·순서를 가진 DRQ 계약 추가",
+    "각 awaiting_decision 묶음을 같은 asked_at의 1~3건으로 제한하되 여러 미응답 묶음을 허용하고 알 수 없는 대상 참조·불완전 해결·보류 상태를 검증",
+    "status executive/detail에서 단계·활성 변경·OI·DRQ 건수와 묶음 수·위험·게이트·다음 작업을 구분하고 마지막에 차단·우선순위·대기 시각으로 고른 질문 묶음을 표시",
+    "bootstrap 상태의 고정 조기 반환을 제거해 이미 채워진 정본을 정확히 브리핑",
+    "차단 DRQ를 관련 변경의 development-check와 release-check에 반영",
+    "전 생애주기 질문 전 저장·재개·해결 절차를 aidd-decision-management 스킬과 프로젝트 수행 계약에 추가",
+    "요구발굴·생애주기·아키텍처·개발·상태·용어 스킬을 공통 결정 관리 절차에 연결",
+    "reference fixture, 결정적 생성물, 자동 회귀 테스트와 교차 provider 행동 평가 시나리오 갱신"
+  ],
+  "compatibility": "기존 workboard.json에 decision_requests가 없어도 빈 배열로 취급해 검증과 상태 조회가 계속 동작한다. 기존 OI·ADR·CHG·HIS 구조와 ID는 유지한다. 새 프로젝트에는 빈 decision_requests 배열이 생성된다. 기존 프로젝트는 자동 업그레이드하지 않으며 다음 결정 질문 전에 배열을 추가해 점진적으로 채택한다.",
+  "validation": [
+    "node .aidd-kit-dev/tests/decision-continuity.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs sync-providers",
+    "node .ai/tools/aidd_hook.mjs self-test --hook",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke",
+    "reference fixture 전체 파생 문서 재생성 비교",
+    "EVS-004를 Codex와 Claude에 동일하게 제공할 수 있는 평가 계약 확인"
+  ],
+  "risks": [
+    "AI가 미결 대상과 DRQ를 질문 전에 저장하지 않으면 행위 누락은 여전히 가능하다. 전역 AGENTS 계약, 전용 스킬, 단계별 스킬과 EVS-004로 중복 통제한다.",
+    "결정 요청과 단계별 정본을 중복 작성하면 불일치가 생길 수 있다. DRQ는 질문·재개 상태만 보존하고 최종 결정 내용은 subject_refs의 단계별 정본과 HIS에 둔다.",
+    "기존 프로젝트에는 과거 미응답 질문이 자동 변환되지 않는다. 대화 로그는 복구 참고로만 사용하고 확인된 항목을 프로젝트 정본에 명시적으로 등록한다.",
+    "상태 출력이 길어질 수 있다. executive는 개수·현재 질문 묶음·다음 작업에 제한하고 전체 목록은 detail과 생성 workboard 문서에 둔다."
+  ],
+  "rollback": "DRQ 공통 용어와 workboard.decision_requests 검증·출력·게이트 연결, aidd-decision-management 스킬과 관련 수행 계약을 제거한다. 기존 프로젝트의 decision_requests 데이터는 별도 JSON으로 내보내 보존하고 OI·ADR·CHG·HIS는 변경 없이 유지한다.",
+  "completion_blocker": "없음",
+  "validation_result": "결정 연속성 4개 시나리오와 전체 Kit 9개 테스트, provider 동기화, 훅 self-test, quick check, reference fixture 재생성 비교, export·new-project smoke와 git diff 검사가 통과했다.",
+  "known_limit": "EVS-004의 Codex·Claude 실제 행동 실행은 아직 기록되지 않았다. 동일 입력·기대·금지 행동·루브릭 계약만 준비했으며 행동 동등성을 주장하지 않는다."
+}

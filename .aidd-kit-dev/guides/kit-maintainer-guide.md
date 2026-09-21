@@ -41,7 +41,14 @@
    node .aidd-kit-dev/tools/kit.mjs smoke
    ```
 
-7. 변경·결정·릴리스 기록을 현행화하고 diff를 검토한다.
+7. Kit 릴리스를 준비할 때는 대상이 명시된 관리 명령으로 계획을 먼저 확인한 뒤 정본을 갱신한다.
+
+   ```powershell
+   node .aidd-kit-dev/tools/kit.mjs kit-release-plan
+   node .aidd-kit-dev/tools/kit.mjs prepare-kit-release
+   ```
+
+8. 변경·결정·릴리스 기록을 현행화하고 diff를 검토한다.
 
 ## 핵심 원칙
 

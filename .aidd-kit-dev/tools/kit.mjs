@@ -31,9 +31,10 @@ function roleRecord(role){return{schema_version:1,role,managed_by:"AIDD Kit expo
 function originRecord(stage,manifest){const status=git("status","--porcelain"),commit=git("rev-parse","HEAD"),commitText=commit.status===0?commit.stdout.trim():"";return{schema_version:1,purpose:"provenance-only",upgrade_contract:"none",kit_version:manifest.kit_version,source_commit:commitText||"uncommitted",source_dirty:status.status!==0||Boolean(status.stdout.trim()),export_manifest_sha256:sha256(readFileSync(MANIFEST_PATH)),payload_sha256:aggregateHash(fileManifest(stage,new Set([".aidd-kit-origin.json"])))};}
 function mergedSkillRoot(stage){const merged=join(stage,"skills");copyEntry(join(ROOT,".ai/skills"),merged);const maintainer=join(DEV,"skills");if(existsSync(maintainer))for(const entry of readdirSync(maintainer)){const source=join(maintainer,entry),destination=join(merged,entry);if(existsSync(destination))throw new Error(`maintainer skill collides with portable skill: ${entry}`);copyEntry(source,destination);}return merged;}
 export function syncProviders(){const temporary=mkdtempSync(join(tmpdir(),"aidd-kit-skills-"));try{const merged=mergedSkillRoot(temporary),expected=skillMap(merged);for(const target of [join(ROOT,".agents/skills"),join(ROOT,".claude/skills")])if(!sameMap(skillMap(target),expected))replaceTree(merged,target);for(const [source,target] of [[join(DEV,"export/.codex/hooks.json"),join(ROOT,".codex/hooks.json")],[join(DEV,"export/.claude/settings.json"),join(ROOT,".claude/settings.json")]])if(!existsSync(target)||!readFileSync(source).equals(readFileSync(target)))copyEntry(source,target);}finally{rmSync(temporary,{recursive:true,force:true});}}
-const KIT_COMMAND_OPTIONS={status:[],check:[],smoke:[],"release-plan":[],"prepare-release":["date"],"sync-providers":[],"refresh-fixture":[],export:["directory","zip"],"new-project":["directory","zip","project-id","name","mode","source-location"]};
-function parseOptions(command,args){
-  if(!(command in KIT_COMMAND_OPTIONS))throw new Error("usage: kit.mjs status|check|smoke|release-plan|prepare-release|sync-providers|refresh-fixture|export|new-project");
+const KIT_USAGE="usage: kit.mjs status|check|smoke|kit-release-plan|prepare-kit-release|sync-providers|refresh-fixture|export|new-project";
+const KIT_COMMAND_OPTIONS={status:[],check:[],smoke:[],"kit-release-plan":[],"prepare-kit-release":["date"],"sync-providers":[],"refresh-fixture":[],export:["directory","zip"],"new-project":["directory","zip","project-id","name","mode","source-location"]};
+export function parseOptions(command,args){
+  if(!(command in KIT_COMMAND_OPTIONS))throw new Error(KIT_USAGE);
   const result={_:[]},allowed=new Set(KIT_COMMAND_OPTIONS[command]);let positionalOnly=false;
   for(let i=0;i<args.length;i++){
     const arg=args[i];
@@ -101,7 +102,7 @@ export function releaseMetadataErrors(root=ROOT){
   }
   return errors;
 }
-export function releasePlan(root=ROOT){
+export function kitReleasePlan(root=ROOT){
   const errors=releaseMetadataErrors(root);if(errors.length)throw new Error(`release metadata invalid:\n- ${errors.join("\n- ")}`);
   const dev=join(root,".aidd-kit-dev"),repository=readJson(join(dev,"repository.json")),changes=changeRecordsAt(root),candidates=changes.filter(change=>change.released_in===undefined);
   const impact=candidates.reduce((highest,change)=>VERSION_IMPACTS.indexOf(change.version_impact)>VERSION_IMPACTS.indexOf(highest)?change.version_impact:highest,"none");
@@ -119,20 +120,20 @@ function releaseRecord(plan,date){
   lines.push("","## 롤백","");for(const change of plan.candidates)lines.push(`- \`${change.id}\`: ${listValue(change.rollback,"해당 변경 커밋을 되돌린다.")}`);
   return `${lines.join("\n")}\n`;
 }
-export function prepareRelease({root=ROOT,date=today(),requireClean=true}={}){
-  if(!validDate(date))throw new Error("prepare-release: date must be a real YYYY-MM-DD value");
-  const plan=releasePlan(root);if(!plan.next_version)throw new Error("prepare-release: no unreleased change requires a version bump");if(plan.blockers.length)throw new Error(`prepare-release blocked:\n- ${plan.blockers.join("\n- ")}`);
-  if(requireClean){const status=gitAt(root,"status","--porcelain");if(status.status!==0)throw new Error(`prepare-release: cannot inspect Git worktree: ${processFailure(status)}`);if(status.stdout.trim())throw new Error("prepare-release: Git worktree must be clean");}
+export function prepareKitRelease({root=ROOT,date=today(),requireClean=true}={}){
+  if(!validDate(date))throw new Error("prepare-kit-release: date must be a real YYYY-MM-DD value");
+  const plan=kitReleasePlan(root);if(!plan.next_version)throw new Error("prepare-kit-release: no unreleased change requires a version bump");if(plan.blockers.length)throw new Error(`prepare-kit-release blocked:\n- ${plan.blockers.join("\n- ")}`);
+  if(requireClean){const status=gitAt(root,"status","--porcelain");if(status.status!==0)throw new Error(`prepare-kit-release: cannot inspect Git worktree: ${processFailure(status)}`);if(status.stdout.trim())throw new Error("prepare-kit-release: Git worktree must be clean");}
   const dev=join(root,".aidd-kit-dev"),releasePath=join(dev,`releases/KIT-REL-${plan.next_version}.md`);
-  if(existsSync(releasePath))throw new Error(`prepare-release: target release record already exists: KIT-REL-${plan.next_version}.md`);
-  if(requireClean){for(const tag of [plan.next_version,`v${plan.next_version}`]){const found=gitAt(root,"tag","--list",tag);if(found.status!==0)throw new Error(`prepare-release: cannot inspect Git tag ${tag}: ${processFailure(found)}`);if(found.stdout.trim())throw new Error(`prepare-release: Git tag already exists: ${tag}`);}}
+  if(existsSync(releasePath))throw new Error(`prepare-kit-release: target release record already exists: KIT-REL-${plan.next_version}.md`);
+  if(requireClean){for(const tag of [plan.next_version,`v${plan.next_version}`]){const found=gitAt(root,"tag","--list",tag);if(found.status!==0)throw new Error(`prepare-kit-release: cannot inspect Git tag ${tag}: ${processFailure(found)}`);if(found.stdout.trim())throw new Error(`prepare-kit-release: Git tag already exists: ${tag}`);}}
   const repositoryPath=join(dev,"repository.json"),manifestPath=join(dev,"export-manifest.json"),unreleasedPath=join(dev,"releases/UNRELEASED.md"),repository=readJson(repositoryPath),manifest=readJson(manifestPath);
   repository.current_version=plan.next_version;manifest.kit_version=plan.next_version;
   const writes=[[repositoryPath,`${JSON.stringify(repository,null,2)}\n`],[manifestPath,`${JSON.stringify(manifest,null,2)}\n`],[releasePath,releaseRecord(plan,date)],[unreleasedPath,"# Unreleased changes\n"]];
   for(const change of plan.candidates){const path=join(dev,`changes/${change.id}.json`),updated={...change,released_in:plan.next_version};writes.push([path,`${JSON.stringify(updated,null,2)}\n`]);}
   const originals=new Map(writes.filter(([path])=>existsSync(path)).map(([path])=>[path,readFileSync(path)]));
   try{for(const [path,content] of writes){mkdirSync(dirname(path),{recursive:true});writeFileSync(path,content,"utf8");}}
-  catch(error){for(const [path] of writes)if(originals.has(path))writeFileSync(path,originals.get(path));else rmSync(path,{force:true});throw new Error(`prepare-release rolled back after write failure: ${error.message}`);}
+  catch(error){for(const [path] of writes)if(originals.has(path))writeFileSync(path,originals.get(path));else rmSync(path,{force:true});throw new Error(`prepare-kit-release rolled back after write failure: ${error.message}`);}
   return plan;
 }
 export function validateSource(){const errors=[...harnessErrors(),...releaseMetadataErrors()];try{const active=readJson(join(DEV,"repository.json")).active_change;if(typeof active!=="string"||!existsSync(join(DEV,`changes/${active}.json`)))errors.push("repository active_change must identify an existing change record");}catch(error){errors.push(`repository metadata invalid: ${error.message}`);}try{if(readJson(ROLE_PATH).role!=="kit-source")errors.push("root .aidd-role.json must declare kit-source");}catch(error){errors.push(`root role marker invalid: ${error.message}`);}if(existsSync(join(ROOT,"project")))errors.push("kit-source root must not contain product project/");for(const required of [".ai/spec/index.md",".ai/hooks/contract.json",".ai/docs/guides/project-team-guide.md",".ai/manifests/terminology.json",".ai/skills/aidd-requirement-verification/SKILL.md",".ai/skills/aidd-terminology/SKILL.md",".aidd-kit-dev/guides/kit-maintainer-guide.md",".aidd-kit-dev/skills/aidd-kit-release/SKILL.md",".aidd-kit-dev/export/AGENTS.md",".ai/tools/aidd.mjs",".ai/tools/aidd_hook.mjs"])if(!existsSync(join(ROOT,required)))errors.push(`required source file missing: ${required}`);for(const path of [".ai/hooks/contract.json",".ai/hooks/policy.json",".ai/manifests/kit.json",".aidd-kit-dev/export-manifest.json",".claude/settings.json"])try{readJson(join(ROOT,path));}catch(error){errors.push(`${path} is invalid JSON: ${error.message}`);}try{const cli=readFileSync(join(ROOT,".ai/tools/aidd.mjs"),"utf8"),locked=cli.match(/const COMMON_TERMINOLOGY_SHA256="([a-f0-9]{64})";/)?.[1],actual=sha256(readFileSync(join(ROOT,".ai/manifests/terminology.json")));if(!locked)errors.push("portable CLI has no immutable AIDD terminology baseline");else if(locked!==actual)errors.push("AIDD terminology registry differs from the portable immutable baseline");}catch(error){errors.push(`AIDD terminology baseline invalid: ${error.message}`);}const portable=skillMap(join(ROOT,".ai/skills")),maintainer=skillMap(join(DEV,"skills"));for(const key of Object.keys(portable))if(key in maintainer)errors.push(`maintainer and portable skill paths collide: ${key}`);const expected={...portable,...maintainer};for(const provider of [".agents/skills",".claude/skills"])if(!sameMap(skillMap(join(ROOT,provider)),expected))errors.push(`source provider skill drift: ${provider}`);return errors;}
@@ -167,7 +168,7 @@ try{
   const options=parseOptions(command,rest);
   if(command==="status"){
     const repository=readJson(join(DEV,"repository.json")),change=readJson(join(DEV,`changes/${repository.active_change}.json`));
-    const plan=releasePlan();
+    const plan=kitReleasePlan();
     const others=changeRecords().filter(item=>["in_progress","in_review"].includes(item.status)&&item.id!==change.id);
     const lines=["# AIDD Kit 관리 상태",`- 역할: \`${readJson(ROLE_PATH).role}\``,`- 버전: \`${repository.current_version}\``,`- 현재 변경: \`${change.id}\` · ${change.status}`,`- 릴리스 계획: 미출시 ${plan.candidates.length}건 · 영향도 \`${plan.version_impact}\` · 다음 버전 ${plan.next_version?`\`${plan.next_version}\``:"없음"} · 차단 ${plan.blockers.length}건`];
     for(const item of others)lines.push(`- 진행 중인 다른 변경: \`${item.id}\` · ${item.status}`);
@@ -178,17 +179,17 @@ try{
   else if(command==="refresh-fixture"){const errors=await referenceFixtureGeneratedArtifactErrors({refresh:true});if(errors.length)throw new Error(errors.join("; "));console.log("reference fixture 파생 문서를 현재 정본에서 다시 생성했습니다.");}
   else if(command==="check"){const errors=validateSource();if(errors.length){console.error(`Kit check failed:\n- ${errors.join("\n- ")}`);process.exitCode=1;}else console.log("AIDD Kit quick check passed");}
   else if(command==="smoke"){const errors=await validateSourceAsync();if(errors.length){console.error(`Kit smoke failed:\n- ${errors.join("\n- ")}`);process.exitCode=1;}else console.log("AIDD Kit generation, export, and new-project smoke passed");}
-  else if(command==="release-plan"){
-    const plan=releasePlan(),lines=["# AIDD Kit 릴리스 계획",`- 현재 버전: \`${plan.current_version}\``,`- 집계 영향도: \`${plan.version_impact}\``,`- 다음 버전: ${plan.next_version?`\`${plan.next_version}\``:"없음"}`,`- 미출시 변경: ${plan.candidates.length}건`];
+  else if(command==="kit-release-plan"){
+    const plan=kitReleasePlan(),lines=["# AIDD Kit 릴리스 계획",`- 현재 버전: \`${plan.current_version}\``,`- 집계 영향도: \`${plan.version_impact}\``,`- 다음 버전: ${plan.next_version?`\`${plan.next_version}\``:"없음"}`,`- 미출시 변경: ${plan.candidates.length}건`];
     for(const change of plan.candidates)lines.push(`  - \`${change.id}\` · ${change.version_impact} · ${change.status} · ${change.title}`);
     lines.push(`- 준비 차단: ${plan.blockers.length}건`);for(const blocker of plan.blockers)lines.push(`  - ${blocker}`);console.log(lines.join("\n"));
   }
-  else if(command==="prepare-release"){
-    const plan=prepareRelease({date:options.date??today()});
+  else if(command==="prepare-kit-release"){
+    const plan=prepareKitRelease({date:options.date??today()});
     console.log(`AIDD Kit ${plan.next_version} 릴리스 정본을 준비했습니다. 커밋과 Git 태그는 생성하지 않았습니다.`);
   }
   else if(command==="export"){const directory=options.directory,archive=options.zip;if(!directory&&!archive)throw new Error("--directory or --zip is required");const temp=mkdtempSync(join(tmpdir(),"aidd-kit-export-")),stage=join(temp,"payload");try{mkdirSync(stage);assemble(stage,"kit-template");const destination=deliver(stage,directory,archive);console.log(`AIDD kit-template created: ${destination}`);}finally{rmSync(temp,{recursive:true,force:true});}}
   else if(command==="new-project"){const directory=options.directory,archive=options.zip;if(!directory&&!archive)throw new Error("--directory or --zip is required");const temp=mkdtempSync(join(tmpdir(),"aidd-kit-new-project-")),stage=join(temp,"payload"),project={project_id:options["project-id"],name:options.name,mode:options.mode??"greenfield",source_location:options["source-location"]??""};try{mkdirSync(stage);await assembleProduct(stage,project);const destination=deliver(stage,directory,archive);console.log(`AIDD product-workspace created: ${destination}`);}finally{rmSync(temp,{recursive:true,force:true});}}
-  else{console.error("usage: kit.mjs status|check|smoke|release-plan|prepare-release|sync-providers|refresh-fixture|export|new-project");process.exitCode=2;}
+  else{console.error(KIT_USAGE);process.exitCode=2;}
 }catch(error){console.error(`ERROR: ${error.message}`);process.exitCode=2;}
 }

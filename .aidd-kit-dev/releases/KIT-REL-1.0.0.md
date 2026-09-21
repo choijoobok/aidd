@@ -38,7 +38,7 @@
 - `KIT-CHG-013`: 훅 명령 정의가 한 번 변경되므로 Codex에서 새 정의를 다시 신뢰하고 새 세션을 열어야 한다. 이후 런타임 구현 변경은 다른 훅 정의를 바꾸지 않는다. 새 대화는 raw 하위 경로와 provider 표시 형식을 사용하며 기존 chat-history/YYYY-MM/YYYY-MM-DD.md 파일은 이동하거나 다시 쓰지 않는다. 전환 중 UserPromptSubmit과 Stop이 서로 다른 런타임 버전에서 실행된 턴은 반쪽 로그를 만들지 않고 기록하지 않는다.
 - `KIT-CHG-014`: 훅 등록 정의와 Codex 런타임, .codex/hooks.json, .claude/settings.json은 변경하지 않으므로 Codex 재승인이 필요 없다. Claude 훅 파일만 교체된다. 고장 기간의 Claude 턴은 소급 기록하지 않는다. 생성물 경로를 본문에 언급하는 문서 편집은 더 이상 차단되지 않고, 대상 경로가 생성물 루트인 쓰기는 파일 내용과 무관하게 차단된다.
 - `KIT-CHG-015`: 기존 workboard.json에 decision_requests가 없어도 빈 배열로 취급해 검증과 상태 조회가 계속 동작한다. 기존 OI·ADR·CHG·HIS 구조와 ID는 유지한다. 새 프로젝트에는 빈 decision_requests 배열이 생성된다. 기존 프로젝트는 자동 업그레이드하지 않으며 다음 결정 질문 전에 배열을 추가해 점진적으로 채택한다.
-- `KIT-CHG-016`: 기존 export와 프로젝트 배포물의 구조·명령은 바뀌지 않는다. 자동화는 Kit 관리 전용이며 기존 0.2.0과 KIT-CHG 이력을 명시적으로 마이그레이션한다. prepare-release는 릴리스 준비 정본만 수정하고 커밋·태그·프로젝트 자동 업그레이드를 수행하지 않는다.
+- `KIT-CHG-016`: 기존 export와 제품 프로젝트의 구조·명령은 바뀌지 않는다. 자동화는 Kit 관리 전용이며 기존 0.2.0과 KIT-CHG 이력을 명시적으로 마이그레이션한다. prepare-kit-release는 릴리스 준비 정본만 수정하고 커밋·태그·프로젝트 자동 업그레이드를 수행하지 않는다.
 
 ## 검증
 
@@ -74,7 +74,7 @@
 - `KIT-CHG-013`: 기록된 알려진 제한 없음.
 - `KIT-CHG-014`: 기록된 알려진 제한 없음.
 - `KIT-CHG-015`: EVS-004의 Codex·Claude 실제 행동 실행은 아직 기록되지 않았다. 동일 입력·기대·금지 행동·루브릭 계약만 준비했으며 행동 동등성을 주장하지 않는다.
-- `KIT-CHG-016`: prepare-release는 커밋과 Git 태그를 의도적으로 생성하지 않으며 프로젝트 배포본을 자동 업그레이드하지 않는다. 여러 파일 쓰기는 실패 시 원본을 복원하지만 운영체제나 프로세스가 쓰기 도중 강제 종료되는 상황의 파일시스템 전체 원자성까지 보장하지 않는다.
+- `KIT-CHG-016`: prepare-kit-release는 커밋과 Git 태그를 의도적으로 생성하지 않으며 프로젝트 배포본을 자동 업그레이드하지 않는다. 여러 파일 쓰기는 실패 시 원본을 복원하지만 운영체제나 프로세스가 쓰기 도중 강제 종료되는 상황의 파일시스템 전체 원자성까지 보장하지 않는다.
 
 ## 롤백
 
@@ -92,4 +92,4 @@
 - `KIT-CHG-013`: provider 어댑터와 .ai/tools/aidd_hook.mjs를 KIT-CHG-012 기준선으로 되돌리고 독립 .ai/hooks/*.mjs 및 격리 계약을 제거한다.
 - `KIT-CHG-014`: .ai/hooks/claude-log-assistant.mjs, claude-post-check.mjs, claude-protect-file.mjs, claude-protect-shell.mjs와 .ai/tests/harness.test.mjs, .ai/spec/conformance.md, .ai/hooks/README.md를 KIT-CHG-013 기준선으로 되돌린다. provider 배선과 Codex 런타임은 되돌릴 대상이 없다.
 - `KIT-CHG-015`: DRQ 공통 용어와 workboard.decision_requests 검증·출력·게이트 연결, aidd-decision-management 스킬과 관련 수행 계약을 제거한다. 기존 프로젝트의 decision_requests 데이터는 별도 JSON으로 내보내 보존하고 OI·ADR·CHG·HIS는 변경 없이 유지한다.
-- `KIT-CHG-016`: release-plan·prepare-release와 릴리스 메타데이터 검증을 제거하고 repository.json과 export-manifest.json의 버전을 수동 관리하던 KIT-CHG-015 상태로 되돌린다.
+- `KIT-CHG-016`: kit-release-plan·prepare-kit-release와 릴리스 메타데이터 검증을 제거하고 repository.json과 export-manifest.json의 버전을 수동 관리하던 KIT-CHG-015 상태로 되돌린다.

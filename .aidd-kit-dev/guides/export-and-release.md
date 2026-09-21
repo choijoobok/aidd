@@ -60,7 +60,7 @@ export 또는 new-project 경계를 변경했다면 smoke로 다음을 확인한
 먼저 읽기 전용 계획을 확인한다.
 
 ```powershell
-node .aidd-kit-dev/tools/kit.mjs release-plan
+node .aidd-kit-dev/tools/kit.mjs kit-release-plan
 ```
 
 계획은 현재 버전, 미출시 변경, 최고 영향도, 다음 버전과 미검증 차단 사유를 보여준다. `none`만 있으면 다음 버전이 없으며 릴리스를 준비할 수 없다.
@@ -68,11 +68,11 @@ node .aidd-kit-dev/tools/kit.mjs release-plan
 모든 후보가 `verified`이고 작업 트리가 깨끗하면 릴리스 정본을 준비한다.
 
 ```powershell
-node .aidd-kit-dev/tools/kit.mjs prepare-release
-node .aidd-kit-dev/tools/kit.mjs prepare-release --date 2026-09-22
+node .aidd-kit-dev/tools/kit.mjs prepare-kit-release
+node .aidd-kit-dev/tools/kit.mjs prepare-kit-release --date 2026-09-22
 ```
 
-`prepare-release`는 다음을 한 작업으로 처리한다.
+`prepare-kit-release`는 다음을 한 작업으로 처리한다.
 
 - `.aidd-kit-dev/repository.json`의 `current_version`과 `export-manifest.json`의 `kit_version`을 같은 값으로 갱신한다.
 - 포함된 모든 KIT-CHG에 `released_in`을 기록한다.

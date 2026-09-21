@@ -7,31 +7,31 @@
   "version_impact": "minor",
   "delivery_path": "kit-maintenance",
   "problem": "Kit 버전이 repository.json과 export-manifest.json에 수동으로 중복 기록되고, 변경 영향도 집계·다음 버전 계산·릴리스 레코드 작성이 사람의 기억에 의존해 두 버전의 불일치와 누락 가능성이 있다.",
-  "intent": "각 KIT-CHG가 none·patch·minor·major 영향도를 선언하고 미출시 검증 변경의 최고 영향도로 다음 SemVer를 계산한다. 읽기 전용 계획과 명시적 릴리스 준비 명령을 분리하고, 준비 명령이 버전 정본·변경 귀속·릴리스 노트·UNRELEASED를 일관되게 갱신하되 커밋과 태그는 만들지 않는다.",
+  "intent": "각 KIT-CHG가 none·patch·minor·major 영향도를 선언하고 미출시 검증 변경의 최고 영향도로 다음 SemVer를 계산한다. Kit 대상이 명시된 읽기 전용 계획과 릴리스 준비 명령을 분리하고, 준비 명령이 버전 정본·변경 귀속·릴리스 노트·UNRELEASED를 일관되게 갱신하되 커밋과 태그는 만들지 않는다.",
   "scope": [
     "모든 KIT-CHG에 version_impact와 출시 완료 시 released_in 계약 추가",
-    "release-plan의 미출시 변경 집계·차단 사유·다음 SemVer 미리보기",
-    "prepare-release의 깨끗한 Git 작업 트리·검증 완료·버전 일치·중복 릴리스 및 태그 검사",
+    "kit-release-plan의 미출시 변경 집계·차단 사유·다음 SemVer 미리보기",
+    "prepare-kit-release의 깨끗한 Git 작업 트리·검증 완료·버전 일치·중복 릴리스 및 태그 검사",
     "두 버전 정본, 포함 변경의 released_in, KIT-REL 릴리스 노트와 UNRELEASED의 트랜잭션성 갱신",
     "check의 SemVer·정본 일치·변경 영향도·릴리스 귀속 검증",
     "관리자 스킬·가이드·ADR과 자동 회귀 테스트 현행화"
   ],
-  "compatibility": "기존 export와 프로젝트 배포물의 구조·명령은 바뀌지 않는다. 자동화는 Kit 관리 전용이며 기존 0.2.0과 KIT-CHG 이력을 명시적으로 마이그레이션한다. prepare-release는 릴리스 준비 정본만 수정하고 커밋·태그·프로젝트 자동 업그레이드를 수행하지 않는다.",
+  "compatibility": "기존 export와 제품 프로젝트의 구조·명령은 바뀌지 않는다. 자동화는 Kit 관리 전용이며 기존 0.2.0과 KIT-CHG 이력을 명시적으로 마이그레이션한다. prepare-kit-release는 릴리스 준비 정본만 수정하고 커밋·태그·프로젝트 자동 업그레이드를 수행하지 않는다.",
   "validation": [
     "node .aidd-kit-dev/tests/release-version.test.mjs",
     "node .aidd-kit-dev/tools/kit.mjs sync-providers",
     "node .aidd-kit-dev/tools/kit.mjs check",
     "node .aidd-kit-dev/tools/kit.mjs smoke",
-    "node .aidd-kit-dev/tools/kit.mjs release-plan"
+    "node .aidd-kit-dev/tools/kit.mjs kit-release-plan"
   ],
   "risks": [
     "과거 미출시 변경의 영향도 분류가 다음 버전에 직접 영향을 준다. 호환 계약과 경로·CLI 변경을 기준으로 한 번 명시하고 Git 검토 대상으로 남긴다.",
     "여러 파일 갱신 중 실패하면 부분 상태가 생길 수 있다. 쓰기 전 전체 전제조건을 검증하고 실패 시 원본 바이트를 복원한다.",
     "자동 생성된 릴리스 노트가 변경 의도를 과도하게 단순화할 수 있다. KIT-CHG의 intent·compatibility·validation·known_limit·rollback을 정본으로 사용한다."
   ],
-  "rollback": "release-plan·prepare-release와 릴리스 메타데이터 검증을 제거하고 repository.json과 export-manifest.json의 버전을 수동 관리하던 KIT-CHG-015 상태로 되돌린다.",
+  "rollback": "kit-release-plan·prepare-kit-release와 릴리스 메타데이터 검증을 제거하고 repository.json과 export-manifest.json의 버전을 수동 관리하던 KIT-CHG-015 상태로 되돌린다.",
   "completion_blocker": "없음",
-  "validation_result": "SemVer 계산·최고 영향도 집계·미검증 차단·릴리스 정본 동시 갱신·버전 불일치와 영향도 누락 거부의 자동 테스트 5건, 기존 전체 테스트 24건, provider 동기화, quick check, export·new-project smoke와 git diff 검사가 통과했다.",
-  "known_limit": "prepare-release는 커밋과 Git 태그를 의도적으로 생성하지 않으며 프로젝트 배포본을 자동 업그레이드하지 않는다. 여러 파일 쓰기는 실패 시 원본을 복원하지만 운영체제나 프로세스가 쓰기 도중 강제 종료되는 상황의 파일시스템 전체 원자성까지 보장하지 않는다.",
+  "validation_result": "명시적인 Kit 릴리스 명령명, SemVer 계산·최고 영향도 집계·미검증 차단·릴리스 정본 동시 갱신·버전 불일치와 영향도 누락 거부의 자동 테스트 6건, 전체 테스트 25건, provider 동기화, quick check, export·new-project smoke와 git diff 검사가 통과했다.",
+  "known_limit": "prepare-kit-release는 커밋과 Git 태그를 의도적으로 생성하지 않으며 프로젝트 배포본을 자동 업그레이드하지 않는다. 여러 파일 쓰기는 실패 시 원본을 복원하지만 운영체제나 프로세스가 쓰기 도중 강제 종료되는 상황의 파일시스템 전체 원자성까지 보장하지 않는다.",
   "released_in": "1.0.0"
 }

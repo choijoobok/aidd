@@ -30,5 +30,6 @@
     "용어 제거 전에 남은 소스·정본 사용처가 있으면 term-apply가 차단된다."
   ],
   "rollback": "term-review·term-apply와 TCH 구조를 제거하고 종전 term-propose·term-impact·term-decide·term-close 및 TIR·TAP 정본 구조를 복원한다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

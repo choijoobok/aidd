@@ -26,5 +26,6 @@
     "미신뢰 훅은 Codex가 실행하지 않으므로 최초 신뢰 경고는 Codex 자체 안내에 의존한다."
   ],
   "rollback": "Codex 어댑터의 codex-hook-review-reminder 연결과 계약·테스트·가이드 추가분을 제거한 뒤 sync-providers를 실행한다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

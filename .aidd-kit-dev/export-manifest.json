@@ -1,22 +1,64 @@
 {
   "schema_version": 1,
-  "kit_version": "0.2.0",
+  "kit_version": "1.0.0",
   "entries": [
-    {"source": ".ai", "target": ".ai"},
-    {"source": ".aidd-kit-dev/export/AGENTS.md", "target": "AGENTS.md"},
-    {"source": ".aidd-kit-dev/export/README.md", "target": "README.md"},
-    {"source": ".aidd-kit-dev/export/CLAUDE.md", "target": "CLAUDE.md"},
-    {"source": ".aidd-kit-dev/export/.codex", "target": ".codex"},
-    {"source": ".aidd-kit-dev/export/.claude/settings.json", "target": ".claude/settings.json"},
-    {"source": ".aidd-kit-dev/export/.githooks", "target": ".githooks"},
-    {"source": ".aidd-kit-dev/export/.github", "target": ".github"},
-    {"source": ".aidd-kit-dev/export/.gitattributes", "target": ".gitattributes"},
-    {"source": ".aidd-kit-dev/export/.gitignore", "target": ".gitignore"}
+    {
+      "source": ".ai",
+      "target": ".ai"
+    },
+    {
+      "source": ".aidd-kit-dev/export/AGENTS.md",
+      "target": "AGENTS.md"
+    },
+    {
+      "source": ".aidd-kit-dev/export/README.md",
+      "target": "README.md"
+    },
+    {
+      "source": ".aidd-kit-dev/export/CLAUDE.md",
+      "target": "CLAUDE.md"
+    },
+    {
+      "source": ".aidd-kit-dev/export/.codex",
+      "target": ".codex"
+    },
+    {
+      "source": ".aidd-kit-dev/export/.claude/settings.json",
+      "target": ".claude/settings.json"
+    },
+    {
+      "source": ".aidd-kit-dev/export/.githooks",
+      "target": ".githooks"
+    },
+    {
+      "source": ".aidd-kit-dev/export/.github",
+      "target": ".github"
+    },
+    {
+      "source": ".aidd-kit-dev/export/.gitattributes",
+      "target": ".gitattributes"
+    },
+    {
+      "source": ".aidd-kit-dev/export/.gitignore",
+      "target": ".gitignore"
+    }
   ],
   "generated": [
-    {"source": ".ai/skills", "targets": [".agents/skills", ".claude/skills"]},
-    {"type": "role-marker", "target": ".aidd-role.json"},
-    {"type": "origin", "target": ".aidd-kit-origin.json"}
+    {
+      "source": ".ai/skills",
+      "targets": [
+        ".agents/skills",
+        ".claude/skills"
+      ]
+    },
+    {
+      "type": "role-marker",
+      "target": ".aidd-role.json"
+    },
+    {
+      "type": "origin",
+      "target": ".aidd-kit-origin.json"
+    }
   ],
   "forbidden_prefixes": [
     ".aidd-kit-dev/"

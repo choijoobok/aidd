@@ -38,5 +38,6 @@
   "rollback": "DRQ 공통 용어와 workboard.decision_requests 검증·출력·게이트 연결, aidd-decision-management 스킬과 관련 수행 계약을 제거한다. 기존 프로젝트의 decision_requests 데이터는 별도 JSON으로 내보내 보존하고 OI·ADR·CHG·HIS는 변경 없이 유지한다.",
   "completion_blocker": "없음",
   "validation_result": "결정 연속성 4개 시나리오와 전체 Kit 9개 테스트, provider 동기화, 훅 self-test, quick check, reference fixture 재생성 비교, export·new-project smoke와 git diff 검사가 통과했다.",
-  "known_limit": "EVS-004의 Codex·Claude 실제 행동 실행은 아직 기록되지 않았다. 동일 입력·기대·금지 행동·루브릭 계약만 준비했으며 행동 동등성을 주장하지 않는다."
+  "known_limit": "EVS-004의 Codex·Claude 실제 행동 실행은 아직 기록되지 않았다. 동일 입력·기대·금지 행동·루브릭 계약만 준비했으며 행동 동등성을 주장하지 않는다.",
+  "released_in": "1.0.0"
 }

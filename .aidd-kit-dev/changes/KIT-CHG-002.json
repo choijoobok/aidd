@@ -30,5 +30,6 @@
     "상세 장이 늘어나므로 프로젝트 팀 가이드를 단일 색인으로 유지해야 한다."
   ],
   "rollback": "KIT-CHG-002의 가이드 분할과 연결 변경을 되돌리고 기존 두 프로젝트 가이드를 복원한다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

@@ -32,5 +32,6 @@
   "rollback": "release-plan·prepare-release와 릴리스 메타데이터 검증을 제거하고 repository.json과 export-manifest.json의 버전을 수동 관리하던 KIT-CHG-015 상태로 되돌린다.",
   "completion_blocker": "없음",
   "validation_result": "SemVer 계산·최고 영향도 집계·미검증 차단·릴리스 정본 동시 갱신·버전 불일치와 영향도 누락 거부의 자동 테스트 5건, 기존 전체 테스트 24건, provider 동기화, quick check, export·new-project smoke와 git diff 검사가 통과했다.",
-  "known_limit": "prepare-release는 커밋과 Git 태그를 의도적으로 생성하지 않으며 프로젝트 배포본을 자동 업그레이드하지 않는다. 여러 파일 쓰기는 실패 시 원본을 복원하지만 운영체제나 프로세스가 쓰기 도중 강제 종료되는 상황의 파일시스템 전체 원자성까지 보장하지 않는다."
+  "known_limit": "prepare-release는 커밋과 Git 태그를 의도적으로 생성하지 않으며 프로젝트 배포본을 자동 업그레이드하지 않는다. 여러 파일 쓰기는 실패 시 원본을 복원하지만 운영체제나 프로세스가 쓰기 도중 강제 종료되는 상황의 파일시스템 전체 원자성까지 보장하지 않는다.",
+  "released_in": "1.0.0"
 }

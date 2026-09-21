@@ -25,5 +25,6 @@
     "안내는 자동 동기화가 아니므로 사용자가 명령을 실행하지 않으면 provider 복사본 드리프트가 남을 수 있다."
   ],
   "rollback": "skill_sync_guidance 계약과 역할별 안내 함수를 제거하고 기존 단일 Kit 관리자 안내로 되돌린다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

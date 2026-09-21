@@ -27,5 +27,6 @@
     "기존 스킬의 상세 절차를 제거한 뒤 전용 스킬 연결이 누락되면 용어 발견 흐름이 끊길 수 있다."
   ],
   "rollback": "aidd-terminology 스킬을 제거하고 KIT-CHG-007의 용어 절차를 요구발굴·아키텍처·전달·문서 정합성 스킬과 AGENTS.md에 다시 인라인으로 복원한다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

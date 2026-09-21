@@ -35,5 +35,6 @@
     "셸 보호는 인터프리터 인수 안의 쓰기(node -e, python -c 등)를 변경으로 분류하지 않는다. 읽기 전용 작업을 막지 않는 대신 이 경로는 파일 보호 훅과 생성기 안내에 의존한다."
   ],
   "rollback": ".ai/hooks/claude-log-assistant.mjs, claude-post-check.mjs, claude-protect-file.mjs, claude-protect-shell.mjs와 .ai/tests/harness.test.mjs, .ai/spec/conformance.md, .ai/hooks/README.md를 KIT-CHG-013 기준선으로 되돌린다. provider 배선과 Codex 런타임은 되돌릴 대상이 없다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

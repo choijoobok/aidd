@@ -34,5 +34,6 @@
     "중단되거나 Stop이 오지 않은 턴의 사용자 원문은 운영체제 임시 폴더에 남을 수 있지만 최종 대화 로그에는 반쪽 블록을 만들지 않는다. 다음 Claude 질의는 같은 세션 슬롯을 대체하고 Codex는 turn_id별 슬롯을 사용한다."
   ],
   "rollback": "provider 어댑터와 .ai/tools/aidd_hook.mjs를 KIT-CHG-012 기준선으로 되돌리고 독립 .ai/hooks/*.mjs 및 격리 계약을 제거한다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

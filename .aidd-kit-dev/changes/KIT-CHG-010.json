@@ -28,5 +28,6 @@
     "안내를 훅 자체로 전달하므로 아직 신뢰되지 않은 훅은 실행되지 않을 수 있다. Codex 자체 시작 경고와 AGENTS 계약을 함께 사용하되 AIDD가 신뢰 상태를 추정하거나 차단하지 않는다."
   ],
   "rollback": "additionalContext와 final_answer 표시 계약을 제거하고 Codex 어댑터를 systemMessage 전용 상대 경로 구성으로 되돌린다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

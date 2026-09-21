@@ -30,5 +30,6 @@
     "기존 collaboration·approval 기반 프로젝트에는 자동 업그레이드를 제공하지 않으므로 변경 설명서에 수동 이관 원칙을 남긴다."
   ],
   "rollback": "HIS 조각과 관련 CLI·생성 뷰를 제거하고 KIT-CHG-008의 collaboration·PM 승인·작업 배정 모델을 portable 명세와 fixture에서 복원한다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

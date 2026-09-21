@@ -27,5 +27,6 @@
     "활성 PM이 여러 명이면 확인 대상을 명시하지 않은 팀원 review를 허용하지 않는다."
   ],
   "rollback": "팀원용 term-review 권한과 오프라인 전달 안내를 제거하고 term-review·term-apply 모두 PM 신원을 요구하는 KIT-CHG-006 흐름으로 되돌린다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

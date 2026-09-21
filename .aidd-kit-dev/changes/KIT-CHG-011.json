@@ -27,5 +27,6 @@
     "commentary에만 표시된 경우에는 접힌 영역에 숨으므로 첫 final_answer에서 한 번 더 표시하지만 그 이후에는 반복하지 않는다."
   ],
   "rollback": "반복 금지 조건과 회귀 검사를 제거하고 KIT-CHG-010의 첫 final_answer 표시 계약으로 되돌린다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

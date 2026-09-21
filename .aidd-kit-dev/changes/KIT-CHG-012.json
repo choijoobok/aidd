@@ -30,5 +30,6 @@
     "REQ/NFR와 기능 상세 명세의 경계를 문구만 바꾸고 문서 정책을 분리하지 않으면 같은 혼선이 재발할 수 있다."
   ],
   "rollback": "세 워크시트와 문서 정책 분리를 되돌리고 화면 생성 경로를 requirements.md로 복원한 뒤 공통 용어 baseline과 fixture를 KIT-CHG-011 상태로 재생성한다.",
-  "completion_blocker": "없음"
+  "completion_blocker": "없음",
+  "released_in": "1.0.0"
 }

@@ -19,11 +19,12 @@ Kit 원본은 다음 경계를 만족해야 한다.
 - export는 하나의 허용 목록으로 directory와 ZIP을 조립하고 `.aidd-kit-dev/`와 관리 전용 스킬을 포함하지 않는다.
 - provider 스킬 복사본은 portable 스킬과 같고 provider 훅은 공통 훅 계약의 이벤트별 동작에 연결된다.
 - 실행 도구와 훅은 Node.js 22 이상과 표준 라이브러리만 사용하며 훅 입력을 UTF-8로 처리한다.
+- 훅 격리는 1순위 불변 조건이다. 각 provider·이벤트·책임은 전용 `.ai/hooks/*.mjs` 프로세스를 사용하고 런타임 훅 사이의 공통 dispatcher·공통 라이브러리·상호 import·상호 호출을 금지한다. 한 훅 변경은 다른 훅의 등록 위치·명령·승인 해시를 바꾸지 않는다.
 - `new-project`는 `product-workspace` 역할과 유효한 `project/.aidd/ssot/`를 만든다.
 
 ## 훅
 
-provider 훅은 세션 요약과 배선 self-test, 생성물 직접 수정 보호, 용어 정본 변경 뒤의 현행화, 선택 가능한 로컬 대화 로그를 제공한다. Codex `SessionStart`는 실행 표면에 관계없이 CLI `/hooks`에서 현재 작업공간 훅을 검토·신뢰했는지 확인하라는 `systemMessage`와 모델용 `additionalContext`를 함께 반환한다. 새 `startup`의 컨텍스트는 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에 같은 경고를 표시하게 한다. 접히는 진행 메시지(`commentary`)에 표시한 것은 충족으로 보지 않으며 commentary에 이미 표시했더라도 final_answer에서 다시 표시한다. 이 최종 답변 지시는 세션당 한 번만 적용하며, 이전 assistant의 final_answer에 경고가 있으면 이후 응답에서 반복하지 않는다. resume·clear·compact는 최종 답변 표시를 다시 요구하지 않는다. Claude에는 이 안내를 연결하지 않는다. 이 안내는 Codex 자체 훅 신뢰 기능을 사용하며 AIDD 승인 상태를 별도로 저장하거나 사용자의 답을 기다리거나 작업을 차단하지 않는다. repo-local Codex 명령은 세션 작업 디렉터리와 무관하게 Git 루트를 우선하고, 아직 Git 저장소가 아닌 템플릿에서는 가장 가까운 상위 `.aidd-role.json`을 기준으로 실행기를 찾는다. 훅은 AIDD 자체 승인 상태, Git 서명, 외부 trust-root, 일반 shell 권한 검사를 강제하지 않는다. 훅 실패는 해당 자동화 실패만 간결하게 알리고 별도의 정책 승인을 만들지 않는다.
+provider 훅은 세션 요약, 생성물 직접 수정 보호, 용어 정본 변경 뒤의 현행화와 프로젝트 루트의 일자별 append-only 대화 로그를 제공한다. 배선 self-test는 런타임 훅이 아니라 독립된 수동 검증 명령이다. 대화 기록의 `UserPromptSubmit`은 사용자 원문과 로컬 제출 시각을 provider·세션·턴별 임시 슬롯에 보관하며 최종 파일에는 쓰지 않는다. `Stop`은 같은 슬롯의 사용자 원문과 최종 AI 응답을 `## [{시각}] Codex|Claude`, `### USER`, `### AI (Codex|Claude)`, `---` 형식의 한 블록으로 결합하고, 동시 세션끼리 블록이 섞이지 않도록 잠금 아래 현재 프로젝트 루트의 `chat-history/YYYY-MM/raw/YYYY-MM-DD.md`에 한 번에 추가한다. 대응하는 양쪽 원문이 모두 있을 때만 기록하고 성공 뒤 임시 슬롯을 제거한다. Codex는 `session_id + turn_id`, Claude는 `session_id`로 턴을 격리하며 Codex `Stop`은 `last_assistant_message`를 사용한다. Codex `SessionStart`의 전용 안내 훅은 실행 표면에 관계없이 CLI `/hooks`에서 현재 작업공간 훅을 검토·신뢰했는지 확인하라는 `systemMessage`와 모델용 `additionalContext`를 함께 반환한다. 새 `startup`의 컨텍스트는 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에 같은 경고를 표시하게 한다. 접히는 진행 메시지(`commentary`)에 표시한 것은 충족으로 보지 않으며 commentary에 이미 표시했더라도 final_answer에서 다시 표시한다. 이 최종 답변 지시는 세션당 한 번만 적용하며, 이전 assistant의 final_answer에 경고가 있으면 이후 응답에서 반복하지 않는다. resume·clear·compact는 최종 답변 표시를 다시 요구하지 않는다. Claude에는 이 안내를 연결하지 않는다. 이 안내는 Codex 자체 훅 신뢰 기능을 사용하며 AIDD 승인 상태를 별도로 저장하거나 사용자의 답을 기다리거나 작업을 차단하지 않는다. 훅은 AIDD 자체 승인 상태, Git 서명, 외부 trust-root, 일반 shell 권한 검사를 강제하지 않는다. 훅 실패는 해당 자동화 실패만 간결하게 알리고 별도의 정책 승인을 만들지 않는다.
 
 ## 파생 문서
 

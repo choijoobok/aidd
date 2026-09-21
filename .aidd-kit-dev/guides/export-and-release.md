@@ -11,7 +11,7 @@ node .aidd-kit-dev/tools/kit.mjs check
 
 `.agents/skills/`와 `.claude/skills/`의 복사본을 직접 수정하지 않는다.
 
-Codex 훅 어댑터의 정본은 `.aidd-kit-dev/export/.codex/hooks.json`이다. Codex 전용 `SessionStart` 훅 신뢰 확인 경고는 이 어댑터에만 연결하고 Claude 어댑터에는 추가하지 않는다. 실행기는 Git 루트를 우선하고 아직 Git 저장소가 아닌 템플릿에서는 가장 가까운 상위 `.aidd-role.json`을 기준으로 찾으며, 모델용 컨텍스트를 반환하는 handler에는 `additionalContextLimit`를 둔다. 어댑터를 바꾸면 `sync-providers`로 루트 복사본을 갱신한 뒤 self-test, Git 유무별 하위 폴더 실행 테스트와 smoke로 export 경계를 확인한다.
+Codex 훅 어댑터의 정본은 `.aidd-kit-dev/export/.codex/hooks.json`이다. Codex 전용 `SessionStart` 훅 신뢰 확인 경고는 이 어댑터에만 연결하고 Claude 어댑터에는 추가하지 않는다. 훅 격리는 1순위 규칙이며 provider·이벤트·책임별 전용 `.ai/hooks/*.mjs`를 사용한다. 런타임 훅 사이의 공통 코드, 상호 import와 상호 호출을 금지하고 기존 event/group/handler 위치를 고정한다. 모델용 컨텍스트를 반환하는 handler에는 `additionalContextLimit`를 둔다. 어댑터를 바꾸면 `sync-providers`로 루트 복사본을 갱신한 뒤 self-test, 격리 행위 테스트와 smoke로 export 경계를 확인한다.
 
 ## Export 경계
 

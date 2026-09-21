@@ -1,15 +1,14 @@
 {
   "hooks": {
     "SessionStart":[{"hooks":[
-      {"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","session-brief"],"timeout":15,"statusMessage":"AIDD session brief"},
-      {"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","self-test","--hook"],"timeout":15,"statusMessage":"AIDD hook wiring check"}
+      {"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/hooks/claude-session-brief.mjs"],"timeout":15,"statusMessage":"AIDD session brief"}
     ]}],
     "PreToolUse":[
-      {"matcher":"Write|Edit|NotebookEdit|apply_patch|^mcp__.*__(?:write|edit|move|create)","hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","protect","--platform","claude","--kind","file"],"timeout":15,"statusMessage":"AIDD generated-output protection"}]},
-      {"matcher":"Bash|PowerShell|^mcp__.*__(?:start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)","hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","protect","--platform","claude","--kind","shell"],"timeout":15,"statusMessage":"AIDD generated-output protection"}]}
+      {"matcher":"Write|Edit|NotebookEdit|apply_patch|^mcp__.*__(?:write|edit|move|create)","hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/hooks/claude-protect-file.mjs"],"timeout":15,"statusMessage":"AIDD generated-output file protection"}]},
+      {"matcher":"Bash|PowerShell|^mcp__.*__(?:start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)","hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/hooks/claude-protect-shell.mjs"],"timeout":15,"statusMessage":"AIDD generated-output shell protection"}]}
     ],
-    "PostToolUse":[{"matcher":"Write|Edit|NotebookEdit|apply_patch|Bash|PowerShell|^mcp__.*__(?:write|edit|move|create|start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)","hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","post-check","--platform","claude"],"timeout":20,"statusMessage":"AIDD post-change check"}]}],
-    "UserPromptSubmit":[{"hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","local-log","--platform","claude","--role","user"],"timeout":10,"statusMessage":"AIDD local log"}]}],
-    "Stop":[{"hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/tools/aidd_hook.mjs","local-log","--platform","claude","--role","assistant"],"timeout":10,"statusMessage":"AIDD local log"}]}]
+    "PostToolUse":[{"matcher":"Write|Edit|NotebookEdit|apply_patch|Bash|PowerShell|^mcp__.*__(?:write|edit|move|create|start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)","hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/hooks/claude-post-check.mjs"],"timeout":20,"statusMessage":"AIDD post-change check"}]}],
+    "UserPromptSubmit":[{"hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/hooks/claude-log-user.mjs"],"timeout":10,"statusMessage":"AIDD unified conversation log"}]}],
+    "Stop":[{"hooks":[{"type":"command","command":"node","args":["${CLAUDE_PROJECT_DIR}/.ai/hooks/claude-log-assistant.mjs"],"timeout":10,"statusMessage":"AIDD unified conversation log"}]}]
   }
 }

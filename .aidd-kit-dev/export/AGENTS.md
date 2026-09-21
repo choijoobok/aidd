@@ -24,6 +24,7 @@
 
 ## 훅
 
+- 훅 격리는 다른 모든 훅 설계 기준보다 우선하는 1번 규칙이다. provider·이벤트·책임별 전용 `.ai/hooks/*.mjs` 프로세스를 사용하고 런타임 훅 사이의 공통 dispatcher·공통 라이브러리·상호 import·상호 호출을 금지한다. 코드 중복은 허용한다. 한 훅의 추가·수정·삭제가 다른 훅의 명령, 실행 파일, 등록 인덱스 또는 승인 해시를 바꾸면 안 된다. provider 제약 때문에 완전 격리를 보장할 수 없으면 구현하지 말고 사용자에게 한계를 알린다.
 - AIDD 훅은 세션 맥락, 생성물 직접 수정 보호, 용어집 현행화와 선택 가능한 로컬 대화 기록을 제공한다.
 - 훅 배선을 변경하면 `node .ai/tools/aidd_hook.mjs self-test --hook`을 실행한다.
 - 훅은 별도 승인 게이트나 재시작 상태를 저장하지 않고, Git 서명, 외부 trust root 또는 광범위한 shell 검사를 요구하지 않는다.
@@ -35,4 +36,4 @@
 
 - 프로젝트 정본을 갱신한 뒤 영향받은 범위에 대해 `node .ai/tools/aidd.mjs generate`, `node .ai/tools/aidd.mjs validate`와 관련 테스트 또는 직접 검사를 실행한다.
 - 적용되는 정본 요건이나 사용자 요청이 없으면 보안·권한·신원·서명 검사를 임의로 추가하지 않는다.
-- 로컬 대화 기록이 활성화된 경우에만 원문을 Git에서 제외된 `chat-history/`에 보관한다.
+- 로컬 대화 기록이 활성화된 경우 `UserPromptSubmit`은 provider·세션·턴별로 사용자 원문을 임시 보관하고 `Stop`이 최종 응답과 결합한다. `Codex` 또는 `Claude`를 표시한 질의·응답 한 블록을 현재 프로젝트 루트의 `chat-history/YYYY-MM/raw/YYYY-MM-DD.md`에 잠금 아래 한 번에 추가하며 한쪽만 있는 블록은 기록하지 않는다. `AIDD_CONVERSATION_LOG_FILE`로 명시적인 단일 경로를 지정할 수 있다.

@@ -51,19 +51,21 @@ node .ai/tools/aidd_hook.mjs self-test --hook
 
 ## 훅이 하는 일
 
-공통 계약은 `.ai/hooks/contract.json`, 실행기는 `.ai/tools/aidd_hook.mjs`다. provider 설정은 `.codex/hooks.json`과 `.claude/settings.json`의 얇은 어댑터다.
+공통 계약은 `.ai/hooks/contract.json`이고 provider 설정은 `.codex/hooks.json`과 `.claude/settings.json`이다. `.ai/tools/aidd_hook.mjs`는 런타임 실행기가 아니라 수동 배선 검사기다.
+
+훅 격리는 1순위 규칙이다. 각 provider·이벤트·책임은 `.ai/hooks/`의 전용 `.mjs` 프로세스를 사용한다. 런타임 훅끼리 공통 dispatcher, 공통 라이브러리, 상호 import 또는 상호 호출을 사용하지 않으며 코드 중복을 허용한다. 기존 등록 순서를 바꾸면 Codex의 위치 기반 승인 키가 이동할 수 있으므로 순서를 고정한다. 한 훅 변경이 다른 훅의 명령·실행 파일·등록 위치·승인 해시를 바꾸는 변경은 허용하지 않는다.
 
 훅의 책임은 다음으로 제한된다.
 
 - 세션 시작에 작은 역할·프로젝트 상태 요약 제공
-- 계약과 provider 이벤트 배선 self-test
+- 런타임과 분리된 수동 계약·provider 배선 self-test
 - 생성 문서와 provider 스킬 복사본의 직접 수정 방지
 - 프로젝트 용어 정본을 직접 변경한 경우 용어 문서 현행화 보조; 정상 오프라인 결정 흐름의 `term-apply`는 자체적으로 생성·검증까지 완료
-- 훅이 제공받은 대화 원문의 선택 가능한 로컬 기록
+- `UserPromptSubmit`에서 provider·세션·턴별로 사용자 원문을 임시 보관하고 `Stop`에서 최종 응답과 결합해 `Codex` 또는 `Claude`가 표시된 질의·응답 한 블록을 `chat-history/YYYY-MM/raw/YYYY-MM-DD.md`에 잠금 아래 한 번에 추가; 한쪽만 있는 블록은 기록하지 않음
 
 훅은 AIDD 승인 게이트나 재시작 상태를 저장하지 않고, Git 서명, 외부 trust root, 일반 shell 명령 분류, 원격 권한 확인이나 광범위 테스트를 자동으로 강제하지 않는다.
 
-Codex는 CLI와 Windows 앱 구분 없이 매 `SessionStart`에 CLI `/hooks`에서 현재 작업공간 훅을 검토하고 신뢰 처리했는지 확인하라는 `systemMessage`와 모델 문맥을 전달한다. 새 `startup`에서는 Windows 앱이 `systemMessage`를 대화에 표시하지 않아도 보이도록 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에 같은 안내를 표시한다. 접히는 진행 메시지(`commentary`)에 표시한 것은 충족으로 보지 않으며 commentary에 이미 표시했더라도 그 첫 final_answer에서 다시 표시한다. 이는 매 요청 규칙이 아니라 세션당 한 번만 적용하는 규칙이다. 이전 assistant의 final_answer에 안내가 있으면 이후 응답에서는 반복하지 않고, resume·clear·compact에서도 그 최종 답변 줄을 다시 요구하지 않는다. Claude에는 이 경고를 표시하지 않는다. 신규·변경된 훅의 실제 신뢰 판정과 실행 여부는 Codex 자체 기능이 담당하며 AIDD는 별도 승인 상태를 저장하거나 사용자의 답을 기다리거나 작업을 차단하지 않는다. 하위 폴더에서 세션을 시작해도 훅 실행기는 Git 루트를 우선하고, 아직 Git 저장소가 아닌 템플릿에서는 가장 가까운 상위 `.aidd-role.json`을 기준으로 찾는다.
+Codex는 CLI와 Windows 앱 구분 없이 매 `SessionStart`에 CLI `/hooks`에서 현재 작업공간 훅을 검토하고 신뢰 처리했는지 확인하라는 `systemMessage`와 모델 문맥을 전달한다. 새 `startup`에서는 Windows 앱이 `systemMessage`를 대화에 표시하지 않아도 보이도록 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에 같은 안내를 표시한다. 접히는 진행 메시지(`commentary`)에 표시한 것은 충족으로 보지 않으며 commentary에 이미 표시했더라도 그 첫 final_answer에서 다시 표시한다. 이는 매 요청 규칙이 아니라 세션당 한 번만 적용하는 규칙이다. 이전 assistant의 final_answer에 안내가 있으면 이후 응답에서는 반복하지 않고, resume·clear·compact에서도 그 최종 답변 줄을 다시 요구하지 않는다. Claude에는 이 경고를 표시하지 않는다. 신규·변경된 훅의 실제 신뢰 판정과 실행 여부는 Codex 자체 기능이 담당하며 AIDD는 별도 승인 상태를 저장하거나 사용자의 답을 기다리거나 작업을 차단하지 않는다.
 
 ## self-test의 정확한 범위
 
@@ -71,7 +73,7 @@ Codex는 CLI와 Windows 앱 구분 없이 매 `SessionStart`에 CLI `/hooks`에�
 node .ai/tools/aidd_hook.mjs self-test --hook
 ```
 
-이 검사는 Node.js 최소 버전, 훅 런타임 파일, 계약의 필수 정책 루트와 이벤트 목록, provider 이벤트 토큰, 폐기된 패턴의 재도입 여부를 확인한다. `--hook`은 provider 훅 호출 형식으로 결과를 반환한다.
+이 검사는 Node.js 최소 버전, 계약의 필수 정책 루트와 이벤트 목록, provider 이벤트 토큰, 전용 런타임 파일의 존재, 실행 파일 재사용 금지, 런타임 간 local import 금지와 고정 등록 위치를 확인한다. `--hook`은 기존 호출 호환성을 위해 유지한다.
 
 self-test 통과만으로 모든 `.mjs`가 표준 라이브러리만 사용하는지, 제품 기능이 맞는지, 보안·권한이 적절한지 증명하지 않는다. 그런 검토는 해당 요구와 변경 범위에 맞는 테스트로 따로 수행한다.
 

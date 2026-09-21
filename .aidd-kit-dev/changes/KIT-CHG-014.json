@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-014",
+  "title": "Claude 어댑터 훅 런타임 계약 불일치 수정",
+  "class": "C2",
+  "status": "verified",
+  "delivery_path": "kit-maintenance",
+  "problem": "Claude 런타임 훅이 Codex의 입력·출력 계약을 전제로 작성되어 있었다. Stop 훅은 Claude Code가 제공하지 않는 last_assistant_message를 읽어 Claude 블록이 대화 로그에 한 번도 기록되지 않았고, PostToolUse 안내는 exit 0의 stderr로 출력되어 Claude Code가 모델에 전달하지 않았다. 생성물 보호는 JSON.stringify가 만드는 이중 역슬래시를 단일 역슬래시로 치환해 Windows 경로가 보호 루트와 일치하지 않았고, 도구 입력 전체를 부분문자열로 검사해 파일 내용이 생성기 문구를 포함하면 생성물 쓰기가 허용되고 생성물 경로를 언급하는 일반 문서 편집은 반대로 차단됐다. 하네스 테스트는 Claude Stop에 Codex 모양의 입력을 넣어 이 결함을 검출하지 못했고, 배포 프로젝트에서는 .aidd-kit-dev/export 참조 때문에 실행 자체가 불가능했다.",
+  "intent": "provider의 실제 입력·출력 계약에 맞게 Claude 런타임 파일만 수정하고 Codex 훅의 명령·실행 파일·등록 위치·승인 해시는 그대로 유지한다. Claude에서 대화 로그와 생성물 보호가 실제로 동작하는지 행위 테스트로 고정하고, 배포 프로젝트에서도 같은 테스트를 실행할 수 있게 한다.",
+  "scope": [
+    "claude-log-assistant.mjs가 응답 본문 필드가 없을 때 Stop 입력의 transcript_path에서 해당 턴의 마지막 assistant 텍스트만 읽고 진행 메시지와 하위 에이전트 출력은 제외",
+    "claude-post-check.mjs 안내를 차단 없는 exit 2로 전달하고 트리거 경로 판정에 경로 구분자 정규화 적용",
+    "claude-protect-file.mjs가 도구 입력의 경로 필드만 대상으로 판정하도록 변경하고 내용 기반 허용 목록 제거",
+    "claude-protect-file.mjs와 claude-protect-shell.mjs가 역슬래시를 정규화하고 연속 구분자를 접어 Windows 경로 우회 차단",
+    "harness.test.mjs에 Claude 전용 행위 테스트 3건 추가와 export 비교 조건화로 배포 프로젝트에서도 실행 가능하게 변경",
+    "conformance 명세와 훅 README에 provider별 Stop 응답 취득과 안내 전달 방식 기록",
+    "claude-protect-shell.mjs를 명령 문자열 부분문자열 검사에서 변경 명령·리다이렉션의 대상 인접 판정으로 변경하고 생성기 허용 목록을 명령 전체 일치로 고정"
+  ],
+  "compatibility": "훅 등록 정의와 Codex 런타임, .codex/hooks.json, .claude/settings.json은 변경하지 않으므로 Codex 재승인이 필요 없다. Claude 훅 파일만 교체된다. 고장 기간의 Claude 턴은 소급 기록하지 않는다. 생성물 경로를 본문에 언급하는 문서 편집은 더 이상 차단되지 않고, 대상 경로가 생성물 루트인 쓰기는 파일 내용과 무관하게 차단된다.",
+  "validation": [
+    "node .ai/tools/aidd_hook.mjs self-test --hook",
+    "node .ai/tests/harness.test.mjs (kit-source와 배포 프로젝트 양쪽)",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke",
+    "실제 Claude Code 세션에서 Stop 뒤 chat-history 일자 파일에 Claude 질의·응답 블록이 생성되는지 확인",
+    "실제 Claude Code 세션에서 PostToolUse 안내가 모델 입력으로 전달되는지 확인",
+    "Windows 역슬래시 경로와 생성기 문구를 포함한 내용으로 생성물 쓰기 차단 확인",
+    "Claude 셸 보호 20개 명령 회귀 확인: 읽기·문서화 허용, 리다이렉션·rm·mv·tee·sed -i·git checkout·PowerShell 변경 cmdlet 차단, 생성기 문구 우회 차단"
+  ],
+  "risks": [
+    "경로 필드 기준 판정은 목록에 없는 키로 대상 경로를 전달하는 provider 도구를 놓칠 수 있다. 알려진 파일·경로 키를 폭넓게 열거하고 새 도구 도입 시 목록을 확인한다.",
+    "PostToolUse exit 2는 provider UI에서 오류 형태로 표시될 수 있으나 도구 실행 뒤 전달되는 비차단 안내이며 작업을 막지 않는다.",
+    "같은 역슬래시 우회와 내용 기반 우회가 codex-protect-file.mjs와 codex-protect-shell.mjs에 남아 있다. 사용자 결정에 따라 훅 격리를 지키며 Codex 런타임은 이 변경에서 수정하지 않았고 필요하면 별도 변경으로 다룬다.",
+    "셸 보호는 인터프리터 인수 안의 쓰기(node -e, python -c 등)를 변경으로 분류하지 않는다. 읽기 전용 작업을 막지 않는 대신 이 경로는 파일 보호 훅과 생성기 안내에 의존한다."
+  ],
+  "rollback": ".ai/hooks/claude-log-assistant.mjs, claude-post-check.mjs, claude-protect-file.mjs, claude-protect-shell.mjs와 .ai/tests/harness.test.mjs, .ai/spec/conformance.md, .ai/hooks/README.md를 KIT-CHG-013 기준선으로 되돌린다. provider 배선과 Codex 런타임은 되돌릴 대상이 없다.",
+  "completion_blocker": "없음"
+}

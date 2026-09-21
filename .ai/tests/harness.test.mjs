@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { spawn, spawnSync } from "node:child_process";
@@ -9,9 +9,10 @@ import { harnessErrors } from "../tools/aidd_hook.mjs";
 
 const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),"../..");
 const CODEX=JSON.parse(readFileSync(join(ROOT,".codex/hooks.json"),"utf8"));
-const CODEX_EXPORT=JSON.parse(readFileSync(join(ROOT,".aidd-kit-dev/export/.codex/hooks.json"),"utf8"));
+const EXPORTED=existsSync(join(ROOT,".aidd-kit-dev/export/.codex/hooks.json"));
+const CODEX_EXPORT=EXPORTED?JSON.parse(readFileSync(join(ROOT,".aidd-kit-dev/export/.codex/hooks.json"),"utf8")):null;
 const CLAUDE=JSON.parse(readFileSync(join(ROOT,".claude/settings.json"),"utf8"));
-const CLAUDE_EXPORT=JSON.parse(readFileSync(join(ROOT,".aidd-kit-dev/export/.claude/settings.json"),"utf8"));
+const CLAUDE_EXPORT=EXPORTED?JSON.parse(readFileSync(join(ROOT,".aidd-kit-dev/export/.claude/settings.json"),"utf8")):null;
 
 function handlers(provider){
   return Object.entries(provider.hooks).flatMap(([event,groups])=>groups.flatMap((group,groupIndex)=>(group.hooks??[]).map((handler,handlerIndex)=>({event,groupIndex,handlerIndex,handler}))));
@@ -45,8 +46,10 @@ function runHookAsync(path,payload,env={}){
 
 test("provider adapters implement the isolated portable hook contract",()=>{
   assert.deepEqual(harnessErrors(),[]);
-  assert.deepEqual(CODEX,CODEX_EXPORT);
-  assert.deepEqual(CLAUDE,CLAUDE_EXPORT);
+  if(EXPORTED){
+    assert.deepEqual(CODEX,CODEX_EXPORT);
+    assert.deepEqual(CLAUDE,CLAUDE_EXPORT);
+  }
 });
 
 test("every registered hook owns one runtime and stable registration slot",()=>{
@@ -91,10 +94,15 @@ test("Codex startup reminder preserves the one-time final-answer contract",()=>{
 });
 
 test("isolated protection hooks deny generated writes without depending on another hook",()=>{
-  for(const file of ["codex-protect-file.mjs","codex-protect-shell.mjs","claude-protect-file.mjs","claude-protect-shell.mjs"]){
+  for(const file of ["codex-protect-file.mjs","codex-protect-shell.mjs","claude-protect-file.mjs"]){
     const denied=runHook(file,{tool_input:{path:"project/docs/generated/status.md"}});
     assert.equal(denied.status,2,`${file}: ${denied.stderr}`);
     assert.match(denied.stderr,/read-only/);
+  }
+  const shell=runHook("claude-protect-shell.mjs",{tool_input:{command:"rm -rf project/docs/generated/status.md"}});
+  assert.equal(shell.status,2,`claude-protect-shell.mjs: ${shell.stderr}`);
+  assert.match(shell.stderr,/read-only/);
+  for(const file of ["codex-protect-file.mjs","codex-protect-shell.mjs","claude-protect-file.mjs","claude-protect-shell.mjs"]){
     const allowed=runHook(file,{tool_input:{command:"node .ai/tools/aidd.mjs generate"}});
     assert.equal(allowed.status,0,`${file}: ${allowed.stderr}`);
   }
@@ -195,6 +203,84 @@ test("simultaneous sessions keep every user and assistant response in one locked
     assert.equal((afterDuplicate.match(/duplicate-assistant/g)??[]).length,1,"concurrent duplicate Stop must append one complete block once");
   }finally{
     rmSync(folder,{recursive:true,force:true});
+  }
+});
+
+test("Claude protection hooks judge the write target and normalize Windows separators",()=>{
+  const backslash=String.fromCharCode(92);
+  const generated="project/docs/generated/status.md";
+  const windows=("D:/workspace/"+generated).replaceAll("/",backslash);
+  const deniedFile=runHook("claude-protect-file.mjs",{tool_name:"Write",tool_input:{file_path:windows,content:"x"}});
+  assert.equal(deniedFile.status,2,"a Windows target path must not slip past file protection");
+  const deniedShell=runHook("claude-protect-shell.mjs",{tool_name:"PowerShell",tool_input:{command:"Set-Content "+windows+" hi"}});
+  assert.equal(deniedShell.status,2,"a Windows path in a shell command must not slip past shell protection");
+  const mention=runHook("claude-protect-file.mjs",{tool_name:"Edit",tool_input:{file_path:"D:/workspace/.ai/hooks/README.md",old_string:"see "+generated,new_string:"see "+generated+" output"}});
+  assert.equal(mention.status,0,"text that only mentions a generated path must stay editable");
+  const disguised=runHook("claude-protect-file.mjs",{tool_name:"Write",tool_input:{file_path:"D:/workspace/"+generated,content:"node .ai/tools/aidd.mjs generate"}});
+  assert.equal(disguised.status,2,"file content must not exempt a write into a generated root");
+});
+
+test("Claude PostToolUse advisories reach Claude instead of a silent exit 0",()=>{
+  const advisory=runHook("claude-post-check.mjs",{tool_name:"Edit",tool_input:{file_path:join(ROOT,".ai/skills/aidd-status/SKILL.md")}});
+  assert.equal(advisory.status,2,"Claude Code hides stderr from a hook that exits 0");
+  assert.match(advisory.stderr,/AIDD note/);
+  const quiet=runHook("claude-post-check.mjs",{tool_name:"Edit",tool_input:{file_path:join(ROOT,"README.md")}});
+  assert.equal(quiet.status,0,quiet.stderr);
+});
+
+test("Claude Stop pairs the staged prompt with the transcript's final assistant text",()=>{
+  const folder=mkdtempSync(join(tmpdir(),"aidd-hook-claude-stop-"));
+  const runtimeDir=join(folder,".ai","hooks");
+  mkdirSync(runtimeDir,{recursive:true});
+  for(const file of ["claude-log-user.mjs","claude-log-assistant.mjs"])cpSync(join(ROOT,".ai/hooks",file),join(runtimeDir,file));
+  const path=join(folder,"transcript-pair.md"),transcript=join(folder,"transcript.jsonl");
+  const env={AIDD_LOCAL_CONVERSATION_LOG:"1",AIDD_CONVERSATION_LOG_FILE:path};
+  const records=[
+    {type:"user",message:{role:"user",content:"claude-user-message"}},
+    {type:"assistant",isSidechain:false,message:{role:"assistant",content:[{type:"text",text:"progress commentary"}]}},
+    {type:"assistant",isSidechain:false,message:{role:"assistant",content:[{type:"tool_use",id:"call-1",name:"Bash",input:{}}]}},
+    {type:"user",isSidechain:false,message:{role:"user",content:[{type:"tool_result",tool_use_id:"call-1",content:"ok"}]}},
+    {type:"assistant",isSidechain:false,message:{role:"assistant",content:[{type:"text",text:"claude-final-answer"}]}},
+    {type:"assistant",isSidechain:true,message:{role:"assistant",content:[{type:"text",text:"subagent chatter"}]}}
+  ];
+  writeFileSync(transcript,records.map(record=>JSON.stringify(record)).join("\n"),"utf8");
+  const run=(file,payload)=>spawnSync(process.execPath,[join(runtimeDir,file)],{cwd:folder,input:JSON.stringify(payload),encoding:"utf8",env:{...process.env,...env}});
+  try{
+    assert.equal(run("claude-log-user.mjs",{session_id:"transcript-session",prompt:"claude-user-message"}).status,0);
+    const stop=run("claude-log-assistant.mjs",{session_id:"transcript-session",transcript_path:transcript,hook_event_name:"Stop"});
+    assert.equal(stop.status,0,stop.stderr);
+    const block=readFileSync(path,"utf8");
+    assert.ok(block.includes("claude-user-message"),"the staged prompt must be paired with the response");
+    assert.ok(block.includes("claude-final-answer"),"the final assistant text must be logged");
+    assert.ok(!block.includes("progress commentary"),"interim commentary must not be logged");
+    assert.ok(!block.includes("subagent chatter"),"subagent output must not be logged");
+  }finally{
+    rmSync(folder,{recursive:true,force:true});
+  }
+});
+
+test("Claude shell protection denies a generated target and leaves reading open",()=>{
+  const generated="project/docs/generated/";
+  const newline=String.fromCharCode(10);
+  const cases=[
+    ["ls -la "+generated,0],
+    ["grep -rn TODO "+generated,0],
+    ["sed -n 1,5p "+generated+"index.md",0],
+    ["git log --oneline -- "+generated,0],
+    ["cat > .ai/hooks/example.mjs <<EOF"+newline+"const roots=["+generated+"];"+newline+"EOF",0],
+    ["echo hi > "+generated+"a.md",2],
+    ["echo hi >"+generated+"a.md",2],
+    ["rm -rf "+generated,2],
+    ["ls -la && rm -rf "+generated+"a.md",2],
+    ["cat a.md | tee "+generated+"a.md",2],
+    ["sed -i s/a/b/ "+generated+"a.md",2],
+    ["git checkout -- "+generated,2],
+    ["Set-Content "+generated+"a.md hi",2],
+    ["echo aidd.mjs generate >> "+generated+"a.md",2]
+  ];
+  for(const [command,status] of cases){
+    const run=runHook("claude-protect-shell.mjs",{tool_name:"Bash",tool_input:{command,description:"regression"}});
+    assert.equal(run.status,status,command+" gave "+run.status+" "+run.stderr);
   }
 });
 

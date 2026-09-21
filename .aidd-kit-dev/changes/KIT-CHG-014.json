@@ -4,6 +4,7 @@
   "title": "Claude 어댑터 훅 런타임 계약 불일치 수정",
   "class": "C2",
   "status": "verified",
+  "version_impact": "patch",
   "delivery_path": "kit-maintenance",
   "problem": "Claude 런타임 훅이 Codex의 입력·출력 계약을 전제로 작성되어 있었다. Stop 훅은 Claude Code가 제공하지 않는 last_assistant_message를 읽어 Claude 블록이 대화 로그에 한 번도 기록되지 않았고, PostToolUse 안내는 exit 0의 stderr로 출력되어 Claude Code가 모델에 전달하지 않았다. 생성물 보호는 JSON.stringify가 만드는 이중 역슬래시를 단일 역슬래시로 치환해 Windows 경로가 보호 루트와 일치하지 않았고, 도구 입력 전체를 부분문자열로 검사해 파일 내용이 생성기 문구를 포함하면 생성물 쓰기가 허용되고 생성물 경로를 언급하는 일반 문서 편집은 반대로 차단됐다. 하네스 테스트는 Claude Stop에 Codex 모양의 입력을 넣어 이 결함을 검출하지 못했고, 배포 프로젝트에서는 .aidd-kit-dev/export 참조 때문에 실행 자체가 불가능했다.",
   "intent": "provider의 실제 입력·출력 계약에 맞게 Claude 런타임 파일만 수정하고 Codex 훅의 명령·실행 파일·등록 위치·승인 해시는 그대로 유지한다. Claude에서 대화 로그와 생성물 보호가 실제로 동작하는지 행위 테스트로 고정하고, 배포 프로젝트에서도 같은 테스트를 실행할 수 있게 한다.",

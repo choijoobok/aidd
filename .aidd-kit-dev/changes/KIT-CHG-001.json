@@ -4,6 +4,8 @@
   "title": "AIDD 요건 구현 검증 기준선",
   "class": "C2",
   "status": "verified",
+  "version_impact": "minor",
+  "released_in": "0.2.0",
   "delivery_path": "kit-maintenance",
   "problem": "검증 절차가 AIDD 요건 구현 확인보다 증거·보안·권한 통제와 전면 회귀에 집중해 느리고 경직되어 있었다.",
   "intent": "요건과 스펙에 따른 규칙·스킬·훅의 실제 동작을 빠르게 확인하고 파생 문서는 정본에서 전체 재생성해 꼼꼼히 비교한다.",

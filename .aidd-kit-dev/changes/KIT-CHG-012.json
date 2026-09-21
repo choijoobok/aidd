@@ -4,6 +4,7 @@
   "title": "요구사항·기능 상세·화면 명세 용어 분리",
   "class": "C2",
   "status": "verified",
+  "version_impact": "major",
   "delivery_path": "kit-maintenance",
   "problem": "제품 요구사항, 기능별 상세 정리와 화면 계약이 모두 요구사항 또는 요건으로 불리고, 비정본 FEAT·USE 표기와 화면 requirements.md 경로까지 섞여 문서의 권위와 추적 단위를 구분하기 어렵다.",
   "intent": "요구사항이라는 명칭은 REQ/NFR 제품 계약에만 사용하고, 개발 단계 구체화 산출물은 기능 상세 명세와 화면 명세(SCR)로 구분하며 파일명·정본·생성물·스킬·가이드에서 같은 용어를 사용한다.",

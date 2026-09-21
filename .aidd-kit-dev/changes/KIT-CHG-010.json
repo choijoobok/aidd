@@ -4,6 +4,7 @@
   "title": "Codex 세션 시작 훅 신뢰 안내 복구",
   "class": "C2",
   "status": "verified",
+  "version_impact": "patch",
   "delivery_path": "kit-maintenance",
   "problem": "Codex SessionStart 훅의 systemMessage는 Windows 앱 대화 화면에 보이지 않을 수 있고, 모델 지시의 '첫 사용자 응답'은 접히는 commentary와 final_answer를 구분하지 않아 안내가 진행 영역에만 남을 수 있다. 상대 경로 명령은 하위 폴더에서 세션을 시작하면 실행기를 찾지 못하며 기존 테스트는 최종 응답 채널과 작업 디렉터리 독립성을 보장하지 못했다.",
   "intent": "Codex 새 세션의 첫 사용자 요청에 대한 final_answer에서 CLI /hooks 확인 안내를 반드시 보여 주되 AIDD 승인 상태를 저장하거나 응답을 요구하거나 작업을 차단하지 않는다. commentary 표시는 final_answer 표시를 대체하지 않는다. repo-local 훅 명령은 Git 루트를 우선하고 아직 Git 저장소가 아닌 템플릿에서는 작업공간 역할 표식을 기준으로 실행기를 찾도록 한다.",

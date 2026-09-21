@@ -4,6 +4,7 @@
   "title": "역할별 스킬 동기화 훅 안내 정합화",
   "class": "C1",
   "status": "verified",
+  "version_impact": "patch",
   "delivery_path": "kit-maintenance",
   "problem": "공통 post-check 훅이 배포 프로젝트에서도 존재하지 않는 Kit 관리자용 sync-providers 명령을 안내했다.",
   "intent": "작업공간 역할에 따라 Kit 원본은 sync-providers를, 프로젝트 템플릿과 제품 작업공간은 portable sync-ai를 안내한다.",

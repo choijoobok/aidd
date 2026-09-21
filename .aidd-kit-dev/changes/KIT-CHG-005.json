@@ -4,6 +4,7 @@
   "title": "PM 중심 프로젝트 용어 관리 단순화",
   "class": "C2",
   "status": "verified",
+  "version_impact": "major",
   "delivery_path": "kit-maintenance",
   "problem": "팀원의 용어 제안, 별도 영향 검토 레코드, PM 승인 판단, 반영 종료를 여러 단계로 기록하는 절차가 같은 공간에서 협업하는 프로젝트에 비해 복잡하고 승인 대기 상태를 추가로 만들었다.",
   "intent": "PM 요청에 따라 AI가 영향을 브리핑하고, PM 확인 뒤 용어 추가·변경·제거와 관련 산출물 현행화·검증·변경 이력 저장을 하나의 수행 흐름으로 완료한다.",

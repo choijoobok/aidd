@@ -1,5 +1,6 @@
 # Unreleased changes
 
+- 각 KIT-CHG의 `version_impact`를 집계해 다음 SemVer를 계산하는 `release-plan`과, 검증 완료·깨끗한 작업 트리·버전 정합성을 확인한 뒤 두 버전 정본·`released_in`·릴리스 노트·UNRELEASED를 함께 갱신하는 `prepare-release`를 추가했다. 커밋과 Git 태그는 자동 생성하지 않는다.
 - 요구분석·설계·개발·검증·출시·운영 전반의 미결 결정을 프로젝트 전체 공통 OI에 먼저 저장하고 단계별 정본을 링크하며, 실제로 사용자에게 물은 질문은 `workboard.decision_requests`의 DRQ로 질문 전에 기록하도록 했다. 여러 미응답 묶음을 보존하며 `status`는 OI와 DRQ 건수·묶음 수를 구분하고 차단·우선순위·대기 시각으로 고른 권장 질문을 마지막에 표시한다. bootstrap에서도 채워진 정본을 고정 문구로 가리지 않고 기존 workboard의 배열 누락은 빈 목록으로 호환한다.
 - Claude 런타임 훅을 provider의 실제 입력·출력 계약에 맞췄다. Stop은 응답 본문 필드가 없는 Claude Code 입력에서 transcript_path의 마지막 assistant 텍스트만 읽어 대화 로그를 기록하고, PostToolUse 안내는 모델이 볼 수 있는 비차단 exit 2로 전달한다. 생성물 보호는 도구 입력의 경로 필드를 대상으로 판정하고 역슬래시를 정규화해 Windows 경로 우회와 내용 기반 우회를 막으면서 생성물 경로를 언급하는 문서 편집은 차단하지 않는다. Codex 훅의 명령·등록 위치·승인 해시는 바뀌지 않는다.
 - 훅 격리를 1순위 불변 규칙으로 채택해 provider·이벤트·책임마다 공통 코드 없는 전용 `.ai/hooks/*.mjs` 프로세스로 분리하고 기존 등록 위치를 회귀 테스트로 고정했다. Claude·Codex 대화는 `UserPromptSubmit`에서 provider·세션·턴별로 임시 보관한 질의와 `Stop`의 최종 응답을 `Codex` 또는 `Claude`가 표시된 한 블록으로 결합하고, 동시 세션 잠금 아래 현재 프로젝트 루트의 `chat-history/YYYY-MM/raw/YYYY-MM-DD.md`에 append한다. 한쪽만 있는 블록과 중복 Stop은 기록하지 않으며 기존 일자 파일은 이동하지 않는다.

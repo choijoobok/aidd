@@ -4,6 +4,7 @@
   "title": "Codex 세션 시작 훅 신뢰 확인 안내",
   "class": "C2",
   "status": "verified",
+  "version_impact": "minor",
   "delivery_path": "kit-maintenance",
   "problem": "Codex에서 작업공간 훅 검토·신뢰 여부를 사용자가 놓치기 쉬운데, 기존 세션 브리핑은 CLI /hooks 확인을 눈에 띄게 안내하지 않았다.",
   "intent": "Codex CLI와 Windows 앱의 매 세션 시작에 CLI /hooks 확인 경고를 표시하되 Claude에는 표시하지 않는다.",

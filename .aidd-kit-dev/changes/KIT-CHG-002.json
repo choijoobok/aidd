@@ -4,6 +4,7 @@
   "title": "관리자·프로젝트 팀 가이드 분리와 문서 체계 정리",
   "class": "C2",
   "status": "verified",
+  "version_impact": "patch",
   "delivery_path": "kit-maintenance",
   "problem": "프로젝트 팀 사용법이 두 가이드에 중복되고 Kit 관리자 절차와 portable 문서의 경계가 일부 섞여 있어 독자가 시작점과 수정 대상을 판단하기 어려웠다.",
   "intent": "관리자와 프로젝트 팀에 각각 하나의 진입점을 제공하고, 프로젝트 생성부터 운영까지 상세 사용법과 모든 Markdown 문서군의 역할을 모순 없이 정리한다.",

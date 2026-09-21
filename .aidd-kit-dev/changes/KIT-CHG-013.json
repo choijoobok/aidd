@@ -4,6 +4,7 @@
   "title": "훅 완전 런타임 격리와 통합 대화 로그 복구",
   "class": "C3",
   "status": "verified",
+  "version_impact": "major",
   "delivery_path": "kit-maintenance",
   "problem": "Codex 안내 훅 변경에 전체 훅 명령 재작성까지 함께 포함되어 대화 기록 훅을 비롯한 모든 승인 해시가 바뀌었고, 공통 실행기와 불충분한 테스트 때문에 승인과 실제 기록 실패를 분리해 확인할 수 없었다. 복구 구현은 provider 이름을 버린 채 사용자와 AI 원문을 서로 다른 이벤트에서 즉시 append해 동시 세션의 질의와 응답 사이에 다른 대화가 끼어들 수 있었다.",
   "intent": "훅 격리를 1순위 불변 규칙으로 두고 provider·이벤트·책임마다 코드 중복을 허용한 전용 프로세스를 사용한다. Claude와 Codex의 모든 대화 원문은 provider를 표시하고 질의·응답을 한 블록으로 결합해 현재 프로젝트 루트의 일자별 append-only 파일에 기록하며, 동시 세션에서도 한 블록이 분리되지 않게 한다.",

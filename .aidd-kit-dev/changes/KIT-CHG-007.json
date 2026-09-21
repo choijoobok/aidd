@@ -4,6 +4,7 @@
   "title": "팀원 용어 확인 카드와 오프라인 PM 전달",
   "class": "C1",
   "status": "verified",
+  "version_impact": "minor",
   "delivery_path": "kit-maintenance",
   "problem": "읽기 전용 term-review까지 PM 신원을 요구해 설계 중 새 용어를 발견한 팀원이 영향 카드 자체를 만들 수 없고, 서로 다른 세션이나 오프라인 협업에서 PM에게 전달하는 절차가 명확하지 않았다.",
   "intent": "모든 활성 팀원은 정본을 바꾸지 않는 용어 확인 카드를 만들 수 있게 하고, 카드 복사·PM 확인·PM 전용 적용 흐름과 오프라인 HTML 용어집 위치를 프로젝트 배포 가이드에 명시한다.",

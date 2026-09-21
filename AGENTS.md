@@ -38,6 +38,7 @@
 - 빈 템플릿은 `kit.mjs export`, 제품 정본까지 포함한 새 프로젝트는 `kit.mjs new-project`로 만든다.
 - 폴더와 ZIP은 동일한 staging·검증 경로를 사용한다. 기존 출력 대상은 덮어쓰지 않는다.
 - `.aidd-kit-origin.json`은 버전·원본 커밋·manifest·payload 해시를 기록하는 provenance일 뿐 업그레이드 잠금이나 호환성 보증이 아니다.
+- 각 `KIT-CHG`는 `version_impact`를 선언한다. `release-plan`은 미출시 변경의 최고 영향도로 다음 SemVer를 계산하고, `prepare-release`는 검증 완료된 변경만 두 버전 정본·릴리스 귀속·릴리스 노트에 함께 반영한다. 커밋과 Git 태그는 자동 생성하지 않는다.
 - 원본과 프로젝트 간 자동 업그레이드, patch 적용, merge, reverse sync를 제공하지 않는다.
 - 개선은 문제·의도·환경·전제·구현 접근·검증·위험·롤백을 담은 변경 설명서로 공유한다. 수신 측은 자체 변경으로 영향 분석·승인·구현한다.
 - 프로젝트가 자신의 `AGENTS.md`, 스킬, 훅, 도구와 템플릿을 바꾸는 것을 막지 않는다.

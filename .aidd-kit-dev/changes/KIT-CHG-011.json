@@ -4,6 +4,7 @@
   "title": "Codex 세션 안내 반복 방지",
   "class": "C1",
   "status": "verified",
+  "version_impact": "patch",
   "delivery_path": "kit-maintenance",
   "problem": "Codex 새 세션의 첫 final_answer에만 표시해야 하는 훅 승인 안내가 상시 로드되는 AGENTS 계약에서 매 요청 지시로 재해석되어 같은 세션의 후속 응답에도 반복될 수 있다.",
   "intent": "startup 첫 사용자 요청의 final_answer에는 안내를 보장하되 이전 assistant final_answer에 이미 표시된 경우 같은 세션의 이후 응답에서는 반복하지 않는다.",

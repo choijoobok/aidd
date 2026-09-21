@@ -4,6 +4,7 @@
   "title": "프로젝트 용어 관리 전용 스킬 분리",
   "class": "C2",
   "status": "verified",
+  "version_impact": "minor",
   "delivery_path": "kit-maintenance",
   "problem": "새 용어 발견과 확인·적용 절차가 요구발굴·아키텍처·전달 스킬과 AGENTS.md에 중복되어 독립적인 용어 요청의 자동 선택 경계가 약하고 수행 계약을 빠르게 읽기 어려웠다.",
   "intent": "용어 발견·확인 카드·PM 적용·파생 용어집 검증을 자동 선택 가능한 전용 portable 스킬로 모으고, 다른 스킬과 AGENTS.md는 간결한 라우팅과 정본 경계만 유지한다.",

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "id": "KIT-ADR-005",
+  "status": "accepted",
+  "title": "변경 영향도 집계 기반 명시적 SemVer 릴리스 준비 채택",
+  "decision": "각 KIT-CHG는 version_impact를 none, patch, minor, major 중 하나로 선언한다. 미출시 변경의 최고 영향도를 현재 버전에 적용해 다음 버전을 계산하며, major는 비호환 계약·스키마·CLI·경로·훅 변경, minor는 하위 호환 기능, patch는 하위 호환 수정·문서·테스트·내부 개선에 사용한다. 버전은 매 변경이나 export 때 올리지 않고 prepare-release를 명시적으로 실행할 때만 올린다. 이 명령은 두 버전 정본, 변경별 released_in, 릴리스 노트와 UNRELEASED를 함께 갱신하되 커밋과 Git 태그는 만들지 않는다.",
+  "rationale": "버전 결정 근거를 변경 정본에 두면 세션이나 담당자가 바뀌어도 같은 입력에서 같은 다음 버전이 나온다. 계획과 쓰기를 분리하면 릴리스 범위와 차단 사유를 먼저 검토할 수 있고, 커밋·태그를 별도 단계로 유지하면 외부 Git 상태 변경을 사용자의 명시적 통제 아래 둘 수 있다.",
+  "consequences": [
+    "version_impact가 없거나 잘못된 KIT-CHG는 quick check를 통과하지 못한다.",
+    "검증 완료되지 않은 미출시 변경이 하나라도 있으면 prepare-release가 중단된다.",
+    "repository.json과 export-manifest.json 버전 불일치, 기존 대상 릴리스 파일이나 태그가 있으면 준비를 거부한다.",
+    "none 변경은 자체로 버전을 올리지 않지만 다른 릴리스 후보와 함께 출시 귀속될 수 있다.",
+    "프로젝트 자동 업그레이드와 역동기화 정책은 바뀌지 않는다."
+  ]
+}

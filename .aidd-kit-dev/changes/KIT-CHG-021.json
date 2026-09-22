@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-021",
+  "title": "Codex 대화 로그 회전을 앞으로만 진행하도록 수정",
+  "class": "C2",
+  "status": "verified",
+  "version_impact": "patch",
+  "delivery_path": "kit-maintenance",
+  "problem": "KIT-CHG-019의 Codex 회전은 매 블록마다 기본 파일부터 남은 공간을 찾는다. 큰 블록이 -2에 들어가지 못해 -3으로 간 뒤 작은 후속 블록이 다시 -2에 기록될 수 있어 파일 번호 순서와 대화 시간 순서가 어긋난다.",
+  "intent": "Codex 회전을 Claude와 같은 단방향 방식으로 바꿔 가장 높은 연속 번호 파일에서만 이어 쓰고 앞 번호 파일로 되돌아가지 않게 한다. 회전 기준, 파일 이름, 항목 한도와 Claude 런타임은 변경하지 않는다.",
+  "scope": [
+    "codex-log-assistant.mjs의 appendEntry가 존재하는 가장 높은 연속 번호 파일에서 시작해 앞으로만 회전",
+    "contract file_rotation.direction의 Codex first-fit을 forward-only로 변경",
+    "명세의 provider 회전 차이를 제거하고 공통 시간순 보장 명시",
+    "Codex 회전 경계에서 큰 블록 뒤의 작은 블록이 앞 번호 파일로 되돌아가지 않는 회귀 테스트 추가"
+  ],
+  "compatibility": "Codex 훅 명령, 실행 파일 경로와 .codex/hooks.json 등록은 바뀌지 않아 재승인이 필요하지 않다. 파일 이름과 기존 파일은 그대로이며 회전이 시작된 뒤 앞 번호 파일의 남은 공간을 더 채우지 않는 점만 달라진다. Claude 런타임은 변경하지 않는다.",
+  "validation": [
+    "node --check .ai/hooks/codex-log-assistant.mjs",
+    "node .ai/tools/aidd_hook.mjs self-test --hook",
+    "node .ai/tests/harness.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke"
+  ],
+  "risks": [
+    "앞 번호 파일의 남은 공간을 쓰지 않으므로 일자당 파일 수가 조금 늘 수 있다. 5MiB 기준과 최대 999개 제한은 유지한다.",
+    "최신 파일 탐색은 훅이 만든 번호 파일이 중간 삭제 없이 연속한다는 전제를 유지한다. 정상 훅 생성 흐름에서는 성립하며 수동 삭제·손상 복구는 이 변경 범위에 포함하지 않는다.",
+    "Codex와 Claude가 같은 경로를 사용해도 기본 경로 잠금 아래 같은 단방향 규칙을 적용하므로 provider가 섞인 블록도 파일 순서를 유지한다."
+  ],
+  "rollback": "appendEntry의 최신 번호 탐색을 제거해 1번부터 첫 빈 자리를 찾는 방식으로 되돌리고, contract의 Codex direction과 명세 공통 보장, Codex 역전 방지 단언을 KIT-CHG-020 기준으로 복원한다.",
+  "completion_blocker": "없음",
+  "validation_result": "기본 파일과 -2 파일이 찬 상태에서 큰 블록이 -3으로 이동한 뒤, -2에 작은 여유를 다시 만들어도 이어지는 작은 블록이 -3에 남고 -2로 되돌아가지 않는 단언을 포함해 하네스 12건이 통과했다. Codex 훅 구문 검사와 배선 self-test, Kit quick check, export·new-project smoke도 통과했다.",
+  "known_limit": "최신 파일 탐색은 훅이 만든 번호 파일이 중간 삭제 없이 연속한다는 전제를 유지하며, 수동 삭제·손상 복구는 이 변경에 포함하지 않는다. 일자별 최대 파일 수는 기존과 같은 999개다."
+}

@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "events": {
     "SessionStart": {
       "purpose": "현재 AIDD 역할을 브리핑한다. 배선 self-test는 런타임 훅과 분리된 수동 검증 명령이다.",
@@ -116,7 +116,7 @@
       "max_files_per_day": 999,
       "direction": {
         "claude": "forward-only: append to the highest existing file and never fall back to a lower-numbered sibling, so block order follows file order",
-        "codex": "first-fit: append to the lowest-numbered file that still has room, so a later block can land in an earlier file near a rotation boundary"
+        "codex": "forward-only: append to the highest existing file and never fall back to a lower-numbered sibling, so block order follows file order"
       }
     },
     "failure_reporting": "sanitized-stderr",

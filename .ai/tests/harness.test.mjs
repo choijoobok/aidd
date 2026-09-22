@@ -145,7 +145,7 @@ test("Codex and Claude append only complete provider-labelled conversation pairs
   }
 });
 
-test("Codex keeps steered prompts and visible progress, raises item limits, and rotates full files",()=>{
+test("Codex keeps steered prompts and visible progress, raises item limits, and rotates forward only",()=>{
   const folder=mkdtempSync(join(tmpdir(),"aidd-hook-codex-steering-"));
   const runtimeDir=join(folder,".ai","hooks"),path=join(folder,"codex-steering.md"),transcript=join(folder,"rollout.jsonl");
   mkdirSync(runtimeDir,{recursive:true});
@@ -197,6 +197,16 @@ test("Codex keeps steered prompts and visible progress, raises item limits, and 
     const overflow=readFileSync(join(folder,"codex-steering-2.md"),"utf8");
     assert.ok(overflow.includes("-prompt-tail"),"Codex prompts through the 120000-character item limit must survive");
     assert.ok(overflow.includes("-answer-tail"),"Codex answers through the 120000-character item limit must survive");
+
+    writeFileSync(join(folder,"codex-steering-2.md"),"y".repeat(5242880-500),"utf8");
+    assert.equal(run("codex-log-user.mjs",{session_id:"big-session",turn_id:"big-turn",prompt:"big-"+"q".repeat(2000)}).status,0);
+    assert.equal(run("codex-log-assistant.mjs",{session_id:"big-session",turn_id:"big-turn",last_assistant_message:"big-answer"}).status,0);
+    assert.equal(run("codex-log-user.mjs",{session_id:"small-session",turn_id:"small-turn",prompt:"small-question"}).status,0);
+    assert.equal(run("codex-log-assistant.mjs",{session_id:"small-session",turn_id:"small-turn",last_assistant_message:"small-answer"}).status,0);
+    const third=readFileSync(join(folder,"codex-steering-3.md"),"utf8");
+    assert.ok(third.includes("big-answer"),"a block too large for the current Codex file must move forward");
+    assert.ok(third.includes("small-answer"),"a later Codex block must stay in the newest file");
+    assert.ok(!readFileSync(join(folder,"codex-steering-2.md"),"utf8").includes("small-answer"),"Codex rotation must never fall back to an earlier file");
   }finally{
     rmSync(folder,{recursive:true,force:true});
   }

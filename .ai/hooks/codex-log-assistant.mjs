@@ -79,11 +79,13 @@ function readVisibleProgress(transcriptPath,turnIds){
   }catch{return [];}
 }
 
-/** Rotate to a numbered sibling instead of dropping the block; an oversized block still lands in a fresh file. */
+/** Rotate forward only, so a later block never lands in an earlier file; an oversized block still gets a fresh file. */
 function appendEntry(basePath,entry){
   const bytes=Buffer.byteLength(entry,"utf8");
   mkdirSync(dirname(basePath),{recursive:true});
-  for(let index=1;index<=MAX_ROTATIONS;index+=1){
+  let index=1;
+  while(index<MAX_ROTATIONS&&existsSync(numbered(basePath,index+1)))index+=1;
+  for(;index<=MAX_ROTATIONS;index+=1){
     const target=index===1?basePath:numbered(basePath,index);
     const current=existsSync(target)?statSync(target).size:0;
     if(current===0||current+bytes<=MAX_DAILY_FILE_BYTES){appendFileSync(target,entry,{encoding:"utf8",flag:"a"});return;}

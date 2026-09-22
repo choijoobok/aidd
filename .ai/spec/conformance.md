@@ -19,6 +19,7 @@ Kit 원본은 다음 경계를 만족해야 한다.
 - export는 하나의 허용 목록으로 directory와 ZIP을 조립하고 `.aidd-kit-dev/`와 관리 전용 스킬을 포함하지 않는다.
 - provider 스킬 복사본은 portable 스킬과 같고 provider 훅은 공통 훅 계약의 이벤트별 동작에 연결된다.
 - 실행 도구와 훅은 Node.js 22 이상과 표준 라이브러리만 사용하며 훅 입력을 UTF-8로 처리한다.
+- 배포된 프로젝트의 문서와 소스는 한글을 포함해 UTF-8(BOM 없음), LF 줄바꿈으로 작성·수정한다. 프로젝트 수행 계약인 `AGENTS.md`에 이 규칙을 명시한다.
 - 훅 격리는 1순위 불변 조건이다. 각 provider·이벤트·책임은 전용 `.ai/hooks/*.mjs` 프로세스를 사용하고 런타임 훅 사이의 공통 dispatcher·공통 라이브러리·상호 import·상호 호출을 금지한다. 한 훅 변경은 다른 훅의 등록 위치·명령·승인 해시를 바꾸지 않는다.
 - `new-project`는 `product-workspace` 역할, `owned-records-v2` 제품 정본, 재생성 인덱스와 현재 초기 정본에 맞는 파생 문서를 만든다. 구형 전역 SSOT 혼합과 기존 출력 덮어쓰기를 거부하고 폴더·ZIP payload가 같아야 한다.
 

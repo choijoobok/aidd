@@ -4,7 +4,6 @@
   "status": "accepted",
   "title": "CHG 기반 모듈별 주기와 소유 레코드 v2·기능 정본 승격",
   "change": "KIT-CHG-018",
-  "design": ".aidd-kit-dev/plans/modular-lifecycle/design/01-model.md",
   "context": "모듈 독립 주기와 작은 정본 파일이 필요하지만 현재는 전역 배열과 단일 단계 선언이 많고 기능 상세 명세를 별도 FEAT로 관리하지 않는다.",
   "decision": "기존 CHG를 개발 주기로, WRK를 실행 조각으로 재사용한다. 모듈/공통 단일 소유의 ID별 v2 JSON 정본을 만들고 FEAT를 지속 기능 계약으로 승격하며 DAT/NAV로 업무 데이터/메뉴를 식별한다. 현재 정본과 역사적 snapshot·계산 index를 분리한다.",
   "alternatives": [
@@ -38,5 +37,10 @@
   ],
   "rollback": "구현 단계별 변경을 분리한다. 기존 제품 데이터는 별도 후보 트리 변환으로 원본을 보존하며 이후 수정은 자동 덮어쓰지 않는다.",
   "approval": "APR-004: 사용자 설계 수용 및 S04~S07 실행 승인",
-  "accepted_at": "2026-09-22T13:02:54.113Z"
+  "accepted_at": "2026-09-22T13:02:54.113Z",
+  "current_spec": ".ai/spec/owned-records-v2.md",
+  "design_history": {
+    "commit": "ef4fd79a599237b8d90d7bf6850c92991291a3a1",
+    "path": ".aidd-kit-dev/plans/modular-lifecycle/design/01-model.md"
+  }
 }

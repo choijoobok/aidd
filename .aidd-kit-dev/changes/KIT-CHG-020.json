@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-020",
+  "title": "배포 프로젝트 문서·소스의 UTF-8 형식 규칙 명시",
+  "class": "C1",
+  "status": "verified",
+  "version_impact": "patch",
+  "delivery_path": "kit-maintenance",
+  "problem": "배포용 AGENTS.md에 문서·소스 인코딩 규칙이 없어 한글 파일을 다른 인코딩이나 BOM 포함 UTF-8로 작성할 수 있다.",
+  "intent": "프로젝트 AI 작업 계약에 모든 문서·소스의 UTF-8(BOM 없음)·LF 형식 유지 의무를 명시한다.",
+  "scope": [
+    ".aidd-kit-dev/export/AGENTS.md의 파일 형식 규칙 추가",
+    ".ai/spec/conformance.md의 배포 프로젝트 적합성 기준 연결",
+    "미출시 변경 기록 현행화"
+  ],
+  "compatibility": "기존 프로젝트의 행동·명령·파일 경로는 바꾸지 않는다. 새 배포물의 작성 규칙만 명확히 한다.",
+  "validation": [
+    "Kit check와 변경 영역 테스트",
+    "export·new-project smoke와 배포된 AGENTS.md의 규칙·UTF-8 BOM 없음·LF 확인",
+    "git diff --check"
+  ],
+  "risks": ["기존 외부 프로젝트의 과거 파일 인코딩을 자동 변환하지 않는다."],
+  "rollback": "AGENTS.md와 적합성 기준의 추가 문구 및 연결된 변경 기록을 선택적으로 되돌린다.",
+  "completion_blocker": "없음",
+  "validation_result": "Kit check, kit.test.mjs 1/1, export·new-project smoke 통과. 배포 AGENTS.md와 적합성 기준을 포함한 변경 파일의 UTF-8 BOM 없음·LF를 바이트로 확인했고 git diff --check 통과."
+}

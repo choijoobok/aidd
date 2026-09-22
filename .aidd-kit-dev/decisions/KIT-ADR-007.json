@@ -4,7 +4,6 @@
   "status": "accepted",
   "title": "개정본 기반 검토·기준선·범위 준비도와 선택적 재개",
   "change": "KIT-CHG-018",
-  "design": ".aidd-kit-dev/plans/modular-lifecycle/design/03-readiness.md",
   "context": "상태 문자열과 과거 passed만으로 현재 입력을 통과시키고 무관한 OI/DRQ가 다른 모듈을 차단하는 판정 결함이 있다.",
   "decision": "RVW/BSL/IMP로 검토 대상·고정 입력·변경 영향 판정을 구조화하고 기존 GTR/EVD/HIS/CHG/WRK와 연결한다. 합의한 CHG 전체 요구 검토 뒤 작업별 설계/목업/선행 결과로 개발한다. 현재 유효성은 scope evaluator가 계산하고 직접·전이 영향을 따라 필요한 부분만 재개한다.",
   "alternatives": [
@@ -39,5 +38,10 @@
   ],
   "rollback": "과거 BSL/RVW/EVD를 삭제하지 않는다. 새 판정 도입은 단계별 회귀로 확인하고 미구현/미확인은 ready가 아닌 unknown으로 보고한다.",
   "approval": "APR-004: 사용자 설계 수용 및 S04~S07 실행 승인",
-  "accepted_at": "2026-09-22T13:02:54.113Z"
+  "accepted_at": "2026-09-22T13:02:54.113Z",
+  "current_spec": ".ai/spec/owned-records-v2.md",
+  "design_history": {
+    "commit": "ef4fd79a599237b8d90d7bf6850c92991291a3a1",
+    "path": ".aidd-kit-dev/plans/modular-lifecycle/design/03-readiness.md"
+  }
 }

@@ -24,8 +24,6 @@
     "모든 스킬·참조 문서·훅·템플릿·도구의 영향 검토와 필요한 개편",
     "new-project·export·v2 기준 fixture/스켈레톤/CI·구형 공개 writer 격리와 최종 검증. KIT-ADR-011로 이전 AIDD 형식 전용 변환 제외"
   ],
-  "plan": ".aidd-kit-dev/plans/modular-lifecycle/README.md",
-  "execution_status": ".aidd-kit-dev/plans/modular-lifecycle/status.json",
   "compatibility": "정본 경로·스키마·명령 계약의 비호환 변경으로 major를 유지한다. 자동 업그레이드·patch·merge·역동기화 및 이전 AIDD 버전 전용 후보 변환은 제공하지 않는다(KIT-ADR-011). 기존 원본을 수정/삭제하지 않으며 일반 레거시 소스·문서 기반 분석은 별개로 유지한다. 실제 릴리스 준비는 별도 요청 전까지 실행하지 않는다.",
   "validation": [
     "각 승인 단계의 완료 기준과 해당 영역 테스트",
@@ -42,14 +40,13 @@
     "전환 기간에 구형·신형 쓰기 경로를 함께 사용하면 정본이 중복된다.",
     "계정 전환 뒤 전체 계획의 동의를 모든 단계의 실행 승인으로 오인할 수 있다."
   ],
-  "rollback": "단계별로 본 변경이 만든 파일·개정과 전환 범위를 기록한다. 사용자의 다른 변경을 보존하면서 해당 단계 변경만 선택적으로 되돌린다. 저장 형식 전환 전에 원본과 ID 매핑을 보존하고 부분 실패를 복구하며, 롤백을 위해 승인·테스트·결정 이력을 삭제하거나 과거 결과를 현재 결과로 가장하지 않는다. 상세 절차는 S03에서 확정한다.",
-  "supplement_result": "APR-005 S07A 완료: SYS/CAP/ACT/UC/BPR, discovery-check/BG-001, intent/business_flow 검토·요구 출처·흐름 포괄성, 공통 재사용/묶음 검토/기준선/영향, SVG/공통 인덱스/내부 제출·스킬 보완. 최종 회귀 78/78, Kit check/smoke·hook self-test·provider sync 통과. S02/S03 승인 47개 파일 해시 불변. 상세 한계는 checkpoints/S07A.md.",
-  "access_supplement_result": "APR-007 S08A 완료: POL system_access, ACT/UC.access, discovery scope·사용자 검토/BSL·요구 출처·정책 변경 영향·문서/제출 연결. 신규 11건 포함 전체 회귀 103/103 및 check/smoke/self-test/provider sync 통과. Python skill validator는 PyYAML 부재, 실제 제품 인증·외부 provider 행동은 not_run. checkpoints/S08A.md 참조.",
-  "reverse_supplement_result": "APR-010/S08B-1 초안 생성에 이어 APR-011/S08B-2 완료: 순차 검토·부분/오래된 응답·세 버전 비교/명시 채택·기계 생성 기준 DOC와 HIS·재검토 OI/IMP·선언 루트의 source/staged 검사·공통 브리핑/문서 모델. 신규 14건 포함 전체 회귀 131/131, Kit check/smoke/provider sync/hook self-test 통과. 실제 제품·스택 전용 파서·모듈 도입 준비/실행 검증 연결은 미수행. checkpoints/S08B-2.md 참조.",
-  "adoption_result": "APR-012/S08B-3 완료: legacy-adoption-check/adopt, DOC 검증/차이 계획과 사용자 검토, 모듈 독립·실제/현재/최신 EVD·채택 stale·운영 이력/후속 게이트 보존. 신규 15건 포함 전체 회귀 146/146 및 provider sync/check/smoke 통과. 실제 제품 실행/도입은 미수행. checkpoints/S08B-3.md 참조.",
+  "rollback": "개편 전 기준선 7d645328bf9f9c2c9dd7ea5010a2d1859779966b와 변경 커밋을 비교해 영향 범위를 선택적으로 되돌린다. 이미 생성한 v2 프로젝트에는 자동 downgrade를 적용하지 않으며, 제품 정본·사용자 수정·승인·검증·운영 이력은 별도로 보존한다.",
   "completion_blocker": "없음. KIT-ADR-011로 이전 AIDD 형식 전용 변환은 제외됐으며 축소된 S09 배포 기준과 S10 최종 인수를 완료했다.",
   "known_limit": "실제 외부 provider 업무 수행·브라우저 시각/접근성 검증은 not_run이며 일부 전역 검사는 scanAll을 사용한다. 이전 AIDD 버전 전용 변환은 지원하지 않는다. 일반 레거시 조사 기능을 정본 전체 자동 복원 기능으로 보증하지 않는다.",
   "validation_result": "S10 최종 전체 회귀 150/150, provider sync, Kit check/smoke, hook self-test, 생성 문서 전체 비교와 S09 directory/ZIP 동등성·v2 신규 프로젝트·mixed SSOT 거부·기존 출력 보호 통과. 요구 21개/인수 기준 63개/시나리오 22개를 연결했고 KIT-REQ-018-020의 3개 기준은 KIT-ADR-011로 superseded 처리했다. S03 기존 367개 자산과 S09 잔여 59개 전수 대응, 승인된 S02/S03 검토본 해시 불변. 실제 외부 provider 행동·고객 제품 도입·브라우저 사용자 수용은 not_run. 현재 버전 1.0.0 유지, prepare-kit-release·태그·배포 미실행.",
-  "acceptance_result": ".aidd-kit-dev/plans/modular-lifecycle/acceptance/S10-results.json",
-  "final_checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S10.md"
+  "change_notes": ".aidd-kit-dev/changes/KIT-CHG-018.md",
+  "history": {
+    "commit": "ef4fd79a599237b8d90d7bf6850c92991291a3a1",
+    "description": "S01~S10의 계획·요구·설계·승인·인수 상세는 이 커밋의 관리 계획 디렉터리에 보존된다. 현재 동작은 .ai/spec/, 완료 결과는 이 변경 레코드와 change_notes를 따른다."
+  }
 }

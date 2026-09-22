@@ -5,7 +5,6 @@
   "current_applicability": "KIT-ADR-011에 의해 v1 후보 변환 제공 부분은 철회됐다. 아래 본문은 당시 결정이며 신규 v2·원본 보호·자동 업그레이드 금지 부분만 유지한다.",
   "title": "기존 v1 정본의 명시적 후보 전환과 신규 v2 시작",
   "change": "KIT-CHG-018",
-  "design": ".aidd-kit-dev/plans/modular-lifecycle/design/07-transition.md",
   "context": "새 저장/승인 계약은 기존 프로젝트와 비호환이다. 데이터 보존과 새 검토 조건을 함께 다루면서 자동 Kit 업그레이드 금지 경계를 지켜야 한다.",
   "decision": "신규 프로젝트는 v2만 생성한다. 현재 공식 schema_version=1 입력에는 원본 불변 migration-plan과 별도 디렉터리 migration-build를 제공하고 수신 프로젝트가 자체 변경으로 검토·채택한다. 기존 ID·참조·결정/증거는 보존하되 새 FEAT/RVW 조건은 부족하면 미완료로 남긴다.",
   "alternatives": [
@@ -36,5 +35,10 @@
   ],
   "rollback": "채택 전 원본은 불변이다. 채택 후 전환분만 되돌리며 이후 사용자 수정과 v2 신규 정보는 별도로 보존한다.",
   "approval": "APR-004: 사용자 설계 수용 및 S04~S07 실행 승인",
-  "accepted_at": "2026-09-22T13:02:54.113Z"
+  "accepted_at": "2026-09-22T13:02:54.113Z",
+  "current_spec": ".ai/spec/distribution-layout.md",
+  "design_history": {
+    "commit": "ef4fd79a599237b8d90d7bf6850c92991291a3a1",
+    "path": ".aidd-kit-dev/plans/modular-lifecycle/design/07-transition.md"
+  }
 }

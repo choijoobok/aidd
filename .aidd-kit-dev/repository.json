@@ -5,9 +5,7 @@
   "role": "kit-source",
   "lifecycle": "kit-development",
   "current_version": "1.0.0",
-  "active_change": "KIT-CHG-018",
-  "active_plan": ".aidd-kit-dev/plans/modular-lifecycle/README.md",
-  "active_plan_status": ".aidd-kit-dev/plans/modular-lifecycle/status.json",
+  "active_change": "KIT-CHG-020",
   "distribution": {
     "formats": [
       "directory",

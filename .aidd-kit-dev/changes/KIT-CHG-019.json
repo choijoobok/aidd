@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-019",
+  "title": "완료된 고도화 계획을 변경 요약과 Git 이력으로 정리",
+  "class": "C1",
+  "status": "verified",
+  "version_impact": "none",
+  "delivery_path": "kit-maintenance",
+  "problem": "완료된 일회성 계획이 active_plan과 관리 문서·테스트의 현재 의존으로 남아 과거 진행 상태와 현재 기준선을 혼동하게 한다.",
+  "intent": "KIT-CHG-018의 기능·호환성·검증·한계를 릴리스 노트 형식으로 changes에 정리하고 상세 계획은 기존 Git 커밋에 보존한다.",
+  "scope": [
+    "KIT-CHG-018.md에 완료 변경 요약을 추가하고 KIT-CHG-018 JSON 및 UNRELEASED를 연결",
+    "repository의 active_plan 참조 제거, 관리자 가이드와 ADR의 현재 명세·과거 설계 참조 분리",
+    "Git에 보존된 계획 파일 84개 삭제",
+    "과거 자산/승인본과 인수표를 검증하던 일회성 검사 2건 종료, portable 스킬 연결 검사를 skill-contracts.test.mjs로 유지"
+  ],
+  "compatibility": "관리 전용 변경이며 portable 구현·스킬·훅·export 허용 목록·프로젝트 출력과 Kit 버전은 변경하지 않는다. 릴리스 완료는 계획 정리의 선행 조건이 아니다.",
+  "history_commit": "ef4fd79a599237b8d90d7bf6850c92991291a3a1",
+  "validation": [
+    "Kit check 및 kit-release-plan",
+    "skill-contracts.test.mjs와 전체 Kit·harness 회귀",
+    "Git 이력 경로 존재, 현재 로컬 링크·JSON·UTF-8/LF·삭제 경로 참조 검사",
+    "git diff --check"
+  ],
+  "risks": ["과거 150/150 결과를 현재 테스트 개수와 혼동하거나 삭제된 계획을 현재 파일로 참조할 수 있어 역사적 결과와 Git 참조를 명시한다."],
+  "rollback": "history_commit에서 계획 파일과 당시 관리 참조·이력용 테스트를 복원한다. 현재 기능 구현에는 변경이 없다.",
+  "completion_blocker": "없음",
+  "validation_result": "계획 디렉터리가 없는 상태에서 전체 Kit·harness 회귀 148/148 통과. Kit check와 유지한 portable 스킬 연결 검사 통과. 수정·추가 13개 파일의 UTF-8 BOM 없음/LF·JSON, 로컬 Markdown 링크 25개와 ADR의 Git 이력 경로를 확인했다. 현재 실행 코드·테스트·관리 진입점에는 삭제된 계획 의존이 없으며 남은 경로는 명시적인 과거 Git 참조다. git diff --check 통과. portable 구현·provider·배포 경계는 변경하지 않아 별도 smoke 재실행은 생략했다."
+}

@@ -4,7 +4,6 @@
   "status": "accepted",
   "title": "재생성 인덱스·범위 읽기·협력 트랜잭션과 독립 훅 유지",
   "change": "KIT-CHG-018",
-  "design": ".aidd-kit-dev/plans/modular-lifecycle/design/02-storage.md",
   "context": "레코드 파일 분리만으로는 전역 로딩·인덱스 누락·동시 쓰기·부분 실패 문제를 해결하지 못한다.",
   "decision": "owner/type별 파생 인덱스로 ID/관계를 조회하고 엄격한 판정은 관련 본문 실제 해시와 입력 coverage를 검증한다. 일반 CLI 쓰기는 expected hash·짧은 저장소 잠금·operation 저널·복구로 일관성을 확보한다. 공통 라이브러리는 CLI 내부에만 두며 런타임 훅은 독립 구현한다.",
   "alternatives": [
@@ -34,5 +33,10 @@
   ],
   "rollback": "저널은 작업별 before/after 해시를 보존하고 복구 시 이후 사용자 수정과 충돌하면 중단한다. 원본 성공·인덱스 실패는 구분하여 재생성한다.",
   "approval": "APR-004: 사용자 설계 수용 및 S04~S07 실행 승인",
-  "accepted_at": "2026-09-22T13:02:54.113Z"
+  "accepted_at": "2026-09-22T13:02:54.113Z",
+  "current_spec": ".ai/spec/owned-records-v2.md",
+  "design_history": {
+    "commit": "ef4fd79a599237b8d90d7bf6850c92991291a3a1",
+    "path": ".aidd-kit-dev/plans/modular-lifecycle/design/02-storage.md"
+  }
 }

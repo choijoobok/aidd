@@ -145,7 +145,7 @@ test("Codex and Claude append only complete provider-labelled conversation pairs
   }
 });
 
-test("Codex keeps steered prompts and user-visible progress without tool or reasoning records",()=>{
+test("Codex keeps steered prompts and visible progress, raises item limits, and rotates full files",()=>{
   const folder=mkdtempSync(join(tmpdir(),"aidd-hook-codex-steering-"));
   const runtimeDir=join(folder,".ai","hooks"),path=join(folder,"codex-steering.md"),transcript=join(folder,"rollout.jsonl");
   mkdirSync(runtimeDir,{recursive:true});
@@ -185,6 +185,18 @@ test("Codex keeps steered prompts and user-visible progress without tool or reas
     assert.ok(!block.includes("transcript final must not replace Stop output"));
     assert.equal((block.match(/#### Prompt/g)??[]).length,3);
     assert.equal((block.match(/#### Update/g)??[]).length,2);
+
+    writeFileSync(path,"x".repeat(5242880),"utf8");
+    const longPrompt="p".repeat(119980)+"-prompt-tail";
+    const longAnswer="a".repeat(119980)+"-answer-tail";
+    const staged=run("codex-log-user.mjs",{session_id:"rotate-session",turn_id:"rotate-turn",prompt:longPrompt});
+    assert.equal(staged.status,0,staged.stderr);
+    const rotated=run("codex-log-assistant.mjs",{session_id:"rotate-session",turn_id:"rotate-turn",last_assistant_message:longAnswer});
+    assert.equal(rotated.status,0,rotated.stderr);
+    assert.equal(readFileSync(path,"utf8").length,5242880,"a full daily file must not be appended to");
+    const overflow=readFileSync(join(folder,"codex-steering-2.md"),"utf8");
+    assert.ok(overflow.includes("-prompt-tail"),"Codex prompts through the 120000-character item limit must survive");
+    assert.ok(overflow.includes("-answer-tail"),"Codex answers through the 120000-character item limit must survive");
   }finally{
     rmSync(folder,{recursive:true,force:true});
   }

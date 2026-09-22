@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),"../..");
 const WAIT_ARRAY=new Int32Array(new SharedArrayBuffer(4));
+const MAX_ITEM_CHARS=120000;
 
 if(process.env.AIDD_LOCAL_CONVERSATION_LOG!=="0"){
   try{
@@ -27,10 +28,10 @@ if(process.env.AIDD_LOCAL_CONVERSATION_LOG!=="0"){
           try{
             const current=JSON.parse(readFileSync(path,"utf8"));
             if(Array.isArray(current.prompts))pending={version:2,prompts:current.prompts};
-            else if(String(current.prompt??"").trim())pending.prompts.push({submitted_at:Number(current.started_at)||submittedAt,turn_id:turnId,prompt:String(current.prompt).slice(0,16000)});
+            else if(String(current.prompt??"").trim())pending.prompts.push({submitted_at:Number(current.started_at)||submittedAt,turn_id:turnId,prompt:String(current.prompt).slice(0,MAX_ITEM_CHARS)});
           }catch{}
         }
-        pending.prompts.push({submitted_at:submittedAt,turn_id:turnId,prompt:prompt.slice(0,16000)});
+        pending.prompts.push({submitted_at:submittedAt,turn_id:turnId,prompt:prompt.slice(0,MAX_ITEM_CHARS)});
         writeFileSync(path,JSON.stringify(pending),"utf8");
       });
     }

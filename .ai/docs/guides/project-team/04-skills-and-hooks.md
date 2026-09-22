@@ -64,7 +64,7 @@ node .ai/tools/aidd_hook.mjs self-test --hook
 - 런타임과 분리된 수동 계약·provider 배선 self-test
 - 생성 문서와 provider 스킬 복사본의 직접 수정 방지
 - 프로젝트 용어 정본을 직접 변경한 경우 용어 문서 현행화 보조; 정상 오프라인 결정 흐름의 `term-apply`는 자체적으로 생성·검증까지 완료
-- `UserPromptSubmit`에서 다음 응답에 속한 사용자 원문을 모두 임시 보관하고 `Stop`에서 최종 응답과 결합해 `Codex` 또는 `Claude`가 표시된 한 블록을 `chat-history/YYYY-MM/raw/YYYY-MM-DD.md`에 잠금 아래 한 번에 추가; Codex와 Claude는 처리 중 추가 질의도 세션 큐에 순서대로 보존하고 transcript에서 사용자에게 표시된 진행 메시지만 최선 노력으로 `AI PROGRESS`에 포함하며 추론(Claude는 thinking)·도구 호출·도구 출력·소스 diff는 제외함; Claude는 일자 파일이 한도를 넘으면 첫 파일 이름을 두고 `YYYY-MM-DD-2.md`부터 번호를 붙여 이어 씀; 한쪽만 있는 블록은 기록하지 않음
+- `UserPromptSubmit`에서 다음 응답에 속한 사용자 원문을 모두 임시 보관하고 `Stop`에서 최종 응답과 결합해 `Codex` 또는 `Claude`가 표시된 한 블록을 `chat-history/YYYY-MM/raw/YYYY-MM-DD.md`에 잠금 아래 한 번에 추가; Codex와 Claude는 처리 중 추가 질의도 세션 큐에 순서대로 보존하고 transcript에서 사용자에게 표시된 진행 메시지만 최선 노력으로 `AI PROGRESS`에 포함하며 추론(Claude는 thinking)·도구 호출·도구 출력·소스 diff는 제외함; 항목별 최대 120,000자를 보존하고 일자 파일이 5MiB 한도를 넘으면 첫 파일 이름을 두고 `YYYY-MM-DD-2.md`부터 번호를 붙여 이어 씀; 한쪽만 있는 블록은 기록하지 않음
 
 훅은 AIDD 승인 게이트나 재시작 상태를 저장하지 않고, Git 서명, 외부 trust root, 일반 shell 명령 분류, 원격 권한 확인이나 광범위 테스트를 자동으로 강제하지 않는다.
 

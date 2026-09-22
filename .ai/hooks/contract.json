@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "events": {
     "SessionStart": {
       "purpose": "현재 AIDD 역할을 브리핑한다. 배선 self-test는 런타임 훅과 분리된 수동 검증 명령이다.",
@@ -114,9 +114,6 @@
       "overflow_file": "%Y-%m-%d-{n}.md starting at n=2",
       "oversized_entry": "an entry larger than the threshold is written alone to a fresh file instead of being dropped",
       "max_files_per_day": 999
-    },
-    "provider_implementation_gap": {
-      "codex": "codex-log-user.mjs and codex-log-assistant.mjs still slice items at 16000 chars and stop at max_daily_file_bytes without rotation; align them in a later change."
     },
     "failure_reporting": "sanitized-stderr",
     "disable_environment": "AIDD_LOCAL_CONVERSATION_LOG=0"

@@ -17,15 +17,23 @@ if(process.env.AIDD_LOCAL_CONVERSATION_LOG!=="0"){
     const sessionId=String(payload.session_id??"").trim();
     const turnId=String(payload.turn_id??"").trim();
     if(message&&sessionId&&turnId){
-      const key=createHash("sha256").update(`${ROOT}\0Codex\0${sessionId}\0${turnId}`).digest("hex");
-      const pendingPath=join(tmpdir(),"aidd-conversation-log","pending",`${key}.json`);
+      const sessionKey=createHash("sha256").update(`${ROOT}\0Codex\0${sessionId}`).digest("hex");
+      const legacyKey=createHash("sha256").update(`${ROOT}\0Codex\0${sessionId}\0${turnId}`).digest("hex");
+      const pendingFolder=join(tmpdir(),"aidd-conversation-log","pending");
+      const sessionPath=join(pendingFolder,`${sessionKey}.json`);
+      const legacyPath=join(pendingFolder,`${legacyKey}.json`);
+      const pendingPath=existsSync(sessionPath)?sessionPath:legacyPath;
       withLock(pendingPath,()=>{
         if(existsSync(pendingPath)){
           const pending=JSON.parse(readFileSync(pendingPath,"utf8"));
-          const startedAt=new Date(Number(pending.started_at));
-          if(!Number.isNaN(startedAt.valueOf())&&String(pending.prompt??"").trim()){
+          const prompts=normalizePrompts(pending,turnId);
+          const startedAt=new Date(Number(prompts[0]?.submitted_at));
+          if(!Number.isNaN(startedAt.valueOf())&&prompts.length){
             const path=resolve(process.env.AIDD_CONVERSATION_LOG_FILE??join(ROOT,"chat-history",month(startedAt),"raw",`${day(startedAt)}.md`));
-            const entry=`## [${stamp(startedAt)}] Codex\n\n### USER\n\n${String(pending.prompt).slice(0,16000)}\n\n### AI (Codex)\n\n${message.slice(0,16000)}\n\n---\n\n`;
+            const progress=readVisibleProgress(payload.transcript_path,new Set(prompts.map(item=>item.turn_id).filter(Boolean)));
+            const userSection=formatItems(prompts,"Prompt","prompt","submitted_at");
+            const progressSection=progress.length?`\n\n### AI PROGRESS (Codex)\n\n${formatItems(progress,"Update","text","created_at")}`:"";
+            const entry=`## [${stamp(startedAt)}] Codex\n\n### USER\n\n${userSection}${progressSection}\n\n### AI (Codex)\n\n${message.slice(0,16000)}\n\n---\n\n`;
             withLock(path,()=>{
               const current=existsSync(path)?statSync(path).size:0;
               if(current+Buffer.byteLength(entry,"utf8")>5242880)throw new Error("size-limit");
@@ -41,6 +49,41 @@ if(process.env.AIDD_LOCAL_CONVERSATION_LOG!=="0"){
     console.error(error?.message==="size-limit"?"AIDD Codex conversation log size limit reached.":"AIDD Codex conversation pair write failed.");
     process.exitCode=1;
   }
+}
+
+function normalizePrompts(pending,turnId){
+  const values=Array.isArray(pending?.prompts)?pending.prompts:[{submitted_at:pending?.started_at,turn_id:turnId,prompt:pending?.prompt}];
+  return values.map(item=>({
+    submitted_at:Number(item?.submitted_at),
+    turn_id:String(item?.turn_id??turnId).trim(),
+    prompt:String(item?.prompt??"").trim().slice(0,16000)
+  })).filter(item=>Number.isFinite(item.submitted_at)&&item.prompt).sort((left,right)=>left.submitted_at-right.submitted_at);
+}
+
+function readVisibleProgress(transcriptPath,turnIds){
+  if(!transcriptPath||!turnIds.size)return [];
+  try{
+    const lines=readFileSync(String(transcriptPath),"utf8").split(/\r?\n/);
+    const result=[];
+    let activeTurn="";
+    for(const line of lines){
+      if(!line.trim())continue;
+      let record;
+      try{record=JSON.parse(line);}catch{continue;}
+      if(record?.type==="event_msg"&&record?.payload?.type==="task_started")activeTurn=String(record.payload.turn_id??"");
+      if(record?.type==="event_msg"&&["task_complete","turn_aborted"].includes(record?.payload?.type)&&String(record.payload.turn_id??"")===activeTurn){activeTurn="";continue;}
+      const item=record?.payload;
+      if(!turnIds.has(activeTurn)||record?.type!=="response_item"||item?.type!=="message"||item?.role!=="assistant"||item?.phase!=="commentary")continue;
+      const text=Array.isArray(item.content)?item.content.filter(part=>part?.type==="output_text").map(part=>String(part.text??"")).join("\n").trim():"";
+      if(text)result.push({created_at:new Date(record.timestamp).valueOf(),text:text.slice(0,16000)});
+    }
+    return result.filter(item=>Number.isFinite(item.created_at));
+  }catch{return [];}
+}
+
+function formatItems(items,label,textKey,timeKey){
+  if(items.length===1)return String(items[0][textKey]);
+  return items.map((item,index)=>`#### ${label} ${index+1} [${stamp(new Date(item[timeKey]))}]\n\n${String(item[textKey])}`).join("\n\n");
 }
 
 function withLock(path,action){

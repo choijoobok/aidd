@@ -26,7 +26,7 @@
 - 변경 전 해결할 실패, 영향 명세, 이식 가능 여부, 호환성·롤백과 검증 방법을 먼저 정한다. 보안·권한·신원 검토는 정본 요건에 있거나 사용자가 명시적으로 요청한 범위에서만 수행한다.
 - 새 훅·스킬·도구·플러그인은 기존 수단 부족, 트리거·입출력 계약, 중복, 안전한 비활성화와 롤백을 확인한 뒤 추가한다. 새 훅은 `.ai/hooks/` 아래의 독립 `.mjs`로 만들고 Node.js 표준 라이브러리만 사용하며 `self-test`의 격리·provider 배선 검사를 통과해야 한다.
 - portable 동작은 `.ai/`에서, Kit 관리 전용 동작은 `.aidd-kit-dev/`에서 구현한다. 경계가 모호하면 기본적으로 배포하지 않고 명시적인 결정으로 남긴다.
-- 사용자·AI 대화 원문은 정본·증거·배포물에 포함하지 않는다. `UserPromptSubmit`은 provider·세션·턴별 임시 슬롯에 사용자 원문을 보관하고 `Stop`이 최종 응답과 결합한 뒤, `Codex` 또는 `Claude`를 표시한 질의·응답 한 블록을 현재 프로젝트 루트의 `chat-history/YYYY-MM/raw/YYYY-MM-DD.md`에 잠금 아래 한 번에 추가한다. 사용자 또는 AI 한쪽만 있는 블록은 기록하지 않는다. `AIDD_CONVERSATION_LOG_FILE`은 테스트나 명시적 운영 경로가 필요할 때만 기본 경로를 대신한다.
+- 사용자·AI 대화 원문은 정본·증거·배포물에 포함하지 않는다. `UserPromptSubmit`은 다음 응답에 속한 사용자 원문을 모두 임시 보관하고 `Stop`이 최종 응답과 결합한 뒤, `Codex` 또는 `Claude`를 표시한 한 블록을 현재 프로젝트 루트의 `chat-history/YYYY-MM/raw/YYYY-MM-DD.md`에 잠금 아래 한 번에 추가한다. Codex는 처리 중 추가 질의를 세션 큐에 순서대로 보존하고 transcript에서 사용자에게 실제 표시된 진행 메시지만 최선 노력으로 함께 기록하며, 숨겨진 추론·도구 호출·도구 출력·소스 diff는 기록하지 않는다. 사용자 또는 AI 한쪽만 있는 블록은 기록하지 않는다. `AIDD_CONVERSATION_LOG_FILE`은 테스트나 명시적 운영 경로가 필요할 때만 기본 경로를 대신한다.
 - 공통 portable 스킬은 `.ai/skills/`, 관리 전용 스킬은 `.aidd-kit-dev/skills/`가 정본이다. 원본 provider 어댑터는 `node .aidd-kit-dev/tools/kit.mjs sync-providers`로 두 집합을 합쳐 갱신한다.
 - 새롭거나 모호한 용어의 발견, 확인 카드, 추가·변경·제거와 파생 용어집 검증에는 `aidd-terminology` 스킬을 사용한다. AIDD 공통 용어 정본은 `.ai/manifests/terminology.json`, 프로젝트 용어 정본은 `project/.aidd/ssot/terminology.json`이며 생성 Markdown과 HTML은 직접 수정하지 않는다.
 - 생성물이나 fixture를 제품 정본으로 가장하지 않는다. 기존 제품 fixture의 레코드는 회귀 입력일 뿐 현재 Kit 상태가 아니다.

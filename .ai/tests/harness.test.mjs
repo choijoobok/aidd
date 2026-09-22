@@ -145,6 +145,51 @@ test("Codex and Claude append only complete provider-labelled conversation pairs
   }
 });
 
+test("Codex keeps steered prompts and user-visible progress without tool or reasoning records",()=>{
+  const folder=mkdtempSync(join(tmpdir(),"aidd-hook-codex-steering-"));
+  const runtimeDir=join(folder,".ai","hooks"),path=join(folder,"codex-steering.md"),transcript=join(folder,"rollout.jsonl");
+  mkdirSync(runtimeDir,{recursive:true});
+  for(const file of ["codex-log-user.mjs","codex-log-assistant.mjs"])cpSync(join(ROOT,".ai/hooks",file),join(runtimeDir,file));
+  const env={AIDD_LOCAL_CONVERSATION_LOG:"1",AIDD_CONVERSATION_LOG_FILE:path};
+  const records=[
+    {timestamp:"2026-09-22T01:00:00.000Z",type:"event_msg",payload:{type:"task_started",turn_id:"turn-first"}},
+    {timestamp:"2026-09-22T01:00:01.000Z",type:"response_item",payload:{type:"message",role:"assistant",phase:"commentary",content:[{type:"output_text",text:"first visible progress"}]}},
+    {timestamp:"2026-09-22T01:00:02.000Z",type:"response_item",payload:{type:"custom_tool_call",input:"changed-source-code-must-not-be-logged"}},
+    {timestamp:"2026-09-22T01:00:03.000Z",type:"response_item",payload:{type:"reasoning",summary:"hidden-reasoning-must-not-be-logged"}},
+    {timestamp:"2026-09-22T01:00:04.000Z",type:"event_msg",payload:{type:"turn_aborted",turn_id:"turn-first"}},
+    {timestamp:"2026-09-22T01:00:05.000Z",type:"event_msg",payload:{type:"task_started",turn_id:"turn-second"}},
+    {timestamp:"2026-09-22T01:00:06.000Z",type:"response_item",payload:{type:"message",role:"assistant",phase:"commentary",content:[{type:"output_text",text:"second visible progress"}]}},
+    {timestamp:"2026-09-22T01:00:07.000Z",type:"response_item",payload:{type:"message",role:"assistant",phase:"final_answer",content:[{type:"output_text",text:"transcript final must not replace Stop output"}]}}
+  ];
+  writeFileSync(transcript,records.map(record=>JSON.stringify(record)).join("\n"),"utf8");
+  const run=(file,payload)=>spawnSync(process.execPath,[join(runtimeDir,file)],{cwd:folder,input:JSON.stringify(payload),encoding:"utf8",env:{...process.env,...env}});
+  try{
+    const first=run("codex-log-user.mjs",{session_id:"steering-session",turn_id:"turn-first",prompt:"first user prompt"});
+    assert.equal(first.status,0,first.stderr);
+    const sameTurn=run("codex-log-user.mjs",{session_id:"steering-session",turn_id:"turn-first",prompt:"same-turn follow-up prompt"});
+    assert.equal(sameTurn.status,0,sameTurn.stderr);
+    const second=run("codex-log-user.mjs",{session_id:"steering-session",turn_id:"turn-second",prompt:"second user prompt"});
+    assert.equal(second.status,0,second.stderr);
+    assert.equal(exists(path),false,"queued prompts must remain pending until a complete response exists");
+
+    const stop=run("codex-log-assistant.mjs",{session_id:"steering-session",turn_id:"turn-second",transcript_path:transcript,last_assistant_message:"final answer from Stop"});
+    assert.equal(stop.status,0,stop.stderr);
+    const block=readFileSync(path,"utf8");
+    assert.ok(block.indexOf("first user prompt")<block.indexOf("same-turn follow-up prompt"),"same-turn prompts must keep submission order");
+    assert.ok(block.indexOf("same-turn follow-up prompt")<block.indexOf("second user prompt"),"replacement-turn prompts must keep submission order");
+    assert.ok(block.includes("first visible progress"));
+    assert.ok(block.includes("second visible progress"));
+    assert.ok(block.includes("final answer from Stop"));
+    assert.ok(!block.includes("changed-source-code-must-not-be-logged"));
+    assert.ok(!block.includes("hidden-reasoning-must-not-be-logged"));
+    assert.ok(!block.includes("transcript final must not replace Stop output"));
+    assert.equal((block.match(/#### Prompt/g)??[]).length,3);
+    assert.equal((block.match(/#### Update/g)??[]).length,2);
+  }finally{
+    rmSync(folder,{recursive:true,force:true});
+  }
+});
+
 test("simultaneous sessions keep every user and assistant response in one locked block",async()=>{
   const folder=mkdtempSync(join(tmpdir(),"aidd-hook-log-concurrent-"));
   const runtimeDir=join(folder,".ai","hooks"),path=join(folder,"combined.md");

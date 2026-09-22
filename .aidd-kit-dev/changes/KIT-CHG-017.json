@@ -1,36 +1,42 @@
 {
   "schema_version": 1,
   "id": "KIT-CHG-017",
-  "title": "Codex 연속 질의와 사용자 표시 진행 이력 보존",
+  "title": "Codex·Claude 대화 이력 연속 보존과 안전한 파일 회전",
   "class": "C2",
   "status": "verified",
   "version_impact": "minor",
   "delivery_path": "kit-maintenance",
-  "problem": "Codex UserPromptSubmit이 session_id와 turn_id당 단일 임시 파일을 덮어써 AI 처리 중 사용자가 질의를 추가하면 마지막 질의만 남을 수 있다. Stop은 last_assistant_message만 기록해 Windows 앱이 최종 답변 뒤 접는 사용자 표시용 진행 메시지도 로컬 이력에서 사라진다.",
-  "intent": "Codex에 한해 다음 최종 응답에 속한 모든 사용자 질의를 세션 큐에 순서대로 보존하고, Stop 시 transcript에서 사용자에게 실제 표시된 commentary만 최선 노력으로 추출해 최종 응답과 함께 기록한다. 숨겨진 추론, 도구 호출·출력과 소스 diff는 기록하지 않으며 Claude 런타임은 변경하지 않는다.",
+  "problem": "Codex와 Claude의 UserPromptSubmit 임시 저장이 AI 처리 중 추가 질의를 덮어쓸 수 있고, 최종 답변 전에 사용자에게 표시한 진행 메시지가 로컬 이력에서 사라진다. 항목 절단과 일자 파일 한도 도달 시 기록 중단도 발생하며, 회전 뒤 작은 블록이 앞 번호 파일로 되돌아가면 파일 순서와 대화 시간 순서가 어긋난다.",
+  "intent": "두 provider 모두 다음 최종 응답에 속한 사용자 질의와 사용자에게 실제 표시된 진행 메시지를 순서대로 보존한다. 질의·진행·최종 응답 항목 한도를 120000자로 높이고, 5MiB 일자 파일을 최대 999개까지 앞 방향으로만 회전한다. 숨겨진 추론, 도구 호출·출력, 소스 diff와 하위 에이전트 출력은 기록하지 않는다.",
   "scope": [
-    "codex-log-user.mjs의 임시 저장을 세션 단위 잠금 큐로 변경하고 각 질의의 turn_id와 제출 시각 보존",
-    "codex-log-assistant.mjs가 같은 세션 큐의 모든 질의를 소비하고 큐에 속한 턴의 assistant commentary만 AI PROGRESS 섹션으로 기록",
-    "reasoning·도구 호출·도구 출력·소스 diff·transcript final_answer 복사본 제외와 transcript 파싱 실패 시 최종 응답 기록 fallback",
-    "기존 단일 질의·진행 없음 블록 형식과 Claude 동작 유지",
-    "portable 명세·훅 계약·프로젝트 팀 가이드·export AGENTS와 Codex 행위 회귀 테스트 현행화"
+    "Codex와 Claude의 사용자 질의를 provider·workspace·session 단위 잠금 큐에 누적하고 제출 순서 보존",
+    "Codex transcript의 assistant commentary와 Claude transcript의 assistant text에서 사용자 표시 진행 메시지만 AI PROGRESS 섹션으로 기록",
+    "reasoning·thinking·도구 호출·도구 출력·소스 diff·하위 에이전트·meta 레코드와 transcript의 최종 응답 복사본 제외",
+    "transcript 파싱 실패 시 진행 섹션만 생략하고 provider가 제공하는 최종 응답으로 완전한 질의·응답 쌍 기록",
+    "질의·진행·최종 응답 항목별 최대 120000자 보존",
+    "5MiB 일자 파일을 기본 이름과 -2부터 최대 999개 번호 파일로 블록 단위 회전하고 한도를 단독으로 넘는 블록도 빈 파일에 기록",
+    "두 provider 모두 존재하는 가장 높은 연속 번호 파일에서만 이어 써 후속 블록이 앞 번호 파일로 되돌아가지 않게 보장",
+    "portable 명세·훅 계약·관리자 및 프로젝트 독자 문서와 provider별 행위 회귀 테스트 현행화"
   ],
-  "compatibility": "Codex 훅 명령, 실행 파일 경로와 등록 인덱스는 바뀌지 않아 훅 정의 재승인이 필요하지 않다. 기존 단일 질의 로그는 같은 형식으로 유지되고 여러 질의나 진행 메시지가 있는 Codex 블록에만 Prompt와 AI PROGRESS 하위 항목이 추가된다. 전환 전에 남은 turn_id 기반 임시 파일은 현재 Stop 턴에 한해 호환 소비하며 그 밖의 고아 임시 파일은 소급 병합하지 않는다. Claude 훅과 로그 형식은 변경하지 않는다.",
+  "compatibility": "Codex와 Claude의 훅 명령, 실행 파일 경로, 등록 순서는 바뀌지 않아 재승인이 필요하지 않다. 기존 단일 질의 로그 형식과 기본 일자 파일 이름은 유지되며, 여러 질의나 진행 메시지가 있을 때만 하위 항목이 추가되고 5MiB를 넘을 때만 번호 파일이 생긴다. 전환 전에 남은 legacy 임시 슬롯은 현재 Stop 턴에 한해 호환 소비하며 기존 로그를 이동하거나 다시 쓰지 않는다.",
   "validation": [
     "node --check .ai/hooks/codex-log-user.mjs",
     "node --check .ai/hooks/codex-log-assistant.mjs",
+    "node --check .ai/hooks/claude-log-user.mjs",
+    "node --check .ai/hooks/claude-log-assistant.mjs",
     "node .ai/tools/aidd_hook.mjs self-test --hook",
     "node .ai/tests/harness.test.mjs",
     "node .aidd-kit-dev/tools/kit.mjs check",
     "node .aidd-kit-dev/tools/kit.mjs smoke"
   ],
   "risks": [
-    "Codex 공식 문서는 transcript_path를 제공하지만 transcript 형식을 안정 인터페이스로 보장하지 않는다. 현재 관찰 가능한 response_item assistant commentary만 엄격히 선택하고 파싱 실패는 진행 섹션 생략으로 격리한다.",
-    "세션 큐는 Stop이 성공한 뒤 한 번에 소비되므로 앱이나 프로세스가 최종 응답 전에 종료되면 사용자 원문이 최종 로그에 남지 않는 기존 완전 쌍 원칙을 유지한다.",
-    "사용자 표시용 commentary에도 민감 정보가 포함될 수 있다. 이 기능은 기존 로컬 대화 로그 활성화 범위 안에서만 동작하고 AIDD_LOCAL_CONVERSATION_LOG=0으로 전체 기록을 비활성화할 수 있다."
+    "두 provider 모두 transcript 경로는 제공하지만 내부 JSONL 형식은 안정 인터페이스가 아니다. 현재 관찰 가능한 사용자 표시 텍스트만 엄격히 선택하고 파싱 실패는 진행 섹션 생략으로 격리한다.",
+    "사용자 표시용 진행 메시지에도 민감 정보가 포함될 수 있다. 기존 로컬 대화 로그 활성화 범위 안에서만 동작하고 AIDD_LOCAL_CONVERSATION_LOG=0으로 전체 기록을 비활성화할 수 있다.",
+    "블록 하나가 5MiB보다 크면 의미를 깨지 않도록 빈 파일에 단독 기록하므로 해당 파일만 회전 기준보다 커질 수 있다.",
+    "앞 번호 파일의 남은 공간을 다시 쓰지 않아 일자당 파일 수가 조금 늘 수 있고, 최대 999개를 모두 사용하면 sanitized 오류로 중단한다."
   ],
-  "rollback": "codex-log-user.mjs와 codex-log-assistant.mjs를 turn_id 단일 슬롯과 last_assistant_message 전용 기록으로 되돌리고 contract version 5의 큐·AI PROGRESS 계약, 연결 문서와 Codex 회귀 테스트를 제거한다. Claude 파일과 provider 등록은 되돌릴 대상이 없다.",
+  "rollback": "Codex와 Claude 대화 로그 훅을 단일 임시 슬롯, 16000자 항목 한도와 회전 없는 기본 일자 파일 기록으로 되돌린다. AI PROGRESS와 파일 회전 계약, 연결 문서와 provider별 회귀 테스트를 제거하고 contract version 5 기준으로 복원한다.",
   "completion_blocker": "없음",
-  "validation_result": "Codex 단일 질의 기존 형식, 같은 turn_id의 추가 질의와 대체 turn_id의 연속 질의 순서 보존, 두 턴의 사용자 표시 commentary 수집, reasoning·도구 호출·소스 내용·transcript final_answer 제외, 동시 세션과 중복 Stop 소비를 포함한 하네스 11건이 통과했다. 훅 구문 검사와 배선 self-test, Kit quick check, export·new-project smoke도 통과했다.",
-  "known_limit": "Codex 공식 계약은 transcript_path를 제공하지만 transcript JSONL 형식을 안정 인터페이스로 보장하지 않는다. 형식이 달라지거나 파일을 읽을 수 없으면 AI PROGRESS만 생략되며 질의 큐와 Stop의 최종 응답은 계속 기록된다. 숨겨진 추론은 의도적으로 기록하지 않는다."
+  "validation_result": "두 provider의 단일·연속 질의 순서 보존, 사용자 표시 진행 이력 기록, 숨겨진 추론·도구·하위 에이전트 출력 제외, 항목당 120000자 보존, 5MiB 파일 회전, 큰 블록 뒤 작은 블록의 앞 번호 파일 역삽입 방지를 포함한 하네스 12건이 통과했다. 네 런타임 구문 검사와 훅 배선 self-test, Kit quick check, export·new-project smoke도 통과했다.",
+  "known_limit": "transcript 형식이 달라지거나 파일을 읽을 수 없으면 AI PROGRESS만 생략되고 질의 큐와 최종 응답은 계속 기록된다. 최신 번호 탐색은 번호 파일이 중간 삭제 없이 연속한다는 전제를 유지하며 수동 삭제·손상 복구는 포함하지 않는다. 숨겨진 추론은 의도적으로 기록하지 않는다."
 }

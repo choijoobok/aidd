@@ -273,7 +273,7 @@ test("Claude PostToolUse advisories reach Claude instead of a silent exit 0",()=
   assert.equal(quiet.status,0,quiet.stderr);
 });
 
-test("Claude Stop pairs the staged prompt with the transcript's final assistant text",()=>{
+test("Claude Stop pairs staged prompts with transcript progress and the final assistant text",()=>{
   const folder=mkdtempSync(join(tmpdir(),"aidd-hook-claude-stop-"));
   const runtimeDir=join(folder,".ai","hooks");
   mkdirSync(runtimeDir,{recursive:true});
@@ -283,7 +283,7 @@ test("Claude Stop pairs the staged prompt with the transcript's final assistant 
   const records=[
     {type:"user",message:{role:"user",content:"claude-user-message"}},
     {type:"assistant",isSidechain:false,message:{role:"assistant",content:[{type:"text",text:"progress commentary"}]}},
-    {type:"assistant",isSidechain:false,message:{role:"assistant",content:[{type:"tool_use",id:"call-1",name:"Bash",input:{}}]}},
+    {type:"assistant",isSidechain:false,message:{role:"assistant",content:[{type:"thinking",thinking:"hidden-reasoning"},{type:"tool_use",id:"call-1",name:"Bash",input:{}}]}},
     {type:"user",isSidechain:false,message:{role:"user",content:[{type:"tool_result",tool_use_id:"call-1",content:"ok"}]}},
     {type:"assistant",isSidechain:false,message:{role:"assistant",content:[{type:"text",text:"claude-final-answer"}]}},
     {type:"assistant",isSidechain:true,message:{role:"assistant",content:[{type:"text",text:"subagent chatter"}]}}
@@ -297,8 +297,44 @@ test("Claude Stop pairs the staged prompt with the transcript's final assistant 
     const block=readFileSync(path,"utf8");
     assert.ok(block.includes("claude-user-message"),"the staged prompt must be paired with the response");
     assert.ok(block.includes("claude-final-answer"),"the final assistant text must be logged");
-    assert.ok(!block.includes("progress commentary"),"interim commentary must not be logged");
+    assert.ok(block.includes("### AI PROGRESS (Claude)"),"interim assistant text must be logged as progress");
+    assert.ok(block.includes("progress commentary"),"interim assistant text must be logged");
+    assert.ok(!block.includes("hidden-reasoning"),"thinking must not be logged");
     assert.ok(!block.includes("subagent chatter"),"subagent output must not be logged");
+    const tail=["### AI (Claude)","","claude-final-answer","","---",""].join(String.fromCharCode(10));
+    assert.ok(block.endsWith(tail+String.fromCharCode(10)),"the last text block must be the final answer");
+  }finally{
+    rmSync(folder,{recursive:true,force:true});
+  }
+});
+
+test("Claude keeps every prompt queued during one response and rotates an overflowing daily file",()=>{
+  const folder=mkdtempSync(join(tmpdir(),"aidd-hook-claude-queue-"));
+  const runtimeDir=join(folder,".ai","hooks"),path=join(folder,"claude-queue.md"),transcript=join(folder,"queue.jsonl");
+  mkdirSync(runtimeDir,{recursive:true});
+  for(const file of ["claude-log-user.mjs","claude-log-assistant.mjs"])cpSync(join(ROOT,".ai/hooks",file),join(runtimeDir,file));
+  const env={AIDD_LOCAL_CONVERSATION_LOG:"1",AIDD_CONVERSATION_LOG_FILE:path};
+  const run=(file,payload)=>spawnSync(process.execPath,[join(runtimeDir,file)],{cwd:folder,input:JSON.stringify(payload),encoding:"utf8",env:{...process.env,...env}});
+  const answer=text=>writeFileSync(transcript,JSON.stringify({type:"assistant",timestamp:new Date().toISOString(),message:{role:"assistant",content:[{type:"text",text}]}}),"utf8");
+  try{
+    assert.equal(run("claude-log-user.mjs",{session_id:"queue-session",prompt:"first-question"}).status,0);
+    assert.equal(run("claude-log-user.mjs",{session_id:"queue-session",prompt:"second-question"}).status,0);
+    answer("queued-final-answer");
+    const stop=run("claude-log-assistant.mjs",{session_id:"queue-session",transcript_path:transcript,hook_event_name:"Stop"});
+    assert.equal(stop.status,0,stop.stderr);
+    const block=readFileSync(path,"utf8");
+    assert.ok(block.includes("#### Prompt 1"),"a steered turn must number its prompts");
+    assert.ok(block.includes("first-question"),"the first prompt must survive a follow-up prompt");
+    assert.ok(block.includes("second-question"),"the follow-up prompt must be logged");
+    assert.ok(block.indexOf("first-question")<block.indexOf("second-question"),"prompts must keep submission order");
+
+    writeFileSync(path,"x".repeat(5242880),"utf8");
+    assert.equal(run("claude-log-user.mjs",{session_id:"rotate-session",prompt:"rotating-question"}).status,0);
+    answer("rotated-final-answer");
+    const rotated=run("claude-log-assistant.mjs",{session_id:"rotate-session",transcript_path:transcript,hook_event_name:"Stop"});
+    assert.equal(rotated.status,0,rotated.stderr);
+    assert.equal(readFileSync(path,"utf8").length,5242880,"a full daily file must not be appended to");
+    assert.ok(readFileSync(join(folder,"claude-queue-2.md"),"utf8").includes("rotating-question"),"the overflow must continue in a numbered file");
   }finally{
     rmSync(folder,{recursive:true,force:true});
   }

@@ -14,11 +14,11 @@
       "required_tokens": ["post-check.mjs"]
     },
     "UserPromptSubmit": {
-      "purpose": "사용자 원문과 제출 시각을 provider별 임시 슬롯에 보관하고 최종 대화 로그에는 아직 기록하지 않는다. Codex는 한 응답 전에 들어온 추가 질의를 세션 큐에 누적한다.",
+      "purpose": "사용자 원문과 제출 시각을 provider별 임시 슬롯에 보관하고 최종 대화 로그에는 아직 기록하지 않는다. Codex와 Claude는 한 응답 전에 들어온 추가 질의를 세션 큐에 누적한다.",
       "required_tokens": ["log-user.mjs"]
     },
     "Stop": {
-      "purpose": "누적된 사용자 원문과 AI 최종 응답을 provider가 표시된 한 블록으로 결합해 잠금 아래 일자별 append-only 로컬 파일에 기록한다. Codex는 transcript에서 사용자에게 표시된 진행 메시지만 최선 노력으로 함께 기록한다.",
+      "purpose": "누적된 사용자 원문과 AI 최종 응답을 provider가 표시된 한 블록으로 결합해 잠금 아래 일자별 append-only 로컬 파일에 기록한다. Codex와 Claude는 transcript에서 사용자에게 표시된 진행 메시지만 최선 노력으로 함께 기록한다. 일자별 파일이 회전 기준을 넘으면 번호를 붙인 다음 파일로 이어 쓰고 기록을 포기하지 않는다.",
       "required_tokens": ["log-assistant.mjs"]
     }
   },
@@ -81,7 +81,7 @@
     "providers": ["Codex", "Claude"],
     "timestamp_format": "%Y-%m-%d %H:%M:%S local time",
     "timestamp_basis": "UserPromptSubmit",
-    "entry_template": "## [{timestamp}] {provider}\n\n### USER\n\n{one_or_more_user_prompts}\n\n[### AI PROGRESS (Codex)\n\n{visible_commentary}\n\n]### AI ({provider})\n\n{assistant}\n\n---\n\n",
+    "entry_template": "## [{timestamp}] {provider}\n\n### USER\n\n{one_or_more_user_prompts}\n\n[### AI PROGRESS ({provider})\n\n{visible_progress}\n\n]### AI ({provider})\n\n{assistant}\n\n---\n\n",
     "append_event": "Stop",
     "pairing": "UserPromptSubmit queues every prompt that belongs to the response; Stop appends all queued prompts and the final response as one locked block.",
     "pending_keys": {
@@ -95,11 +95,29 @@
       "stability": "best-effort because Codex documents the transcript format as unstable",
       "fallback": "write queued prompts and Stop.last_assistant_message without a progress section"
     },
+    "claude_progress": {
+      "source": "Stop.transcript_path",
+      "included": "assistant message text blocks recorded at or after the first queued prompt timestamp",
+      "excluded": ["thinking", "tool calls", "tool outputs", "source diffs", "sidechain and meta records"],
+      "final_answer": "the last collected text block; earlier blocks become the progress section",
+      "stability": "best-effort because Claude Code documents no stable transcript format",
+      "fallback": "write queued prompts with the Stop payload message field and no progress section"
+    },
     "orphan_policy": "Never append a user-only or assistant-only block.",
     "single_consumer_pending_lock": true,
     "concurrent_append_lock": true,
-    "max_item_chars": 16000,
+    "max_item_chars": 120000,
     "max_daily_file_bytes": 5242880,
+    "file_rotation": {
+      "threshold_basis": "max_daily_file_bytes",
+      "first_file": "%Y-%m-%d.md keeps its name and is never renamed",
+      "overflow_file": "%Y-%m-%d-{n}.md starting at n=2",
+      "oversized_entry": "an entry larger than the threshold is written alone to a fresh file instead of being dropped",
+      "max_files_per_day": 999
+    },
+    "provider_implementation_gap": {
+      "codex": "codex-log-user.mjs and codex-log-assistant.mjs still slice items at 16000 chars and stop at max_daily_file_bytes without rotation; align them in a later change."
+    },
     "failure_reporting": "sanitized-stderr",
     "disable_environment": "AIDD_LOCAL_CONVERSATION_LOG=0"
   }

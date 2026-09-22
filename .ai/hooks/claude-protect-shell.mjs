@@ -3,7 +3,7 @@
 
 import { readFileSync } from "node:fs";
 
-const roots=["project/docs/generated/","build/deliverables/",".agents/skills/",".claude/skills/"];
+const roots=["project/docs/generated/","project/.aidd/index/","project/.aidd/snapshots/","build/deliverables/",".agents/skills/",".claude/skills/"];
 const generators=[/^node\s+\S*aidd\.mjs\s+(?:generate|terminology-refresh)\s*$/,/^node\s+\S*kit\.mjs\s+sync-providers\s*$/];
 const mutators=new Set(["rm","rmdir","mv","cp","ln","tee","touch","truncate","dd","install","shred","mkdir","unlink","set-content","add-content","clear-content","out-file","new-item","remove-item","move-item","copy-item","rename-item"]);
 const inPlace=new Set(["sed","perl","ruby"]);
@@ -47,6 +47,6 @@ const payload=input();
 const raw=payload.tool_input??payload.tool_input_json??payload;
 const commands=typeof raw==="string"?[normalize(raw)]:scripts(raw,"",0);
 const exempt=commands.some(script=>generators.some(pattern=>pattern.test(script.trim())));
-const blocked=exempt?null:commands.map(script=>target(script)).find(Boolean);
+const blocked=commands.filter(script=>!generators.some(pattern=>pattern.test(script.trim()))).map(script=>target(script)).find(Boolean);
 
 if(blocked){console.error(`AIDD generated output is read-only: ${blocked} Run the matching generator instead.`);process.exitCode=2;}

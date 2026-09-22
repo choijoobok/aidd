@@ -31,10 +31,12 @@ jobs:
         run: |
           node --check .ai/tools/aidd.mjs
           node --check .ai/tools/aidd_hook.mjs
+          for file in .ai/tools/lib/*.mjs; do node --check "$file"; done
 
       - name: 파생 문서와 AI 어댑터 재생성
         run: |
           node .ai/tools/aidd.mjs generate
+          node .ai/tools/aidd.mjs documentation-check
           node .ai/tools/aidd.mjs sync-ai
 
       - name: 생성 결과 드리프트 검사
@@ -42,6 +44,9 @@ jobs:
 
       - name: 정본 정합성 검사
         run: node .ai/tools/aidd.mjs validate
+
+      - name: portable 훅 회귀
+        run: node --test .ai/tests/*.test.mjs
 
       - name: 프레임워크 테스트
         run: node --test .ai/tests/*.test.mjs

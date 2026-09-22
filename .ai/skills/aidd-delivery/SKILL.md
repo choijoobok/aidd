@@ -5,6 +5,10 @@ description: AIDD 표준에 따라 요구사항과 연결된 변경을 구현·�
 
 # AIDD 개발·전달
 
+모듈별 정본 조회·전문 명령·게이트는 [v2 통합 계약](../../../.ai/spec/specialty-integration.md)을 적용한다. 현재 owner/CHG 범위를 먼저 고르고 공통 정의를 참조한다. 쓰기 명령에는 고유 operation을 사용하며 사용자 결정·현재 유효성·실제 실행을 구분한다.
+
+owned-records-v2에서는 `.ai/docs/guides/owned-records-workflow.md`와 `.ai/spec/owned-records-v2.md`를 먼저 읽는다. 정본은 소유자/타입/ID별 파일이며 `record-put`의 expected hash와 CHG를 사용한다. 전역 배열 writer를 호출하거나 index/snapshot을 직접 수정하지 않는다. 미구현/unknown은 완료가 아니다.
+
 1. 변경 ID와 등급, 영향 요구사항·모듈, WRK와 선행 의존성, 현재 결정·배포 프로필·기술 기준선, 기반 준비도, 설계 위험, 테스트 전략, 마이그레이션, 롤백과 관련 DRQ를 확인한다. 차단 `awaiting_decision`이 있으면 구현보다 먼저 `aidd-decision-management`로 재개한다.
 2. 작업을 검토 가능한 요구사항 크기로 나누고 `MLS`·`WRK`·`IFC`·`DPN`에 연결한다. WRK는 책임자 배정표가 아니라 수행 범위·완료 조건·증거 계약이다.
 3. 결정된 기술 스택, UI 패턴과 공통 컴포넌트를 재사용한다. 공통·프로젝트 용어를 일관되게 사용하고 용어 변경은 `aidd-terminology`로 처리한다.

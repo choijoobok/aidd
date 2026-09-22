@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "id": "KIT-ADR-012",
+  "status": "accepted",
+  "title": "범용 인벤토리와 관측 기반 정본 초안, 생성 전용 안전 적용",
+  "change": "KIT-CHG-018",
+  "context": "APR-010은 일반 레거시 역분석 요구안과 S08B-1 실행을 승인했다. 특정 스택 파서와 실제 제품 도입은 지정되지 않았다.",
+  "decision": "legacy-inventory/draft/apply를 v2 portable CLI에 추가하고 LDP/DOC/SURF·기존 업무 정본·CHG/OI를 재사용한다. 필드별 관측과 출처는 작은 레코드로 분리한다. observed 값만 초안에 채우고 inferred/충돌은 unknown으로 남긴다. 기존 정본은 생성 전용 CAS로 보호하며 3-way 병합은 S08B-2로 남긴다.",
+  "alternatives": ["모든 언어/문서 파서 내장: 대상과 정확도 기준이 없어 채택하지 않음", "새 provenance 서비스/DB/훅: 기존 레코드와 transaction으로 충분하여 채택하지 않음", "기존 정본 자동 갱신: 사용자 편집·승인 보호를 위해 이번 단계에서 제외"],
+  "consequences": ["원문 의미 분석은 AI 또는 대상별 도구가 수행하고 출처 계약을 만족하는 구조화 관측을 제공해야 함", "정본 초안 생성과 요구 수용/설계 진입/실제 구현 검증은 별개", "새 명령은 기존 v2 저장소에 추가되며 v1 입력과 자동 Kit 업그레이드는 지원하지 않음", "파일 링크·미지원 자료·읽기 실패·상한을 명시적으로 보고하며 원본 실행/변경 없음"],
+  "validation": "RE-AC-01~06을 임시 v2 저장소·소스 fixture로 검증하고 공통 CLI/문서/게이트 회귀와 check/smoke를 실행한다.",
+  "rollback": "새 명령 호출을 중단하면 기존 주기에 영향이 없다. 미완료 transaction은 기존 복구 명령으로 처리하고 완료된 기록은 후속 편집·이력을 보존하는 정상 변경으로 정리한다.",
+  "approval": "APR-010 범위 내 구현 설계 결정",
+  "accepted_at": "2026-09-22T16:01:55Z"
+}

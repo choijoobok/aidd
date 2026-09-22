@@ -4,7 +4,9 @@
     "project/docs/generated/",
     "build/deliverables/",
     ".agents/skills/",
-    ".claude/skills/"
+    ".claude/skills/",
+    "project/.aidd/index/",
+    "project/.aidd/snapshots/"
   ],
   "allowed_generators": [
     "aidd.mjs generate",

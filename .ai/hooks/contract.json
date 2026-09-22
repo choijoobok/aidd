@@ -3,35 +3,51 @@
   "events": {
     "SessionStart": {
       "purpose": "현재 AIDD 역할을 브리핑한다. 배선 self-test는 런타임 훅과 분리된 수동 검증 명령이다.",
-      "required_tokens": ["session-brief.mjs"]
+      "required_tokens": [
+        "session-brief.mjs"
+      ]
     },
     "PreToolUse": {
       "purpose": "생성물과 provider 스킬 복사본의 직접 수정을 막고 정본 또는 생성기를 안내한다.",
-      "required_tokens": ["protect-file.mjs", "protect-shell.mjs"]
+      "required_tokens": [
+        "protect-file.mjs",
+        "protect-shell.mjs"
+      ]
     },
     "PostToolUse": {
       "purpose": "용어 정본 직접 변경 뒤 파생 문서 현행화를 보조하고 스킬 변경 뒤 역할별 provider 동기화를 안내한다. 정상 용어 변경은 오프라인 결정 뒤 term-apply가 생성·검증까지 수행한다.",
-      "required_tokens": ["post-check.mjs"]
+      "required_tokens": [
+        "post-check.mjs"
+      ]
     },
     "UserPromptSubmit": {
       "purpose": "사용자 원문과 제출 시각을 provider별 임시 슬롯에 보관하고 최종 대화 로그에는 아직 기록하지 않는다. Codex와 Claude는 한 응답 전에 들어온 추가 질의를 세션 큐에 누적한다.",
-      "required_tokens": ["log-user.mjs"]
+      "required_tokens": [
+        "log-user.mjs"
+      ]
     },
     "Stop": {
       "purpose": "누적된 사용자 원문과 AI 최종 응답을 provider가 표시된 한 블록으로 결합해 잠금 아래 일자별 append-only 로컬 파일에 기록한다. Codex와 Claude는 transcript에서 사용자에게 표시된 진행 메시지만 최선 노력으로 함께 기록한다. 일자별 파일이 회전 기준을 넘으면 번호를 붙인 다음 파일로 이어 쓰고 기록을 포기하지 않는다.",
-      "required_tokens": ["log-assistant.mjs"]
+      "required_tokens": [
+        "log-assistant.mjs"
+      ]
     }
   },
   "provider_events": {
     "codex": {
       "SessionStart": {
         "purpose": "Codex 사용자에게 CLI /hooks에서 현재 작업공간 훅을 검토하고 신뢰 처리했는지 확인하도록 systemMessage와 startup 첫 턴의 final_answer로 눈에 띄는 비차단 경고를 세션당 한 번 표시한다. commentary 표시는 첫 final_answer 표시를 대체하지 않으며 이전 assistant final_answer에 이미 표시된 경고는 이후 응답에서 반복하지 않는다.",
-        "required_tokens": ["codex-hook-review-reminder.mjs", "additionalContextLimit"]
+        "required_tokens": [
+          "codex-hook-review-reminder.mjs",
+          "additionalContextLimit"
+        ]
       }
     },
     "claude": {
       "SessionStart": {
-        "forbidden_tokens": ["codex-hook-review-reminder"]
+        "forbidden_tokens": [
+          "codex-hook-review-reminder"
+        ]
       }
     }
   },
@@ -51,19 +67,33 @@
   "terminology_refresh": {
     "trigger_path": "project/.aidd/ssot/terminology.json",
     "command": "node .ai/tools/aidd.mjs terminology-refresh",
-    "failure_behavior": "warn"
+    "failure_behavior": "warn",
+    "owned_record_paths": [
+      "project/.aidd/ssot/common/TRM/",
+      "project/.aidd/ssot/common/TCH/",
+      "project/.aidd/ssot/modules/MOD-*/TRM/",
+      "project/.aidd/ssot/modules/MOD-*/TCH/"
+    ],
+    "suppress_during": "project/.aidd/work/write.lock"
   },
   "skill_sync_guidance": {
     "kit-source": {
-      "trigger_paths": [".ai/skills/", ".aidd-kit-dev/skills/"],
+      "trigger_paths": [
+        ".ai/skills/",
+        ".aidd-kit-dev/skills/"
+      ],
       "command": "node .aidd-kit-dev/tools/kit.mjs sync-providers"
     },
     "kit-template": {
-      "trigger_paths": [".ai/skills/"],
+      "trigger_paths": [
+        ".ai/skills/"
+      ],
       "command": "node .ai/tools/aidd.mjs sync-ai"
     },
     "product-workspace": {
-      "trigger_paths": [".ai/skills/"],
+      "trigger_paths": [
+        ".ai/skills/"
+      ],
       "command": "node .ai/tools/aidd.mjs sync-ai"
     },
     "failure_behavior": "warn"
@@ -78,27 +108,50 @@
     "date_format": "%Y-%m/raw/%Y-%m-%d.md",
     "override_environment": "AIDD_CONVERSATION_LOG_FILE",
     "enabled_by_default": true,
-    "providers": ["Codex", "Claude"],
+    "providers": [
+      "Codex",
+      "Claude"
+    ],
     "timestamp_format": "%Y-%m-%d %H:%M:%S local time",
     "timestamp_basis": "UserPromptSubmit",
     "entry_template": "## [{timestamp}] {provider}\n\n### USER\n\n{one_or_more_user_prompts}\n\n[### AI PROGRESS ({provider})\n\n{visible_progress}\n\n]### AI ({provider})\n\n{assistant}\n\n---\n\n",
     "append_event": "Stop",
     "pairing": "UserPromptSubmit queues every prompt that belongs to the response; Stop appends all queued prompts and the final response as one locked block.",
     "pending_keys": {
-      "codex": ["workspace", "provider", "session_id"],
-      "claude": ["workspace", "provider", "session_id"]
+      "codex": [
+        "workspace",
+        "provider",
+        "session_id"
+      ],
+      "claude": [
+        "workspace",
+        "provider",
+        "session_id"
+      ]
     },
     "codex_progress": {
       "source": "Stop.transcript_path",
       "included": "response_item message records with role=assistant and phase=commentary for queued turn ids",
-      "excluded": ["reasoning", "tool calls", "tool outputs", "source diffs", "final_answer transcript copy"],
+      "excluded": [
+        "reasoning",
+        "tool calls",
+        "tool outputs",
+        "source diffs",
+        "final_answer transcript copy"
+      ],
       "stability": "best-effort because Codex documents the transcript format as unstable",
       "fallback": "write queued prompts and Stop.last_assistant_message without a progress section"
     },
     "claude_progress": {
       "source": "Stop.transcript_path",
       "included": "assistant message text blocks recorded at or after the first queued prompt timestamp",
-      "excluded": ["thinking", "tool calls", "tool outputs", "source diffs", "sidechain and meta records"],
+      "excluded": [
+        "thinking",
+        "tool calls",
+        "tool outputs",
+        "source diffs",
+        "sidechain and meta records"
+      ],
       "final_answer": "the last collected text block; earlier blocks become the progress section",
       "stability": "best-effort because Claude Code documents no stable transcript format",
       "fallback": "write queued prompts with the Stop payload message field and no progress section"

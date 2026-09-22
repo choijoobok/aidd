@@ -24,7 +24,9 @@ node .ai/tools/aidd.mjs install-hooks
 node .ai/tools/aidd.mjs project-bootstrap --project-id PRJ-001 --name "프로젝트 이름" --mode greenfield
 ```
 
-기존 시스템을 고도화하면 `--mode legacy --source-location "기존 소스 위치"`를 사용한다. 기존 `project/`가 있으면 덮어쓰지 않고 중단한다.
+기존 시스템을 고도화하면 `--mode existing-system --source-location "기존 소스 위치"`를 사용한다. 기존 `project/`가 있으면 덮어쓰지 않고 중단한다.
+
+새 프로젝트는 항상 `owned-records-v2`로 시작한다. 이전 AIDD 형식의 정본을 자동 변환하거나 새 v2 정본과 혼합하지 않는다. AIDD와 무관한 기존 소스·문서의 분석은 [레거시 역분석 시작](../legacy-reverse-workflow.md)의 별도 절차를 사용한다.
 
 ## 4. 첫 요구분석
 
@@ -44,6 +46,6 @@ node .ai/tools/aidd.mjs status --level executive
 
 - 훅 self-test가 통과한다.
 - `.aidd-role.json`이 `product-workspace`다.
-- `project/.aidd/ssot/` 정본과 `history/` 폴더가 존재한다.
+- `project/.aidd/ssot/project.json`의 v2 형식과 `.aidd/index/`를 확인한다. 타입 폴더는 첫 레코드 저장 때 생성된다.
 - 프로젝트 목적·범위·미결사항이 사실과 가정을 구분해 기록됐다.
 - `generate`와 `validate`가 통과한다.

@@ -5,6 +5,16 @@ description: 정본 레코드에서 정확한 경영진·모듈·항목 수준 A
 
 # AIDD 상태 브리핑
 
+모듈별 정본 조회·전문 명령·게이트는 [v2 통합 계약](../../../.ai/spec/specialty-integration.md)을 적용한다. 현재 owner/CHG 범위를 먼저 고르고 공통 정의를 참조한다. 쓰기 명령에는 고유 operation을 사용하며 사용자 결정·현재 유효성·실제 실행을 구분한다.
+
+v2의 status.discovery는 선행 시스템·업무 분석 준비도이고 evaluations는 요구·개발·출시 준비도다. 두 상태를 구분하여 SYS/CAP/ACT/UC/BPR의 누락·미검토·stale와 다음 보완 대상을 먼저 알린다. 요구가 아직 없다는 이유로 업무 분석의 진척을 숨기거나, 업무 분석 ready를 설계/개발 ready로 표현하지 않는다.
+
+레거시 분석 CHG는 status.legacy_reviews의 현재 수용·미완료·stale·다음 검토 단계와 coverage_gaps를 함께 표시한다. 상세 내용/출처는 legacy-review, 현재 자료 차이는 legacy-source-check로 확인한다. 읽기 전용 브리핑 요청만으로 질문/승인/재분석 채택을 저장하지 않는다. 수집률·문서 생성·검토 수용을 실제 제품 검증이나 운영 완료로 합치지 않는다.
+
+status.legacy_adoptions는 모듈별 문서 준비·채택 current/stale·실제 테스트 not_run/passed/failed/stale을 분리한다. 이 출력은 저장된 자료 기준이며 source_check.checked=false를 숨기지 않는다. 현재 자료까지 확인하려면 legacy-adoption-check를 읽기 전용으로 실행한다. 운영 REL은 별개이며 문서 채택을 테스트·출시 완료나 개발 게이트 면제로 표현하지 않는다.
+
+owned-records-v2에서는 `.ai/spec/owned-records-v2.md`의 브리핑·문서·제출 계약을 먼저 읽는다. `status`와 생성 문서는 같은 evaluator 결과를 쓰며 운영 이력/주기/작업 실행과 현재 준비도를 구분한다. `generate --module`과 소유 output manifest로 다른 모듈을 보존하고 `documentation-check`로 대상 전체 파일/내용을 비교한다. 제출은 DLP와 `delivery-build`를 사용하며 실제 화면 증거/목업, 내부/최종 사용자 경계를 검증한다. 미구현 전문 명령을 통과로 표시하거나 구형 전역 writer로 우회하지 않는다.
+
 1. 세션 시작에는 `node .ai/tools/aidd.mjs validate`와 `node .ai/tools/aidd.mjs status --level executive`를 확인해 짧은 현황 브리핑부터 제공한다. `MRG` 영향 평가 또는 `MRC` 재검토 대기가 있으면 병합 알림을 진척과 분리해 먼저 알린다. Git 상태는 `integration-status`, 모듈 상세는 `--level module --module MOD-ID`, AI 평가 슬롯은 `evaluation-status`를 사용한다.
 2. 검증 불일치를 숨은 도구 세부사항이 아니라 프로젝트 상태 문제로 보고한다. 상태 명령의 결정론적 개수와 목록을 다시 추측하지 않는다.
 3. 현재 단계, 배포 프로필, 게이트 정책과 변경별 `GTR` 통과 현황, 최신 HIS·ADR·CHG 결정, 구조화된 증거, 차단사항, 주요 위험과 다음 결정을 먼저 제시한다. OI와 DRQ의 `draft`·`awaiting_decision`·`deferred`를 별도 개수로 보고한다. 배포 위치·DBMS·인스턴스·확장·SLO·RTO·RPO가 미정이면 설계 영향과 결정 기한을 표시한다.

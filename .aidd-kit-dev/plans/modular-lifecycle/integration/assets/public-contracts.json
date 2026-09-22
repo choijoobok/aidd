@@ -1,0 +1,148 @@
+{
+  "stage": "S08",
+  "inventory": "KIT-ASSET-018-S03-01",
+  "group": "public-contracts",
+  "review_method": "범주별 계약 검토와 원본 해시 대조; 모든 파일의 독립 행동 검증을 뜻하지 않는다.",
+  "files": [
+    {
+      "path": ".ai/docs/guides/aidd-kit-guide.md",
+      "group": "portable-guides",
+      "disposition": "reviewed_retained",
+      "current_sha256": "c506568da075f297caf8de0daf00f7ebb6d6c84f2939d52b47b735244e135e62",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/docs/guides/project-team-guide.md",
+      "group": "portable-guides",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "e37d49faf0416f9f5181387492e81a5b9591e2f8d5f326bc0b19252045cc104c",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/01-project-setup.md",
+      "group": "portable-guides",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "71c086989c250a1b0c20ff450d7ec6088a946a0d41179fd99d77f818196c850e",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/02-lifecycle.md",
+      "group": "portable-guides",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "a301b93cc594046aff46aaf69e8c2a50c9acb0184bbb58763181a1980b39d0b6",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/03-document-management.md",
+      "group": "portable-guides",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "a54f46dc34ef2ba09a40241dbf05f9718b75dcd06cf18410b0ace575610f8954",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/04-skills-and-hooks.md",
+      "group": "portable-guides",
+      "disposition": "reviewed_retained",
+      "current_sha256": "7618f0aabf74b6acf80f1587730633b26e6f29c421792d68d82f992ad92e2e08",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/05-team-workflow.md",
+      "group": "portable-guides",
+      "disposition": "reviewed_retained",
+      "current_sha256": "93eeefeb940dae03935e712e6a0ba8cafadbdbae923ee1709dc5c001eb8a1064",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/06-completion-and-release.md",
+      "group": "portable-guides",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "b22f71065bc0f7d9200e47423127bc32cd3c0af1450fa0fa94f8072dcf730c83",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/docs/methodology/artifact-model.md",
+      "group": "methodology",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "49d672fb01817a2b4cc2813ec89fe4f59bbeab2d877ea59e384181ee8ec1232f",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/docs/methodology/blueprint.md",
+      "group": "methodology",
+      "disposition": "reviewed_retained",
+      "current_sha256": "de0c5456f51195cf1ffcc8e5342daeac611105de508caa0b2bc44361b88ad64f",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/docs/methodology/research-basis.md",
+      "group": "methodology",
+      "disposition": "reviewed_retained",
+      "current_sha256": "2f74c4ac9758d983899dd2503c0a4cf7e7f19be13ba03854b7b1786d6c7c4bbd",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/manifests/kit.json",
+      "group": "manifests",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "0b86131988f63db34b36cf55e4797d9da8658ad8a545f2c1411c2db375fd4dfc",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/manifests/terminology.json",
+      "group": "manifests",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "b785d74f259776810b33a768581103168331710204b2afb45c9d675f02a44df2",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/spec/change-sharing.md",
+      "group": "portable-spec",
+      "disposition": "reviewed_retained",
+      "current_sha256": "8b708e5b72fe31a0bde4b2528988b7fe00639bf6b978ad60ad6b7d4f41c41622",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/spec/conformance.md",
+      "group": "portable-spec",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "63842b3d38ed397c8e53968837bbe9a07e9256c18c1b8e63e23cb7c875fc44be",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/spec/distribution-layout.md",
+      "group": "portable-spec",
+      "disposition": "reviewed_retained",
+      "current_sha256": "0de87ad3ea5dfac2be985f79244940933a8e929bc795dedfefd572233521886f",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/spec/index.md",
+      "group": "portable-spec",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "9b54fb187090c5d4782b48ff08177c2c4af00b615a4ddf0109eb1e3b9f5a1e72",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/spec/project-lifecycle.md",
+      "group": "portable-spec",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "be776479acd4b352c4e2b860673e63ffaca242d2592388f1384938ce9adf8e2c",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/spec/purpose-and-boundaries.md",
+      "group": "portable-spec",
+      "disposition": "reviewed_retained",
+      "current_sha256": "5b1aa489a24675db85a35891907be1e5ac46fc3dd4127b49e3a53ada76ceaf3d",
+      "verification": "contract-category review; kit check; smoke"
+    },
+    {
+      "path": ".ai/spec/repository-roles.md",
+      "group": "portable-spec",
+      "disposition": "reviewed_retained",
+      "current_sha256": "b460246e1a9a20f3df8d3510203e9640b63ee63be3381158ecaa196f2694089b",
+      "verification": "contract-category review; kit check; smoke"
+    }
+  ]
+}

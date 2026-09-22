@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Isolated Claude PostToolUse hook. Do not import another AIDD hook. */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -12,7 +12,7 @@ const payload=input();
 const source=JSON.stringify(payload.tool_input??payload.tool_input_json??payload).replaceAll("\\","/").replace(/\/{2,}/g,"/");
 const advisories=[];
 
-if(source.includes("project/.aidd/ssot/terminology.json")){
+if((source.includes("project/.aidd/ssot/terminology.json")||/project\/\.aidd\/ssot\/(?:common|modules\/MOD-[A-Z0-9-]+)\/(?:TRM|TCH)\//.test(source))&&!existsSync(join(ROOT,"project/.aidd/work/write.lock"))){
   const run=spawnSync(process.execPath,[join(ROOT,".ai/tools/aidd.mjs"),"terminology-refresh"],{cwd:ROOT,encoding:"utf8"});
   if(run.status!==0)advisories.push("AIDD terminology refresh needs attention; run `node .ai/tools/aidd.mjs terminology-refresh`.");
 }

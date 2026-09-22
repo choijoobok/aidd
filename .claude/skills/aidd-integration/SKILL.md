@@ -5,6 +5,8 @@ description: Git 브랜치 통합, 원격과의 차이, 병합 충돌, 병합 �
 
 # AIDD 안전 통합
 
+모듈별 정본 조회·전문 명령·게이트는 [v2 통합 계약](../../../.ai/spec/specialty-integration.md)을 적용한다. 현재 owner/CHG 범위를 먼저 고르고 공통 정의를 참조한다. 쓰기 명령에는 고유 operation을 사용하며 사용자 결정·현재 유효성·실제 실행을 구분한다.
+
 1. 먼저 `node .ai/tools/aidd.mjs integration-status`와 `git status --short`로 현재 작업 트리·추적 브랜치 차이를 확인한다. 이 명령은 네트워크나 Git 이력을 바꾸지 않는다.
 2. 변경된 작업 트리에는 자동 `fetch`, `pull`, `merge`, `rebase`, `stash`, `reset`, `checkout`을 하지 않는다. 사용자가 무엇을 보존·통합할지 결정하게 한다.
 3. 깨끗한 트리에서 뒤처진 경우에도 자동으로 가져오지 않는다. 사용자 승인을 받은 뒤에만 `git pull --ff-only`처럼 되돌리기 쉬운 통합을 수행한다.

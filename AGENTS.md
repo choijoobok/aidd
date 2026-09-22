@@ -28,7 +28,7 @@
 - portable 동작은 `.ai/`에서, Kit 관리 전용 동작은 `.aidd-kit-dev/`에서 구현한다. 경계가 모호하면 기본적으로 배포하지 않고 명시적인 결정으로 남긴다.
 - 사용자·AI 대화 원문은 정본·증거·배포물에 포함하지 않는다. `UserPromptSubmit`은 다음 응답에 속한 사용자 원문을 모두 임시 보관하고 `Stop`이 최종 응답과 결합한 뒤, `Codex` 또는 `Claude`를 표시한 한 블록을 현재 프로젝트 루트의 `chat-history/YYYY-MM/raw/YYYY-MM-DD.md`에 잠금 아래 한 번에 추가한다. Codex와 Claude는 처리 중 추가 질의를 세션 큐에 순서대로 보존하고 transcript에서 사용자에게 실제 표시된 진행 메시지만 최선 노력으로 함께 기록하며, 추론(Claude는 thinking)·도구 호출·도구 출력·소스 diff는 기록하지 않는다. 두 provider 모두 항목별 최대 120,000자를 보존하고 일자 파일이 5MiB 한도를 넘으면 첫 파일 이름을 그대로 두고 `YYYY-MM-DD-2.md`부터 번호를 붙인 다음 파일에 이어 쓴다. 사용자 또는 AI 한쪽만 있는 블록은 기록하지 않는다. `AIDD_CONVERSATION_LOG_FILE`은 테스트나 명시적 운영 경로가 필요할 때만 기본 경로를 대신한다.
 - 공통 portable 스킬은 `.ai/skills/`, 관리 전용 스킬은 `.aidd-kit-dev/skills/`가 정본이다. 원본 provider 어댑터는 `node .aidd-kit-dev/tools/kit.mjs sync-providers`로 두 집합을 합쳐 갱신한다.
-- 새롭거나 모호한 용어의 발견, 확인 카드, 추가·변경·제거와 파생 용어집 검증에는 `aidd-terminology` 스킬을 사용한다. AIDD 공통 용어 정본은 `.ai/manifests/terminology.json`, 프로젝트 용어 정본은 `project/.aidd/ssot/terminology.json`이며 생성 Markdown과 HTML은 직접 수정하지 않는다.
+- 새롭거나 모호한 용어의 발견, 확인 카드, 추가·변경·제거와 파생 용어집 검증에는 `aidd-terminology` 스킬을 사용한다. AIDD 공통 용어 정본은 `.ai/manifests/terminology.json`, 프로젝트 용어 정본은 `project/.aidd/ssot/common/TRM/ 및 modules/<MOD>/TRM/`이며 생성 Markdown과 HTML은 직접 수정하지 않는다.
 - 생성물이나 fixture를 제품 정본으로 가장하지 않는다. 기존 제품 fixture의 레코드는 회귀 입력일 뿐 현재 Kit 상태가 아니다.
 - 사용자가 AIDD 요건·스펙 구현 검증을 요청하면 `aidd-requirement-verification` 스킬을 사용한다. 빠른 구조 검사와 요청 범위의 행위 테스트만 수행하고, 파생 문서는 현재 정본에서 다시 생성한 전체 결과와 비교한다.
 - 작고 되돌릴 수 있는 증분을 선호한다. 기준선 초기화가 필요하면 현재 작업 트리에는 채택된 기준선만 남기고 과거 상세 이력은 Git에서 조회한다.

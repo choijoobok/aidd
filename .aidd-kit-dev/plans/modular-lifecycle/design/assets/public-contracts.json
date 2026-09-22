@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "inventory": "KIT-ASSET-018-S03-01",
+  "group": "public-contracts",
+  "files": [
+    {
+      "path": ".ai/docs/guides/aidd-kit-guide.md",
+      "sha256": "c506568da075f297caf8de0daf00f7ebb6d6c84f2939d52b47b735244e135e62",
+      "group": "portable-guides",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/docs/guides/project-team-guide.md",
+      "sha256": "2a756a06c05633ca9cfda83f4e0bde158c6e250a465fcea2e97a5f4d4ecfce59",
+      "group": "portable-guides",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/01-project-setup.md",
+      "sha256": "77936456b2e8bd400dbbaedb081eb40d13f1a61f7a70e77c9a514e9a7f95f694",
+      "group": "portable-guides",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/02-lifecycle.md",
+      "sha256": "357962ad7ad460060cf41dfaf5c248ae39b5721252686e102f22939bad19ff1a",
+      "group": "portable-guides",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/03-document-management.md",
+      "sha256": "3b08baee7b33fbda6e00fc84c48c4ca5e576dfe9add349caf26a0c8c07c3dd61",
+      "group": "portable-guides",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/04-skills-and-hooks.md",
+      "sha256": "7618f0aabf74b6acf80f1587730633b26e6f29c421792d68d82f992ad92e2e08",
+      "group": "portable-guides",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/05-team-workflow.md",
+      "sha256": "93eeefeb940dae03935e712e6a0ba8cafadbdbae923ee1709dc5c001eb8a1064",
+      "group": "portable-guides",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/docs/guides/project-team/06-completion-and-release.md",
+      "sha256": "309384a9e1db2d170618361307012f12a5650994f71adccc1f6ec6c740a6dcd6",
+      "group": "portable-guides",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/docs/methodology/artifact-model.md",
+      "sha256": "328a3fef20c5e65eecc52659b30721b0594bd6626231d9742d5278e631939487",
+      "group": "methodology",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/docs/methodology/blueprint.md",
+      "sha256": "de0c5456f51195cf1ffcc8e5342daeac611105de508caa0b2bc44361b88ad64f",
+      "group": "methodology",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/docs/methodology/research-basis.md",
+      "sha256": "2f74c4ac9758d983899dd2503c0a4cf7e7f19be13ba03854b7b1786d6c7c4bbd",
+      "group": "methodology",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/manifests/kit.json",
+      "sha256": "a7bea615334a63cb7dd7ce55c01407fc18bd7412ef557371686ce5ea2a3951cb",
+      "group": "manifests",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/manifests/terminology.json",
+      "sha256": "1154e67566557674dffa70c4140856670067dc23b7048e9277f5efacd54bc949",
+      "group": "manifests",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/spec/change-sharing.md",
+      "sha256": "8b708e5b72fe31a0bde4b2528988b7fe00639bf6b978ad60ad6b7d4f41c41622",
+      "group": "portable-spec",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/spec/conformance.md",
+      "sha256": "c0a6956ec0e659180881e09b23f94ce7f4b5e6f10206ddf80f8a03386f6f320b",
+      "group": "portable-spec",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/spec/distribution-layout.md",
+      "sha256": "0de87ad3ea5dfac2be985f79244940933a8e929bc795dedfefd572233521886f",
+      "group": "portable-spec",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/spec/index.md",
+      "sha256": "7a7ecec5085ceadf28a20ffcc825760ad1f21bad716c4a0814cec89c3a83957b",
+      "group": "portable-spec",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/spec/project-lifecycle.md",
+      "sha256": "b77fd5c13300d59cbff422244027ac2427f4a581e54c29b723f2cd1d33fb0e56",
+      "group": "portable-spec",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/spec/purpose-and-boundaries.md",
+      "sha256": "5b1aa489a24675db85a35891907be1e5ac46fc3dd4127b49e3a53ada76ceaf3d",
+      "group": "portable-spec",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/spec/repository-roles.md",
+      "sha256": "b460246e1a9a20f3df8d3510203e9640b63ee63be3381158ecaa196f2694089b",
+      "group": "portable-spec",
+      "implementation_status": "planned"
+    }
+  ]
+}

@@ -5,7 +5,9 @@ description: 요구분석·설계·구현 중 새롭거나 모호한 프로젝�
 
 # AIDD 용어 관리
 
-1. `.ai/manifests/terminology.json`의 공통 용어와 `project/.aidd/ssot/terminology.json`의 프로젝트 용어를 먼저 검색한다. 공통 용어를 프로젝트에서 재정의하지 않는다.
+모듈별 정본 조회·전문 명령·게이트는 [v2 통합 계약](../../../.ai/spec/specialty-integration.md)을 적용한다. 현재 owner/CHG 범위를 먼저 고르고 공통 정의를 참조한다. 쓰기 명령에는 고유 operation을 사용하며 사용자 결정·현재 유효성·실제 실행을 구분한다.
+
+1. `.ai/manifests/terminology.json`의 공통 용어와 `project/.aidd/ssot/common/TRM/ 및 modules/<MOD>/TRM/`의 프로젝트 용어를 먼저 검색한다. 공통 용어를 프로젝트에서 재정의하지 않는다.
 2. 요구·설계·데이터·API·화면·소스에 반복되거나, 해석에 따라 계약과 인수 기준이 달라지는 표현만 관리한다. 일회성 표현과 일반어는 등록하지 않는다.
 3. 같은 뜻이면 별칭을 검토한다. 범위·책임·상태가 다르면 별도 용어와 판단 규칙을 정의한다. 외부 어휘는 `external`과 출처를 기록한다.
 4. 용어·key, 개념 유형, 분류, 정의, 범위, 별칭, 예, 관련·혼동 용어, 독자, 공개 범위와 영향 후보를 정리한다.
@@ -15,4 +17,4 @@ description: 요구분석·설계·구현 중 새롭거나 모호한 프로젝�
 8. 적용이 실패하면 완료를 선언하지 않는다. 충돌·잔존 표현·누락된 영향 위치를 해결하고 다시 적용한다.
 9. 최종 사용자 용어집에는 `visibility: customer`이고 `end_user` 독자가 포함된 용어만 공개한다. 생성물은 직접 수정하지 않는다.
 
-카드 항목은 [용어 확인 카드](../../templates/artifact/terminology-workbook.md), 명령 예시는 [문서 관리 가이드](../../docs/guides/project-team/03-document-management.md)를 따른다.
+카드 항목은 [용어 확인 카드](../../../.ai/templates/artifact/terminology-workbook.md), 명령 예시는 [문서 관리 가이드](../../../.ai/docs/guides/project-team/03-document-management.md)를 따른다.

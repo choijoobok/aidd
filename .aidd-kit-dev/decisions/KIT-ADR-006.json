@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "id": "KIT-ADR-006",
+  "status": "accepted",
+  "title": "CHG 기반 모듈별 주기와 소유 레코드 v2·기능 정본 승격",
+  "change": "KIT-CHG-018",
+  "design": ".aidd-kit-dev/plans/modular-lifecycle/design/01-model.md",
+  "context": "모듈 독립 주기와 작은 정본 파일이 필요하지만 현재는 전역 배열과 단일 단계 선언이 많고 기능 상세 명세를 별도 FEAT로 관리하지 않는다.",
+  "decision": "기존 CHG를 개발 주기로, WRK를 실행 조각으로 재사용한다. 모듈/공통 단일 소유의 ID별 v2 JSON 정본을 만들고 FEAT를 지속 기능 계약으로 승격하며 DAT/NAV로 업무 데이터/메뉴를 식별한다. 현재 정본과 역사적 snapshot·계산 index를 분리한다.",
+  "alternatives": [
+    {
+      "option": "기존 전역 배열에 상태 필드만 추가",
+      "assessment": "변경량은 작지만 모듈별 읽기·쓰기와 항목 개정/검토 경계를 충족하기 어렵다."
+    },
+    {
+      "option": "모듈마다 모든 정보를 한 JSON에 저장",
+      "assessment": "전역 결합은 줄지만 큰 파일과 불필요한 개정 충돌이 남는다."
+    },
+    {
+      "option": "DB/새 워크플로 서비스를 전면 도입",
+      "assessment": "질의/동시성 이점은 있으나 이식성과 로컬 표준 라이브러리 제약을 벗어나 운영 부담을 만든다."
+    }
+  ],
+  "rationale": "파일·Git 기반의 기존 이식성을 유지하면서 독립 변경/검토 단위를 저장 경계와 맞춘다. 새 cycle 유형이나 별도 PM 체계는 불필요하다.",
+  "replaces_contracts": [
+    "project-lifecycle/artifact-model/feature-detail-spec-workbook의 별도 FEAT 정본 비채택",
+    "KIT-ADR-004 중 OI/DRQ의 특정 전역 물리 파일 저장 부분"
+  ],
+  "preserves": [
+    "KIT-ADR-004의 논리적 공통 OI/DRQ 큐·미응답 보존",
+    "KIT-ADR-002의 사람 신원·권한 관리 제외",
+    "기존 제품을 명시적으로 전환할 때의 안정 ID·이력"
+  ],
+  "consequences": [
+    "경로/스키마 변경은 major다.",
+    "신규 FEAT에는 새 ID가 필요하며 기존 FEAT ID 보존을 주장하지 않는다.",
+    "원본 스킬·참조·도구·템플릿·가이드 및 fixture를 함께 갱신한다."
+  ],
+  "rollback": "구현 단계별 변경을 분리한다. 기존 제품 데이터는 별도 후보 트리 변환으로 원본을 보존하며 이후 수정은 자동 덮어쓰지 않는다.",
+  "approval": "APR-004: 사용자 설계 수용 및 S04~S07 실행 승인",
+  "accepted_at": "2026-09-22T13:02:54.113Z"
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "id": "KIT-ADR-008",
+  "status": "accepted",
+  "title": "재생성 인덱스·범위 읽기·협력 트랜잭션과 독립 훅 유지",
+  "change": "KIT-CHG-018",
+  "design": ".aidd-kit-dev/plans/modular-lifecycle/design/02-storage.md",
+  "context": "레코드 파일 분리만으로는 전역 로딩·인덱스 누락·동시 쓰기·부분 실패 문제를 해결하지 못한다.",
+  "decision": "owner/type별 파생 인덱스로 ID/관계를 조회하고 엄격한 판정은 관련 본문 실제 해시와 입력 coverage를 검증한다. 일반 CLI 쓰기는 expected hash·짧은 저장소 잠금·operation 저널·복구로 일관성을 확보한다. 공통 라이브러리는 CLI 내부에만 두며 런타임 훅은 독립 구현한다.",
+  "alternatives": [
+    {
+      "option": "매번 전체 본문 파싱",
+      "assessment": "단순하지만 모듈 독립 조회와 대형 프로젝트 읽기 비용을 개선하지 못한다."
+    },
+    {
+      "option": "인덱스만 신뢰",
+      "assessment": "누락/직접 편집/낡은 관계를 준비 완료로 잘못 판단한다."
+    },
+    {
+      "option": "모듈별 복잡한 다중 잠금 또는 외부 DB",
+      "assessment": "횡단 변경 교착·운영 복잡성에 비해 현재 확인된 필요가 부족하다."
+    }
+  ],
+  "rationale": "검색 효율과 판정 신뢰성을 분리하고 로컬 Node 표준 라이브러리로 필요한 실패 복구를 구현한다. 최소 본문 읽기 성공을 전역 무결성 보증으로 과장하지 않는다.",
+  "preserves": [
+    "KIT-ADR-003의 provider/이벤트/책임별 격리와 다른 훅 승인 불변",
+    "Node.js 22+·표준 라이브러리·UTF-8 BOM 없음·LF"
+  ],
+  "consequences": [
+    "인덱스 unknown과 범위 coverage를 공개해야 한다.",
+    "공식 writer끼리의 충돌 제어와 비협력 편집기 동시 쓰기의 한계를 구별한다.",
+    "S04에서 Windows 실제 파일 교체·충돌·중간 실패를 시험한다.",
+    "신규 runtime hook·공통 hook dispatcher는 추가하지 않는다."
+  ],
+  "rollback": "저널은 작업별 before/after 해시를 보존하고 복구 시 이후 사용자 수정과 충돌하면 중단한다. 원본 성공·인덱스 실패는 구분하여 재생성한다.",
+  "approval": "APR-004: 사용자 설계 수용 및 S04~S07 실행 승인",
+  "accepted_at": "2026-09-22T13:02:54.113Z"
+}

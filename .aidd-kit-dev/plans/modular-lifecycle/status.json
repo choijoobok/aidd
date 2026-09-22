@@ -1,0 +1,807 @@
+{
+  "schema_version": 1,
+  "plan_id": "KIT-PLAN-018",
+  "change": "KIT-CHG-018",
+  "updated_at": "2026-09-22T17:47:59Z",
+  "overall_status": "completed",
+  "execution_state": "completed",
+  "current_stage": "S10",
+  "last_completed_stage": "S10",
+  "next_stage": null,
+  "latest_checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S10.md",
+  "approval_policy": "APR-013으로 축소된 S09와 S10의 연속 수행, 완료 후 커밋·푸시를 승인받았다. 두 단계는 완료됐고 실제 제품 실행/도입·prepare-kit-release·태그·배포는 수행하지 않는다.",
+  "baseline": {
+    "commit": "7d645328bf9f9c2c9dd7ea5010a2d1859779966b",
+    "kit_version": "1.0.0",
+    "worktree_at_start": "clean",
+    "previous_active_change": "KIT-CHG-017",
+    "previous_change_status": "verified",
+    "existing_unreleased_change": "KIT-CHG-017"
+  },
+  "stages": [
+    {
+      "id": "S01",
+      "title": "계획·승인·재개 기록",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-001",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S01.md"
+    },
+    {
+      "id": "S02",
+      "title": "개편 요구사항과 인수 시나리오 정리",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-002",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S02.md"
+    },
+    {
+      "id": "S03",
+      "title": "구조 설계와 전체 영향 목록",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-003",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S03.md"
+    },
+    {
+      "id": "S04",
+      "title": "작은 정본 파일·인덱스·조회 기반",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-004",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S04.md"
+    },
+    {
+      "id": "S05",
+      "title": "모듈별 주기·요구사항·승인·설계 진입",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-004",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S05.md"
+    },
+    {
+      "id": "S06",
+      "title": "기능·화면·목업·개발과 선택적 복귀의 전체 흐름",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-004",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S06.md"
+    },
+    {
+      "id": "S07",
+      "title": "브리핑·파생 문서·매뉴얼·제출물",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-004",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S07.md"
+    },
+    {
+      "id": "S07A",
+      "title": "시스템·업무 분석 앞단 증분 보완",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-005",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S07A.md"
+    },
+    {
+      "id": "S08",
+      "title": "전체 스킬·훅·provider 통합 점검",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-006",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S08.md"
+    },
+    {
+      "id": "S08A",
+      "title": "접속·초기 화면·인증·인가 선행 분석 보완",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-007",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S08A.md"
+    },
+    {
+      "id": "S08B-1",
+      "title": "일반 레거시 역분석 계약 설계·자료 근거·초안 생성 핵심",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-010",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S08B-1.md",
+      "proposal": ".aidd-kit-dev/plans/modular-lifecycle/supplements/reverse-engineering/README.md"
+    },
+    {
+      "id": "S08B-2",
+      "title": "역분석 사용자 검토·재분석 충돌·영향 통합",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-011",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S08B-2.md"
+    },
+    {
+      "id": "S08B-3",
+      "title": "모듈별 AIDD 도입 준비와 기존 구현 검증 연결",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-012",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S08B-3.md"
+    },
+    {
+      "id": "S09",
+      "title": "새 프로젝트·export·v2 배포 기준 정리",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-013",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S09.md"
+    },
+    {
+      "id": "S10",
+      "title": "전체 인수 확인과 릴리스 준비도 보고",
+      "status": "completed",
+      "approval": "approved",
+      "approval_record": "APR-013",
+      "checkpoint": ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S10.md"
+    }
+  ],
+  "approvals": [
+    {"id":"APR-013","stages":["S09","S10"],"status":"approved","decided_by":"사용자","recorded_at":"2026-09-22T17:34:45Z","source":"축소된 S09의 의미를 확인한 뒤 남은 단계를 연속 진행하고 커밋·푸시까지 수행하라는 현재 세션의 명시적 지시","summary":"KIT-ADR-011에 따른 축소 S09와 S10 최종 인수를 연속 수행하고 완료된 변경을 커밋·푸시한다. 이전 AIDD 전용 변환·실제 고객 제품 적용·prepare-kit-release·태그·배포는 제외한다."},
+    {"id":"APR-012","stage":"S08B-3","status":"approved","decided_by":"사용자","recorded_at":"2026-09-22T16:48:21Z","source":"KIT-DRQ-018-08에 대한 현재 세션의 진행 승인","summary":"모듈별 정본 도입 준비·명시 채택과 기존 구현 검증 상태를 구분하여 일반 AIDD 개발로 연결한다. S09/10·실제 제품 실행/도입·커밋·릴리스 제외."},
+    {"id":"APR-011","stage":"S08B-2","status":"approved","decided_by":"사용자","recorded_at":"2026-09-22T16:19:52Z","source":"KIT-DRQ-018-07에 대한 현재 세션의 진행 승인","summary":"사용자 순차 검토·부분 응답·재분석 차이/충돌·영향과 상태/문서 연결을 구현한다. S08B-3 이후와 실제 제품 적용은 제외한다."},
+    {"id":"APR-010","stage":"S08B-1","status":"approved","decided_by":"사용자","recorded_at":"2026-09-22T16:01:55Z","source":"KIT-DRQ-018-06에 대한 현재 세션의 진행 동의","summary":"역분석 요구안 개정 1을 수용하고 자료 인벤토리·근거·정본 초안과 안전한 저장을 구현한다. S08B-2/3 이후 및 실제 제품 적용은 제외한다."},
+    {"id":"APR-009","stage":"S08B-planning","status":"approved","decided_by":"사용자","source":"일반 레거시 역분석 정본 초안과 사용자 검토 기반 AIDD 도입 기능의 발전 요청","summary":"기능 도입 의도를 확인하고 요구·단계안을 기록한다. 새 세부 계약/구현안과 실제 제품 도입을 사전 승인한 것으로 취급하지 않는다."},
+    {"id":"APR-008","stage":"S09-scope","status":"approved","decided_by":"사용자","source":"이전 AIDD 버전 전용 변환을 구현하지 말라는 명시적 지시","summary":"KIT-ADR-011에 따라 구버전 변환 범위만 철회한다. 일반 레거시 분석은 유지하며 축소된 S09의 실행 승인은 아니다."},
+    {"id":"APR-007","stage":"S08A","status":"approved","decided_by":"사용자","source":"현재 세션의 접속·초기 화면·인증·인가 선행 분석 보완 실행 요청","summary":"제안한 접근 정책·역할/UC 연결·필수 판정·스킬·회귀 테스트를 보완한다. S09 이후 및 실제 제품 전환·커밋·릴리스는 제외."},
+    {"id":"APR-006","stage":"S08","status":"approved","decided_by":"사용자","source":"현재 세션의 S08 진행 승인","summary":"전체 스킬·훅·provider 통합 점검과 누락 연결 보완. S09~S10, 실제 제품 변환, 커밋·릴리스 제외."},
+    {
+      "id": "APR-005",
+      "stage": "S07A",
+      "status": "approved",
+      "decided_by": "사용자",
+      "recorded_at": "2026-09-22T14:28:00Z",
+      "source": "현재 세션의 선행 업무 분석 추가 보완 실행 요청",
+      "summary": "앞선 제안에 따라 시스템 개요·핵심 업무·업무 역할·유즈케이스·프로세스와 요구 발굴·검토·영향·문서를 보완한다. 기존 기준선을 보존하며 S08~S10/실제 프로젝트 전환/커밋/릴리스를 승인한 것은 아니다."
+    },
+    {
+      "id": "APR-001",
+      "stage": "S01",
+      "status": "approved",
+      "decided_by": "사용자",
+      "recorded_at": "2026-09-22T21:06:30+09:00",
+      "source": "현재 세션의 전체 진행 계획 기록과 단계별 승인 요청 지시",
+      "summary": "기존 AIDD 핵심 구조의 단계적 개편 방향에 동의하고, 우선 계획·상태·재개 기록을 작성하도록 요청했다. S02 이후 실행을 일괄 승인한 것은 아니다."
+    },
+    {
+      "id": "APR-002",
+      "stage": "S02",
+      "status": "approved",
+      "decided_by": "사용자",
+      "recorded_at": "2026-09-22T21:12:21+09:00",
+      "source": "S02 진행 승인 요청에 대한 현재 세션의 사용자 명시적 동의",
+      "summary": "개편 요구사항·인수 시나리오 정리 착수를 승인했다. 작성될 요구사항 기준선의 사전 승인이나 S03 설계 착수 승인은 아니다."
+    },
+    {
+      "id": "APR-003",
+      "stage": "S03",
+      "status": "approved",
+      "decided_by": "사용자",
+      "recorded_at": "2026-09-22T21:31:15+09:00",
+      "source": "KIT-DRQ-018-02의 요구사항 수용 및 S03 진행 질문에 대한 명시적 동의",
+      "subject_revision": "KIT-RBL-018-S02-01@1",
+      "subject_sha256": "a2095880cbf056238fd6c7a8bc71829caf88c607ed6cb214006531959770fff3",
+      "summary": "요구사항 검토본 개정 1을 개편 기준선으로 수용하고 S03 구조 설계·전체 영향 목록 작성을 승인했다. S03 설계안 자체의 사전 수용이나 S04 구현 승인은 아니다."
+    },
+    {
+      "id": "APR-004",
+      "stages": [
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "status": "approved",
+      "decided_by": "사용자",
+      "recorded_at": "2026-09-22T13:02:54.113Z",
+      "source": "현재 세션의 7단계까지 중간 승인 없이 계속 진행 지시",
+      "subject_revision": "KIT-DBL-018-S03-01@1",
+      "subject_sha256": "a7a9ccfe3354b1e0cf46a47ff361eeda53dae4e158f4a79c748a9dc6383ae653",
+      "decision_proposals": [
+        {
+          "path": ".aidd-kit-dev/decisions/KIT-ADR-006.json",
+          "sha256": "f6148ea841bc391e8631050ef9902f3be097ccfad6258b236b70369c5eb36466"
+        },
+        {
+          "path": ".aidd-kit-dev/decisions/KIT-ADR-007.json",
+          "sha256": "bef9eb9ab7e8bd16cf2a55094f2a9c57794e371a842ff634477ae35501644adc"
+        },
+        {
+          "path": ".aidd-kit-dev/decisions/KIT-ADR-008.json",
+          "sha256": "9f0191dc64832158fab87d2b56bbade8a2ec46b86a76e52072f30e9d30b0f90d"
+        },
+        {
+          "path": ".aidd-kit-dev/decisions/KIT-ADR-009.json",
+          "sha256": "f2b7a3b3adbe1154c3a43954ffddbe6fbea2322f8bc4ca82f46e4eec05647950"
+        }
+      ],
+      "summary": "설계/ADR 수용 및 S04~S07 실행. S08 이후·실제 프로젝트 전환·커밋·릴리스 제외."
+    }
+  ],
+  "requirements_review": {
+    "id": "KIT-RBL-018-S02-01",
+    "revision": 1,
+    "document_state": "review_ready",
+    "user_review": "approved",
+    "approval_record": "APR-003",
+    "approved_at": "2026-09-22T21:31:15+09:00",
+    "index": ".aidd-kit-dev/plans/modular-lifecycle/requirements/README.md",
+    "requirements_count": 21,
+    "acceptance_criteria_count": 63,
+    "scenario_count": 22,
+    "scenario_execution": "partially_covered_by_S04_S07_automated_tests",
+    "review_file_count": 25,
+    "content_sha256": "a2095880cbf056238fd6c7a8bc71829caf88c607ed6cb214006531959770fff3",
+    "digest_rule": "requirements 직속 Markdown 파일을 파일명 오름차순 정렬한다. 각 줄은 파일명 + TAB + 파일 원본 바이트 SHA256 소문자 + LF이다. 결합한 UTF-8 BOM 없는 바이트의 SHA256 소문자가 묶음 해시다.",
+    "decision_request": "KIT-DRQ-018-02",
+    "scope_note": "사용자가 개정 1을 수용했다. 승인 당시 검토본 25개는 그대로 보존하며 문서 안의 검토 대기 표현은 제출 당시 스냅샷이다. 현재 승인 상태는 이 기록이 정본이다. 제품 동작 검증 완료는 아니며 해시는 의미적 정합성이나 신원 인증을 보증하지 않는다."
+  },
+  "design_review": {
+    "id": "KIT-DBL-018-S03-01",
+    "revision": 1,
+    "document_state": "review_ready",
+    "user_review": "approved",
+    "index": ".aidd-kit-dev/plans/modular-lifecycle/design/README.md",
+    "input_requirements": "KIT-RBL-018-S02-01@1",
+    "input_approval": "APR-003",
+    "review_file_count": 22,
+    "content_sha256": "a7a9ccfe3354b1e0cf46a47ff361eeda53dae4e158f4a79c748a9dc6383ae653",
+    "digest_rule": "design 아래 모든 파일을 design 기준 상대 경로(/ 구분자) 오름차순으로 정렬한다. 각 줄은 상대 경로 + TAB + 원본 바이트 SHA256 소문자 + LF이다. 결합한 UTF-8 BOM 없는 바이트의 SHA256 소문자가 묶음 해시다. 별도 ADR 제안은 decision_proposals에 당시 원본 해시를 기록한다.",
+    "decision_proposals": [
+      {
+        "path": ".aidd-kit-dev/decisions/KIT-ADR-006.json",
+        "sha256": "f6148ea841bc391e8631050ef9902f3be097ccfad6258b236b70369c5eb36466"
+      },
+      {
+        "path": ".aidd-kit-dev/decisions/KIT-ADR-007.json",
+        "sha256": "bef9eb9ab7e8bd16cf2a55094f2a9c57794e371a842ff634477ae35501644adc"
+      },
+      {
+        "path": ".aidd-kit-dev/decisions/KIT-ADR-008.json",
+        "sha256": "9f0191dc64832158fab87d2b56bbade8a2ec46b86a76e52072f30e9d30b0f90d"
+      },
+      {
+        "path": ".aidd-kit-dev/decisions/KIT-ADR-009.json",
+        "sha256": "f2b7a3b3adbe1154c3a43954ffddbe6fbea2322f8bc4ca82f46e4eec05647950"
+      }
+    ],
+    "existing_asset_count": 367,
+    "asset_shards": 10,
+    "existing_commands_mapped": 36,
+    "decision_request": "KIT-DRQ-018-03",
+    "scope_note": "제출본 22개 불변. APR-004로 수용하고 S04~S07 구현을 승인했다.",
+    "approval_record": "APR-004",
+    "approved_at": "2026-09-22T13:02:54.113Z"
+  },
+  "open_items": [
+    {
+      "id": "KIT-OI-018-12",
+      "title": "S08B-3 모듈 도입 준비·기존 구현 검증 연결 착수",
+      "status": "closed",
+      "resolution": "APR-012로 S08B-3 착수 승인",
+      "blocking": true,
+      "stage": "S08B-3",
+      "subject_refs": ["KIT-CHG-018", "KIT-ADR-013"],
+      "required_before": "S08B-3 구현",
+      "impact": "모듈별 문서 도입 준비와 실제 실행 검증을 구분하고 운영 이력을 보존하며 일반 AIDD 개발로 연결하는 기능의 착수 승인이 필요하다."
+    },
+    {
+      "id": "KIT-OI-018-11",
+      "title": "S08B-2 사용자 검토·재분석·영향 통합 착수",
+      "status": "closed",
+      "resolution": "APR-011로 S08B-2 착수 승인",
+      "blocking": true,
+      "stage": "S08B-2",
+      "subject_refs": ["KIT-CHG-018", "KIT-ADR-012"],
+      "required_before": "S08B-2 구현",
+      "impact": "정본 초안을 사용자와 순차 검토하는 묶음, 부분 수용·stale, 재분석 3-way 차이/충돌·영향과 문서/브리핑 통합의 실행 승인이 필요하다."
+    },
+    {
+      "id": "KIT-OI-018-10",
+      "title": "일반 레거시 역분석 요구안 수용과 S08B-1 착수",
+      "status": "closed",
+      "resolution": "APR-010으로 요구안 수용과 S08B-1 실행 승인",
+      "blocking": true,
+      "stage": "S08B-1",
+      "subject_refs": ["KIT-CHG-018", ".aidd-kit-dev/plans/modular-lifecycle/supplements/reverse-engineering/README.md"],
+      "required_before": "S08B-1 세부 설계/구현",
+      "impact": "초안 자동 생성·출처·미정·사용자 검토·재분석·모듈별 도입의 요구 범위를 확인하고 첫 구현 단계만 승인한다. 특정 제품 스택 전용 파서나 실제 운영 변경은 포함하지 않는다."
+    },
+    {
+      "id": "KIT-OI-018-09",
+      "title": "구버전 변환을 제외한 S09 착수 승인",
+      "status": "closed",
+      "blocking": true,
+      "resolution": "APR-013으로 축소된 S09와 S10 연속 수행 및 완료 후 커밋·푸시 승인",
+      "resolved_at": "2026-09-22T17:34:45Z",
+      "stage": "S09",
+      "required_before": "축소된 S09 착수",
+      "impact": "신규 v2 프로젝트·export·fixture/스켈레톤/CI·구형 writer 격리 범위의 실행은 별도 승인 전까지 시작하지 않는다."
+    },
+    {
+      "id": "KIT-OI-018-08",
+      "title": "S09 명시적 후보 전환·새 프로젝트/export 착수 승인",
+      "status": "closed",
+      "blocking": false,
+      "resolution": "KIT-ADR-011로 후보 변환 범위를 철회했다. 남은 착수 승인은 KIT-OI-018-09에서 관리한다.",
+      "stage": "S09",
+      "required_before": "S09 착수",
+      "impact": "승인 전 공식 v1 후보 변환·구형 writer 격리·v2 기준 fixture 전환을 시작하지 않는다. S08 완료와 운영 이력은 유지한다."
+    },
+    {
+      "id": "KIT-OI-018-01",
+      "title": "S02 요구사항 상세화 단계 착수 승인",
+      "status": "closed",
+      "blocking": true,
+      "stage": "S02",
+      "subjects": [
+        "KIT-CHG-018",
+        "KIT-PLAN-018"
+      ],
+      "impact": "승인 전에는 S02 요구사항 상세화 작업을 시작하지 않는다. S01 계획 기록은 완료 상태로 유지한다.",
+      "resolution": "사용자가 S02 착수를 승인했다.",
+      "resolved_at": "2026-09-22T21:12:21+09:00"
+    },
+    {
+      "id": "KIT-OI-018-02",
+      "title": "요구사항 검토본 개정 1 수용과 S03 착수 승인",
+      "status": "closed",
+      "blocking": true,
+      "stage": "S03",
+      "subjects": [
+        "KIT-RBL-018-S02-01",
+        "KIT-PLAN-018"
+      ],
+      "impact": "사용자 검토본 수용과 S03 착수 동의 전에는 설계를 시작하지 않는다. 보완 요청이면 관련 S02 항목을 수정·재검토한다.",
+      "resolution": "검토본 개정 1 수용과 S03 착수를 APR-003으로 기록했다.",
+      "resolved_at": "2026-09-22T21:31:15+09:00"
+    },
+    {
+      "id": "KIT-OI-018-03",
+      "title": "모듈·주기·작업·기능·검토의 정본 책임과 기존 계약 대체 설계",
+      "status": "closed",
+      "blocking": true,
+      "stage": "S03",
+      "required_before": "S03 설계 수용",
+      "impact": "S03에서 명칭·스키마·소유 책임·ADR을 결정한다. 요구 의미가 달라지는 선택은 사용자 결정으로 연결한다. S03 착수 자체를 막는 항목은 아니다.",
+      "solution_state": "accepted",
+      "proposed_resolution": "01-model: CHG/WRK 재사용, FEAT/DAT/NAV와 owner별 v2 정본, RVW/BSL/IMP 책임을 구체화했다. KIT-ADR-006/007과 설계 검토본 수용으로 확정한다.",
+      "resolution": "APR-004 설계 수용 및 S04~S07 실행 승인",
+      "resolved_at": "2026-09-22T13:02:54.113Z"
+    },
+    {
+      "id": "KIT-OI-018-04",
+      "title": "개정본·게이트 유효성·의존 관계·영향 전파 설계",
+      "status": "closed",
+      "blocking": true,
+      "stage": "S03",
+      "required_before": "S03 설계 수용",
+      "impact": "현재 판정과 과거 이력, 적용 게이트·예외·선택적 재검토의 알고리즘과 계약을 설계한다. S03 착수 자체를 막는 항목은 아니다.",
+      "solution_state": "accepted",
+      "proposed_resolution": "03-readiness/04-impact: 정의·분석 투영·실행 입력, 최신 실행, typed 전이 영향과 현재 준비도를 분리했다. KIT-ADR-007의 수용을 기다린다.",
+      "resolution": "APR-004 설계 수용 및 S04~S07 실행 승인",
+      "resolved_at": "2026-09-22T13:02:54.113Z"
+    },
+    {
+      "id": "KIT-OI-018-05",
+      "title": "분할 경로·인덱스·범위 읽기·저장 실패 복구·출력 소유 설계",
+      "status": "closed",
+      "blocking": true,
+      "stage": "S03",
+      "required_before": "S03 설계 수용",
+      "impact": "파일 분리와 일관성·효율을 함께 충족하는 저장/조회 계약을 정한다. S03 착수 자체를 막는 항목은 아니다.",
+      "solution_state": "accepted",
+      "proposed_resolution": "02-storage/06-views-harness: owner/type index·strict scope hash·snapshot·expected hash/저널/복구와 출력 소유를 설계했다. KIT-ADR-008의 수용을 기다린다.",
+      "resolution": "APR-004 설계 수용 및 S04~S07 실행 승인",
+      "resolved_at": "2026-09-22T13:02:54.113Z"
+    },
+    {
+      "id": "KIT-OI-018-06",
+      "title": "기존 형식의 명시적 전환·전체 자산 영향·배포 경계 설계",
+      "status": "closed",
+      "blocking": true,
+      "stage": "S03",
+      "required_before": "S03 설계 수용",
+      "impact": "지원 입력·전환/롤백 한계와 스킬·훅·도구·문서·export 영향표를 확정한다. 자동 업그레이드는 추가하지 않는다. S03 착수 자체를 막는 항목은 아니다.",
+      "solution_state": "accepted",
+      "proposed_resolution": "07-transition 및 assets: 현재 공식 v1 입력의 원본 불변 후보 전환, 자동 Kit 업데이트·모든 미래 버전 보증 제외, 기존 367개 자산 분류와 36개 명령 처리를 제시했다. KIT-ADR-009의 수용을 기다린다.",
+      "resolution": "APR-004 설계 수용 및 S04~S07 실행 승인",
+      "resolved_at": "2026-09-22T13:02:54.113Z"
+    },
+    {
+      "id": "KIT-OI-018-07",
+      "title": "S03 설계·ADR 제안 수용과 S04 구현 착수 승인",
+      "status": "closed",
+      "blocking": true,
+      "stage": "S04",
+      "subjects": [
+        "KIT-DBL-018-S03-01",
+        "KIT-ADR-006",
+        "KIT-ADR-007",
+        "KIT-ADR-008",
+        "KIT-ADR-009"
+      ],
+      "impact": "승인 전에는 S04 저장·인덱스·조회 기반 구현을 시작하지 않는다. 일부 설계 보완 요청은 S03에서 반영한다.",
+      "solution_state": "accepted",
+      "resolution": "APR-004 설계 수용 및 S04~S07 실행 승인",
+      "resolved_at": "2026-09-22T13:02:54.113Z"
+    }
+  ],
+  "decision_requests": [
+    {
+      "id": "KIT-DRQ-018-08",
+      "open_item": "KIT-OI-018-12",
+      "stage": "S08B-3",
+      "status": "resolved",
+      "resolution": "APR-012로 S08B-3 착수 승인",
+      "decided_by": "사용자",
+      "resolved_at": "2026-09-22T16:48:21Z",
+      "blocking": true,
+      "priority": 1,
+      "asked_at": "2026-09-22T16:44:42Z",
+      "sequence": 1,
+      "waiting_on": "사용자",
+      "subject_refs": ["KIT-CHG-018", "KIT-ADR-013", ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S08B-2.md"],
+      "question": "S08B-3의 모듈별 AIDD 도입 준비와 기존 구현 검증 연결을 진행할까요?",
+      "options": ["S08B-3 진행", "S08B-2 보완 후 진행"],
+      "recommendation": "S08B-3 진행",
+      "rationale": "초안 작성·사용자 검토·재분석 위에 모듈별 도입 준비와 실제 검증의 구분, 이후 일반 개발 흐름을 연결한다.",
+      "scope": "S08B-3만 구현·검증하고 기록한다. 실제 고객 소스 실행/제품 도입·운영 데이터 이관·커밋·릴리스·S09/10은 제외한다.",
+      "impact_if_unanswered": "완료된 S08B-2를 보존하고 S08B-3 구현을 시작하지 않는다. S09 질문 초안도 유지한다."
+    },
+    {
+      "id": "KIT-DRQ-018-07",
+      "open_item": "KIT-OI-018-11",
+      "stage": "S08B-2",
+      "status": "resolved",
+      "resolution": "APR-011로 S08B-2 착수 승인",
+      "decided_by": "사용자",
+      "resolved_at": "2026-09-22T16:19:52Z",
+      "blocking": true,
+      "priority": 1,
+      "asked_at": "2026-09-22T16:13:19Z",
+      "sequence": 1,
+      "waiting_on": "사용자",
+      "subject_refs": ["KIT-CHG-018", "KIT-ADR-012", ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S08B-1.md"],
+      "question": "S08B-2의 순차 사용자 검토 묶음, 재분석 차이·충돌과 영향도 연결을 진행할까요?",
+      "options": ["S08B-2 진행", "S08B-1 보완 후 진행"],
+      "recommendation": "S08B-2 진행",
+      "rationale": "근거 있는 초안 생성과 안전한 저장 위에 부분 검토·변경 시 선택적 재개를 연결한다.",
+      "scope": "S08B-2만 구현·검증하고 상태 기록 후 S08B-3 승인을 요청한다. 실제 제품 도입/소스 변경·운영 데이터 이관·커밋·릴리스·S09/10은 제외한다.",
+      "impact_if_unanswered": "완료한 S08B-1을 보존하고 다음 구현을 시작하지 않는다. S09 질문 초안도 유지한다."
+    },
+    {
+      "id": "KIT-DRQ-018-06",
+      "open_item": "KIT-OI-018-10",
+      "stage": "S08B-1",
+      "status": "resolved",
+      "resolution": "APR-010으로 요구안 수용과 S08B-1 실행 승인",
+      "decided_by": "사용자",
+      "resolved_at": "2026-09-22T16:01:55Z",
+      "blocking": true,
+      "priority": 1,
+      "asked_at": "2026-09-22T15:51:36Z",
+      "sequence": 1,
+      "waiting_on": "사용자",
+      "subject_refs": ["KIT-CHG-018", ".aidd-kit-dev/plans/modular-lifecycle/supplements/reverse-engineering/README.md", ".aidd-kit-dev/plans/modular-lifecycle/supplements/reverse-engineering/requirements.md", ".aidd-kit-dev/plans/modular-lifecycle/supplements/reverse-engineering/workflow-and-acceptance.md"],
+      "question": "일반 레거시 역분석 요구안을 기준으로 수용하고 S08B-1의 상세 계약 설계·자료 인벤토리/출처·정본 초안 생성 핵심을 구현할까요?",
+      "options": ["요구안 수용 및 S08B-1 진행", "요구안 보완 후 진행"],
+      "scope": "S08B-1만 실행하고 검증/상태 기록 후 S08B-2 승인을 요청한다. S08B-2/3·S09/10·특정 실제 제품 도입/소스 수정·운영 데이터 이관·커밋·릴리스 제외.",
+      "recommendation": "요구안 수용 및 S08B-1 진행",
+      "rationale": "기존 저장·검토·영향 구조를 재사용하면서 근거 없는 자동 확정을 먼저 차단하는 작은 구현 단계다.",
+      "impact_if_unanswered": "요구·단계안을 보존하고 새 구현에 착수하지 않는다. 기존 S09 질문 초안과 완료된 S08A는 유지한다."
+    },
+    {
+      "id": "KIT-DRQ-018-05",
+      "open_item": "KIT-OI-018-09",
+      "stage": "S09",
+      "status": "resolved",
+      "resolution": "APR-013으로 축소된 S09 진행을 선택하고 S10까지 연속 수행하도록 승인",
+      "decided_by": "사용자",
+      "resolved_at": "2026-09-22T17:34:45Z",
+      "blocking": true,
+      "priority": 1,
+      "asked_at": "2026-09-22T16:58:38Z",
+      "sequence": 1,
+      "subject_refs": ["KIT-CHG-018", "KIT-ADR-011", ".aidd-kit-dev/plans/modular-lifecycle/checkpoints/S08B-3.md"],
+      "waiting_on": "사용자",
+      "question": "이전 AIDD 형식 변환을 제외하고 신규 v2 프로젝트·export·기준 fixture/스켈레톤/CI·구형 writer 격리의 S09를 진행할까요?",
+      "scope": "KIT-ADR-011의 축소된 S09. 구버전 변환·일반 레거시 분석 추가 개발·실제 프로젝트 변경·커밋·릴리스·S10 제외.",
+      "recommendation": "축소된 S09 진행",
+      "options": ["S09 진행", "S08B 보완 후 진행"],
+      "rationale": "역분석 기능 구현 이후 신규 v2 프로젝트와 배포 기준을 일관되게 정리한다.",
+      "impact_if_unanswered": "완료된 S08B-3와 범위 제외 결정을 보존하고 S09를 시작하지 않는다."
+    },
+    {
+      "id": "KIT-DRQ-018-04",
+      "open_item": "KIT-OI-018-08",
+      "stage": "S09",
+      "status": "withdrawn",
+      "blocking": false,
+      "withdrawal_reason": "사용자가 이전 AIDD 전용 변환을 제외하여 기존 질문 범위가 무효가 됐다. KIT-ADR-011 및 새 질문 초안 KIT-DRQ-018-05 참조.",
+      "decided_by": "사용자",
+      "resolved_at": "2026-09-22T15:37:18Z",
+      "waiting_on": "사용자",
+      "question": "9단계 새 프로젝트·export·명시적 기존 프로젝트 후보 변환과 롤백 검증을 진행할까요?",
+      "scope": "v2 기준 fixture/스켈레톤/CI와 export/new-project, v1 원본을 보존한 별도 후보 변환, 구형 공개 writer 격리. 실제 사용자 프로젝트 교체·커밋·태그·릴리스·S10은 제외한다.",
+      "recommendation": "S09 진행",
+      "impact_if_unanswered": "S08 완료 상태와 미커밋 작업을 보존하고 S09를 시작하지 않는다."
+    },
+    {
+      "id": "KIT-DRQ-018-01",
+      "open_item": "KIT-OI-018-01",
+      "stage": "S02",
+      "status": "resolved",
+      "blocking": true,
+      "waiting_on": "사용자",
+      "asked_at": "2026-09-22T21:10:59+09:00",
+      "question": "2단계인 개편 요구사항·인수 시나리오 정리를 진행할까요?",
+      "scope": "합의한 개편 방향을 상세 요구사항·인수 기준·정상/실패 시나리오로 정리하고 관계·모순·미결사항을 검토한다. 구현과 S03 설계는 이번 승인 범위에 포함되지 않는다.",
+      "recommendation": "S02 진행",
+      "impact_if_unanswered": "S02는 승인 대기로 유지하며 다음 단계에 착수하지 않는다.",
+      "resolution": "S02 착수 승인. 요구사항 기준선 승인과 S03은 별도 요청한다.",
+      "decided_by": "사용자",
+      "resolved_at": "2026-09-22T21:12:21+09:00"
+    },
+    {
+      "id": "KIT-DRQ-018-02",
+      "open_item": "KIT-OI-018-02",
+      "stage": "S03",
+      "status": "resolved",
+      "blocking": true,
+      "waiting_on": "사용자",
+      "asked_at": "2026-09-22T21:26:27+09:00",
+      "question": "요구사항 검토본 KIT-RBL-018-S02-01 개정 1을 기준선으로 수용하고, 3단계 구조 설계·전체 영향 목록 작성을 진행할까요?",
+      "subject_revision": "KIT-RBL-018-S02-01@1",
+      "subject_sha256": "a2095880cbf056238fd6c7a8bc71829caf88c607ed6cb214006531959770fff3",
+      "scope": "요구 21개·인수 기준 63개·시나리오 22개 검토본의 수용 및 S03 설계 착수. S04 이후 구현·릴리스·커밋을 승인하는 것은 아니다.",
+      "recommendation": "검토본 수용 및 S03 진행. 이견이 있으면 해당 요구 ID를 지정해 S02 보완.",
+      "impact_if_unanswered": "요구사항 사용자 검토와 S03은 승인 대기로 유지한다.",
+      "resolution": "요구사항 개정 1 수용 및 S03 설계 착수 승인. 이후 구현은 별도 승인 대상이다.",
+      "decided_by": "사용자",
+      "resolved_at": "2026-09-22T21:31:15+09:00"
+    },
+    {
+      "id": "KIT-DRQ-018-03",
+      "open_item": "KIT-OI-018-07",
+      "related_open_items": [
+        "KIT-OI-018-03",
+        "KIT-OI-018-04",
+        "KIT-OI-018-05",
+        "KIT-OI-018-06"
+      ],
+      "stage": "S04",
+      "status": "resolved",
+      "blocking": true,
+      "waiting_on": "사용자",
+      "asked_at": "2026-09-22T21:53:31+09:00",
+      "question": "S03 설계 검토본 개정 1과 KIT-ADR-006~009의 제안을 수용하고, 4단계 정본 파일·인덱스·조회/저장 기반 구현을 진행할까요?",
+      "subject_revision": "KIT-DBL-018-S03-01@1",
+      "subject_sha256": "a7a9ccfe3354b1e0cf46a47ff361eeda53dae4e158f4a79c748a9dc6383ae653",
+      "scope": "S03 설계 선택과 ADR 제안을 수용하고 S04의 v2 저장/조회·인덱스·동시 저장/복구·최소 bootstrap/validate 및 관련 동반 변경/검증을 수행한다. S05 이후와 실제 기존 프로젝트 전환·릴리스·커밋은 포함하지 않는다.",
+      "options": [
+        "설계 수용 및 S04 진행",
+        "일부 설계 보완 후 다시 검토",
+        "보류"
+      ],
+      "recommendation": "설계 수용 및 S04 진행. 상세 완료 조건은 design/08-verification.md의 S04 경계를 따른다.",
+      "impact_if_unanswered": "S04 구현은 승인 대기로 유지하고 제안 ADR을 accepted로 바꾸지 않는다.",
+      "resolution": "APR-004 설계 수용 및 S04~S07 연속 실행 승인",
+      "decided_by": "사용자",
+      "resolved_at": "2026-09-22T13:02:54.113Z"
+    }
+  ],
+  "validation": [
+    {
+      "scope": "S10-final",
+      "check": "요구 21개·인수 기준 63개·시나리오 22개 연결, 전체 회귀 150/150, provider sync, Kit check/smoke, hook self-test, diff 검사",
+      "result": "passed",
+      "details": "20개 요구·60개 현재 적용 인수 기준은 구현/회귀에 연결했고 KIT-REQ-018-020과 AC-020-1~3은 KIT-ADR-011의 사용자 결정으로 superseded 처리했다. 실제 외부 provider 업무 수행·고객 제품 도입·브라우저 사용자 수용은 not_run이며 자동 회귀와 구분한다."
+    },
+    {
+      "scope": "S09",
+      "check": "v2-only new-project·초기 파생 문서·legacy/mixed 거부·기존 출력 보호·directory/ZIP payload 동등성·CI/스켈레톤",
+      "result": "passed",
+      "details": "S09 회귀 3/3, S08 자산 인계 59/59 정리, Kit check/smoke 통과. legacy reference-project는 구형 reader/generator 회귀 입력으로 보존했고 v2 배포 기준은 별도 fixture 계약으로 고정했다."
+    },
+    {
+      "scope": "S08B-3-final-files",
+      "check": "최종 hook self-test·Kit check·git diff --check, 변경 파일 251개 중 텍스트 249개 UTF-8/BOM 없음/LF·JSON, 로컬 링크 292개",
+      "result": "passed",
+      "details": "S02 25개·S03 22개·역분석 요구안 3개 해시 불변, ID 중복/질문-OI 연결 오류 없음. 확장자 없는 기존 post-merge/.gitignore는 텍스트 감사 대상 밖이다. 현재 버전 1.0.0, KIT-CHG-018 major/in_progress이며 S09 승인을 기다린다."
+    },
+    {
+      "scope": "S08B-3",
+      "check": "신규 모듈 도입 15건 포함 전체 회귀 146/146, provider sync, Kit check/smoke",
+      "result": "passed",
+      "details": "RE-AC-12~16: 문서 채택/실제 검증/운영 구분·현재/최신 EVD·source drift·기존 UI/후속 정상 게이트·무관 모듈 격리·CAS/첫 write 뒤 복구·실제 CLI·문서 전체 재생성. 최초 테스트의 문서 반환 필드 참조를 교정하고 전체 재실행했다. quick_validate.py는 PyYAML 부재로 not_run. 실제 고객 제품 실행/도입·외부 provider 수행은 not_run."
+    },
+    {
+      "scope": "S08B-2-final-files",
+      "check": "변경 파일 246개 중 확장자 기반 텍스트 244개 UTF-8/BOM 없음/LF·JSON, 로컬 Markdown 링크 278개, 승인본 해시·ID/질문 연결",
+      "result": "passed",
+      "details": "S02 25개·S03 22개·역분석 요구안 3개 불변. S02/S03은 기존 생성/회귀와 같은 localeCompare 정렬로 해시를 확인했다. 최초 추가 감사의 ASCII 정렬 불일치는 정렬 기준을 맞춰 해소했으며 승인본은 수정하지 않았다. 확장자 없는 기존 post-merge/.gitignore는 이번 텍스트 감사 대상 밖이다."
+    },
+    {
+      "scope": "S08B-2",
+      "check": "신규 검토·재분석 14건 포함 전체 회귀 131/131, provider sync, Kit check/smoke, hook self-test, git diff --check",
+      "result": "passed",
+      "details": "RE-AC-07~11 및 RE-AC-16 검토/재분석 부분: 순차/부분/오래된 응답·세 버전/사용자 편집·충돌/명시 채택·영향/이력 보존·누락/부분 수집·선언 루트/실제 Git staged·실제 CLI·문서 재생성. 초기 EPERM 및 동기화 전 provider drift는 허용된 공식 명령과 전체 재실행으로 해소했다. quick_validate.py는 PyYAML 부재로 not_run. 실제 제품·외부 provider 수행과 S08B-3는 not_run."
+    },
+    {
+      "scope": "S08B-1",
+      "check": "신규 역분석 14건 포함 전체 회귀 117/117, provider sync, Kit check/smoke, hook self-test, git diff --check",
+      "result": "passed",
+      "details": "RE-AC-01~06과 실제 임시 저장소의 출처/충돌/CAS/복구/문서/미승인 게이트를 검증했다. 변경 파일 239개 중 텍스트 237개 UTF-8/BOM 없음/LF·JSON, 로컬 링크 263개 오류 없음. quick_validate.py는 PyYAML 부재로 not_run. 실제 제품·스택 파서·외부 provider 수행은 not_run."
+    },
+    {
+      "scope": "S08B-planning",
+      "check": "Kit check, S08 자산/승인본 회귀 2/2, 계획 파일 7개 UTF-8/LF/JSON·로컬 링크 21개·ID/질문 연결·git diff --check",
+      "result": "passed",
+      "details": "요구 8개·인수 시나리오 16개·3단계안을 기록했다. 구현/기능 시험·실제 제품 역분석은 not_run이며 portable 코드·스킬·훅·export는 이번 계획 작업에서 변경하지 않았다."
+    },
+    {
+      "scope": "S08A",
+      "check": "신규 접근 정책 11/11, 업무 분석 18/18, 전체 회귀 103/103, provider sync, Kit check/smoke, hook self-test, diff 검사",
+      "result": "passed",
+      "details": "공개/선행 인증/혼합/백오피스/API·배치, 누락·역할/규칙/모드 불일치·요구 출처·stale/영향·저장/BSL·문서/제출 확인. 최초 provider drift/스키마 누락은 수정 후 재통과. Python skill validator는 PyYAML 부재로 not_run, 실제 제품 인증 및 외부 provider 행동은 not_run."
+    },
+    {
+      "scope": "S08",
+      "check": "전체 회귀 92/92, sync-providers/check, hook self-test, refresh-fixture/smoke, 367개 자산/17개 스킬·승인본 해시와 diff",
+      "result": "passed",
+      "details": "전문 CLI·게이트 의미/범위·재시도/불변 이력·가정/병합·실제 평가 계약·staged 문서·질문 연속성·두 provider Windows 경로 포함. 실제 외부 provider 행동과 브라우저 시각 검토는 not_run. 최초 sandbox spawn EPERM은 승인 재실행으로 확인. S09 잔여 59개는 완료로 표시하지 않았다. 변경/추가 217개 파일의 텍스트 UTF-8 BOM 없음/LF·JSON 파싱, 로컬 링크 222개 오류 없음."
+    },
+    {
+      "scope": "S07A",
+      "check": "전체 회귀 78/78, Kit check/smoke, hook self-test, provider sync, 승인본 해시 대조, UTF-8/LF/JSON/로컬 링크와 diff 검사",
+      "result": "passed",
+      "details": "기존 60건 + 업무 분석 18건. 실제 저장·snapshot·묶음 검토·모듈 재사용·요구 출처·단계별 누락·stale/영향·SVG/문서/내부 제출 포함. S02 25개/S03 22개 불변. skill-creator Python 검사는 PyYAML 부재로 미실행; Kit 구조/provider 검사 대체. 실제 브라우저/provider 업무 수행 검증은 미실행."
+    },
+    {
+      "scope": "S01",
+      "check": "node .aidd-kit-dev/tools/kit.mjs check",
+      "result": "passed"
+    },
+    {
+      "scope": "S01",
+      "check": "node --test .aidd-kit-dev/tests/kit.test.mjs",
+      "result": "passed",
+      "details": "1/1 통과. 최초 sandbox 실행은 spawn EPERM으로 테스트가 실행되지 않아 승인된 재실행으로 확인했다."
+    },
+    {
+      "scope": "S01",
+      "check": "관리 파일 8개 UTF-8 BOM 없음·LF, JSON 파싱, 로컬 Markdown 링크, git diff --check",
+      "result": "passed"
+    },
+    {
+      "scope": "S01",
+      "check": "node .aidd-kit-dev/tools/kit.mjs status",
+      "result": "passed",
+      "details": "KIT-CHG-018 in_progress, 현재 버전 1.0.0 유지. major 영향도에 따른 2.0.0은 계산된 다음 버전일 뿐 실제 릴리스 준비는 실행하지 않았다."
+    },
+    {
+      "scope": "S02",
+      "check": "요구사항 포괄성·정합성 자체 검토",
+      "result": "completed",
+      "details": "계획 목표 15개와 기존 발견사항을 요구 21개에 연결. 63개 인수 기준과 22개 시나리오 작성. 독립 검토·사용자 승인·제품 동작 시험은 아니다."
+    },
+    {
+      "scope": "S02",
+      "check": "node .aidd-kit-dev/tools/kit.mjs check",
+      "result": "passed"
+    },
+    {
+      "scope": "S02",
+      "check": "node --test .aidd-kit-dev/tests/kit.test.mjs",
+      "result": "passed",
+      "details": "1/1 통과. Kit 관리/공개 및 provider 경계의 기존 검사이며 새 요구 동작의 인수 결과는 아니다."
+    },
+    {
+      "scope": "S02",
+      "check": "문서 ID·인수 기준·시나리오 연결, 로컬 링크, UTF-8 BOM 없음·LF, 관리 JSON 파싱, git diff --check",
+      "result": "passed",
+      "details": "검토 대상 Markdown 25개를 묶음 해시로 식별했다. 제품 시나리오 22개는 not_run이다."
+    },
+    {
+      "scope": "S03",
+      "check": "node .ai/tools/aidd_hook.mjs self-test --hook",
+      "result": "passed"
+    },
+    {
+      "scope": "S03",
+      "check": "요구사항 승인 대상 해시 대조",
+      "result": "passed",
+      "details": "S02의 원본 검토 파일 25개 불변, APR-003으로 수용 기록."
+    },
+    {
+      "scope": "S03",
+      "check": "node .aidd-kit-dev/plans/modular-lifecycle/design/model-check.mjs",
+      "result": "passed",
+      "details": "설계 실행 모델 6/6. 정의/분석/실행 해시, 최신 실패, 전이/순환, 범위 차단, 임시 파일 rename/역사 원문 보존. 제품 구현·동시 writer·crash 복구 인수는 아니다."
+    },
+    {
+      "scope": "S03",
+      "check": "node .aidd-kit-dev/tools/kit.mjs check",
+      "result": "passed"
+    },
+    {
+      "scope": "S03",
+      "check": "node --test .aidd-kit-dev/tests/kit.test.mjs",
+      "result": "passed",
+      "details": "1/1 통과."
+    },
+    {
+      "scope": "S03",
+      "check": "자산 인벤토리·기존 명령·요구 설계 포괄성",
+      "result": "passed",
+      "details": "기존 367개 자산을 10개 조각에 중복/누락 없이 분류. 기존 36개 CLI 명령과 요구 21개의 설계/시험 연결 확인."
+    },
+    {
+      "scope": "S03",
+      "check": "관리 JSON·로컬 링크·UTF-8 BOM 없음/LF·git diff --check",
+      "result": "passed",
+      "details": "portable 코드·스킬·훅·fixture·export는 변경하지 않았다. sync-providers·제품 인수·smoke는 미실행."
+    },
+    {
+      "scope": "S04",
+      "check": "record-store 5/5, hook self-test, Kit check, smoke",
+      "result": "passed"
+    },
+    {
+      "scope": "S05",
+      "check": "readiness 6/6, lifecycle operations 1/1, storage 5/5, Kit check/smoke, provider sync",
+      "result": "passed"
+    },
+    {
+      "scope": "S06",
+      "check": "design-impact 8/8, lifecycle operations 1/1",
+      "result": "passed"
+    },
+    {
+      "scope": "S04-S07",
+      "check": "node --test .aidd-kit-dev/tests/*.test.mjs .ai/tests/harness.test.mjs",
+      "result": "passed",
+      "details": "60/60. 실제 CLI·두 Node writer·CAS/recovery·partial review·baseline·UI/API readiness·typed impact·release evidence·scope documents·exceptions/equivalence 포함. 자식 Node 실행은 sandbox EPERM으로 허용된 재실행 환경에서 확인했다."
+    },
+    {
+      "scope": "S07",
+      "check": "Kit quick check, generation/export/new-project smoke, hook self-test, provider sync",
+      "result": "passed"
+    },
+    {
+      "scope": "S07",
+      "check": "skill-creator quick_validate.py",
+      "result": "not_run_missing_dependency",
+      "details": "로컬 PyYAML 없음. 추가 설치 없이 기존 frontmatter 보존, Kit 구조/참조 검사와 provider 바이트 일치 검사로 대체. 실제 provider 행동 평가는 S08."
+    },
+    {
+      "scope": "S07-final",
+      "check": "최종 전체 회귀 60건 재실행, Kit check/smoke, hook self-test, git diff --check",
+      "result": "passed",
+      "details": "최종 dot reporter 60건/exit 0. 변경 파일 148개 UTF-8 BOM 없음/LF/JSON 파싱, 로컬 Markdown 링크 129개 확인. 승인 design 검토본 22개 묶음 해시 불변."
+    }
+  ],
+  "in_progress_work": [],
+  "supplement": {"id":"S07A","status":"completed","approval":"APR-005: 앞선 분석에 따른 시스템·업무 분석 보완 실행 승인","spec":".aidd-kit-dev/plans/modular-lifecycle/supplements/S07A-business-discovery.md"},
+  "access_supplement": {"id":"S08A","status":"completed","approval":"APR-007","spec":".aidd-kit-dev/plans/modular-lifecycle/supplements/S08A-system-access.md"},
+  "scope_decision": {"id":"KIT-ADR-011","approval":"APR-008","result":"이전 AIDD 형식 변환 취소. 일반 레거시 역분석과 기존 ID/이력 보존은 유지."},
+  "reverse_engineering_proposal": {"revision":1,"state":"accepted","index":".aidd-kit-dev/plans/modular-lifecycle/supplements/reverse-engineering/README.md","requirements":8,"acceptance_scenarios":16,"implementation":"S08B-1_2_3_completed","approval_request":"KIT-DRQ-018-06","approval_record":"APR-010","review_file_count":3,"content_sha256":"78d6df36402ac6437d1c3d8cbd7690b9573c864c536fbd79b27c97c55ca11abb","digest_rule":"직속 Markdown 파일명 오름차순, 파일명+TAB+바이트 SHA256+LF의 UTF-8 SHA256. 제출본 3개 불변."},
+  "next_action": "KIT-CHG-018 완료 결과를 커밋·푸시한다. 실제 릴리스 정본 준비가 필요하면 별도 요청으로 kit-release-plan을 다시 확인한 뒤 prepare-kit-release를 수행한다.",
+  "resume_instructions": "README.md → status.json → checkpoints/S10.md → acceptance/S10-results.json → KIT-CHG-018을 읽고 Git 상태를 확인한다. S09/S10은 완료됐고 이전 AIDD 전용 변환은 제외됐다. prepare-kit-release·태그·배포는 별도 승인 전 수행하지 않는다.",
+  "limitations": [
+    "S08B-1~3 초안/검토/재분석/모듈 문서 채택과 실제 검증 연결 완료. 전체 언어/문서 의미 파서나 자동 사용자 판단·제품 실행/운영 데이터 이관 기능은 아니다. 실제 고객 도입 성공을 보증하지 않는다. 저장소 밖 루트는 별도 source-check가 필요하다.",
+    "문서 채택 단위는 한 모듈 CHG 전체다. 여러 모듈을 한 CHG에 넣었으면 독립 채택 전에 정상 범위 분리가 필요하다. status/파생 문서는 저장된 자료 기준으로 현재 파일 재검사를 대신하지 않는다.",
+    "재분석의 전체 정본 CAS는 무관한 동시 수정에도 재미리보기를 요구할 수 있다. 필드 비교는 중첩/배열을 원자 값으로 취급한다. 의미 모순 판단과 실제 질문 제시/사용자 검토는 AI·사용자가 수행한다.",
+    "전체 Kit 개편의 S01~S10은 완료했다. 이전 AIDD 후보 변환은 미완료가 아니라 KIT-ADR-011로 제외된 범위다. 실제 외부 provider 행동 평가는 not_run이다.",
+    "전문 CLI는 v2에 연결했으며 쓰기에 operation이 필요하다. 전역 용어·병합·평가 검사 등 일부 명령은 scanAll을 사용한다. 구형 writer를 v2에 자동 실행하지 않는다.",
+    "테스트 사용자 결정·화면 검토는 명시적 fixture이며 실제 사용자 프로젝트 승인·실제 provider 프로젝트 수행·브라우저 시각 검토를 대신하지 않는다.",
+    "실제 사용자 프로젝트 마이그레이션·prepare-kit-release·태그·배포는 하지 않았다. 버전 1.0.0 유지.",
+    "협력 writer/로컬 FS 범위로 검증했다. 비협력 편집기·분산 FS·전원 장애의 완전 원자성 보증은 없다."
+  ]
+}

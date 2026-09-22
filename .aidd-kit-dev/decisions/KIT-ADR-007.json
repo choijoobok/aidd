@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "id": "KIT-ADR-007",
+  "status": "accepted",
+  "title": "개정본 기반 검토·기준선·범위 준비도와 선택적 재개",
+  "change": "KIT-CHG-018",
+  "design": ".aidd-kit-dev/plans/modular-lifecycle/design/03-readiness.md",
+  "context": "상태 문자열과 과거 passed만으로 현재 입력을 통과시키고 무관한 OI/DRQ가 다른 모듈을 차단하는 판정 결함이 있다.",
+  "decision": "RVW/BSL/IMP로 검토 대상·고정 입력·변경 영향 판정을 구조화하고 기존 GTR/EVD/HIS/CHG/WRK와 연결한다. 합의한 CHG 전체 요구 검토 뒤 작업별 설계/목업/선행 결과로 개발한다. 현재 유효성은 scope evaluator가 계산하고 직접·전이 영향을 따라 필요한 부분만 재개한다.",
+  "alternatives": [
+    {
+      "option": "status에 승인/구현/재검토 상태를 모두 합침",
+      "assessment": "운영 공존과 과거 사실을 일관되게 표현할 수 없다."
+    },
+    {
+      "option": "수정 시 전체 모듈·프로젝트를 초기화",
+      "assessment": "안전해 보이지만 영향 없는 작업까지 반복해 독립 주기와 효율 요구를 위반한다."
+    },
+    {
+      "option": "모든 수정에서 기존 승인 자동 유지",
+      "assessment": "업무 의미·목업·의존 입력 변경을 놓치므로 부적합하다."
+    }
+  ],
+  "rationale": "역사적 결과를 보존하면서 지금의 입력에 적용할 수 있는 결과만 단계 진입에 사용한다. 구조 검사는 의미 판단·사용자 수용을 대체하지 않는다.",
+  "replaces_contracts": [
+    "CHG analysis/design 선언과 임의 과거 passed에 의존하는 준비 판정",
+    "전역 미결 전체를 일괄 release blocker로 사용하는 동작"
+  ],
+  "preserves": [
+    "DG/TG 정책과 GTR/EVD 실행 분리",
+    "OI/DRQ/HIS 책임 분리 및 자유문자 결정 주체",
+    "실제 운영·배포 이력"
+  ],
+  "consequences": [
+    "정의/실행/hash/projection/input_digest 계약과 typed 관계가 필요하다.",
+    "최초 전체 의미 검토와 이후 영향 범위 재검토를 구별한다.",
+    "새 RG-001/FG-001 정책은 기존 GTR 모델로 처리한다.",
+    "공식 검토 기록이 없는 구형 done은 새 사용자 승인으로 승격되지 않는다."
+  ],
+  "rollback": "과거 BSL/RVW/EVD를 삭제하지 않는다. 새 판정 도입은 단계별 회귀로 확인하고 미구현/미확인은 ready가 아닌 unknown으로 보고한다.",
+  "approval": "APR-004: 사용자 설계 수용 및 S04~S07 실행 승인",
+  "accepted_at": "2026-09-22T13:02:54.113Z"
+}

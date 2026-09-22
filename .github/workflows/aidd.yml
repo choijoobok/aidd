@@ -42,7 +42,7 @@ jobs:
       - name: Kit 구조와 provider 경계 검증
         run: node .aidd-kit-dev/tools/kit.mjs check
 
-      - name: 훅과 Kit 빠른 행위 테스트
+      - name: 전체 Kit 회귀와 배포 smoke
         run: |
-          node .ai/tests/harness.test.mjs
-          node .aidd-kit-dev/tests/kit.test.mjs
+          node --test .aidd-kit-dev/tests/*.test.mjs .ai/tests/harness.test.mjs
+          node .aidd-kit-dev/tools/kit.mjs smoke

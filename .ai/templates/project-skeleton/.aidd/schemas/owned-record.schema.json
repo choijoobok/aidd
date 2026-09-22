@@ -1,0 +1,816 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIDD owned record v2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "type",
+    "owner",
+    "revision",
+    "title",
+    "lifecycle",
+    "definition",
+    "relations"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$"
+    },
+    "type": {
+      "enum": [
+        "MOD",
+        "CHG",
+        "WRK",
+        "REQ",
+        "NFR",
+        "OUT",
+        "UC",
+        "FEAT",
+        "SCR",
+        "DAT",
+        "NAV",
+        "RVW",
+        "BSL",
+        "IMP",
+        "OI",
+        "DRQ",
+        "HIS",
+        "ADR",
+        "TCH",
+        "TC",
+        "EVD",
+        "GTR",
+        "REL",
+        "EXC",
+        "MLS",
+        "IFC",
+        "DPN",
+        "SURF",
+        "LDP",
+        "STD",
+        "UXB",
+        "UIP",
+        "CMP",
+        "GPH",
+        "RUN",
+        "MAN",
+        "DLP",
+        "MRG",
+        "MRC",
+        "TRM",
+        "ASM",
+        "RSK",
+        "EVS",
+        "POL",
+        "ARC",
+        "ENV",
+        "DEP",
+        "DOC",
+        "SYS",
+        "CAP",
+        "ACT",
+        "BPR",
+        "EVR"
+      ]
+    },
+    "owner": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "project",
+            "module"
+          ]
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lifecycle": {
+      "enum": [
+        "draft",
+        "in_review",
+        "active",
+        "retired"
+      ]
+    },
+    "definition": {
+      "type": "object"
+    },
+    "relations": {
+      "type": "array"
+    },
+    "execution": {
+      "type": "object"
+    },
+    "extensions": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "SYS"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "problem": {},
+              "purpose": {},
+              "outcomes": {},
+              "boundary": {},
+              "exclusions": {},
+              "external_context": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "CAP"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "purpose": {},
+              "outcomes": {},
+              "business_objects": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "ACT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {},
+              "group": {},
+              "goals": {},
+              "responsibilities": {},
+              "business_permissions": {},
+              "access": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "UC"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "goal": {},
+              "trigger": {},
+              "preconditions": {},
+              "postconditions": {},
+              "main_flow": {},
+              "alternatives": {},
+              "exceptions": {},
+              "access": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "BPR"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "purpose": {},
+              "trigger": {},
+              "outcomes": {},
+              "steps": {},
+              "transitions": {},
+              "initial": {},
+              "terminals": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "MOD"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "purpose": {},
+              "public_contracts": {},
+              "operating_baseline": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "CHG"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "change_class": {},
+              "delivery_path": {},
+              "purpose": {},
+              "modules": {},
+              "scope": {},
+              "base_baselines": {},
+              "applicable_policies": {},
+              "validation_plan": {},
+              "rollback": {},
+              "requirements_baseline": {},
+              "design_baseline": {},
+              "coordinated_changes": {},
+              "gate_applicability": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "REQ"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "source": {},
+              "priority": {},
+              "actors": {},
+              "value": {},
+              "statement": {},
+              "scope": {},
+              "triggers": {},
+              "preconditions": {},
+              "outcomes": {},
+              "rules": {},
+              "prohibited_outcomes": {},
+              "exceptions": {},
+              "boundaries": {},
+              "data_needs": {},
+              "touchpoints": {},
+              "quality_constraints": {},
+              "acceptance_criteria": {},
+              "applicability": {},
+              "measurement": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "NFR"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "source": {},
+              "priority": {},
+              "actors": {},
+              "value": {},
+              "statement": {},
+              "scope": {},
+              "triggers": {},
+              "preconditions": {},
+              "outcomes": {},
+              "rules": {},
+              "prohibited_outcomes": {},
+              "exceptions": {},
+              "boundaries": {},
+              "data_needs": {},
+              "touchpoints": {},
+              "quality_constraints": {},
+              "acceptance_criteria": {},
+              "applicability": {},
+              "measurement": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "FEAT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "purpose": {},
+              "analysis": {},
+              "actors": {},
+              "preconditions": {},
+              "postconditions": {},
+              "main_flow": {},
+              "alternatives": {},
+              "rules": {},
+              "inputs": {},
+              "outputs": {},
+              "exceptions": {},
+              "data_access": {},
+              "interfaces": {},
+              "applicable_quality": {},
+              "acceptance_mapping": {},
+              "business_rule_sources": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "SCR"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "purpose": {},
+              "analysis": {},
+              "entry": {},
+              "exit": {},
+              "fields": {},
+              "actions": {},
+              "view_states": {},
+              "transitions": {},
+              "validation": {},
+              "accessibility": {},
+              "applicable_permissions": {},
+              "prototype_scenarios": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "DAT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "purpose": {},
+              "analysis": {},
+              "business_definition": {},
+              "identity": {},
+              "attributes": {},
+              "ownership_rules": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "NAV"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "purpose": {},
+              "analysis": {},
+              "audience": {},
+              "entries": {},
+              "entry_routes": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "WRK"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "change": {},
+              "work_kind": {},
+              "purpose": {},
+              "requirements": {},
+              "features": {},
+              "screens": {},
+              "interfaces": {},
+              "foundations": {},
+              "foundation_applicability": {},
+              "ui_applicability": {},
+              "completion_criteria": {},
+              "environment": {},
+              "target_docs": {},
+              "due_milestone": {},
+              "due_release": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "RVW"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {},
+              "subjects": {},
+              "input_digest": {},
+              "sequence": {},
+              "coverage": {},
+              "findings": {},
+              "unresolved_refs": {},
+              "method": {},
+              "reviewer": {},
+              "occurred_at": {},
+              "per_subject_results": {},
+              "decision_source": {},
+              "artifact": {},
+              "equivalence": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "BSL"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {},
+              "scope_ref": {},
+              "members": {},
+              "inputs": {},
+              "created_at": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "IMP"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "subject": {},
+              "selector": {},
+              "before_hash": {},
+              "after_hash": {},
+              "graph_digest": {},
+              "candidates": {},
+              "cycles": {},
+              "unresolved": {},
+              "coverage": {},
+              "readiness": {},
+              "applies_to": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "GTR"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "gate": {},
+              "scope_ref": {},
+              "attempt": {},
+              "input_digest": {},
+              "result": {},
+              "blockers": {},
+              "unknowns": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "EVD"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "subjects": {},
+              "kind": {},
+              "result": {},
+              "input_hash": {},
+              "command": {},
+              "occurred_at": {},
+              "artifacts": {},
+              "environment": {},
+              "mode": {},
+              "commit": {},
+              "screen": {},
+              "file": {},
+              "sha256": {},
+              "alt": {},
+              "code_revision": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "TC"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "steps": {},
+              "inputs": {},
+              "expected": {},
+              "forbidden": {},
+              "method": {},
+              "environment": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "REL"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "works": {},
+              "changes": {},
+              "environment": {},
+              "baseline": {},
+              "combination": {},
+              "delivery": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "DLP"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "audience": {},
+              "purpose": {},
+              "includes": {},
+              "excludes": {},
+              "modules": {},
+              "release": {},
+              "format": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "MAN"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "audience": {},
+              "preconditions": {},
+              "steps": {},
+              "expected": {},
+              "error_recovery": {},
+              "support": {},
+              "screenshots": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "TRM"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "meaning": {},
+              "definition": {},
+              "visibility": {},
+              "audience": {},
+              "aliases": {},
+              "distinctions": {},
+              "examples": {},
+              "category": {},
+              "origin": {},
+              "key": {},
+              "concept_type": {},
+              "scope": {},
+              "related_terms": {},
+              "impacts": {}
+            }
+          }
+        }
+      }
+    }
+  ]
+}

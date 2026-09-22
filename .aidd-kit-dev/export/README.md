@@ -26,6 +26,8 @@ node .ai/tools/aidd.mjs project-bootstrap --project-id <ID> --name "<이름>" --
 
 성공하면 `.aidd-role.json`은 `product-workspace`로 전환된다. 이후에는 기존 `project/.aidd/ssot/`를 읽고 제품 수행을 계속한다.
 
+새 정본은 `owned-records-v2`로만 생성되며 초기 파생 문서도 함께 만들어진다. 이 초기 상태는 제품 요구·검토·개발 준비 승인이 아니다. 이전 AIDD 형식은 자동 변환하거나 v2와 혼합하지 않으며, AIDD와 무관한 기존 시스템 자료 분석은 별도 레거시 역분석 절차를 따른다.
+
 과거 템플릿에서 이미 `project/`를 만들었지만 역할 표식이 `kit-template`으로 남은 경우에는 bootstrap을 다시 실행하거나 JSON을 직접 고치지 않는다. 다음 명령은 기존 제품 정본을 검증한 뒤에만 역할을 정합화한다.
 
 ```powershell

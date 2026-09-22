@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Isolated Codex PostToolUse hook. Do not import another AIDD hook. */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -9,9 +9,9 @@ import { spawnSync } from "node:child_process";
 const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),"../..");
 function input(){try{return JSON.parse(readFileSync(0,"utf8")||"{}");}catch{return{};}}
 const payload=input();
-const source=JSON.stringify(payload.tool_input??payload.tool_input_json??payload).replaceAll("\\","/");
+const source=JSON.stringify(payload.tool_input??payload.tool_input_json??payload).replaceAll("\\","/").replace(/\/{2,}/g,"/");
 
-if(source.includes("project/.aidd/ssot/terminology.json")){
+if((source.includes("project/.aidd/ssot/terminology.json")||/project\/\.aidd\/ssot\/(?:common|modules\/MOD-[A-Z0-9-]+)\/(?:TRM|TCH)\//.test(source))&&!existsSync(join(ROOT,"project/.aidd/work/write.lock"))){
   const run=spawnSync(process.execPath,[join(ROOT,".ai/tools/aidd.mjs"),"terminology-refresh"],{cwd:ROOT,encoding:"utf8"});
   if(run.status!==0)console.error("AIDD terminology refresh needs attention; run `node .ai/tools/aidd.mjs terminology-refresh`.");
 }

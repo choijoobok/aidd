@@ -1,5 +1,7 @@
 # 레거시 현행화 계약
 
+신규 정본 초안 작성은 [역분석 계약](../../../../.ai/spec/reverse-engineering.md)의 legacy-inventory/draft/apply를 사용한다. 여기의 문서화 완료 기준은 분석 인벤토리 수집 완료와 다르다. SURF(kind=legacy_observation)는 관측 장부이며 아래 시스템 표면의 문서화 완료 판정을 대신하지 않는다.
+
 ## 필수 인벤토리
 
 - `ui_route`: 사용자가 접근하는 URL·메뉴·딥링크와 권한

@@ -5,7 +5,13 @@ description: 정본 AIDD 레코드, 위험 비례 게이트, 변경 등급과 �
 
 # AIDD 생애주기
 
-1. 시작 시 `project-init`, 훅 self-test, `status --level executive`, `integration-status`, `validate`를 실행한다. Git이 없으면 저장소와 로컬 훅만 만들며 자동 스테이징·커밋은 하지 않는다.
+모듈별 정본 조회·전문 명령·게이트는 [v2 통합 계약](../../../.ai/spec/specialty-integration.md)을 적용한다. 현재 owner/CHG 범위를 먼저 고르고 공통 정의를 참조한다. 쓰기 명령에는 고유 operation을 사용하며 사용자 결정·현재 유효성·실제 실행을 구분한다.
+
+owned-records-v2에서는 `.ai/docs/guides/owned-records-workflow.md`와 `.ai/spec/owned-records-v2.md`를 먼저 읽는다. MOD는 경계, CHG는 독립 개발 주기, WRK는 기능/화면 작업이다. 운영 기준선과 진행 중 주기를 분리하고 프로젝트 단일 phase로 모듈들을 동기화하지 않는다. 제안된 기능이나 미구현 명령을 완료로 보고하지 않는다.
+
+신규 시스템·모듈의 요구 발굴은 `.ai/spec/business-discovery.md`와 aidd-discovery로 SYS/CAP/ACT, 접속 POL, UC/BPR부터 진행한다. 역할 정의 직후 `.ai/spec/system-access.md`에 따라 최초 화면·인증 필요 여부·접근 제한을 결정한다. 요구 초안 작성과 확정은 다르며 discovery-check/requirement-check의 차단을 건너뛰어 설계하지 않는다. 공통 정의를 재사용하고 관련 항목만 되돌아가며, ACT 업무 역할과 제품 인증 정책은 아래의 수행팀 인력/권한 관리 제외 원칙과 다른 제품 분석 대상이다.
+
+1. 재개 시에는 project-init-status·훅 self-test·status·integration-status를 읽고 관련 모듈/CHG를 validate한다. project-init의 Git/훅 초기화는 프로젝트 초기 설정을 요청받은 때만 실행한다. 상태 조회만으로 저장소·설정·정본을 쓰거나 커밋하지 않는다.
 2. 요청을 신규 기능, 기존 변경, 결함, 레거시 고도화, 내부 리팩터링 또는 거버넌스로 분류하고 CHG `delivery_path`와 C0~C3 등급을 정한다.
 3. 성과, 요구사항, 모듈, 작업 패키지, 인터페이스, 결정, 배포 프로필, 기술 기준선, 설계 위험, 게이트 실행, 증거, 예외, 미결사항, DRQ 결정 요청, 테스트, 릴리스와 가이드를 안정 ID로 찾는다. 대화만을 유일한 근거로 삼지 않는다. 상태·재개 요청이나 현재 작업이 미응답 결정에 의존하면 `aidd-decision-management`가 전체 큐에서 권장 묶음을 고른다. 독립 작업에서 새 결정이 생기면 실제 미결 대상과 새 DRQ를 추가하고 기존 묶음을 보존한다.
 4. 불확실성, 규제·안전, 변경 비용, 배포 빈도와 운영 책임에 맞춰 예측형·적응형·혼합형 경로를 선택한다.

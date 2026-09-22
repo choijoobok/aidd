@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "evaluator": "owned-readiness-2.2-integration",
+  "gates": {
+    "BG-001": "discovery",
+    "RG-001": "requirements",
+    "DG-001": "deployment",
+    "FG-001": "development",
+    "TG-002": "foundation",
+    "TG-001": "technology",
+    "RL-001": "release"
+  },
+  "mandatory": [
+    "explicit_scope_review",
+    "current_per_requirement_user_acceptance",
+    "individual_related_end_to_end_consistency",
+    "current_requirement_baseline",
+    "current_business_analysis_reviews",
+    "business_flow_requirement_trace"
+  ],
+  "blanket_waiver_allowed": false,
+  "unknown_is_ready": false,
+  "required_release_gate_runs": [
+    "RL-001"
+  ]
+}

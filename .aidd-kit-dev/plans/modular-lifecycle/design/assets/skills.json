@@ -1,0 +1,265 @@
+{
+  "schema_version": 1,
+  "inventory": "KIT-ASSET-018-S03-01",
+  "group": "skills",
+  "files": [
+    {
+      "path": ".ai/skills/aidd-architecture/agents/openai.yaml",
+      "sha256": "34acaafde688837caff9f157be18a24086aaa2ee740c1036160524e4425a3591",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-architecture/references/design-checks.md",
+      "sha256": "677f96987b5a1f0787c8a5865ffb9bafdb4da44f23a72a67c8af062845823901",
+      "group": "skill:aidd-architecture",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-architecture/references/development-foundation.md",
+      "sha256": "e4a8ddcef038cbe2c6ce680679abf2097c561870b357759781aae3d4a85bf724",
+      "group": "skill:aidd-architecture",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-architecture/SKILL.md",
+      "sha256": "cdd296f3b34ebca12f9e104bbdd2dfbaf334b72aa97e5a5af1d588abd3028fe2",
+      "group": "skill:aidd-architecture",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-assurance/agents/openai.yaml",
+      "sha256": "63a0fb812359e728fcef7ab98264389b492781b4d493fd6ef1a94189a14d6865",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-assurance/references/consistency-and-merge.md",
+      "sha256": "4026b338f1919fb0fdec1542491a183cfc0ab78a254a42c773c2574d5d57074f",
+      "group": "skill:aidd-assurance",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-assurance/references/review-matrix.md",
+      "sha256": "14b55228f912b91d234784d9e0290b4e5bf18ca819397d91e8eefa303962fe16",
+      "group": "skill:aidd-assurance",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-assurance/SKILL.md",
+      "sha256": "b8e7512e635030a5f3a9f810071df30cd5e32617020a4d72e7aeb5951cb5af85",
+      "group": "skill:aidd-assurance",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-decision-management/SKILL.md",
+      "sha256": "aec5e8a74e3b2e8fd660c7ef2bd28b631bb4156bd13939c52d654028eafe854e",
+      "group": "skill:aidd-decision-management",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-deliverable-build/agents/openai.yaml",
+      "sha256": "cd56306855aacb6b76dc03f9c608059031f85482e37005ec373d670f90c9e972",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-deliverable-build/SKILL.md",
+      "sha256": "e054912bd9f9263c394b6e1c250806e2df6e59c291572a2fa766c043e10db900",
+      "group": "skill:aidd-deliverable-build",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-delivery/agents/openai.yaml",
+      "sha256": "c241069bb34a705bd8a2abd32cb7f57dfac8995568057192575f95d973267c47",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-delivery/references/done-and-release.md",
+      "sha256": "47cfb0f095916dd92bad213a6f1b0d3c5304408afdacc6eb428ba2a6953e0ab9",
+      "group": "skill:aidd-delivery",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-delivery/references/slice-runbook-guides.md",
+      "sha256": "e2de45d134c342959175d32ec6b3c5a1a8eab02638b0d16791a7a824f674f101",
+      "group": "skill:aidd-delivery",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-delivery/SKILL.md",
+      "sha256": "b503f358a4931f776d050a6c9b79220696ee0e745c572d2212b52dd1d9325170",
+      "group": "skill:aidd-delivery",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-discovery/agents/openai.yaml",
+      "sha256": "d6151ba4318c3be34af272f8e5f45bfdec0de5a71051a0bc131d82b03c84c784",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-discovery/references/benchmarking.md",
+      "sha256": "b4185e89f0ab4e5768c96dce84656074c2521684c9d034ff0f9571012a8ef9b9",
+      "group": "benchmark-reference",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-discovery/references/interview-playbook.md",
+      "sha256": "d68b5f6efab5320f853d6913b134ee53ce37026f8d7408b1eb0b54fbf0e349b7",
+      "group": "skill:aidd-discovery",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-discovery/SKILL.md",
+      "sha256": "93ddbf3903dc0fb90a7588c6dc70af8d07948100914fff7540f009d4483c61c6",
+      "group": "skill:aidd-discovery",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-document-consistency/SKILL.md",
+      "sha256": "b1b0e5b53c1deff45e920ad9d82eba14f3341af422c34a7dd9c89f621a9994b8",
+      "group": "skill:aidd-document-consistency",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-harness-management/SKILL.md",
+      "sha256": "ace4a0b473fd62422f4df8f37caaed0bd6debc38393a5215ec3c0c9bf6f030ca",
+      "group": "skill:aidd-harness-management",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-integration/SKILL.md",
+      "sha256": "640db5845514f7d03665ae1ac1062c7d4c9c3d6b8f7a2f9a68c24a3a172ffc51",
+      "group": "skill:aidd-integration",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-legacy-reconciliation/references/reconciliation-contract.md",
+      "sha256": "61087df200d9fbd0afb1eb2bfe715f942ba424f0c80e4d6233fadd012cd4df45",
+      "group": "skill:aidd-legacy-reconciliation",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-legacy-reconciliation/SKILL.md",
+      "sha256": "70de1c46134ccbe26bca32c784318bd3b4dcd1ddd8614057a4919caed8163787",
+      "group": "skill:aidd-legacy-reconciliation",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-lifecycle/agents/openai.yaml",
+      "sha256": "f36b4acb50f6f00ce69eb6b63a2d652e3b948dd87ee666bb8ed1cfee35886a5a",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-lifecycle/references/gates.md",
+      "sha256": "df9f7f6a60e7f8bcf8c3defd8a1b2a92f4eb96a17e083af9041fe42b4161117e",
+      "group": "skill:aidd-lifecycle",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-lifecycle/references/kickoff-and-change.md",
+      "sha256": "fee20761d596ff0c34271216c934ffccbde9ce3b16130dfae44a674e5a0fc634",
+      "group": "skill:aidd-lifecycle",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-lifecycle/SKILL.md",
+      "sha256": "b064f5b4dddc5fd90db4faa4ec0c91ad3c0bfc082981135ef9d9eb3dbe5ca740",
+      "group": "skill:aidd-lifecycle",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-requirement-verification/agents/openai.yaml",
+      "sha256": "3bdc82c38548e0907c3402b085e01ed79903ae113ac38b76efb8ee6dac711ff1",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-requirement-verification/SKILL.md",
+      "sha256": "81648a54c3915a6a30665b642ff39fffb98d9af2dae57c3924f96107c98f037e",
+      "group": "skill:aidd-requirement-verification",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-status/agents/openai.yaml",
+      "sha256": "ad1b4c40594168ae79f5a52ed63735f1e09d3f7ced240a334bad7dd4743e3c59",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-status/references/briefing-views.md",
+      "sha256": "8c87aa76e6f1cf2811564c7293c18af5a08de4e238a29bc4f45b50186814a82d",
+      "group": "skill:aidd-status",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-status/references/pending-work.md",
+      "sha256": "0c16e8444ce510038c621794b3e29cde123e82449c3a11965656393f6abd0ef7",
+      "group": "skill:aidd-status",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-status/SKILL.md",
+      "sha256": "ac4a803ef5946e7fa0416aea6b3b907638b436122acc26341383124651c3bdec",
+      "group": "skill:aidd-status",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-terminology/agents/openai.yaml",
+      "sha256": "b56b61e86c524077c48836286ae114ce2e7376748a893915953a0575cbd51d05",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-terminology/SKILL.md",
+      "sha256": "9a07907b171d87a54a9ca4d99499bc70276f0386ab9dc59e43c47ae07916df2f",
+      "group": "skill:aidd-terminology",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-ui-prototype/agents/openai.yaml",
+      "sha256": "1bf430bbedab2e6ce54d9140d92c51317e47b09738f17aa8a61e3e36ede8dc89",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-ui-prototype/SKILL.md",
+      "sha256": "f82fedf2182326746aaee8abd51503b33aeb24dd994f1ce6b3aabf167bac2005",
+      "group": "skill:aidd-ui-prototype",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-ui-spec/agents/openai.yaml",
+      "sha256": "40f67432a13a04fc1443331090a4bb9ef2c0192902ebd63f76a04432cf6b1fd5",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-ui-spec/SKILL.md",
+      "sha256": "8c80d4a93db5e8041d610831982f499c1b05c246cd85d34e34b7b654348f574b",
+      "group": "skill:aidd-ui-spec",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-user-guide/agents/openai.yaml",
+      "sha256": "a70f8fbfbb4ab5fff8286f49eb77ccfed81e9a31aaa86d71f619a068942e99c9",
+      "group": "skill-metadata",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/skills/aidd-user-guide/SKILL.md",
+      "sha256": "d07e6bbd4bf6ef1446ad8aecbd844c5477ec67cc6dcf49f378dc18ff7b04e0bf",
+      "group": "skill:aidd-user-guide",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".aidd-kit-dev/skills/aidd-kit-release/SKILL.md",
+      "sha256": "502ecb561a5cfc0d730400fd0430367e994a4c5b48e451ee8b89b5ace1e29848",
+      "group": "skill:aidd-kit-release",
+      "implementation_status": "planned"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 
 import { readFileSync } from "node:fs";
 
-const roots=["project/docs/generated/","build/deliverables/",".agents/skills/",".claude/skills/"];
+const roots=["project/docs/generated/","project/.aidd/index/","project/.aidd/snapshots/","build/deliverables/",".agents/skills/",".claude/skills/"];
 const pathKeys=new Set(["file_path","filePath","path","paths","notebook_path","notebookPath","file","files","filename","file_name","source","source_path","destination","destination_path","target","target_path","directory","dir","folder","uri"]);
 
 function input(){try{return JSON.parse(readFileSync(0,"utf8")||"{}");}catch{return{};}}

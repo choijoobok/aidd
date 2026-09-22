@@ -5,6 +5,8 @@ description: 사용자가 AIDD 요건·스펙에 따라 규칙, 스킬, 훅, 도
 
 # AIDD 요건 구현 검증
 
+모듈별 정본 조회·전문 명령·게이트는 [v2 통합 계약](../../../.ai/spec/specialty-integration.md)을 적용한다. 현재 owner/CHG 범위를 먼저 고르고 공통 정의를 참조한다. 쓰기 명령에는 고유 operation을 사용하며 사용자 결정·현재 유효성·실제 실행을 구분한다.
+
 사용자가 검증을 요청한 범위만 빠르게 확인한다. 검증 자체를 위한 새 절차나 증거 체계를 만들지 않는다.
 
 1. 적용할 정본을 먼저 확정한다. Kit에서는 `.ai/spec/`, `.ai/manifests/`, 루트 `AGENTS.md`를 사용하고, 프로젝트에서는 현재 `project/.aidd/ssot/`와 연결된 AIDD 명세를 사용한다. 과거 evidence, 생성물, fixture를 현재 요구사항으로 간주하지 않는다.

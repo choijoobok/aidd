@@ -5,6 +5,10 @@ description: 구현 결정 전 UI 의사결정을 위해 AIDD의 SCR·UXB·UIP·
 
 # AIDD UI 프로토타입
 
+모듈별 정본 조회·전문 명령·게이트는 [v2 통합 계약](../../../.ai/spec/specialty-integration.md)을 적용한다. 현재 owner/CHG 범위를 먼저 고르고 공통 정의를 참조한다. 쓰기 명령에는 고유 operation을 사용하며 사용자 결정·현재 유효성·실제 실행을 구분한다.
+
+owned-records-v2에서는 `.ai/spec/owned-records-v2.md`의 기능·화면·개발·영향 계약을 먼저 읽는다. CHG 전체 요구가 현재 사용자 수용/기준선에 도달한 뒤 FEAT/SCR/DAT/NAV를 ID별 정본으로 작성한다. 기능·화면 설계와 현재 목업 출력의 사용자 검토를 분리한다. 변경 시 typed 영향 후보·경로를 확인하고 필요한 요구/설계/작업만 재개하며 운영 REL과 과거 증거를 보존한다. 미검토 목업을 실제 구현 또는 사용자 수용으로 보고하지 않는다.
+
 1. 대상 `SCR`, 현재 결정 상태, `UXB/UIP/CMP`, 사용자·업무 흐름과 확인할 결정을 읽는다.
 2. 중요한 선택에는 2~3개 대안과 가치·비용·위험·가역성을 제시하고 고객이 결정할 항목을 명확히 한다.
 3. 모든 주요 상태와 접근성 의미를 포함해 `project/docs/generated/ui/modules/MOD-ID/SCR-ID/mockup.html`을 결정적으로 생성한다. 생성물을 직접 고치지 않고 필요한 변경을 정본에 반영한다.

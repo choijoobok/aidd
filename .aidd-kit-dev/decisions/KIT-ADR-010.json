@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "KIT-ADR-010",
+  "status": "accepted",
+  "current_applicability": "KIT-ADR-011에 의해 consequences의 v1 UC/시퀀스 S09 변환 부분은 철회됐다. 선행 업무 분석 정본과 준비도 결정은 유지한다.",
+  "title": "시스템·업무 분석의 정본과 요구 발굴 준비도",
+  "change": "KIT-CHG-018",
+  "design": ".aidd-kit-dev/plans/modular-lifecycle/supplements/S07A-business-discovery.md",
+  "context": "UC 유형은 남았지만 앞단 시스템 이해·업무 역할·프로세스의 상세 계약과 검토 없이 이미 작성한 요구의 완성도만 확인하는 결함이 있었다.",
+  "decision": "기존 owner/type/ID 및 RVW/BSL/IMP를 재사용하며 SYS/CAP/ACT/BPR과 UC 상세 계약을 추가한다. CHG.discovery 범위와 intent/business_flow 사용자 검토, 흐름별 요구 출처·누락 판정을 요구 확정/설계 진입에 포함한다. 초안 작성은 자유롭고 공통 정의와 유효한 검토는 모듈별로 재사용한다.",
+  "alternatives": [
+    {"option":"스킬 설명에 앞단 순서만 추가", "assessment":"누락된 정의와 오래된 검토가 실제 판정에서 보이지 않아 불충분하다."},
+    {"option":"모든 단계를 전역 순차 승인하고 변경 시 처음부터 재시작", "assessment":"모듈별 주기와 선택적 복귀 요구에 어긋난다."},
+    {"option":"기존 저장 엔진 전면 재작성", "assessment":"현재 저장·검토·영향 기반을 재사용할 수 있어 필요하지 않다."}
+  ],
+  "preserves": ["S02/S03 승인 검토본과 ID/이력", "모듈별 독립 주기와 운영 REL", "훅 격리와 배포 허용 목록", "AIDD 수행팀 신원·권한 관리 제외"],
+  "consequences": ["ACT는 제품 업무 주체이며 수행팀 권한 관리와 구별한다.", "새 판정기 입력으로 기존 v2 검토는 재평가가 필요하며 자동 승인하지 않는다.", "프로세스 그림은 JSON 단계·전이의 파생물이고 BPMN 실행/검증 엔진은 아니다.", "v1 UC/시퀀스 변환은 S09에서 원본을 보존하며 매핑한다."],
+  "rollback": "본 증분의 변경을 선택적으로 되돌리되 신규 정본과 과거 RVW/BSL을 삭제하거나 이전 승인을 새 계약의 완료로 승격시키지 않는다.",
+  "approval": "APR-005: 사용자의 앞단 분석 보완 실행 승인에 따른 구현 설계 채택. 실제 제품 정의나 제품 사용자 승인을 대신하지 않는다."
+}

@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "inventory": "KIT-ASSET-018-S03-01",
+  "group": "hooks",
+  "files": [
+    {
+      "path": ".ai/hooks/claude-log-assistant.mjs",
+      "sha256": "68188f52df428dcf716eebec12da0230801e5c36503050d63e3c49460f39ff9e",
+      "group": "hook-retain",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/claude-log-user.mjs",
+      "sha256": "b6560b6ce2532d5b23a1c6877a34b9b88e95cc1a6c9d09564a90809080c539a0",
+      "group": "hook-retain",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/claude-post-check.mjs",
+      "sha256": "45b73fec330626c71464ddf4816f738f7af3e20854de55f6a9e83bf5e1c4a954",
+      "group": "hook-change",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/claude-protect-file.mjs",
+      "sha256": "ede2ef4a840a35c36f57c1754056c2077df6c0b03a5db3a8cba1dc7df2227303",
+      "group": "hook-change",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/claude-protect-shell.mjs",
+      "sha256": "8f71065f49a895065f9ef888e4c37c54ee9223b77e8c0465950d7ea94163ba0d",
+      "group": "hook-change",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/claude-session-brief.mjs",
+      "sha256": "9ec14665dea2467437c30e7b1726e0278324709071bad45f96d335872fb650cc",
+      "group": "hook-retain",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/codex-hook-review-reminder.mjs",
+      "sha256": "15daa10d82d04de878273291739e95f40844b245352ed8df34616949b6e031e6",
+      "group": "hook-retain",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/codex-log-assistant.mjs",
+      "sha256": "e5f72bd807e24dff8d87b3ecc841c5478195879596f5ae4583382a48d2057d66",
+      "group": "hook-retain",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/codex-log-user.mjs",
+      "sha256": "012cd43716e679cde285fee63a34bb606b6fac998a085064dbe4e32da50b195a",
+      "group": "hook-retain",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/codex-post-check.mjs",
+      "sha256": "db234ac580a57ef9f319ce78f19085f891a8a9b53c477e94c67967338bc44336",
+      "group": "hook-change",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/codex-protect-file.mjs",
+      "sha256": "ae89b2ef1f2f71c1758ad6ce363b037aa5d6fda03ccf4ad6aee1f7d865b19341",
+      "group": "hook-change",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/codex-protect-shell.mjs",
+      "sha256": "77ab795f8a57f8f5a22ac4fd37510a56ebd9e3d9403474bbcb8d940a486ef536",
+      "group": "hook-change",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/codex-session-brief.mjs",
+      "sha256": "d25107a2a3a9c22c67eb6824eaf9c5e92550958b0af0c751ac71e993531bbcb9",
+      "group": "hook-retain",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/contract.json",
+      "sha256": "6283e117d8f3575f128f47cc40df831ed94865de3a528ae6768074e213fa3fbd",
+      "group": "hook-policy",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/policy.json",
+      "sha256": "af084344cd115881c8b527052480467740eb09bbad57e0cdb032ce646046cf3e",
+      "group": "hook-policy",
+      "implementation_status": "planned"
+    },
+    {
+      "path": ".ai/hooks/README.md",
+      "sha256": "a1e2f9d5b84ffbe7900141940db2b68baf95eb46fc51b9d3c7e4d9d9c3aa37e1",
+      "group": "hook-policy",
+      "implementation_status": "planned"
+    }
+  ]
+}

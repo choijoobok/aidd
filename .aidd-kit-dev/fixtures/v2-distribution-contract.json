@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "KIT-FIXTURE-S09-V2",
+  "purpose": "new-project가 변환 없이 owned-records-v2로 시작하고 배포 직후 검증 가능한 기준을 고정한다.",
+  "project_record": {
+    "schema_version": 2,
+    "storage_format": "owned-records-v2"
+  },
+  "required_paths": [
+    ".aidd-role.json",
+    ".aidd-kit-origin.json",
+    "project/.aidd/schemas/owned-record.schema.json",
+    "project/.aidd/ssot/project.json",
+    "project/.aidd/index/index.json",
+    "project/docs/generated/status.json",
+    "project/docs/generated/manifests/project.json"
+  ],
+  "forbidden_paths": [
+    "project/.aidd/schemas/artifact.schema.json"
+  ],
+  "forbidden_legacy_ssot_files": [
+    "requirements.json",
+    "modules.json",
+    "changes.json",
+    "open-items.json",
+    "workboard.json",
+    "terminology.json"
+  ],
+  "representative_commands": [
+    "validate",
+    "add-module",
+    "generate",
+    "documentation-check"
+  ],
+  "notes": [
+    "기존 reference-project는 schema_version 1 reader/generator 회귀 입력으로 보존한다.",
+    "이 fixture는 이전 AIDD 버전 변환이나 실제 고객 프로젝트 도입 증거가 아니다."
+  ]
+}

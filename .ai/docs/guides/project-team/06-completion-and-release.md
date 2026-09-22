@@ -17,7 +17,7 @@
 ## 파생 문서 확인
 
 ```powershell
-node .ai/tools/aidd.mjs document-impact --path project/.aidd/ssot/requirements.json
+node .ai/tools/aidd.mjs document-impact --path project/.aidd/ssot/modules/MOD-CORE/REQ/REQ-001.json
 node .ai/tools/aidd.mjs generate
 node .ai/tools/aidd.mjs validate
 ```

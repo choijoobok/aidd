@@ -1,2 +1,2 @@
 #!/bin/sh
-node .ai/tools/aidd.mjs record-merge "$1"
+node .ai/tools/aidd.mjs record-merge --operation "merge-$(git rev-parse HEAD)"

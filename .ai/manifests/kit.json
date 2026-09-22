@@ -16,5 +16,18 @@
     "reverse_sync": false,
     "project_customization_allowed": true,
     "origin_is_provenance_only": true
+  },
+  "owned_records": {
+    "storage_format": "owned-records-v2",
+    "spec": ".ai/spec/owned-records-v2.md",
+    "business_discovery": ".ai/spec/business-discovery.md",
+    "system_access": ".ai/spec/system-access.md",
+    "reverse_engineering": ".ai/spec/reverse-engineering.md",
+    "legacy_review_reanalysis": ".ai/spec/legacy-review-reanalysis.md",
+    "legacy_adoption": ".ai/spec/legacy-adoption.md",
+    "specialty_integration": ".ai/spec/specialty-integration.md",
+    "types": ".ai/manifests/record-types.json",
+    "policies": ".ai/manifests/readiness-policies.json",
+    "guide": ".ai/docs/guides/owned-records-workflow.md"
   }
 }

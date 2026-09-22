@@ -5,7 +5,7 @@
 | 구분 | 위치 | 관리 방식 |
 |---|---|---|
 | 현재 제품 정본 | `project/.aidd/ssot/` | 의미 있는 변경에서 직접 갱신 |
-| 결정 이력 | `project/.aidd/ssot/history/YYYY-MM/` | `record-history`로 append-only 추가 |
+| 결정 이력 | `project/.aidd/ssot/common/HIS/ 또는 modules/<MOD>/HIS/` | `record-history`로 append-only 추가 |
 | 제품 소스 | `project/src/` | 정본 ID와 영향 범위를 연결해 구현 |
 | 생성 문서 | `project/docs/generated/` | `generate`로 재생성, 직접 수정 금지 |
 | 대화 원문 | `chat-history/` | 로컬 참고만, Git·정본·증거에서 제외 |
@@ -15,7 +15,7 @@
 ## 결정 이력 기록
 
 ```powershell
-node .ai/tools/aidd.mjs record-history `
+node .ai/tools/aidd.mjs record-history --operation history-20260921-001 `
   --id HIS-20260921-001 `
   --occurred-at 2026-09-21T12:00:00.000Z `
   --type design `
@@ -44,7 +44,7 @@ node .ai/tools/aidd.mjs term-review --action add --id TRM-001 --term "고객 요
 프로젝트가 정한 방식으로 결정한 뒤 적용한다.
 
 ```powershell
-node .ai/tools/aidd.mjs term-apply --action add --id TRM-001 --history TCH-001 --term "고객 요청" --key customerRequest --concept-type business --category "고객지원/접수" --definition "고객이 처리를 요청한 업무 단위" --scope "접수부터 처리 종료까지 추적하는 요청" --decided-by "프로젝트팀 오프라인 협의" --summary "영향 검토 후 용어 추가" --source-ref "회의록 2026-09-21"
+node .ai/tools/aidd.mjs term-apply --operation term-add-001 --action add --id TRM-001 --history TCH-001 --term "고객 요청" --key customerRequest --concept-type business --category "고객지원/접수" --definition "고객이 처리를 요청한 업무 단위" --scope "접수부터 처리 종료까지 추적하는 요청" --decided-by "프로젝트팀 오프라인 협의" --summary "영향 검토 후 용어 추가" --source-ref "회의록 2026-09-21"
 ```
 
 TCH에는 결정 주체·시각·전후 값·영향·요약·검증을 남긴다. 특정 PM 역할이나 계정은 필요하지 않다.

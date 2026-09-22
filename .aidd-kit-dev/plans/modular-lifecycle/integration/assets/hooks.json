@@ -1,0 +1,120 @@
+{
+  "stage": "S08",
+  "inventory": "KIT-ASSET-018-S03-01",
+  "group": "hooks",
+  "review_method": "범주별 계약 검토와 원본 해시 대조; 모든 파일의 독립 행동 검증을 뜻하지 않는다.",
+  "files": [
+    {
+      "path": ".ai/hooks/claude-log-assistant.mjs",
+      "group": "hook-retain",
+      "disposition": "reviewed_retained",
+      "current_sha256": "68188f52df428dcf716eebec12da0230801e5c36503050d63e3c49460f39ff9e",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/claude-log-user.mjs",
+      "group": "hook-retain",
+      "disposition": "reviewed_retained",
+      "current_sha256": "b6560b6ce2532d5b23a1c6877a34b9b88e95cc1a6c9d09564a90809080c539a0",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/claude-post-check.mjs",
+      "group": "hook-change",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "dee9483c43740bf96612127cab87491cbcd138010407ed9cdd4f3b42b925aa61",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/claude-protect-file.mjs",
+      "group": "hook-change",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "f56ae8e0751fb803ec6014abed7358c208ac55ca1887ddc9bf9e1daf9e53bc74",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/claude-protect-shell.mjs",
+      "group": "hook-change",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "37cde9656f4e6d2847084854243dc01a04c4df1942360e3cec950aa9575e5660",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/claude-session-brief.mjs",
+      "group": "hook-retain",
+      "disposition": "reviewed_retained",
+      "current_sha256": "9ec14665dea2467437c30e7b1726e0278324709071bad45f96d335872fb650cc",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/codex-hook-review-reminder.mjs",
+      "group": "hook-retain",
+      "disposition": "reviewed_retained",
+      "current_sha256": "15daa10d82d04de878273291739e95f40844b245352ed8df34616949b6e031e6",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/codex-log-assistant.mjs",
+      "group": "hook-retain",
+      "disposition": "reviewed_retained",
+      "current_sha256": "e5f72bd807e24dff8d87b3ecc841c5478195879596f5ae4583382a48d2057d66",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/codex-log-user.mjs",
+      "group": "hook-retain",
+      "disposition": "reviewed_retained",
+      "current_sha256": "012cd43716e679cde285fee63a34bb606b6fac998a085064dbe4e32da50b195a",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/codex-post-check.mjs",
+      "group": "hook-change",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "5ede329a92a7254f4d756de68c00d97d8b08cf350d37b12dfb39cd1d630ccffb",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/codex-protect-file.mjs",
+      "group": "hook-change",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "3c42f0e84378989cf974633e689e26d12d8b48df2c08d554c35ba4b3d0230cc2",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/codex-protect-shell.mjs",
+      "group": "hook-change",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "4de02961efe08fbb84b42d89c8b4f66ee55abb1db18e497cf24d44001836d96a",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/codex-session-brief.mjs",
+      "group": "hook-retain",
+      "disposition": "reviewed_retained",
+      "current_sha256": "d25107a2a3a9c22c67eb6824eaf9c5e92550958b0af0c751ac71e993531bbcb9",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/contract.json",
+      "group": "hook-policy",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "4284af3b5c4e4643ea93ed4cc3d0115cea098fa875bea6f5f52553bc331ebd68",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/policy.json",
+      "group": "hook-policy",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "cea89df93282937953273a94f2f5ae018e122c1e7ae67b7cf7cb416d0dd8694c",
+      "verification": "hook self-test; owned-hooks; harness"
+    },
+    {
+      "path": ".ai/hooks/README.md",
+      "group": "hook-policy",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "2932a80a9926387d7ddb180ae5b795efa89fc4c834fcdd598718599fb7df8ca6",
+      "verification": "hook self-test; owned-hooks; harness"
+    }
+  ]
+}

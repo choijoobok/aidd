@@ -42,6 +42,8 @@ node .aidd-kit-dev/tools/kit.mjs new-project --directory D:\work\crm --project-i
 
 폴더와 ZIP은 같은 staging·검증 경로를 사용한다. 기존 출력 대상은 덮어쓰지 않는다. `.aidd-kit-origin.json`은 Kit 버전, 원본 커밋과 payload 해시를 기록하는 출처 정보일 뿐 자동 업그레이드 잠금이나 호환성 보증이 아니다.
 
+`new-project`는 v2 정본·index·초기 파생 문서를 만든 뒤 `validate`와 `documentation-check`를 통과해야 한다. 구형 전역 SSOT가 섞인 출력은 실패하며 이전 AIDD 형식 전용 변환은 제공하지 않는다. 기존 `reference-project`는 legacy reader/generator 회귀 입력으로만 보존하고, 신규 배포 기준은 `fixtures/v2-distribution-contract.json`과 S09 배포 회귀로 확인한다.
+
 ## 출력 검토
 
 export 또는 new-project 경계를 변경했다면 smoke로 다음을 확인한다.

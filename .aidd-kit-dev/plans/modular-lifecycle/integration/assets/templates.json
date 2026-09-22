@@ -1,0 +1,162 @@
+{
+  "stage": "S08",
+  "inventory": "KIT-ASSET-018-S03-01",
+  "group": "templates",
+  "review_method": "범주별 계약 검토와 원본 해시 대조; 모든 파일의 독립 행동 검증을 뜻하지 않는다.",
+  "files": [
+    {
+      "path": ".ai/templates/artifact/decision-card.md",
+      "group": "artifact-templates",
+      "disposition": "reviewed_retained",
+      "current_sha256": "7642a0885ba43250f9f04cf7718f9944ec95c8e7603f6365f8a73fc3101eca9c",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/decision-history-entry.md",
+      "group": "artifact-templates",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "66079726d7f1d8728c8ae22cf92c5a3098ef97e05ddeffe4277c0b9a2719c33d",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/feature-detail-spec-workbook.md",
+      "group": "artifact-templates",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "dc7f698246908e859e8bda1d1f978c4f4de53cbb79e74e10b91eff119040fbbf",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/legacy-reconciliation-workbook.md",
+      "group": "artifact-templates",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "2bf7e450a868670efae6e2ca198533a7efb851d4887a25c9258e2fbb83c6da41",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/product-requirements-workbook.md",
+      "group": "artifact-templates",
+      "disposition": "reviewed_retained",
+      "current_sha256": "c05d473d8d1ca2d55b28dfe9feb98f87f30aa140eefc5572d32e94119c8ffa03",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/README.md",
+      "group": "artifact-templates",
+      "disposition": "reviewed_retained",
+      "current_sha256": "b957f69805736ee925ebacd79bc76da0311f0ad4bcbd5add8ffbcbd053ced875",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/research-note.md",
+      "group": "stable-template",
+      "disposition": "reviewed_retained",
+      "current_sha256": "86b5118c3f13d2a23f0ebcc7a29fe49cd9f05032c7474b9e79ffa7a91d6b5212",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/runbook-workbook.md",
+      "group": "artifact-templates",
+      "disposition": "reviewed_retained",
+      "current_sha256": "8739d2761e0a183fe952e8d26b2130ca65936cca72dcf7d7d9b45b80bc1d099b",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/screen-spec-workbook.md",
+      "group": "artifact-templates",
+      "disposition": "reviewed_retained",
+      "current_sha256": "ff67f00a4d2f6d770263ed173b6779a0cc86c87035cf5b6be7b03024e17cb30b",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/terminology-workbook.md",
+      "group": "artifact-templates",
+      "disposition": "updated_or_regenerated",
+      "current_sha256": "a755bde6cd937b81e1d73a37d9b5ef2af4c178658eeb01f4c49676dd1638b22b",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/test-result-workbook.md",
+      "group": "artifact-templates",
+      "disposition": "reviewed_retained",
+      "current_sha256": "a69b53c5eeaff5cad609c0a79ff16b4a17a848b41c1b77d2b5721de0b3d1d5a9",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/artifact/user-manual-workbook.md",
+      "group": "artifact-templates",
+      "disposition": "reviewed_retained",
+      "current_sha256": "c89d4a9ac6461f16e91e1f82025bd4f505492e3f0bb55f4653db2b3a8bc5a29a",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/git/commit-message.md",
+      "group": "stable-template",
+      "disposition": "reviewed_retained",
+      "current_sha256": "1b1fc093f73c1857e67418a1b344d872113f399005190b739846e36074046073",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/project-skeleton/.aidd/schemas/artifact.schema.json",
+      "group": "skeleton",
+      "disposition": "S09_remaining",
+      "current_sha256": "8c98903614887994e05668fd02dad9c5f58f6202d31132a042c8617618a1c1e9",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/project-skeleton/README.md",
+      "group": "skeleton",
+      "disposition": "S09_remaining",
+      "current_sha256": "848e8a1f402e99bed72ac44edf4a10324bdb30047ec4fcfc5fab6de4973ae15e",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/project-skeleton/src/README.md",
+      "group": "stable-template",
+      "disposition": "reviewed_retained",
+      "current_sha256": "6d3b0e1dc6e185dee1a4bf40a7b03aa750d913f2a0e60b3ff2f999d934a7050e",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/site-kit/assets/delivery.css",
+      "group": "site",
+      "disposition": "reviewed_retained",
+      "current_sha256": "574fef41708e5516c021e15ea717ee446809030731777ca100403427c5544302",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/site-kit/assets/delivery.js",
+      "group": "site",
+      "disposition": "reviewed_retained",
+      "current_sha256": "97b9d01d88b73bc96d953b2fe6aed453a807555ce05c3369a77ded3e029d9b63",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/site-kit/assets/guide.css",
+      "group": "site",
+      "disposition": "reviewed_retained",
+      "current_sha256": "7df1129341661938619f2bc1658beb9880844e324683a59f463d4ac241851537",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/site-kit/assets/icons.js",
+      "group": "site-icons",
+      "disposition": "reviewed_retained",
+      "current_sha256": "c697290cf1de0db949e085eca54fb15ccbcd49c2c57042d70ae2aa00ddd076d3",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/site-kit/document-site.html",
+      "group": "site",
+      "disposition": "reviewed_retained",
+      "current_sha256": "cfba50d4b7843d20df7f2cf2923e3718fa113132f8fac1fd7e8ba94b6045b532",
+      "verification": "workbook path/FEAT review; smoke"
+    },
+    {
+      "path": ".ai/templates/site-kit/project-home.html",
+      "group": "site",
+      "disposition": "reviewed_retained",
+      "current_sha256": "583ba66979b0e07f118ef94f4e1f8718583468514c7e64b8fe0ee1eecf423b67",
+      "verification": "workbook path/FEAT review; smoke"
+    }
+  ]
+}

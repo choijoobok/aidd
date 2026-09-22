@@ -320,7 +320,7 @@ test("Claude Stop pairs staged prompts with transcript progress and the final as
   }
 });
 
-test("Claude keeps every prompt queued during one response and rotates an overflowing daily file",()=>{
+test("Claude keeps every prompt queued during one response and rotates a full daily file forward only",()=>{
   const folder=mkdtempSync(join(tmpdir(),"aidd-hook-claude-queue-"));
   const runtimeDir=join(folder,".ai","hooks"),path=join(folder,"claude-queue.md"),transcript=join(folder,"queue.jsonl");
   mkdirSync(runtimeDir,{recursive:true});
@@ -347,6 +347,18 @@ test("Claude keeps every prompt queued during one response and rotates an overfl
     assert.equal(rotated.status,0,rotated.stderr);
     assert.equal(readFileSync(path,"utf8").length,5242880,"a full daily file must not be appended to");
     assert.ok(readFileSync(join(folder,"claude-queue-2.md"),"utf8").includes("rotating-question"),"the overflow must continue in a numbered file");
+
+    writeFileSync(join(folder,"claude-queue-2.md"),"y".repeat(5242880-500),"utf8");
+    assert.equal(run("claude-log-user.mjs",{session_id:"big-session",prompt:"big-"+"q".repeat(2000)}).status,0);
+    answer("big-answer");
+    assert.equal(run("claude-log-assistant.mjs",{session_id:"big-session",transcript_path:transcript,hook_event_name:"Stop"}).status,0);
+    assert.equal(run("claude-log-user.mjs",{session_id:"small-session",prompt:"small-question"}).status,0);
+    answer("small-answer");
+    assert.equal(run("claude-log-assistant.mjs",{session_id:"small-session",transcript_path:transcript,hook_event_name:"Stop"}).status,0);
+    const third=readFileSync(join(folder,"claude-queue-3.md"),"utf8");
+    assert.ok(third.includes("big-answer"),"a block too large for the current file must move forward");
+    assert.ok(third.includes("small-answer"),"a later block must stay in the newest file");
+    assert.ok(!readFileSync(join(folder,"claude-queue-2.md"),"utf8").includes("small-answer"),"rotation must never fall back to an earlier file");
   }finally{
     rmSync(folder,{recursive:true,force:true});
   }

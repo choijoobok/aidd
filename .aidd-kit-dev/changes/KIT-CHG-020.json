@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-020",
+  "title": "Claude 대화 로그 회전을 앞으로만 진행하도록 수정",
+  "class": "C3",
+  "status": "verified",
+  "version_impact": "patch",
+  "delivery_path": "kit-maintenance",
+  "problem": "KIT-CHG-018이 도입한 회전은 빈 자리가 있는 가장 낮은 번호 파일을 고른다. 기본 파일이 찬 뒤 큰 블록이 -2에 들어가지 못해 -3으로 가면, 이어지는 작은 블록은 다시 -2에 들어간다. 나중에 기록된 블록이 앞 번호 파일에 남아 파일 순서가 대화 시간 순서와 어긋난다.",
+  "intent": "Claude 런타임에 한해 회전을 단방향으로 바꿔 파일 순서가 블록 시간 순서와 항상 일치하게 한다. 회전 기준, 파일 이름 규칙, 한도를 단독으로 넘는 블록의 기록 보장은 바꾸지 않으며 Codex 런타임은 변경하지 않는다.",
+  "scope": [
+    "claude-log-assistant.mjs의 appendEntry가 존재하는 가장 높은 번호 파일에서 시작해 앞으로만 회전",
+    "contract의 file_rotation에 provider별 회전 방향 기록",
+    "명세에 Claude 단방향 회전 보장과 Codex first-fit 차이 명시",
+    "회전 경계에서 나중 블록이 앞 번호 파일로 되돌아가지 않는 회귀 테스트 추가"
+  ],
+  "compatibility": "Claude 훅 명령, 실행 파일 경로와 .claude/settings.json 등록은 바뀌지 않아 재승인이 필요하지 않다. 파일 이름 규칙과 기존 파일은 그대로이며, 회전이 시작된 뒤 앞 번호 파일의 남은 공간을 더 채우지 않는 점만 달라진다. Codex 훅과 로그 형식은 변경하지 않는다.",
+  "validation": [
+    "node --check .ai/hooks/claude-log-assistant.mjs",
+    "node .ai/tools/aidd_hook.mjs self-test --hook",
+    "node .ai/tests/harness.test.mjs",
+    "node .aidd-kit-dev/tools/kit.mjs check",
+    "node .aidd-kit-dev/tools/kit.mjs smoke"
+  ],
+  "risks": [
+    "앞 번호 파일의 남은 공간을 쓰지 않으므로 일자당 파일 수가 조금 늘 수 있다. 회전 기준이 5MiB이고 최대 999개이므로 실사용 범위에서 문제가 되지 않는다.",
+    "Codex는 여전히 first-fit이라 같은 일자 파일을 두 provider가 함께 쓰면 Codex 블록만 앞 번호 파일에 추가될 수 있다. 블록 헤더의 시각으로 정렬은 가능하며 차이를 계약과 명세에 남겼다."
+  ],
+  "rollback": "appendEntry의 시작 인덱스 탐색을 제거해 1번부터 첫 빈 자리를 찾는 방식으로 되돌리고, contract의 file_rotation.direction과 명세 문장, 해당 회귀 단언을 제거한다.",
+  "completion_blocker": "없음",
+  "validation_result": "기본 파일이 찬 상태에서 -2에 들어가지 못하는 블록이 -3으로 이동한 뒤 이어지는 작은 블록도 -3에 남고 -2로 되돌아가지 않는 단언을 포함해 하네스 12건이 통과했다. 훅 구문 검사와 배선 self-test, Kit quick check, export·new-project smoke도 통과했다.",
+  "known_limit": "단방향 회전은 Claude 런타임에만 적용했다. Codex는 KIT-CHG-019의 first-fit 회전을 유지하므로 provider별 차이를 contract file_rotation.direction에 남겼고 정렬이 필요하면 후속 변경으로 처리한다."
+}

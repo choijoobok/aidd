@@ -154,11 +154,11 @@ test('real storage, scoped reads, baseline, briefing and derived documents carry
   assert(status.discovery[0].blockers.some(b => b.code === 'access_policy_detail'));
   generateDocuments(store, { module: 'MOD-A' });
   const doc = readFileSync(join(store.project, 'docs/generated/common/POL/POL-CUSTOMER-ACCESS.md'), 'utf8');
-  assert.match(doc, /로그인 화면/); assert.match(doc, /permission_lifecycle/);
+  assert.match(doc, /로그인 화면/); assert.match(doc, /계정 활성화로 부여, 정지·회수 후 후속 요청 거부/);
   const uc = readFileSync(join(store.project, 'docs/generated/modules/MOD-A/UC/UC-CANCEL.md'), 'utf8');
   assert.match(uc, /common\/POL\/POL-CUSTOMER-ACCESS.md/);
   assert.equal(checkDocuments(store, { module: 'MOD-A' }).current, true);
   const profile = record('DLP', 'DLP-ACCESS', null, '정책 제출', { audience: 'internal', purpose: 'design', includes: ['design'], modules: ['MOD-A'] });
   putRecord(store, profile, { operation: 'delivery-profile' }); buildDelivery(store, profile.id, join(root, 'delivery'));
-  assert.match(readFileSync(join(root, 'delivery/index.html'), 'utf8'), /permission_lifecycle/);
+  assert.match(readFileSync(join(root, 'delivery/index.html'), 'utf8'), /계정 활성화로 부여, 정지·회수 후 후속 요청 거부/);
 });

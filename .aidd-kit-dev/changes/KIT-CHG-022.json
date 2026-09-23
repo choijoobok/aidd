@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-022",
+  "title": "Linux CI 테스트 정리 경로와 생성 문서 검증 수정",
+  "class": "C1",
+  "status": "in_progress",
+  "version_impact": "none",
+  "delivery_path": "kit-maintenance",
+  "problem": "GitHub Actions의 Linux 실행에서 세 테스트 파일의 임시 디렉터리 정리 검사가 Windows 경로 구분자를 요구해 6건이 실패한다. 생성 문서 검증 1건도 사용자용 필드 표기 변경 전의 내부 키를 기대한다.",
+  "intent": "운영체제와 무관하게 임시 디렉터리의 부모·이름을 확인하고, 파생 문서에는 접속 정책의 실제 결정 내용이 남는지 검증한다.",
+  "scope": [
+    "관리 전용 결정 연속성·이력·용어 테스트의 임시 디렉터리 정리 경계 수정",
+    "접속 정책 파생 문서 테스트의 의미 중심 단언 수정",
+    "GitHub Actions 전체 테스트의 실패 원인 제거"
+  ],
+  "compatibility": "테스트와 Kit 관리 기록만 변경하며 portable 명세·구현·배포물은 바꾸지 않는다.",
+  "validation": [
+    "영향받은 네 테스트 파일과 Kit 전체 테스트 실행",
+    "Kit check, 훅 self-test, git diff --check",
+    "GitHub Actions 재실행 결과 확인"
+  ],
+  "risks": [
+    "Windows에서 통과한 경로 검사가 Linux에서는 다시 실패할 수 있으므로 원격 CI 결과를 확인한다."
+  ],
+  "rollback": "이 변경의 테스트 단언과 KIT-CHG 기록을 되돌린다.",
+  "completion_blocker": "GitHub Actions 재실행 결과 미확인",
+  "validation_result": "영향받은 테스트 17/17, Kit 전체 테스트 150/150, Kit check, 훅 self-test, git diff --check 및 변경 파일 6개의 UTF-8 BOM 없음·LF를 확인했다. Linux CI 재실행 결과는 대기 중이다."
+}

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { basename, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 
@@ -44,7 +44,7 @@ test("용어 카드는 읽기 전용이고 오프라인 결정 뒤 신원·역�
     assert.equal(validation.status,0,validation.stdout+validation.stderr);
   }finally{
     const resolved=resolve(temporary),temporaryRoot=resolve(tmpdir());
-    if(!resolved.startsWith(`${temporaryRoot}\\`)||!basename(resolved).startsWith("aidd-terminology-policy-"))throw new Error(`unsafe temporary cleanup target: ${resolved}`);
+    if(dirname(resolved)!==temporaryRoot||!basename(resolved).startsWith("aidd-terminology-policy-"))throw new Error(`unsafe temporary cleanup target: ${resolved}`);
     rmSync(resolved,{recursive:true,force:true});
   }
 });

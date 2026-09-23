@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { basename, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 
@@ -28,7 +28,7 @@ test("중요 결정은 안정 ID에 연결된 월별 append-only HIS로 기록�
     assert.equal(existsSync(join(workspace,"project/.aidd/ssot/history/2026-09/HIS-20260921-003.json")),false);
   }finally{
     const resolved=resolve(temporary),temporaryRoot=resolve(tmpdir());
-    if(!resolved.startsWith(`${temporaryRoot}\\`)||!basename(resolved).startsWith("aidd-history-policy-"))throw new Error(`unsafe temporary cleanup target: ${resolved}`);
+    if(dirname(resolved)!==temporaryRoot||!basename(resolved).startsWith("aidd-history-policy-"))throw new Error(`unsafe temporary cleanup target: ${resolved}`);
     rmSync(resolved,{recursive:true,force:true});
   }
 });

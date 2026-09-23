@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-023",
+  "title": "CLI 명령 계약 단일화와 도움말 정합성 수정",
+  "class": "C1",
+  "status": "verified",
+  "version_impact": "minor",
+  "delivery_path": "kit-maintenance",
+  "problem": "도움말이 record-history의 --occurred-at을 두 번 표시하고, discovery-check·development-check처럼 실제로 필수 옵션을 강제하는 명령을 필수 없음으로 안내했다. 필수 옵션 정의가 검증기·도움말 전용 표·인라인 검사·전문 명령 내부 검사 네 곳에 흩어져 있었다. 무인자 도움말은 현재 프로젝트에서 쓸 수 없는 명령을 구분 없이 알파벳순으로 나열하고 설명이 없었으며, 오타 명령은 not_implemented(미구현)로 표현되어 AI가 대안을 찾지 않게 했다. 도움말은 영어, 오류는 한·영 혼합이었고 record-put 입력 골격 예시가 없었다.",
+  "intent": "명령별 필수·대안 옵션, 설명, 그룹, 예시, 사용 조건을 .ai/tools/lib/cli-contract.mjs 한 표에 두고 검증기·도움말·사용 가능 판정이 모두 이를 읽게 한다. 도움말을 한국어로 통일하고 현재 작업공간에서 쓸 수 있는 명령만 사용 가능으로 표시한다.",
+  "scope": [
+    "cli-contract.mjs 신설과 owned-cli·specialty-operations·aidd.mjs의 필수 옵션 검사 단일화",
+    "옵션 목록 조립 시 중복 제거",
+    "역할·정본 형식 인식 명령 색인과 명령별 한국어 도움말·예시",
+    "unknown_command(비슷한 명령 제안)·unavailable_command·unsupported_in_v2 오류",
+    "도움말·검증 동등성 회귀 테스트와 가이드·배포 README의 --help 안내"
+  ],
+  "out_of_scope": [
+    "타입별 입력 골격 파일 생성 명령",
+    "기본 출력 형식(JSON) 변경",
+    "v1 경로 옵션 표(COMMAND_OPTIONS·COMMAND_RULES) 재구성",
+    "pre-commit 훅의 kit-template 분기"
+  ],
+  "compatibility": "명령 이름·옵션·JSON 출력·종료 코드는 유지한다. usage 오류 메시지가 한국어로 바뀌고, 존재하지 않는 명령은 not_implemented 대신 unknown_command, 현재 작업공간에서 쓸 수 없는 명령은 실행 전 unavailable_command(exit 2)로 끝난다. record-put의 --create/--expected-hash 누락은 계속 usage 오류다.",
+  "validation": [
+    "cli-help·owned-cli·skill-contracts·specialty-integration·legacy 계열 테스트와 Kit 전체 회귀",
+    "kit check·smoke, 훅 self-test, git diff --check, UTF-8 BOM 없음·LF 확인",
+    "새 v2 프로젝트와 빈 kit-template에서 무인자·명령별 도움말, 오타·사용 불가 명령 실행 직접 확인"
+  ],
+  "risks": [
+    "계약 표와 실행 모듈의 옵션 이름이 어긋나면 도움말이 잘못된 필수 표시를 할 수 있다. cli-help 테스트가 두 집합의 일치를 강제한다.",
+    "v1 경로 명령은 구형 정본에서만 v1 옵션 표를 보여 주므로 v1 fixture 외 환경에서는 검증되지 않는다."
+  ],
+  "rollback": "이번 변경의 cli-contract.mjs, owned-cli·specialty-operations·aidd.mjs 수정, 테스트, 가이드 문구와 관리 기록을 선택적으로 되돌린다. 배포된 프로젝트의 정본은 변경하지 않는다.",
+  "completion_blocker": "없음",
+  "validation_result": "Kit 전체 회귀 25개 파일 155/155 통과(cli-help 신규 5건 포함). kit check·smoke, 훅 self-test, git diff --check 통과. 변경 파일 12개의 UTF-8 BOM 없음·LF 확인. 새 v2 프로젝트와 빈 kit-template에서 무인자·명령별 도움말, 필수 옵션 누락 오류, 오타 명령 제안, 사용 불가 명령 차단을 직접 확인했다."
+}

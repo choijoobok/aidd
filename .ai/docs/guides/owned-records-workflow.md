@@ -34,4 +34,4 @@ AIDD와 무관한 기존 시스템은 [레거시 역분석 안내](legacy-revers
 6. 새 발견은 관련 요구/설계 정본으로 돌아가 수정한다. `impact --id ID`의 경로·coverage를 검토하고 IMP로 영향 있음/없음/미정을 이유와 함께 분류한다. 명시한 작업만 재개하고 운영 기록은 유지한다.
 7. `status --module MOD-ID --format text`, `generate --module MOD-ID`, `documentation-check --module MOD-ID`로 상태와 문서를 함께 확인한다. 제출은 DLP와 delivery-build를 사용한다.
 
-ready는 현재 입력에 대한 판정이다. 입력이 달라졌으면 새 검토/게이트를 기록한다. 사람이 잠정적으로 기록한 completed를 실제 증거가 있는 완료와 혼동하지 않는다. 일부 전문 명령의 v2 연결은 S08 통합 범위이며 not_implemented가 나오면 전역 파일 writer로 대신 저장하지 않는다.
+ready는 현재 입력에 대한 판정이다. 입력이 달라졌으면 새 검토/게이트를 기록한다. 사람이 잠정적으로 기록한 completed를 실제 증거가 있는 완료와 혼동하지 않는다. 현재 작업공간에서 쓸 수 없는 명령은 `unavailable_command` 또는 `unsupported_in_v2` 오류로 끝난다. 그때 구형 전역 파일 writer로 대신 저장하지 않고 `node .ai/tools/aidd.mjs --help`로 지금 사용할 수 있는 명령을 확인한다.

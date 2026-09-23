@@ -18,6 +18,8 @@
 
 ## 명령을 직접 실행할 때
 
+`node .ai/tools/aidd.mjs --help`는 현재 작업공간에서 사용할 수 있는 명령과 한 줄 설명을, `<명령> --help`는 필수 입력·옵션·예시를 보여준다.
+
 `.aidd-role.json`이 `kit-template`이면 고객과 프로젝트 ID·이름·신규/기존 시스템 여부를 확인한 뒤 다음 명령으로 제품 정본을 만든다.
 
 ```powershell

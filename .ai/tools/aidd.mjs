@@ -7,7 +7,8 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "nod
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { harnessErrors } from "./aidd_hook.mjs";
-import { runOwned, shouldUseV2, bootstrapV2, V2_COMMANDS, OWNED_OPTIONS, ownedCommandHelp } from './lib/owned-cli.mjs';
+import { runOwned, shouldUseV2, bootstrapV2, V2_COMMANDS, OWNED_OPTIONS, ownedCommandHelp, workspaceFormat } from './lib/owned-cli.mjs';
+import { COMMANDS as CLI_CONTRACT, availability, commandHelp, commandIndex, suggestions } from './lib/cli-contract.mjs';
 
 const ROOT=process.env.AIDD_LIBRARY_MODE==="1"&&process.env.AIDD_WORKSPACE_ROOT?resolve(process.env.AIDD_WORKSPACE_ROOT):resolve(dirname(fileURLToPath(import.meta.url)),"../..");
 const PROJECT=join(ROOT,"project"),SSOT=join(PROJECT,".aidd/ssot"),GENERATED=join(PROJECT,"docs/generated"),COMMON_TERMINOLOGY=join(ROOT,".ai/manifests/terminology.json");
@@ -479,27 +480,31 @@ function stopHook(){console.log("{}");return 0;}
 function secureDeliveryGlossary(data,options){const profile=(data.delivery_profiles.delivery_profiles??[]).find(item=>item.id===options.profile);if(!profile)throw new Error(`unknown delivery profile: ${options.profile}`);if(!(profile.includes??[]).includes("glossary"))throw new Error(`${profile.id} does not include glossary`);const audience=profile.glossary?.audience;if(!["internal","end_user"].includes(audience))throw new Error(`${profile.id} has no valid glossary audience`);const result=validate(data);if(result.errors.length)throw new Error(`cannot assemble delivery glossary:\n- ${result.errors.slice(0,20).join("\n- ")}`);const target=resolve(options.directory),viewAudience=audience==="end_user"?"end_user":null,notice=audience==="end_user"?"<!-- AIDD generated glossary. Do not edit. -->\n\n":NOTICE,content=notice+glossaryDocument(data,{audience:viewAudience}).trimEnd()+"\n",site=renderPortal(data,audience==="end_user"?"프로젝트 용어 사전":"통합 용어 사전","용어집",[["glossary.md",content]],{includeSourceMeta:audience!=="end_user"});if(audience==="end_user"){const errors=endUserDeliveryErrors(data,{"glossary.md":content,"index.html":site});for(const path of files(join(ROOT,".ai/templates/site-kit/assets")))if(END_USER_GLOSSARY_FORBIDDEN.test(readFileSync(path,"utf8")))errors.push(`assets/${basename(path)}: end-user delivery content contains an internal identifier or project path`);if(errors.length)throw new Error(`end-user delivery boundary failed:\n- ${errors.join("\n- ")}`);}if(existsSync(target))throw new Error(`delivery glossary output already exists: ${target}`);mkdirSync(target,{recursive:true});try{writeFileSync(join(target,"glossary.md"),content,"utf8");cpSync(join(GENERATED,"site","assets"),join(target,"assets"),{recursive:true});writeFileSync(join(target,"index.html"),site,"utf8");writeJson(join(target,"manifest.json"),{schema_version:1,delivery_profile:profile.id,glossary_audience:audience,artifacts:["glossary.md","index.html","assets/"]});}catch(error){rmSync(target,{recursive:true,force:true});throw error;}return `Assembled ${audience} glossary delivery artifact: ${target}`;}
 
 export { generate, loadRecords, projectBootstrap, statusText, validate };
-function cliHelp(command) {
-  if (!command) {
-    const commands = [...new Set([...KNOWN_COMMANDS, ...V2_COMMANDS])].sort();
-    const groups = [];
-    for (let i = 0; i < commands.length; i += 8) groups.push(`  ${commands.slice(i, i + 8).join('  ')}`);
-    return ['Usage: node .ai/tools/aidd.mjs <command> [options]', '', 'Commands:', ...groups, '', 'Run <command> --help for that command\'s options. The current project format determines which commands are available.'].join('\n');
-  }
-  if (!KNOWN_COMMANDS.has(command) && !V2_COMMANDS.has(command)) return null;
-  if (V2_COMMANDS.has(command) || (shouldUseV2(ROOT, command) && OWNED_OPTIONS[command] !== undefined)) return ownedCommandHelp(command);
-  const options = COMMAND_OPTIONS[command] ?? [], required = COMMAND_RULES[command]?.required ?? [];
-  return [`Usage: node .ai/tools/aidd.mjs ${command} [options]`, '', `Required: ${required.length ? required.map(key => `--${key}`).join(', ') : 'none'}`, 'Options:', ...options.map(key => `  --${key}${BOOLEAN_OPTIONS.has(key) ? '' : ' VALUE'}${required.includes(key) ? ' (required)' : ''}`), '', 'Run without a command for the command list.'].join('\n');
+export const ALL_COMMANDS=new Set([...KNOWN_COMMANDS,...V2_COMMANDS]);
+function workspaceInfo(){return {role:role(),format:workspaceFormat(ROOT)};}
+function cliError(code,message){const error=new Error(message);error.code=code;error.exitCode=2;return error;}
+function cliHelp(command){
+  const workspace=workspaceInfo();
+  if(!command)return commandIndex([...ALL_COMMANDS],workspace);
+  if(!ALL_COMMANDS.has(command))return null;
+  // 구형 전역 정본에서 v1 경로로 실행되는 제품 명령만 v1 옵션 표를 보여준다. 그 외에는 v2 옵션 표를 쓴다.
+  if(workspace.format==='legacy'&&!V2_COMMANDS.has(command)||OWNED_OPTIONS[command]===undefined)return commandHelp(command,{optionKeys:COMMAND_OPTIONS[command]??[],booleanOptions:BOOLEAN_OPTIONS,workspace,requiredOverride:COMMAND_RULES[command]?.required});
+  return ownedCommandHelp(command,workspace);
+}
+function guardCommand(command){
+  if(!ALL_COMMANDS.has(command)){const similar=suggestions(command,ALL_COMMANDS);throw cliError('unknown_command',`알 수 없는 명령: ${command}.${similar.length?` 비슷한 명령: ${similar.join(', ')}.`:''} 'node .ai/tools/aidd.mjs --help'로 전체 명령을 확인한다.`);}
+  const state=availability(command,workspaceInfo());
+  if(!state.available)throw cliError('unavailable_command',`${command}: 현재 작업공간에서 사용할 수 없다 — ${state.reason}. '${command} --help'로 사용 조건을 확인한다.`);
 }
 if(process.env.AIDD_LIBRARY_MODE!=="1"){
 const [command,...rest]=process.argv.slice(2);let exit=0;
 try{
-  if(!command||command==='--help'||command==='help'||(rest.length===1&&rest[0]==='--help')){
+  if(!command||command==='--help'||command==='help'||rest.includes('--help')){
     const target=command==='help'?rest[0]:command==='--help'||!command?null:command;
     const help=cliHelp(target);
-    if(!help)throw new Error(`지원하지 않는 명령: ${target}`);
+    if(!help)throw cliError('unknown_command',`알 수 없는 명령: ${target}.${suggestions(target,ALL_COMMANDS).length?` 비슷한 명령: ${suggestions(target,ALL_COMMANDS).join(', ')}.`:''} 'node .ai/tools/aidd.mjs --help'로 전체 명령을 확인한다.`);
     console.log(help);
-  }else if(shouldUseV2(ROOT,command)){
+  }else if(guardCommand(command),shouldUseV2(ROOT,command)){
     const result=runOwned(ROOT,command,rest);console.log(result.data?.text??JSON.stringify(result,null,2));process.exitCode=result.exitCode;
   }else{
   const options=parse(command,rest);

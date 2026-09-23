@@ -19,6 +19,7 @@ import { legacyReview, legacyReviewRequest, legacyReviewAnswer } from './legacy-
 import { legacyReanalyze, legacyReconcile } from './legacy-reanalysis.mjs';
 import { legacySourceCheck } from './legacy-source-check.mjs';
 import { legacyAdoptionCheck, legacyAdopt } from './legacy-adoption.mjs';
+import { COMMANDS as CLI_CONTRACT, missingOptions, missingMessage, commandHelp } from './cli-contract.mjs';
 
 export function bootstrapV2(root, options) {
   const project = join(root, 'project'), store = new RecordStore(project);
@@ -46,7 +47,8 @@ function parse(args, command) {
   }
   return out;
 }
-export const OWNED_OPTIONS = {
+// 옵션 이름은 파싱 규칙과 함께 여기에 두고, 필수·대안·설명·예시는 cli-contract.mjs가 정본이다.
+const OWNED_OPTION_SOURCE = {
   'legacy-adoption-check':'change module format', 'legacy-adopt':'input operation format',
   'legacy-inventory': 'input format', 'legacy-draft': 'input inventory format', 'legacy-apply': 'input operation format',
   'legacy-review':'change limit format','legacy-review-request':'input operation format','legacy-review-answer':'input operation format','legacy-reanalyze':'input inventory previous format','legacy-reconcile':'input operation format','legacy-source-check':'change format',
@@ -58,25 +60,17 @@ export const OWNED_OPTIONS = {
   'development-check': 'work change format', 'release-check': 'release format', 'baseline-create': 'input operation format', 'review-record': 'input operation format', 'gate-run': 'scope gate operation format',
   impact: 'id selector before change format', 'impact-apply': 'input expected-hash operation format', generate: 'module change output format', 'terminology-refresh': 'module format', 'documentation-check': 'module change output staged format', 'delivery-build': 'profile output directory format',
 };
-const REQUIRED_OPTIONS = { 'record-read': ['id'], 'record-put': ['input', 'operation'], 'record-move': ['id', 'owner', 'expected-hash', 'operation'], 'transaction-status': ['operation'], 'transaction-recover': ['operation', 'action'], 'baseline-create': ['input', 'operation'], 'review-record': ['input', 'operation'], 'gate-run': ['scope', 'gate', 'operation'], 'impact-apply': ['input', 'operation'], 'add-module': ['id', 'name', 'purpose'], 'requirement-check': ['change'], 'design-check': ['change'], 'release-check': ['release'], impact: ['id'], 'module-status': ['module'], 'delivery-build': ['profile'], 'record-history': ['id', 'type', 'subject', 'decided-by', 'decision', 'reason', 'occurred-at', 'operation'] };
-const HELP_REQUIRED_OPTIONS = {
-  'add-assumption': ['id', 'statement', 'rationale', 'due-gate', 'operation'], 'resolve-assumption': ['id', 'resolution', 'status', 'operation'],
-  'assess-merge': ['merge', 'notes', 'operation'], 'add-merge-recheck': ['merge', 'type', 'title', 'operation'], 'complete-merge-recheck': ['merge', 'recheck', 'performed-by', 'result', 'operation'],
-  'evaluation-prompt': ['scenario'], 'record-evaluation': ['scenario', 'platform', 'status', 'evidence', 'scores', 'summary', 'operation'],
-  'term-review': ['action', 'id'], 'term-apply': ['action', 'id', 'history', 'decided-by', 'summary', 'operation'],
-  'init-module-surfaces': ['module'], 'init-module-ui': ['module'], 'workload-coverage': ['change'], 'delivery-glossary': ['profile', 'directory'],
-  'legacy-inventory': ['input'], 'legacy-draft': ['input', 'inventory'], 'legacy-apply': ['input', 'operation'],
-  'legacy-review': ['change'], 'legacy-review-request': ['input', 'operation'], 'legacy-review-answer': ['input', 'operation'],
-  'legacy-reanalyze': ['input', 'inventory', 'previous'], 'legacy-reconcile': ['input', 'operation'], 'legacy-source-check': ['change'],
-  'legacy-adoption-check': ['change', 'module'], 'legacy-adopt': ['input', 'operation'],
-};
-export function ownedCommandHelp(command) {
+const dedupe = text => [...new Set(text.split(' ').filter(Boolean))].join(' ');
+export const OWNED_OPTIONS = Object.fromEntries(Object.entries(OWNED_OPTION_SOURCE).map(([command, text]) => [command, dedupe(text)]));
+export function ownedCommandHelp(command, workspace) {
   const options = OWNED_OPTIONS[command];
   if (options === undefined) return null;
-  const required = REQUIRED_OPTIONS[command] ?? HELP_REQUIRED_OPTIONS[command] ?? [];
-  const flags = options.split(' ').filter(Boolean).map(key => `--${key}${BOOLEAN_OPTIONS.has(key) ? '' : ' VALUE'}${required.includes(key) ? ' (required)' : ''}`);
-  const notes = command === 'record-put' ? ['Create with --create; update with --expected-hash HASH.', 'Definition writes also require --change CHG-ID. The input file is a v2 record JSON.'] : command === 'record-history' ? ['The ID date must match --occurred-at in UTC.'] : [];
-  return [`Usage: node .ai/tools/aidd.mjs ${command} [options]`, '', `Required: ${required.length ? required.map(key => `--${key}`).join(', ') : 'none'}`, 'Options:', ...flags.map(flag => `  ${flag}`), ...notes, '', 'Run without a command for the command list.'].join('\n');
+  return commandHelp(command, { optionKeys: options.split(' ').filter(Boolean), booleanOptions: BOOLEAN_OPTIONS, workspace });
+}
+// 검증기와 도움말이 같은 계약(cli-contract.mjs)을 읽는다. 명령별 인라인 필수 검사를 두지 않는다.
+export function optionErrors(command, options) {
+  const result = missingOptions(command, options);
+  return result.missing.length || result.unmet.length ? missingMessage(command, result) : null;
 }
 function validateOptions(command, options) {
   const supported = OWNED_OPTIONS[command]?.split(' ');
@@ -89,12 +83,14 @@ function validateOptions(command, options) {
   if (options.level && !['executive','detail','module'].includes(options.level)) throw new StoreError('usage','--level must be executive, detail or module',2);
   if (options.create && options['expected-hash']) throw new StoreError('usage', 'choose --create OR --expected-hash', 2);
   if (options.module && options.owner) throw new StoreError('usage', 'choose --module OR --owner', 2);
-  const missing = (REQUIRED_OPTIONS[command] ?? []).filter(key => !options[key]);
-  if (missing.length) throw new StoreError('usage', `${missing.map(key => `--${key}`).join(', ')} required. Run '${command} --help' for usage.`, 2);
-  const legacyRequired={'legacy-adoption-check':['change','module'],'legacy-review':['change'],'legacy-source-check':['change'],'legacy-reanalyze':['input','inventory','previous'],'legacy-draft':['input','inventory'],'legacy-inventory':['input']};
-  if (command.startsWith('legacy-')) for (const key of legacyRequired[command]??['input','operation']) if (!options[key]) throw new StoreError('usage', `--${key} required`, 2);
-  if (command === 'discovery-check' && !options.change) throw new StoreError('usage', '--change required', 2);
-  if (command === 'development-check' && !options.work && !options.change) throw new StoreError('usage', '--work or --change required', 2);
+  if (!(command in CLI_CONTRACT)) throw new StoreError('unknown_command', `알 수 없는 명령: ${command}`, 2);
+  const message = optionErrors(command, options);
+  if (message) throw new StoreError('usage', message, 2);
+}
+// 제품 정본 형식: 'owned-records-v2' | 'legacy'(구형 전역 정본) | null(정본 없음)
+export function workspaceFormat(root) {
+  const format = new RecordStore(join(root, 'project')).format();
+  return format === undefined ? 'legacy' : format;
 }
 export function shouldUseV2(root, command) {
   return V2_COMMANDS.has(command) || (new RecordStore(join(root, 'project')).format() === FORMAT && !['sync-ai', 'install-hooks', 'hook', 'project-init', 'project-init-status', 'project-reconcile-role'].includes(command));
@@ -158,7 +154,6 @@ export function runOwned(root, command, args) {
   }
   else if (command === 'record-list' || command === 'validate') { data = options.change ? readContext(store, options.change) : store.readScope(scope); if (options.type) data.records = data.records.filter(r => r.type === options.type); if (command === 'validate') data.diagnostics.push(...semanticErrors(data.records)); }
   else if (command === 'record-put') {
-    if (!options.create && !options['expected-hash']) throw new StoreError('usage', '--create or --expected-hash required', 2);
     data = putRecord(store, JSON.parse(readFileSync(options.input, 'utf8')), { operation: options.operation, expected: options.create ? null : options['expected-hash'], change: options.change });
   } else if (command === 'record-move') data = moveRecord(store, options.id, options.owner, options['expected-hash'], options.operation);
   else if (command === 'index-check') data = checkIndex(store, { module: options.module });
@@ -171,7 +166,7 @@ export function runOwned(root, command, args) {
     data = putRecord(store, r, { operation: options.operation ?? `add-${options.id}` });
     if (options['with-ui']) data.ui_next = '실제 화면이 확인되면 CHG와 SCR/NAV를 작성하세요. init-module-ui는 빈 전역 파일이나 가짜 화면을 만들지 않습니다.';
   } else if (command in SPECIAL_OPTIONS) data = runSpecialty(root, store, command, options);
-  else if (command === 'migrate-module-specs') throw new StoreError('migration_required', 'v2 stores one record per file. Explicit v1 conversion is a separate workflow.');
-  else throw new StoreError('not_implemented', `${command}: not yet implemented for v2; do not use the legacy writer`);
+  else if (command === 'migrate-module-specs') throw new StoreError('migration_required', 'owned-records-v2 정본은 이미 레코드별 파일이다. 구형 정본 전용 명령이며 v1→v2 자동 변환은 제공하지 않는다.');
+  else throw new StoreError('unsupported_in_v2', `${command}: owned-records-v2 프로젝트에서는 사용하지 않는 명령이다. 구형 전역 파일 writer로 대신 저장하지 않는다. '--help'로 현재 사용 가능한 명령을 확인한다.`);
   return { schema_version: 2, command, scope, data, diagnostics: data?.diagnostics ?? [], coverage: data?.coverage ?? { scope_complete: true }, exitCode: data?.diagnostics?.some(d => d.severity !== 'warning') || (data?.readiness && data.readiness !== 'ready') || (data?.evaluation && data.evaluation.readiness !== 'ready') ? 1 : 0 };
 }

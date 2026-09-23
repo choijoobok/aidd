@@ -41,6 +41,8 @@ node .ai/tools/aidd.mjs status --level executive
 node .ai/tools/aidd.mjs integration-status
 ```
 
+명령의 옵션·필수 입력·예시는 `node .ai/tools/aidd.mjs --help`와 `node .ai/tools/aidd.mjs <명령> --help`로 확인한다. 도움말은 현재 작업공간(역할·정본 형식)에서 쓸 수 있는 명령만 사용 가능으로 표시하고, 알 수 없는 명령이나 지금 쓸 수 없는 명령은 실행하지 않고 오류로 끝난다.
+
 ## 중요한 결정을 남기는 예
 
 ```powershell

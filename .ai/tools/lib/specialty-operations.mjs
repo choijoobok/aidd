@@ -8,6 +8,7 @@ import { readContext } from './lifecycle-operations.mjs';
 import { actualEvidence, POLICIES } from './readiness.mjs';
 import { generateDocuments, buildDelivery } from './document-renderer.mjs';
 import { impactGraph } from './dependency-graph.mjs';
+import { requiredFor } from './cli-contract.mjs';
 
 const list = x => x === undefined ? [] : Array.isArray(x) ? x : [x];
 const need = (o, ...keys) => { const missing = keys.filter(key => !String(o[key] ?? '').trim()); if (missing.length) throw new StoreError('usage', `${missing.map(key => `--${key}`).join(', ')} required`, 2); };
@@ -39,7 +40,7 @@ function get(view, id, type) {
 function nextId(view, type) { let n = 1; while (view.byId.has(`${type}-${String(n).padStart(3, '0')}`)) n++; return `${type}-${String(n).padStart(3, '0')}`; }
 function ownerFor(view, ids) { const owners = new Set(ids.map(id => get(view, id).owner.id ?? 'project')); return owners.size === 1 && !owners.has('project') ? [...owners][0] : undefined; }
 function termProposal(root, view, o) {
-  need(o, 'action', 'id'); choose(o.action, ['add', 'change', 'remove']);
+  choose(o.action, ['add', 'change', 'remove']);
   const common = JSON.parse(readFileSync(safePath(root, '.ai/manifests/terminology.json'), 'utf8')).terms ?? [];
   const norm = x => String(x ?? '').trim().toLowerCase();
   if (common.some(t => t.id === o.id || (o.key && norm(t.key) === norm(o.key)) || [t.term,...(t.aliases ?? [])].some(w => [o.term,...list(o.alias)].filter(Boolean).some(x => norm(w) === norm(x))))) throw new StoreError('common_term', '공통 용어를 프로젝트에서 재정의하지 않습니다.');
@@ -78,7 +79,8 @@ function termProposal(root, view, o) {
 }
 export function runSpecialty(root, store, command, o) {
   const intent = { command, options: o }, operation = o.operation;
-  if (!READONLY.has(command)) { need(o, 'operation'); const replay = replayOperation(store, operation, intent); if (replay) return replay; }
+  need(o, ...requiredFor(command)); // 필수 옵션은 cli-contract.mjs가 정본이다. 조건부 요구만 아래에 남긴다.
+  if (!READONLY.has(command)) { const replay = replayOperation(store, operation, intent); if (replay) return replay; }
   const view = store.scanAll();
   if (!view.coverage.scope_complete) throw new StoreError('incomplete_scope', '전문 명령의 조회 범위가 불완전합니다.');
   const updates = [], now = o['occurred-at'] ?? new Date().toISOString();
@@ -87,7 +89,6 @@ export function runSpecialty(root, store, command, o) {
   let data = {};
   if (command.startsWith('term-')) {
     data = termProposal(root, view, o); if (command === 'term-review') return data;
-    need(o, 'history', 'decided-by', 'summary');
     const old = data.before, next = data.after;
     if (old) {
       const oldWords = [old.title, old.definition.key, ...(old.definition.aliases ?? [])].filter(Boolean);
@@ -100,17 +101,16 @@ export function runSpecialty(root, store, command, o) {
     save(data.after);
     save(record('TCH', o.history, data.after.owner.id, o.summary, { term: o.id, action: o.action, before: data.before, after: data.after, affected: list(o.affected), decided_by: o['decided-by'], occurred_at: now, summary: o.summary, source_refs: list(o['source-ref']) }, [{ type: 'context', target: o.id }]));
   } else if (command === 'record-history') {
-    need(o, 'id', 'type', 'subject', 'decided-by', 'decision', 'reason', 'occurred-at');
     choose(o.type, ['analysis','design','terminology','source','scope','status','operation','decision']);
     if (!/^HIS-\d{8}-\d{3,}$/.test(o.id) || !Number.isFinite(Date.parse(now)) || new Date(now).toISOString() !== now || o.id.slice(4,12) !== now.slice(0,10).replaceAll('-','')) throw new StoreError('history_date', 'HIS-YYYYMMDD-### and matching UTC ISO occurred-at required');
     if (o.change) get(view, o.change, 'CHG'); if (o.supersedes) get(view, o.supersedes, 'HIS');
     const subjects = list(o.subject); save(record('HIS', o.id, ownerFor(view, subjects), o.decision, { type: o.type, subjects, decided_by: o['decided-by'], decision: o.decision, reason: o.reason, occurred_at: now, change: o.change ?? null, previous: o.previous ?? null, impacts: list(o.impact), source_refs: list(o['source-ref']) }, [...subjects.map(target => ({ type: 'context', target })), ...(o.supersedes ? [{ type: 'supersedes', target: o.supersedes }] : [])]));
   } else if (command === 'add-assumption') {
-    need(o, 'id', 'statement', 'rationale', 'due-gate'); choose(o['due-gate'], Object.keys(POLICIES));
+    choose(o['due-gate'], Object.keys(POLICIES));
     const applies = [...list(o.module), ...list(o.link)]; for (const id of applies) get(view, id);
     save(record('ASM', o.id, ownerFor(view, applies), o.statement, { statement: o.statement, rationale: o.rationale, due_gate: o['due-gate'], applies_to: applies.length ? applies : ['project'] }));
   } else if (command === 'resolve-assumption') {
-    need(o, 'id', 'resolution', 'status'); choose(o.status, ['confirmed', 'invalidated']); const r = edit(o.id, 'ASM');
+    choose(o.status, ['confirmed', 'invalidated']); const r = edit(o.id, 'ASM');
     r.definition.resolution = o.resolution; r.definition.resolution_status = o.status; r.execution = { status: 'completed', completed_at: now }; save(r);
     save(record('HIS', `HIS-${operation.toUpperCase()}`, r.owner.id, o.resolution, { subjects: [r.id], resolution: o.status, reason: o.resolution, occurred_at: now, before: get(view, r.id) }));
     if (o.status === 'invalidated') save(record('OI',`OI-${operation.toUpperCase()}`,r.owner.id,'무효 가정의 후속 영향 처리',{ applies_to:r.definition.applies_to, blocking:true, question:o.resolution, assumption:r.id }));
@@ -122,29 +122,29 @@ export function runSpecialty(root, store, command, o) {
     const existing = view.records.find(r => r.type === 'MRG' && r.definition.commit === head); if (existing) return { recorded: false, existing: existing.id };
     save(record('MRG', nextId(view, 'MRG'), null, `Merge ${head.slice(0,12)}`, { commit: head, parents, changed_files: gitRead(root, ['diff','--name-only',`${parents[0]}..${head}`]).split(/\r?\n/).filter(Boolean), applies_to: ['project'], assessment: 'pending' }));
   } else if (command === 'assess-merge') {
-    need(o, 'merge','notes','additional-testing'); const r = edit(o.merge,'MRG'), modules = list(o.modules); for (const id of modules) get(view,id,'MOD');
+    const r = edit(o.merge,'MRG'), modules = list(o.modules); for (const id of modules) get(view,id,'MOD');
     Object.assign(r.definition, { applies_to: modules, affected_modules: modules, conflict_resolution_notes: o.notes, additional_testing: o['additional-testing'], assessment: 'assessed' }); r.execution.status = 'completed'; save(r);
   } else if (command === 'add-merge-recheck') {
-    need(o,'merge','type','title'); choose(o.type,['review','test']); const merge = get(view,o.merge,'MRG'); if (merge.definition.assessment !== 'assessed') throw new StoreError('merge_assessment_required',o.merge);
+    choose(o.type,['review','test']); const merge = get(view,o.merge,'MRG'); if (merge.definition.assessment !== 'assessed') throw new StoreError('merge_assessment_required',o.merge);
     const modules = list(o.module), tests = list(o.test); for (const id of modules) get(view,id,'MOD'); for (const id of tests) get(view,id,'TC');
     save(record('MRC',nextId(view,'MRC'),ownerFor(view,modules),o.title,{ merge:o.merge, type:o.type, applies_to:modules.length ? modules : merge.definition.applies_to.length ? merge.definition.applies_to : ['project'], tests, blocking:!!o.blocking },[{type:'context',target:o.merge}]));
   } else if (command === 'complete-merge-recheck') {
-    need(o,'merge','recheck','performed-by','result'); choose(o.result,['passed','failed']); get(view,o.merge,'MRG'); const r = edit(o.recheck,'MRC'); if (r.definition.merge !== o.merge) throw new StoreError('merge_mismatch',o.recheck);
+    choose(o.result,['passed','failed']); get(view,o.merge,'MRG'); const r = edit(o.recheck,'MRC'); if (r.definition.merge !== o.merge) throw new StoreError('merge_mismatch',o.recheck);
     const evidence = list(o.evidence).map(id => get(view,id,'EVD'));
     if (r.definition.type === 'test' && (!r.definition.tests?.length || !r.definition.tests.every(id => evidence.some(e => e.definition.subjects?.includes(id) && e.definition.kind === 'test' && e.definition.result === o.result && e.definition.input_hash === definitionHash(get(view,id,'TC')) && e.definition.command && e.definition.occurred_at && e.definition.artifacts?.length)))) throw new StoreError('recheck_evidence','current executed TC evidence matching the result required');
     Object.assign(r.definition,{performed_by:o['performed-by'],result:o.result}); r.execution = { status:o.result === 'passed' ? 'completed':'blocked', completed_at:now,evidence:list(o.evidence) }; save(r);
   } else if (command === 'evaluation-prompt') {
-    need(o,'scenario'); const r = get(view,o.scenario,'EVS'); return { scenario:r, fixture:readFileSync(safePath(root,r.definition.fixture),'utf8'), input_hash:definitionHash(r) };
+    const r = get(view,o.scenario,'EVS'); return { scenario:r, fixture:readFileSync(safePath(root,r.definition.fixture),'utf8'), input_hash:definitionHash(r) };
   } else if (command === 'record-evaluation') {
-    need(o,'scenario','platform','status','evidence','scores','summary'); choose(o.platform,['codex','claude']); choose(o.status,['passed','failed']); const s = get(view,o.scenario,'EVS'), scores = list(o.scores).map(Number), violations = list(o['critical-violation']);
+    choose(o.platform,['codex','claude']); choose(o.status,['passed','failed']); const s = get(view,o.scenario,'EVS'), scores = list(o.scores).map(Number), violations = list(o['critical-violation']);
     if (!scores.length || scores.length !== s.definition.rubric?.length || scores.some(x => !Number.isInteger(x) || x < 0 || x > 2) || (o.status === 'passed' && violations.length)) throw new StoreError('evaluation_scores','rubric scores 0..2 and no critical violations for passed');
     const evds = list(o.evidence).map(id => get(view,id,'EVD')); if (!evds.some(e => e.definition.subjects?.includes(s.id) && e.definition.input_hash === definitionHash(s) && e.definition.kind === 'provider_evaluation' && e.definition.result === o.status && e.definition.mode === 'actual' && e.definition.environment === o.platform && e.definition.command && e.definition.occurred_at && e.definition.artifacts?.length)) throw new StoreError('evaluation_evidence','actual matching provider evidence required; fixture simulation is not a provider run');
     save(record('EVR',nextId(view,'EVR'),s.owner.id,o.summary,{scenario:s.id,platform:o.platform,status:o.status,input_hash:definitionHash(s),scores,critical_violations:violations,evidence:list(o.evidence),occurred_at:now},[{type:'context',target:s.id}]));
   } else if (command === 'evaluation-status') return { evaluations:view.records.filter(r => r.type === 'EVS').flatMap(s => ['codex','claude'].map(platform => { const runs = view.records.filter(r => r.type === 'EVR' && r.definition.scenario === s.id && r.definition.platform === platform).sort((a,b) => b.definition.occurred_at.localeCompare(a.definition.occurred_at) || b.id.localeCompare(a.id)); const last = runs[0]; return {scenario:s.id,platform,run:last?.id ?? null,status:!last ? 'not_run' : last.definition.input_hash !== definitionHash(s) ? 'stale' : last.definition.status}; })) };
-  else if (command.startsWith('init-module-')) { need(o,'module'); get(view,o.module,'MOD'); return { module:o.module, initialized:false, reason:'v2에는 빈 전역 UI/표면 파일이 필요하지 않습니다. 실제 업무가 확인되면 CHG 아래 SCR/NAV/SURF를 record-put으로 작성하세요. 승인이나 가짜 화면을 생성하지 않습니다.', records:view.records.filter(r => r.owner.id === o.module && (command.endsWith('ui') ? ['SCR','NAV'].includes(r.type) : r.type === 'SURF')).map(r => r.id) }; }
-  else if (command === 'delivery-glossary') { need(o,'profile','directory'); const p = get(view,o.profile,'DLP'); if (!p.definition.includes?.includes('glossary') || p.definition.includes.length !== 1) throw new StoreError('glossary_profile','dedicated DLP with includes:[glossary] required; otherwise delivery-build'); return buildDelivery(store,o.profile,o.directory); }
+  else if (command.startsWith('init-module-')) { get(view,o.module,'MOD'); return { module:o.module, initialized:false, reason:'v2에는 빈 전역 UI/표면 파일이 필요하지 않습니다. 실제 업무가 확인되면 CHG 아래 SCR/NAV/SURF를 record-put으로 작성하세요. 승인이나 가짜 화면을 생성하지 않습니다.', records:view.records.filter(r => r.owner.id === o.module && (command.endsWith('ui') ? ['SCR','NAV'].includes(r.type) : r.type === 'SURF')).map(r => r.id) }; }
+  else if (command === 'delivery-glossary') { const p = get(view,o.profile,'DLP'); if (!p.definition.includes?.includes('glossary') || p.definition.includes.length !== 1) throw new StoreError('glossary_profile','dedicated DLP with includes:[glossary] required; otherwise delivery-build'); return buildDelivery(store,o.profile,o.directory); }
   else if (command === 'workload-coverage') {
-    need(o,'change'); const c = get(view,o.change,'CHG'), work = view.records.filter(r => r.type === 'WRK' && r.definition.change === c.id), ids = [...(c.definition.scope.requirements ?? []),...(c.definition.scope.candidates ?? [])];
+    const c = get(view,o.change,'CHG'), work = view.records.filter(r => r.type === 'WRK' && r.definition.change === c.id), ids = [...(c.definition.scope.requirements ?? []),...(c.definition.scope.candidates ?? [])];
     return { coverage:view.coverage, items:ids.map(id => ({id,works:work.filter(w => [...(w.definition.requirements ?? []),...(w.definition.features ?? []),...(w.definition.screens ?? []),...w.relations.map(x => x.target)].includes(id) || (w.definition.features ?? []).some(f => get(view,f).relations.some(x => x.target === id))).map(w => w.id)})), dependencies:work.flatMap(w => w.relations.filter(x => x.type === 'depends_on').map(x => ({work:w.id,...x}))) };
   } else if (command === 'document-impact') {
     const paths = list(o.path).length ? list(o.path) : (gitRead(root,['diff','--name-only'],true) ?? '').split(/\r?\n/).filter(Boolean), ids = new Set();

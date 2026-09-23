@@ -16,7 +16,7 @@ test('real public CLI bootstraps v2, rejects unsupported options, and never fall
   writeFileSync(join(root, '.aidd-role.json'), JSON.stringify({ role: 'kit-template' }));
   const run = args => spawnSync(process.execPath, [join(root, '.ai/tools/aidd.mjs'), ...args], { cwd: root, encoding: 'utf8', env: { ...process.env, AIDD_LIBRARY_MODE: '0' } });
   for (const args of [[], ['--help'], ['record-put', '--help']]) {
-    const help = run(args); assert.equal(help.status, 0, help.stderr); assert.match(help.stdout, /Usage:/);
+    const help = run(args); assert.equal(help.status, 0, help.stderr); assert.match(help.stdout, /사용법:/);
   }
   let result = run(['project-bootstrap', '--project-id', 'PRJ-CLI', '--name', 'CLI test']); assert.equal(result.status, 0, result.stderr);
   result = run(['record-history', '--id', 'HIS-X']); assert.equal(result.status, 2); assert.match(result.stderr, /--occurred-at/);

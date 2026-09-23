@@ -8,9 +8,12 @@
 | 결정 이력 | `project/.aidd/ssot/common/HIS/ 또는 modules/<MOD>/HIS/` | `record-history`로 append-only 추가 |
 | 제품 소스 | `project/src/` | 정본 ID와 영향 범위를 연결해 구현 |
 | 생성 문서 | `project/docs/generated/` | `generate`로 재생성, 직접 수정 금지 |
+| 팀 용어집 | `project/docs/generated/common/glossary.md`·`.html` | AIDD 공통 용어와 현재 프로젝트 TRM에서 재생성 |
 | 대화 원문 | `chat-history/` | 로컬 참고만, Git·정본·증거에서 제외 |
 
 현재 정본에는 현재 상태와 지금도 유효한 핵심 근거를 둔다. 시간이 지나 변경 이유가 필요할 만한 분석·설계·용어·소스·범위·상태 결정은 HIS에 별도로 기록한다. 정확한 줄 단위 변경은 Git이 담당한다.
+
+현재 v2 프로젝트의 용어 정본은 `.ai/manifests/terminology.json`의 AIDD 공통 용어와 `project/.aidd/ssot/common/TRM/` 또는 모듈별 `TRM/`이다. 구형 전역 `project/.aidd/ssot/terminology.json`을 새 프로젝트에 만들지 않는다.
 
 ## 결정 이력 기록
 

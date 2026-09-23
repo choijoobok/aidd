@@ -65,7 +65,8 @@
     ]
   },
   "terminology_refresh": {
-    "trigger_path": "project/.aidd/ssot/terminology.json",
+    "trigger_path": "project/.aidd/ssot/common/TRM/",
+    "legacy_trigger_path": "project/.aidd/ssot/terminology.json",
     "command": "node .ai/tools/aidd.mjs terminology-refresh",
     "failure_behavior": "warn",
     "owned_record_paths": [
@@ -108,6 +109,7 @@
     "date_format": "%Y-%m/raw/%Y-%m-%d.md",
     "override_environment": "AIDD_CONVERSATION_LOG_FILE",
     "enabled_by_default": true,
+    "required": true,
     "providers": [
       "Codex",
       "Claude"

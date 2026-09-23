@@ -33,20 +33,35 @@ jobs:
           node --check .ai/tools/aidd_hook.mjs
           for file in .ai/tools/lib/*.mjs; do node --check "$file"; done
 
-      - name: 파생 문서와 AI 어댑터 재생성
+      - name: 작업공간 역할 확인
+        id: workspace
+        run: |
+          ROLE=$(node -p "require('./.aidd-role.json').role")
+          if [ "$ROLE" = "kit-template" ]; then
+            test ! -e project/.aidd/ssot/project.json
+          elif [ "$ROLE" = "product-workspace" ]; then
+            test -f project/.aidd/ssot/project.json
+          else
+            echo "Unsupported AIDD workspace role: $ROLE" >&2
+            exit 1
+          fi
+          echo "role=$ROLE" >> "$GITHUB_OUTPUT"
+
+      - name: 제품 파생 문서 재생성
+        if: steps.workspace.outputs.role == 'product-workspace'
         run: |
           node .ai/tools/aidd.mjs generate
           node .ai/tools/aidd.mjs documentation-check
-          node .ai/tools/aidd.mjs sync-ai
+
+      - name: AI 어댑터 재생성
+        run: node .ai/tools/aidd.mjs sync-ai
 
       - name: 생성 결과 드리프트 검사
         run: git diff --exit-code
 
       - name: 정본 정합성 검사
+        if: steps.workspace.outputs.role == 'product-workspace'
         run: node .ai/tools/aidd.mjs validate
 
       - name: portable 훅 회귀
-        run: node --test .ai/tests/*.test.mjs
-
-      - name: 프레임워크 테스트
         run: node --test .ai/tests/*.test.mjs

@@ -26,6 +26,8 @@ node .ai/tools/aidd.mjs project-bootstrap --project-id <ID> --name "<이름>" --
 
 성공하면 `.aidd-role.json`은 `product-workspace`로 전환된다. 이후에는 기존 `project/.aidd/ssot/`를 읽고 제품 수행을 계속한다.
 
+Git 저장소와 로컬 훅이 필요하면 `node .ai/tools/aidd.mjs project-init`과 `node .ai/tools/aidd.mjs install-hooks`를 실행한다. 제품 정본 생성의 필수 선행 단계는 아니며 [프로젝트 준비와 시작](.ai/docs/guides/project-team/01-project-setup.md)에 순서가 있다.
+
 새 정본은 `owned-records-v2`로만 생성되며 초기 파생 문서도 함께 만들어진다. 이 초기 상태는 제품 요구·검토·개발 준비 승인이 아니다. 이전 AIDD 형식은 자동 변환하거나 v2와 혼합하지 않으며, AIDD와 무관한 기존 시스템 자료 분석은 별도 레거시 역분석 절차를 따른다.
 
 과거 템플릿에서 이미 `project/`를 만들었지만 역할 표식이 `kit-template`으로 남은 경우에는 bootstrap을 다시 실행하거나 JSON을 직접 고치지 않는다. 다음 명령은 기존 제품 정본을 검증한 뒤에만 역할을 정합화한다.
@@ -37,3 +39,5 @@ node .ai/tools/aidd.mjs project-reconcile-role
 정본이 준비되면 `AGENTS.md`와 [.ai/docs/guides/project-team-guide.md](.ai/docs/guides/project-team-guide.md)를 따른다. 제품 정본과 결정 이력은 `project/.aidd/ssot/`, 파생 문서는 `project/docs/generated/`, 제품 소스는 `project/src/`에 둔다. 인력·역할·배정·일정은 별도 프로젝트 운영 절차에서 관리한다.
 
 `.aidd-kit-origin.json`은 생성에 사용한 Kit의 출처만 나타낸다. 원본 Kit과 자동 업그레이드·역동기화되지 않으며, 이 프로젝트의 규칙·스킬·훅은 프로젝트 정본과 검증 절차에 따라 독립적으로 수정할 수 있다.
+
+Codex와 Claude 훅은 사용자 질의와 AI 응답을 프로젝트 루트의 `chat-history/`에 로컬로 기록한다. 이 폴더는 Git 배포에서 제외되며, 기록이 실패하면 훅이 오류를 알린다. 훅 배선은 `node .ai/tools/aidd_hook.mjs self-test --hook`으로 확인한다.

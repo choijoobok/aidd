@@ -5,7 +5,7 @@
   "role": "kit-source",
   "lifecycle": "kit-development",
   "current_version": "1.0.0",
-  "active_change": "KIT-CHG-020",
+  "active_change": "KIT-CHG-021",
   "distribution": {
     "formats": [
       "directory",

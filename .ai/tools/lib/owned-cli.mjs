@@ -46,7 +46,7 @@ function parse(args, command) {
   }
   return out;
 }
-const OPTIONS = {
+export const OWNED_OPTIONS = {
   'legacy-adoption-check':'change module format', 'legacy-adopt':'input operation format',
   'legacy-inventory': 'input format', 'legacy-draft': 'input inventory format', 'legacy-apply': 'input operation format',
   'legacy-review':'change limit format','legacy-review-request':'input operation format','legacy-review-answer':'input operation format','legacy-reanalyze':'input inventory previous format','legacy-reconcile':'input operation format','legacy-source-check':'change format',
@@ -58,8 +58,28 @@ const OPTIONS = {
   'development-check': 'work change format', 'release-check': 'release format', 'baseline-create': 'input operation format', 'review-record': 'input operation format', 'gate-run': 'scope gate operation format',
   impact: 'id selector before change format', 'impact-apply': 'input expected-hash operation format', generate: 'module change output format', 'terminology-refresh': 'module format', 'documentation-check': 'module change output staged format', 'delivery-build': 'profile output directory format',
 };
+const REQUIRED_OPTIONS = { 'record-read': ['id'], 'record-put': ['input', 'operation'], 'record-move': ['id', 'owner', 'expected-hash', 'operation'], 'transaction-status': ['operation'], 'transaction-recover': ['operation', 'action'], 'baseline-create': ['input', 'operation'], 'review-record': ['input', 'operation'], 'gate-run': ['scope', 'gate', 'operation'], 'impact-apply': ['input', 'operation'], 'add-module': ['id', 'name', 'purpose'], 'requirement-check': ['change'], 'design-check': ['change'], 'release-check': ['release'], impact: ['id'], 'module-status': ['module'], 'delivery-build': ['profile'], 'record-history': ['id', 'type', 'subject', 'decided-by', 'decision', 'reason', 'occurred-at', 'operation'] };
+const HELP_REQUIRED_OPTIONS = {
+  'add-assumption': ['id', 'statement', 'rationale', 'due-gate', 'operation'], 'resolve-assumption': ['id', 'resolution', 'status', 'operation'],
+  'assess-merge': ['merge', 'notes', 'operation'], 'add-merge-recheck': ['merge', 'type', 'title', 'operation'], 'complete-merge-recheck': ['merge', 'recheck', 'performed-by', 'result', 'operation'],
+  'evaluation-prompt': ['scenario'], 'record-evaluation': ['scenario', 'platform', 'status', 'evidence', 'scores', 'summary', 'operation'],
+  'term-review': ['action', 'id'], 'term-apply': ['action', 'id', 'history', 'decided-by', 'summary', 'operation'],
+  'init-module-surfaces': ['module'], 'init-module-ui': ['module'], 'workload-coverage': ['change'], 'delivery-glossary': ['profile', 'directory'],
+  'legacy-inventory': ['input'], 'legacy-draft': ['input', 'inventory'], 'legacy-apply': ['input', 'operation'],
+  'legacy-review': ['change'], 'legacy-review-request': ['input', 'operation'], 'legacy-review-answer': ['input', 'operation'],
+  'legacy-reanalyze': ['input', 'inventory', 'previous'], 'legacy-reconcile': ['input', 'operation'], 'legacy-source-check': ['change'],
+  'legacy-adoption-check': ['change', 'module'], 'legacy-adopt': ['input', 'operation'],
+};
+export function ownedCommandHelp(command) {
+  const options = OWNED_OPTIONS[command];
+  if (options === undefined) return null;
+  const required = REQUIRED_OPTIONS[command] ?? HELP_REQUIRED_OPTIONS[command] ?? [];
+  const flags = options.split(' ').filter(Boolean).map(key => `--${key}${BOOLEAN_OPTIONS.has(key) ? '' : ' VALUE'}${required.includes(key) ? ' (required)' : ''}`);
+  const notes = command === 'record-put' ? ['Create with --create; update with --expected-hash HASH.', 'Definition writes also require --change CHG-ID. The input file is a v2 record JSON.'] : command === 'record-history' ? ['The ID date must match --occurred-at in UTC.'] : [];
+  return [`Usage: node .ai/tools/aidd.mjs ${command} [options]`, '', `Required: ${required.length ? required.map(key => `--${key}`).join(', ') : 'none'}`, 'Options:', ...flags.map(flag => `  ${flag}`), ...notes, '', 'Run without a command for the command list.'].join('\n');
+}
 function validateOptions(command, options) {
-  const supported = OPTIONS[command]?.split(' ');
+  const supported = OWNED_OPTIONS[command]?.split(' ');
   if (supported) for (const [key, value] of Object.entries(options)) {
     if (!supported.includes(key) && key !== 'evaluated-at') throw new StoreError('usage', `unsupported --${key} for ${command}`, 2);
     if ((value === true || (Array.isArray(value) && value.includes(true))) && !BOOLEAN_OPTIONS.has(key)) throw new StoreError('usage', `--${key} requires a value`, 2);
@@ -69,8 +89,8 @@ function validateOptions(command, options) {
   if (options.level && !['executive','detail','module'].includes(options.level)) throw new StoreError('usage','--level must be executive, detail or module',2);
   if (options.create && options['expected-hash']) throw new StoreError('usage', 'choose --create OR --expected-hash', 2);
   if (options.module && options.owner) throw new StoreError('usage', 'choose --module OR --owner', 2);
-  const required = { 'record-read': ['id'], 'record-put': ['input', 'operation'], 'record-move': ['id', 'owner', 'expected-hash', 'operation'], 'transaction-status': ['operation'], 'transaction-recover': ['operation', 'action'], 'baseline-create': ['input', 'operation'], 'review-record': ['input', 'operation'], 'gate-run': ['scope', 'gate', 'operation'], 'impact-apply': ['input', 'operation'], 'add-module': ['id', 'name', 'purpose'], 'requirement-check': ['change'], 'design-check': ['change'], 'release-check': ['release'], impact: ['id'], 'module-status': ['module'], 'delivery-build': ['profile'] };
-  for (const key of required[command] ?? []) if (!options[key]) throw new StoreError('usage', `--${key} required`, 2);
+  const missing = (REQUIRED_OPTIONS[command] ?? []).filter(key => !options[key]);
+  if (missing.length) throw new StoreError('usage', `${missing.map(key => `--${key}`).join(', ')} required. Run '${command} --help' for usage.`, 2);
   const legacyRequired={'legacy-adoption-check':['change','module'],'legacy-review':['change'],'legacy-source-check':['change'],'legacy-reanalyze':['input','inventory','previous'],'legacy-draft':['input','inventory'],'legacy-inventory':['input']};
   if (command.startsWith('legacy-')) for (const key of legacyRequired[command]??['input','operation']) if (!options[key]) throw new StoreError('usage', `--${key} required`, 2);
   if (command === 'discovery-check' && !options.change) throw new StoreError('usage', '--change required', 2);

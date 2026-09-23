@@ -7,14 +7,14 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "nod
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { harnessErrors } from "./aidd_hook.mjs";
-import { runOwned, shouldUseV2, bootstrapV2 } from './lib/owned-cli.mjs';
+import { runOwned, shouldUseV2, bootstrapV2, V2_COMMANDS, OWNED_OPTIONS, ownedCommandHelp } from './lib/owned-cli.mjs';
 
 const ROOT=process.env.AIDD_LIBRARY_MODE==="1"&&process.env.AIDD_WORKSPACE_ROOT?resolve(process.env.AIDD_WORKSPACE_ROOT):resolve(dirname(fileURLToPath(import.meta.url)),"../..");
 const PROJECT=join(ROOT,"project"),SSOT=join(PROJECT,".aidd/ssot"),GENERATED=join(PROJECT,"docs/generated"),COMMON_TERMINOLOGY=join(ROOT,".ai/manifests/terminology.json");
-const COMMON_TERMINOLOGY_SHA256="b785d74f259776810b33a768581103168331710204b2afb45c9d675f02a44df2";
+const COMMON_TERMINOLOGY_SHA256="4303a1540d78a6059bb4c5211f954f7bde67b29e6dc34888df6c82b1dfcdddde";
 const ID_PATTERN=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/;
 const FILES={project:"project.json",requirements:"requirements.json",modules:"modules.json",architecture:"architecture.json",decisions:"decisions.json",open_items:"open-items.json",assumptions:"assumptions.json",risks:"risks.json",changes:"changes.json",tests:"tests.json",releases:"releases.json",merges:"merges.json",deliverables:"deliverables.json",evidence:"evidence.json",gate_runs:"gate-runs.json",scenarios:"scenarios.json",deployment:"deployment.json",technology:"technology.json",methodologies:"methodologies.json",delivery_plan:"delivery-plan.json",guides:"guides.json",evaluations:"evaluations.json",repository:"repository.json",foundation:"foundation.json",ui_system:"ui-system.json",operations:"operations.json",delivery_profiles:"delivery-profiles.json",documentation:"documentation.json",system_surfaces:"system-surfaces.json",workboard:"workboard.json",terminology:"terminology.json"};
-const KNOWN_COMMANDS=new Set(["add-assumption","add-merge-recheck","add-module","assess-merge","complete-merge-recheck","delivery-glossary","development-check","documentation-check","document-impact","evaluation-prompt","evaluation-status","generate","hook","impact","init-module-surfaces","init-module-ui","install-hooks","integration-status","migrate-module-specs","module-status","project-bootstrap","project-init","project-init-status","project-reconcile-role","record-evaluation","record-history","record-merge","release-check","resolve-assumption","status","sync-ai","term-apply","term-review","terminology-refresh","validate","workload-coverage"]);
+export const KNOWN_COMMANDS=new Set(["add-assumption","add-merge-recheck","add-module","assess-merge","complete-merge-recheck","delivery-glossary","development-check","documentation-check","document-impact","evaluation-prompt","evaluation-status","generate","hook","impact","init-module-surfaces","init-module-ui","install-hooks","integration-status","migrate-module-specs","module-status","project-bootstrap","project-init","project-init-status","project-reconcile-role","record-evaluation","record-history","record-merge","release-check","resolve-assumption","status","sync-ai","term-apply","term-review","terminology-refresh","validate","workload-coverage"]);
 const COMMAND_OPTIONS={
   "add-assumption":["due-gate","id","link","module","rationale","statement"],
   "add-merge-recheck":["blocking","merge","module","test","title","type"],
@@ -47,7 +47,7 @@ const COMMAND_RULES={
   "module-status":{required:["module","status"],choices:{status:["planned","in_progress","blocked","done"]}},
   "project-bootstrap":{required:["project-id","name"],choices:{mode:["greenfield","existing-system"]}},
   "record-evaluation":{required:["scenario","platform","status","evidence","scores","summary"],choices:{platform:["codex","claude"],status:["passed","failed"]}},
-  "record-history":{required:["id","type","subject","decided-by","decision","reason"],choices:{type:["analysis","design","terminology","source","scope","status","operation","decision"]}},
+  "record-history":{required:["id","type","subject","decided-by","decision","reason","occurred-at"],choices:{type:["analysis","design","terminology","source","scope","status","operation","decision"]}},
   "release-check":{required:["release"]},
   "resolve-assumption":{required:["id","status","resolution"],choices:{status:["confirmed","invalidated"]}},
   "delivery-glossary":{required:["directory","profile"]},
@@ -479,10 +479,27 @@ function stopHook(){console.log("{}");return 0;}
 function secureDeliveryGlossary(data,options){const profile=(data.delivery_profiles.delivery_profiles??[]).find(item=>item.id===options.profile);if(!profile)throw new Error(`unknown delivery profile: ${options.profile}`);if(!(profile.includes??[]).includes("glossary"))throw new Error(`${profile.id} does not include glossary`);const audience=profile.glossary?.audience;if(!["internal","end_user"].includes(audience))throw new Error(`${profile.id} has no valid glossary audience`);const result=validate(data);if(result.errors.length)throw new Error(`cannot assemble delivery glossary:\n- ${result.errors.slice(0,20).join("\n- ")}`);const target=resolve(options.directory),viewAudience=audience==="end_user"?"end_user":null,notice=audience==="end_user"?"<!-- AIDD generated glossary. Do not edit. -->\n\n":NOTICE,content=notice+glossaryDocument(data,{audience:viewAudience}).trimEnd()+"\n",site=renderPortal(data,audience==="end_user"?"프로젝트 용어 사전":"통합 용어 사전","용어집",[["glossary.md",content]],{includeSourceMeta:audience!=="end_user"});if(audience==="end_user"){const errors=endUserDeliveryErrors(data,{"glossary.md":content,"index.html":site});for(const path of files(join(ROOT,".ai/templates/site-kit/assets")))if(END_USER_GLOSSARY_FORBIDDEN.test(readFileSync(path,"utf8")))errors.push(`assets/${basename(path)}: end-user delivery content contains an internal identifier or project path`);if(errors.length)throw new Error(`end-user delivery boundary failed:\n- ${errors.join("\n- ")}`);}if(existsSync(target))throw new Error(`delivery glossary output already exists: ${target}`);mkdirSync(target,{recursive:true});try{writeFileSync(join(target,"glossary.md"),content,"utf8");cpSync(join(GENERATED,"site","assets"),join(target,"assets"),{recursive:true});writeFileSync(join(target,"index.html"),site,"utf8");writeJson(join(target,"manifest.json"),{schema_version:1,delivery_profile:profile.id,glossary_audience:audience,artifacts:["glossary.md","index.html","assets/"]});}catch(error){rmSync(target,{recursive:true,force:true});throw error;}return `Assembled ${audience} glossary delivery artifact: ${target}`;}
 
 export { generate, loadRecords, projectBootstrap, statusText, validate };
+function cliHelp(command) {
+  if (!command) {
+    const commands = [...new Set([...KNOWN_COMMANDS, ...V2_COMMANDS])].sort();
+    const groups = [];
+    for (let i = 0; i < commands.length; i += 8) groups.push(`  ${commands.slice(i, i + 8).join('  ')}`);
+    return ['Usage: node .ai/tools/aidd.mjs <command> [options]', '', 'Commands:', ...groups, '', 'Run <command> --help for that command\'s options. The current project format determines which commands are available.'].join('\n');
+  }
+  if (!KNOWN_COMMANDS.has(command) && !V2_COMMANDS.has(command)) return null;
+  if (V2_COMMANDS.has(command) || (shouldUseV2(ROOT, command) && OWNED_OPTIONS[command] !== undefined)) return ownedCommandHelp(command);
+  const options = COMMAND_OPTIONS[command] ?? [], required = COMMAND_RULES[command]?.required ?? [];
+  return [`Usage: node .ai/tools/aidd.mjs ${command} [options]`, '', `Required: ${required.length ? required.map(key => `--${key}`).join(', ') : 'none'}`, 'Options:', ...options.map(key => `  --${key}${BOOLEAN_OPTIONS.has(key) ? '' : ' VALUE'}${required.includes(key) ? ' (required)' : ''}`), '', 'Run without a command for the command list.'].join('\n');
+}
 if(process.env.AIDD_LIBRARY_MODE!=="1"){
 const [command,...rest]=process.argv.slice(2);let exit=0;
 try{
-  if(shouldUseV2(ROOT,command)){
+  if(!command||command==='--help'||command==='help'||(rest.length===1&&rest[0]==='--help')){
+    const target=command==='help'?rest[0]:command==='--help'||!command?null:command;
+    const help=cliHelp(target);
+    if(!help)throw new Error(`지원하지 않는 명령: ${target}`);
+    console.log(help);
+  }else if(shouldUseV2(ROOT,command)){
     const result=runOwned(ROOT,command,rest);console.log(result.data?.text??JSON.stringify(result,null,2));process.exitCode=result.exitCode;
   }else{
   const options=parse(command,rest);

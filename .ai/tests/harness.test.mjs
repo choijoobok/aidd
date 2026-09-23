@@ -46,6 +46,9 @@ function runHookAsync(path,payload,env={}){
 
 test("provider adapters implement the isolated portable hook contract",()=>{
   assert.deepEqual(harnessErrors(),[]);
+  const contract=JSON.parse(readFileSync(join(ROOT,".ai/hooks/contract.json"),"utf8"));
+  assert.equal(contract.local_conversation_log.required,true);
+  assert.equal(contract.local_conversation_log.enabled_by_default,true);
   if(EXPORTED){
     assert.deepEqual(CODEX,CODEX_EXPORT);
     assert.deepEqual(CLAUDE,CLAUDE_EXPORT);

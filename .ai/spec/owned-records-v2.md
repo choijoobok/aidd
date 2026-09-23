@@ -31,6 +31,8 @@ EXC는 applies_to/criteria/policy/reason/compensating_controls/decision_source/e
 
 `generate [--module MOD-ID|--change CHG-ID] [--output DIR]`는 ID별 명세, 모듈 인덱스, 상태 JSON/Markdown, SCR 목업·명세, MAN 절차, 오프라인 HTML과 프로젝트 홈을 만든다. 공통 항목은 한 정본을 참조한다. `manifests/<owner>.json`은 생성기 소유 파일과 해시를 기록한다. 전체 생성도 모듈별 소유 manifest를 사용하므로 후속 모듈 생성과 충돌하지 않는다. 다른 모듈·사용자 파일은 보존하며 생성물의 수동 수정은 덮어쓰지 않고 충돌로 보고한다. `documentation-check`는 현재 정본에서 전체 대상 파일 목록/내용을 재계산해 비교한다.
 
+전체 생성의 팀 용어집은 `.ai/manifests/terminology.json`의 AIDD 공통 용어와 현재 active 프로젝트 TRM을 `common/glossary.md`·`common/glossary.html`에서 조회하게 한다. 별도의 약어 정본이나 구형 전역 `terminology.json`을 만들지 않는다. ID별 생성 문서는 내용을 읽기 쉬운 필드명으로 제시하고 내부 해시는 문서 말미의 추적 정보에 둔다. 미정과 비적용 사유는 숨기지 않는다.
+
 MAN.definition에는 audience/preconditions/steps/expected/error_recovery/support가 필요하다. 설계본과 실제 화면 증거를 구분한다. 실제 캡처 EVD에는 kind=screenshot, mode=actual, subjects(MAN), input_hash, commit/environment/screen과 file/sha256/alt를 기록한다. file은 project 내부 PNG/JPEG 파일이며 제출 시 원본 해시를 검사하고 HTML에 포함해 오프라인 열람을 보장한다.
 
 `delivery-build --profile DLP-ID --output 미존재폴더`는 명시적 제출 정책만 조립한다. DLP는 audience(internal/end_user), purpose(design/release), includes(user/design/operations/glossary), modules, release를 지정한다. 출시본은 최신 release-check와 실제 화면 증거가 필요하다. 사용자용에는 내부 설계·ID·경로·내부 용어를 포함하지 않는다. customer 공개 범위이며 end_user 독자인 active TRM만 사용자 용어집에 들어간다. 빌드 결과는 정본이 아니고 기존 출력 폴더는 덮어쓰지 않는다.

@@ -12,16 +12,19 @@ import { bootstrapV2 } from '../../.ai/tools/lib/owned-cli.mjs';
 
 test('real public CLI bootstraps v2, rejects unsupported options, and never falls back to a legacy writer', t => {
   const root = mkdtempSync(join(tmpdir(), 'aidd-cli-')); t.after(() => rmSync(root, { recursive: true, force: true }));
-  mkdirSync(join(root, '.ai'), { recursive: true }); cpSync(resolve('.ai/tools'), join(root, '.ai/tools'), { recursive: true }); cpSync(resolve('.ai/templates'), join(root, '.ai/templates'), { recursive: true });
+  mkdirSync(join(root, '.ai'), { recursive: true }); cpSync(resolve('.ai/tools'), join(root, '.ai/tools'), { recursive: true }); cpSync(resolve('.ai/templates'), join(root, '.ai/templates'), { recursive: true }); cpSync(resolve('.ai/manifests'), join(root, '.ai/manifests'), { recursive: true });
   writeFileSync(join(root, '.aidd-role.json'), JSON.stringify({ role: 'kit-template' }));
   const run = args => spawnSync(process.execPath, [join(root, '.ai/tools/aidd.mjs'), ...args], { cwd: root, encoding: 'utf8', env: { ...process.env, AIDD_LIBRARY_MODE: '0' } });
+  for (const args of [[], ['--help'], ['record-put', '--help']]) {
+    const help = run(args); assert.equal(help.status, 0, help.stderr); assert.match(help.stdout, /Usage:/);
+  }
   let result = run(['project-bootstrap', '--project-id', 'PRJ-CLI', '--name', 'CLI test']); assert.equal(result.status, 0, result.stderr);
+  result = run(['record-history', '--id', 'HIS-X']); assert.equal(result.status, 2); assert.match(result.stderr, /--occurred-at/);
   result = run(['add-module', '--id', 'MOD-A', '--name', 'A', '--purpose', 'First module']); assert.equal(result.status, 0, result.stderr);
   result = run(['record-read', '--id', 'MOD-A', '--format', 'json']); assert.equal(result.status, 0, result.stderr); assert.match(JSON.parse(result.stdout).data.definition_hash, /^[a-f0-9]{64}$/);
   result = run(['status', '--module', 'MOD-A', '--format', 'text']); assert.equal(result.status, 0, result.stderr); assert.match(result.stdout, /planned/);
   assert.equal(run(['module-status', '--module', 'MOD-A', '--status', 'done']).status, 1);
   assert.equal(run(['status', '--invented', 'yes']).status, 2);
-  assert.equal(run(['record-history', '--id', 'HIS-X']).status, 2);
   result = run(['generate', '--module', 'MOD-A']); assert.equal(result.status, 0, result.stderr);
   result = run(['documentation-check', '--module', 'MOD-A']); assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(readFileSync(join(root, 'project/.aidd/ssot/project.json'))).storage_format, 'owned-records-v2');

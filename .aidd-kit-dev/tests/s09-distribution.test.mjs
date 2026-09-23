@@ -9,6 +9,13 @@ import { assembleProduct, distributionErrors, validateExportTree } from '../tool
 const kit = resolve('.aidd-kit-dev/tools/kit.mjs');
 const cleanup = (t, root) => t.after(() => rmSync(root, { recursive: true, force: true }));
 
+test('exported CI checks templates without running product generation and runs portable tests once', () => {
+  const workflow = readFileSync('.aidd-kit-dev/export/.github/workflows/aidd.yml', 'utf8');
+  assert.match(workflow, /if: steps\.workspace\.outputs\.role == 'product-workspace'/);
+  assert.match(workflow, /test ! -e project\/\.aidd\/ssot\/project\.json/);
+  assert.equal((workflow.match(/node --test \.ai\/tests\/\*\.test\.mjs/g) ?? []).length, 1);
+});
+
 test('S09 distribution fixture covers v2 new-project flow and directory/ZIP parity', async () => {
   assert.deepEqual(await distributionErrors(), []);
 });

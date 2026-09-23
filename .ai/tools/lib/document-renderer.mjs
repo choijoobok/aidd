@@ -12,18 +12,39 @@ import { businessEdges } from './business-discovery.mjs';
 
 const NOTICE = '<!-- Generated from owned-records-v2. Do not edit. -->\n\n';
 const outputPath = r => r.owner.kind === 'module' ? `modules/${r.owner.id}/${r.type}/${r.id}.md` : `common/${r.type}/${r.id}.md`;
+const FIELD_LABELS = {
+  problem:'문제', purpose:'목적', outcomes:'기대 결과', boundary:'경계', exclusions:'제외 범위', external_context:'외부 맥락',
+  source:'출처', priority:'우선순위', actors:'업무 역할', value:'가치', statement:'요구 내용', scope:'범위', triggers:'시작 조건', preconditions:'사전 조건', postconditions:'완료 조건', rules:'업무 규칙', prohibited_outcomes:'금지 결과', exceptions:'예외', boundaries:'적용 경계', data_needs:'필요 데이터', touchpoints:'접점', quality_constraints:'품질 제약', acceptance_criteria:'인수 기준', applicability:'적용성', measurement:'측정 기준',
+  goal:'목표', main_flow:'기본 흐름', alternatives:'대안 흐름', steps:'단계', transitions:'상태 전이', initial:'시작 상태', terminals:'종료 상태',
+  requirements:'요구사항', candidates:'설계 후보', governing:'적용 계약', modules:'모듈', inventory:'분석 목록', change_class:'변경 등급', delivery_path:'수행 경로', validation_plan:'검증 계획', rollback:'되돌리기', gate_applicability:'게이트 적용성', requirements_baseline:'요구 기준선', design_baseline:'설계 기준선',
+  features:'기능', screens:'화면', interfaces:'인터페이스', foundations:'공통 기반', foundation_applicability:'기반 적용성', ui_applicability:'화면 적용성', work_kind:'작업 유형', completion_criteria:'완료 기준', environment:'환경',
+  fields:'입력 필드', actions:'사용자 동작', view_states:'화면 상태', validation:'입력 검증', accessibility:'접근성', applicable_permissions:'접근 규칙', prototype_scenarios:'목업 시나리오', inputs:'입력', outputs:'출력', expected:'예상 결과', forbidden:'금지 결과', method:'검증 방법',
+  meaning:'뜻', definition:'정의', category:'분류', concept_type:'개념 유형', aliases:'다른 이름', examples:'예', related_terms:'관련 용어', distinctions:'혼동 구분', visibility:'공개 범위', audience:'독자', origin:'외부 출처',
+};
+const fieldLabel = key => FIELD_LABELS[key] ?? key.replaceAll('_', ' ');
 function format(value) {
   if (value?.status === 'not_applicable') return `비적용 — ${value.reason}`;
   if (value?.status === 'unknown') return '미정 — 상세화 필요';
   if (value?.status === 'known') return format(value.value);
-  if (Array.isArray(value)) return value.map(v => `- ${typeof v === 'object' ? Object.entries(v).map(([k, x]) => `${k}: ${format(x)}`).join(' · ') : String(v)}`).join('\n');
-  if (value && typeof value === 'object') return Object.entries(value).map(([k, v]) => `- ${k}: ${format(v)}`).join('\n');
+  if (Array.isArray(value)) return value.map(v => `- ${typeof v === 'object' && v !== null ? Object.entries(v).map(([k, x]) => `${fieldLabel(k)}: ${format(x)}`).join(' · ') : String(v)}`).join('\n');
+  if (value && typeof value === 'object') return Object.entries(value).map(([k, v]) => `- ${fieldLabel(k)}: ${format(v)}`).join('\n');
   return String(value ?? '미정');
 }
 export function recordMarkdown(r, map) {
   const path = outputPath(r), refs = [...r.relations, ...businessEdges(r)].map(rel => { const target = map.get(rel.target); return `- ${rel.type}: ${target ? `[${rel.target}](${posix.relative(posix.dirname(path), outputPath(target))})` : rel.target}${rel.selector ? `#${rel.selector}` : ''}`; }).join('\n');
   const flow = r.type === 'BPR' ? `\n## 업무 흐름도\n\n![${r.title}](${r.id}.svg)\n\n${(r.definition.transitions ?? []).map((t, i) => `${i + 1}. ${t.from} → ${t.to} · ${t.kind}: ${t.condition}`).join('\n')}\n` : '';
-  return `${NOTICE}# ${r.title}\n\n- ID: ${r.id}\n- 정본 소유: ${r.owner.id ?? 'project'}\n- 정의 해시: ${definitionHash(r)}\n- 정의: ${r.lifecycle} / 실행: ${r.execution?.status ?? 'not_run'}\n\n${Object.entries(r.definition).map(([key, value]) => `## ${key}\n\n${format(value)}\n`).join('\n')}\n## 연결\n\n${refs || '연결 없음'}\n${flow}`;
+  return `${NOTICE}# ${r.title}\n\n${Object.entries(r.definition).map(([key, value]) => `## ${fieldLabel(key)}\n\n${format(value)}\n`).join('\n')}\n## 연결\n\n${refs || '연결 없음'}\n${flow}\n## 정본 추적 정보\n\n- ID: ${r.id}\n- 정본 소유: ${r.owner.id ?? 'project'}\n- 정의 해시: ${definitionHash(r)}\n- 정의: ${r.lifecycle} / 실행: ${r.execution?.status ?? 'not_run'}\n`;
+}
+function glossaryEntries(records) {
+  return {
+    common: JSON.parse(readFileSync(new URL('../../manifests/terminology.json', import.meta.url), 'utf8')).terms.sort((a, b) => a.term.localeCompare(b.term)),
+    project: records.filter(r => r.type === 'TRM' && r.lifecycle === 'active').sort((a, b) => a.title.localeCompare(b.title)),
+  };
+}
+function teamGlossary({ common, project }) {
+  const commonEntries = common.map(term => `### ${term.term} · ${term.name}\n\n${term.definition}`).join('\n\n');
+  const projectEntries = project.map(r => `### ${r.title}\n\n${format(r.definition.meaning ?? r.definition.definition)}\n\n- 범위: ${format(r.definition.scope)}\n- 정본: [${r.id}](${posix.relative('common', outputPath(r))})`).join('\n\n');
+  return `${NOTICE}# 팀 용어집\n\n## AIDD 공통 용어\n\n${commonEntries}\n\n## 프로젝트 용어\n\n${projectEntries || '현재 등록된 프로젝트 용어가 없습니다.'}\n`;
 }
 export function offlineSite(title, pages, { home = './index.html', introduction = '' } = {}) {
   const e = escapeHtml;
@@ -41,7 +62,7 @@ function navigationDocuments(store) {
   const project = JSON.parse(readFileSync(join(store.ssot, 'project.json'), 'utf8')), outputs = new Map();
   const common = store.readScope({ owner: 'project', dependencies: false }).records;
   const systems = common.filter(r => r.type === 'SYS' && r.lifecycle !== 'retired');
-  outputs.set('common/index.md', `${NOTICE}# 공통 업무 정의\n\n${common.map(r => `- [${r.type} · ${r.title}](${posix.relative('common', outputPath(r))})`).join('\n')}\n`);
+  outputs.set('common/index.md', `${NOTICE}# 공통 업무 정의\n\n- [팀 용어집](glossary.md)\n${common.map(r => `- [${r.type} · ${r.title}](${posix.relative('common', outputPath(r))})`).join('\n')}\n`);
   outputs.set('index.md', `${NOTICE}# ${project.name}\n\n${modules.map(m => `- [${m.title}](modules/${m.id}/index.md)`).join('\n')}\n`);
   outputs.set('site/index.html', offlineSite(project.name, systems.length ? systems.map(r => ({ title: r.title, content: Object.entries(r.definition).map(([k,v]) => `${k}\n${format(v)}`).join('\n\n') })) : [{ title: '시스템 이해부터 시작하세요', content: 'SYS 시스템 개요 → CAP 핵심 업무 → ACT 업무 역할 → UC 유즈케이스 ↔ BPR 업무 흐름 → REQ/NFR. 기존 공통 정의가 있으면 참조하고 새 모듈의 분석 주기를 시작하세요.' }]).replace('</main>', `<section><h2>문서 사이트</h2><p><a href="../common/index.html">공통 업무 정의</a></p>${modules.map(m => `<p><a href="../modules/${m.id}/index.html">${escapeHtml(m.title)} 설계·검증</a> · <a href="../manuals/${m.id}/index.html">사용자 가이드</a></p>`).join('')}</section></main>`));
   return outputs;
@@ -67,6 +88,14 @@ export function renderDocuments(store, { module, change, evaluated_at = null } =
   const model = briefing(view, { module: selectedModule });
   const base = selectedModule ? `modules/${selectedModule}/` : '';
   outputs.set(`${base}status.json`, `${JSON.stringify(model, null, 2)}\n`); outputs.set(`${base}status.md`, NOTICE + briefingText(model));
+  if (!selectedModule) {
+    const terms = glossaryEntries(view.records);
+    outputs.set('common/glossary.md', teamGlossary(terms));
+    outputs.set('common/glossary.html', offlineSite('팀 용어집', [
+      ...terms.common.map(term => ({ title: `${term.term} · ${term.name}`, content: term.definition })),
+      ...terms.project.map(r => ({ title: r.title, content: format(r.definition.meaning ?? r.definition.definition) })),
+    ], { home: '../site/index.html' }));
+  }
   for (const r of selected) {
     outputs.set(outputPath(r), recordMarkdown(r, linkMap));
     if (r.type === 'BPR') outputs.set(outputPath(r).replace(/\.md$/, '.svg'), renderProcess(r));
@@ -83,7 +112,7 @@ export function renderDocuments(store, { module, change, evaluated_at = null } =
   }
   const owners = [...new Set(selected.filter(r => r.owner.kind === 'module').map(r => r.owner.id))].sort();
   const commonPages = selected.filter(r => r.owner.kind === 'project').map(r => ({ title: `${r.type} · ${r.title}`, content: recordMarkdown(r, linkMap) }));
-  outputs.set('common/index.html', offlineSite('공통 업무 정의', commonPages, { home: '../site/index.html' }).replace('</main>', `${selected.filter(r => r.owner.kind === 'project' && r.type === 'BPR').map(r => `<section><h2>${escapeHtml(r.title)} 흐름도</h2><img src="BPR/${r.id}.svg" alt="${escapeHtml(r.title)} 업무 흐름도"></section>`).join('')}</main>`));
+  outputs.set('common/index.html', offlineSite('공통 업무 정의', commonPages, { home: '../site/index.html' }).replace('</main>', `<section><p><a href="glossary.html">팀 용어집</a></p></section>${selected.filter(r => r.owner.kind === 'project' && r.type === 'BPR').map(r => `<section><h2>${escapeHtml(r.title)} 흐름도</h2><img src="BPR/${r.id}.svg" alt="${escapeHtml(r.title)} 업무 흐름도"></section>`).join('')}</main>`));
   for (const owner of owners) {
     const items = selected.filter(r => r.owner.id === owner), indexPath = `modules/${owner}/index.md`;
     outputs.set(indexPath, `${NOTICE}# ${map.get(owner)?.title ?? owner}\n\n${items.map(r => `- [${r.type} · ${r.title}](${posix.relative(posix.dirname(indexPath), outputPath(r))})`).join('\n')}\n`);

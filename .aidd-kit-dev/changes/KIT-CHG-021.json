@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "id": "KIT-CHG-021",
+  "title": "프로젝트 수행 도구와 안내의 사용성·정합성 개선",
+  "class": "C2",
+  "status": "verified",
+  "version_impact": "minor",
+  "delivery_path": "kit-maintenance",
+  "problem": "빈 템플릿 CI가 제품 정본을 요구하고, CLI 도움말과 오류 복구 안내가 부족하며, 용어·결정 경로와 대화 기록 안내에 구형 또는 선택적 서술이 남아 있다. 생성 문서는 내부 필드 키가 앞서 읽기 어렵다.",
+  "intent": "특정 제품을 전제하지 않고 현재 v2 계약에 맞는 CLI·CI·공통 용어집·AI 변경 분류·파생 문서·프로젝트 안내를 제공한다.",
+  "scope": [
+    "CLI 도움말과 입력 오류 안내",
+    "kit-template/product-workspace CI 분기와 중복 테스트 제거",
+    "AIDD 공통 용어와 프로젝트 TRM의 팀용 파생 조회",
+    "C0~C3 AI 수행 기준과 현재 게이트 계약 정합화",
+    "구형 DRQ/HIS 경로와 필수 대화 기록 안내 수정",
+    "v2 생성 문서의 독자용 표현과 변경 영역 회귀 테스트"
+  ],
+  "out_of_scope": [
+    "가상 제품 업무 예제와 특정 제품 유형의 수행 경로",
+    "프로젝트 인력·일정·배정·승인 권한 관리 또는 승인 매트릭스",
+    "대화 기록의 opt-in 전환과 기존 프로젝트 자동 업그레이드"
+  ],
+  "compatibility": "기존 v2 정본·CLI 명령·기본 JSON 출력을 유지한다. 도움말과 팀용 파생 문서를 추가하고 문서·CI 오류를 수정한다.",
+  "validation": [
+    "Kit check와 CLI·문서·배포·훅 관련 변경 영역 테스트",
+    "생성기·export·provider 경계 smoke 및 파생 문서 전체 비교",
+    "훅 self-test, git diff --check, UTF-8 BOM 없음·LF 확인"
+  ],
+  "risks": [
+    "신규 파생 문서가 기존 생성물 manifest 및 범위별 재생성과 충돌할 수 있다.",
+    "공통 용어 변경 시 고정 해시와 provider 사본의 동기화가 필요하다."
+  ],
+  "rollback": "이번 변경의 portable 명세·구현·가이드·테스트와 관리 기록을 선택적으로 되돌린다. 배포된 프로젝트의 정본이나 대화 이력은 변경하지 않는다.",
+  "completion_blocker": "없음",
+  "validation_result": "관련 회귀 30/30, 최종 CLI 3/3과 명령 예제 검사 2/2 통과. Kit check·smoke, 훅 self-test, 빈 template의 sync-ai·훅 직접 실행, git diff --check 통과. 변경 파일 34개의 UTF-8 BOM 없음·LF를 확인했다."
+}

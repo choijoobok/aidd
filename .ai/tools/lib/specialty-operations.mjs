@@ -10,7 +10,7 @@ import { generateDocuments, buildDelivery } from './document-renderer.mjs';
 import { impactGraph } from './dependency-graph.mjs';
 
 const list = x => x === undefined ? [] : Array.isArray(x) ? x : [x];
-const need = (o, ...keys) => { for (const key of keys) if (!String(o[key] ?? '').trim()) throw new StoreError('usage', `--${key} required`, 2); };
+const need = (o, ...keys) => { const missing = keys.filter(key => !String(o[key] ?? '').trim()); if (missing.length) throw new StoreError('usage', `${missing.map(key => `--${key}`).join(', ')} required`, 2); };
 const choose = (value, choices) => { if (!choices.includes(value)) throw new StoreError('usage', `expected ${choices.join('|')}, got ${value}`, 2); };
 export const SPECIAL_OPTIONS = {
   'add-assumption': 'id statement rationale due-gate link module', 'resolve-assumption': 'id resolution status',

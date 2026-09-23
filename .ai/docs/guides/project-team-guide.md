@@ -63,7 +63,7 @@ node .ai/tools/aidd.mjs record-history `
 - 결정이 필요하면 먼저 영향 소유자의 OI에 질문·상태·차단 여부를 기록하고 REQ·ADR·CHG·GTR·REL 등 실제 대상 정본을 링크한다. 사용자에게 실제로 제시할 질문은 보내기 전에 소유자별 `DRQ/<ID>.json`로 저장한다.
 - 상태 브리핑에서는 OI와 실제 답변 대기 DRQ의 건수·묶음 수를 구분하고, 기록된 다음 작업을 설명한 뒤 차단·우선순위·대기 시각 기준의 권장 질문 묶음을 마지막에 표시한다.
 - 사용자가 답하지 않고 독립적인 다른 작업을 요청하면 기존 OI와 DRQ는 유지하고 해당 작업을 진행한다. 새 결정이 필요하면 새 OI·대상 링크와 DRQ 묶음을 추가하며 기존 질문을 덮어쓰지 않는다.
-- 현재 정본에는 현재 상태와 핵심 근거를 두고 상세 변경 과정은 `history/`에 누적한다.
+- 현재 정본에는 현재 상태와 핵심 근거를 두고 상세 결정 이력은 소유자별 `HIS/<ID>.json`에 누적한다.
 - `project/docs/generated/`는 직접 수정하지 않는다.
 - 코드나 정본을 바꾼 뒤 `document-impact`, `generate`, `validate`와 영향받은 테스트를 수행한다.
 - 보안·권한·신원 검사는 프로젝트 요건이나 사용자의 명시 요청이 있을 때만 별도 품질 범위로 다룬다.
@@ -74,10 +74,8 @@ node .ai/tools/aidd.mjs record-history `
 - `.ai/docs/guides/`: 프로젝트 수행 가이드
 - `.ai/docs/methodology/`: 산출물 모델과 방법론 설명
 - `.ai/skills/`: AI 수행 절차
-- `project/.aidd/ssot/`: 현재 제품 정본과 `history/` 결정 이력
+- `project/.aidd/ssot/`: 현재 제품 정본과 공통·모듈별 `HIS/` 결정 이력
 - `project/docs/generated/`: 정본에서 재생성하는 문서
 - `project/src/`: 제품 소스와 테스트
 - `chat-history/`: Git에 넣지 않는 로컬 대화 원문
-# 모듈형 정본 진입점
-
 새 프로젝트는 [모듈형 정본 작업 안내](owned-records-workflow.md)를 따른다. v2 경로·명령은 기존 전역 배열 예제보다 우선하며, 마이그레이션 없이 두 형식을 혼합하지 않는다.

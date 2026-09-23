@@ -70,6 +70,7 @@ export function harnessErrors(){
   if(Number(process.versions.node.split(".")[0])<22)errors.push("hook runtime must be Node.js 22 or newer");
   if(contract.hook_isolation?.priority!==1)errors.push("hook isolation must remain priority 1");
   if(contract.hook_isolation?.shared_runtime_allowed!==false)errors.push("shared hook runtimes must remain forbidden");
+  if(contract.local_conversation_log?.enabled_by_default!==true||contract.local_conversation_log?.required!==true)errors.push("local conversation logging must remain required and enabled by default");
   if(!Array.isArray(policy.generated_roots)||!policy.generated_roots.length)errors.push("policy must declare generated_roots");
   for(const event of ["SessionStart","PreToolUse","PostToolUse","UserPromptSubmit","Stop"])if(!Array.isArray(contract.events?.[event]?.required_tokens))errors.push(`contract event missing: ${event}`);
   for(const path of PROVIDERS.filter(path=>existsSync(join(ROOT,path))))errors.push(...providerEventErrors(path,contract));

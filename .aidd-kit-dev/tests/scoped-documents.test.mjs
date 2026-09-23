@@ -25,6 +25,12 @@ test('status and generated module status share exact evaluator output; regenerat
   const status = runOwned(root, 'status', ['--module', 'MOD-A']).data;
   assert.deepEqual(JSON.parse(readFileSync(join(output, 'modules/MOD-A/status.json'), 'utf8')), status);
   assert.equal(checkDocuments(store).current, true);
+  const glossary = readFileSync(join(output, 'common/glossary.md'), 'utf8');
+  assert.match(glossary, /AIDD 공통 용어/); assert.match(glossary, /### CAP · 핵심 업무/);
+  assert.match(glossary, /### 환불/); assert.match(glossary, /### Internal gate/);
+  assert.match(readFileSync(join(output, 'common/glossary.html'), 'utf8'), /팀 용어집/);
+  const requirement = readFileSync(join(output, 'modules/MOD-A/REQ/REQ-CANCEL.md'), 'utf8');
+  assert.match(requirement, /## 요구 내용/); assert(requirement.indexOf('## 정본 추적 정보') > requirement.indexOf('## 요구 내용'));
   const hashes = Object.fromEntries(walk(output).map(p => [p, sha(readFileSync(join(output, p)))]));
   generateDocuments(store); assert.deepEqual(Object.fromEntries(walk(output).map(p => [p, sha(readFileSync(join(output, p)))])), hashes);
   assert(existsSync(join(output, 'ui/modules/MOD-A/SCR-CANCEL/mockup.html')));

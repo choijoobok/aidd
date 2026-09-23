@@ -2,7 +2,7 @@
 
 프로젝트 수행팀의 공식 사용법은 [AIDD 프로젝트 수행팀 가이드](project-team-guide.md)로 통합되었다. 기존 링크와 북마크를 위해 이 파일은 안내 문서로 유지한다.
 
-- 프로젝트 생성과 최초 작업자 등록: [프로젝트 준비와 시작](project-team/01-project-setup.md)
+- 프로젝트 생성과 Git·훅 준비: [프로젝트 준비와 시작](project-team/01-project-setup.md)
 - 요구사항부터 운영까지: [수행 생명주기](project-team/02-lifecycle.md)
 - 정본과 파생 문서: [문서 관리](project-team/03-document-management.md)
 - AI 스킬과 훅: [스킬과 훅](project-team/04-skills-and-hooks.md)

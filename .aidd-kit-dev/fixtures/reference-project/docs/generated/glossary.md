@@ -21,11 +21,11 @@ AIDD 공통 용어와 프로젝트 전용 용어를 한 곳에서 찾는 읽기�
 | AIDD-TERM-008 | OI | 미결 항목 | 의사결정 | 답이나 조치가 남아 있어 추적해야 하는 질문·결정·작업이다. | Open Item | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-009 | ASM | 가정 | 의사결정 | 검증되지 않았지만 임시로 참으로 두며 확인 기한과 영향을 추적하는 전제다. | Assumption | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-010 | RSK | 위험 | 거버넌스 | 발생 가능성과 영향, 완화·수용 여부를 관리하는 불확실한 사건이다. | Risk | project_team, developer, operator | .ai/spec/project-lifecycle.md |
-| AIDD-TERM-011 | TST | 테스트 | 검증 | 요구와 계약이 실제로 충족되는지 실행 가능한 조건과 결과로 확인하는 항목이다. | 테스트 케이스 | project_team, developer | .ai/spec/conformance.md |
+| AIDD-TERM-011 | TST | 구형 테스트 항목 | 검증 | 이전 AIDD 형식의 테스트 항목이다. 현재 v2 테스트 케이스 정본은 TC를 사용한다. | - | project_team, developer | .ai/spec/owned-records-v2.md |
 | AIDD-TERM-012 | EVD | 증거 | 검증 | 누가 언제 어떤 환경과 명령으로 무엇을 확인했는지 입증하는 실행·검토 기록이다. | Evidence | project_team, developer, operator | .ai/spec/conformance.md |
 | AIDD-TERM-013 | GTR | 게이트 실행 | 게이트 | 특정 변경이나 범위에 대해 게이트 기준별 판정과 증거를 남긴 실행 기록이다. | Gate Run | project_team, developer, operator | .ai/spec/project-lifecycle.md |
-| AIDD-TERM-014 | WRK | 작업 항목 | 계획 | 담당·선행 조건·완료 조건·증거를 가진 수행 단위다. | Work Item | project_team, developer | .ai/spec/project-lifecycle.md |
-| AIDD-TERM-015 | MLS | 마일스톤 | 계획 | 여러 작업과 결과를 묶어 일정과 완료 조건을 추적하는 이정표다. | Milestone | project_team, developer | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-014 | WRK | 작업 항목 | 계획 | 선행 조건·완료 조건·검증 증거를 가진 기술적 수행 단위다. 사람 배정은 프로젝트 운영에서 정한다. | Work Item | project_team, developer | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-015 | MLS | 마일스톤 | 계획 | 여러 기술적 결과와 완료 조건을 묶는 이정표다. 일정과 인력 배정은 AIDD에서 관리하지 않는다. | Milestone | project_team, developer | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-016 | IFC | 인터페이스 계약 | 아키텍처 | 모듈이나 외부 시스템 사이의 입력·출력·호환성·실패 동작을 정의한다. | Interface Contract | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-017 | DPN | 의존성 | 아키텍처 | 한 모듈·작업·계약이 다른 대상에 기대는 방향과 조건을 기록한다. | Dependency | project_team, developer, operator | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-018 | SURF | 시스템 표면 | 문서화 | 화면·API·배치·이벤트·연동처럼 사용자나 다른 시스템이 접하는 구현 표면이다. | System Surface | project_team, developer, operator | .ai/spec/project-lifecycle.md |
@@ -51,7 +51,30 @@ AIDD 공통 용어와 프로젝트 전용 용어를 한 곳에서 찾는 읽기�
 | AIDD-TERM-040 | HIS | 결정 이력 | 정본 | 중요한 분석·설계·용어·소스·범위·상태 결정의 주체, 내용, 이유, 이전 상태, 영향과 출처를 안정 ID에 연결해 append-only로 보존하는 기록이다. | Decision History | project_team, developer, operator | .ai/docs/methodology/artifact-model.md |
 | AIDD-TERM-041 | UC | 유즈케이스 | 분석 | 사용자나 외부 시스템이 목적을 달성하는 시작 조건, 정상 흐름, 대안·실패 흐름과 완료 결과를 식별한다. | Use Case | project_team, developer | .ai/spec/project-lifecycle.md |
 | AIDD-TERM-042 | 기능 상세 명세 | 기능 상세 명세 | 문서화 | 하나의 기능 단위가 연결된 REQ를 충족하는 처리 흐름, 업무 규칙, 예외, 데이터·연계, 화면과 검증을 구체화한 명세다. v2에서는 독립 FEAT JSON 정본으로 관리하며 요구사항 자체와는 구분한다. 구형 입력의 기존 ID와 이력은 보존한다. | Feature Detail Specification | project_team, developer | .ai/docs/methodology/artifact-model.md |
-| AIDD-TERM-043 | DRQ | 결정 요청 | 의사결정 | 공통 OI로 기록된 미결 결정 중 사용자 또는 프로젝트 결정권자에게 실제로 제시한 질문과 선택지, 권장안, 미응답 영향, 우선순위와 재개 상태를 보존하고 OI와 대상 정본 ID를 참조하는 현재 작업 보드 항목이다. 미결 대상과 최종 결정 자체는 OI·대상 정본과 필요한 HIS에 기록한다. | Decision Request, 결정 대기 항목 | project_team, developer, operator | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-043 | DRQ | 결정 요청 | 의사결정 | 소유자별 OI에 기록된 미결 결정 중 실제로 제시한 질문과 선택지, 권장안, 미응답 영향과 재개 상태를 보존하는 질문 기록이다. 최종 결정은 대상 정본과 필요한 HIS에 기록한다. 결정권자의 신원이나 권한은 판정하지 않는다. | Decision Request, 결정 대기 항목 | project_team, developer, operator | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-044 | OUT | 성과 | 분석 | 제품 의도와 연결해 달성 여부를 확인할 수 있는 결과다. | - | project_team, developer | .ai/docs/methodology/blueprint.md |
+| AIDD-TERM-045 | FEAT | 기능 | 설계 | 요구사항을 충족하는 지속적인 기능 계약이다. 변경 주기마다 복제하지 않는다. | - | project_team, developer | .ai/spec/owned-records-v2.md |
+| AIDD-TERM-046 | DAT | 데이터 계약 | 설계 | 업무 데이터의 의미, 식별자, 속성과 소유 규칙을 정의한다. | - | project_team, developer | .ai/spec/owned-records-v2.md |
+| AIDD-TERM-047 | NAV | 내비게이션 | UI | 사용자가 화면과 기능에 진입하고 이동하는 경로를 정의한다. | - | project_team, developer | .ai/spec/owned-records-v2.md |
+| AIDD-TERM-048 | RVW | 검토 기록 | 검토 | 대상 정본의 현재 내용과 입력을 실제로 검토한 결과와 결정 출처를 기록한다. | - | project_team, developer | .ai/spec/owned-records-v2.md |
+| AIDD-TERM-049 | BSL | 기준선 | 검토 | 특정 범위의 정본 원문과 해시를 고정해 이후 변경과 현재 유효성을 비교하는 기록이다. | - | project_team, developer | .ai/spec/owned-records-v2.md |
+| AIDD-TERM-050 | IMP | 변경 영향 | 변경 관리 | 정본 변경으로 영향을 받을 대상과 관계 경로, 재검토 범위를 분류하는 기록이다. | - | project_team, developer | .ai/spec/owned-records-v2.md |
+| AIDD-TERM-051 | TC | 테스트 케이스 | 검증 | 요구 또는 인수 기준을 검증할 단계·입력·예상 결과·금지 결과를 정의한다. | - | project_team, developer | .ai/spec/owned-records-v2.md |
+| AIDD-TERM-052 | REL | 릴리스 | 출시 | 전달할 작업과 변경, 대상 환경 및 현재 출시 준비도를 묶는 기록이다. | - | project_team, developer, operator | .ai/spec/owned-records-v2.md |
+| AIDD-TERM-053 | EXC | 제한된 예외 | 게이트 | 정책이 허용한 기준에 대해 사유·보완 통제·사용자 결정·만료를 명시한 제한적 예외다. | - | project_team, developer, operator | .ai/spec/owned-records-v2.md |
+| AIDD-TERM-054 | LDP | 레거시 분석 계획 | 레거시 | 기존 자료의 조사 범위, 출처와 관측 상태를 묶는 계획 기록이다. | - | project_team, developer | .ai/spec/reverse-engineering.md |
+| AIDD-TERM-055 | RUN | 운영 런북 | 운영 | 운영 절차와 장애 대응·복구 방법을 설명하는 기록이다. | - | developer, operator | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-056 | EVS | AI 평가 시나리오 | 검증 | AI provider의 행동을 비교할 입력, fixture와 평가 기준을 정의한다. | - | developer | .ai/spec/specialty-integration.md |
+| AIDD-TERM-057 | POL | 정책 | 설계 | 제품 또는 수행 범위에 적용할 규칙과 적용 조건을 정의한다. | - | project_team, developer, operator | .ai/spec/owned-records-v2.md |
+| AIDD-TERM-058 | ARC | 아키텍처 선택 | 아키텍처 | 기술 선택의 대안, 트레이드오프, 호환성과 결정 근거를 정의한다. | - | developer, operator | .ai/spec/specialty-integration.md |
+| AIDD-TERM-059 | ENV | 환경 | 운영 | 개발·검증·운영이 수행되는 환경과 그 구분을 기록한다. | - | developer, operator | .ai/spec/project-lifecycle.md |
+| AIDD-TERM-060 | DEP | 배포 프로필 | 운영 | 배포 위치, 인스턴스, 상태, 부하와 복구 등 운영 제약을 정의한다. | - | developer, operator | .ai/spec/specialty-integration.md |
+| AIDD-TERM-061 | DOC | 기존 문서 | 레거시 | 기존 시스템 분석에서 출처와 관측 근거로 다루는 문서다. | - | project_team, developer | .ai/spec/reverse-engineering.md |
+| AIDD-TERM-062 | SYS | 시스템 개요 | 분석 | 제품이 해결할 문제, 목적, 성과, 경계와 제외 범위를 정의한다. | - | project_team, developer | .ai/spec/business-discovery.md |
+| AIDD-TERM-063 | CAP | 핵심 업무 | 분석 | 시스템이 지원할 핵심 업무와 그 결과를 정의한다. | - | project_team, developer | .ai/spec/business-discovery.md |
+| AIDD-TERM-064 | ACT | 업무 역할 | 분석 | 업무 목표를 가진 사용자나 외부 시스템의 역할이다. 수행팀 명부나 승인 권한은 뜻하지 않는다. | - | project_team, developer | .ai/spec/business-discovery.md |
+| AIDD-TERM-065 | BPR | 업무 흐름 | 분석 | 업무 단계, 인계, 분기, 예외와 데이터 상태를 연결한 흐름이다. | - | project_team, developer | .ai/spec/business-discovery.md |
+| AIDD-TERM-066 | EVR | AI 평가 실행 | 검증 | AI provider별 실제 평가 결과와 현재 입력의 관계를 기록한다. | - | developer | .ai/spec/specialty-integration.md |
 
 ## 프로젝트 전용 용어
 

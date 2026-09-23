@@ -91,7 +91,7 @@ self-test 통과만으로 모든 `.mjs`가 표준 라이브러리만 사용하�
 
 요구분석·설계·구현 중 새롭거나 모호한 용어를 발견하고 확인 카드부터 적용까지 조율하는 책임은 `aidd-terminology` 스킬에 있다. `aidd-discovery`, `aidd-architecture`, `aidd-delivery`는 용어 판단이 필요할 때 이 스킬로 연결한다. 훅은 사용자 의도를 이해하거나 프로젝트의 의사결정을 대신하지 않으므로 이 자동화를 훅으로 구현하지 않는다.
 
-결정 질문의 의미와 재개 상태는 `aidd-decision-management`가 `workboard.decision_requests`에 기록한다. 대화 로그 훅은 원문 보존만 담당하며 질문 문장을 분석해 DRQ·OI·ADR·CHG를 자동 생성하거나 변경하지 않는다.
+결정 질문의 의미와 재개 상태는 `aidd-decision-management`가 소유자별 `OI/<ID>.json`과 `DRQ/<ID>.json`에 기록한다. 대화 로그 훅은 원문 보존만 담당하며 질문 문장을 분석해 DRQ·OI·ADR·CHG를 자동 생성하거나 변경하지 않는다.
 
 ## AIDD 구현 검증을 요청할 때
 
